@@ -1,0 +1,95 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "poodle"
+description = "Mutation Testing Tool"
+version = "0.1.0.alpha.1"
+license = { file = "LICENSE" }
+keywords = [
+    "test",
+    "coverage",
+    "quality",
+    "mutation",
+    "pytest",
+    "pit",
+    "pitest",
+    "pittest",
+    "mutmut",
+    "mutatest",
+]
+authors = [{ name = "WiredNerd", email = "pbuschmail-poodle@yahoo.com" }]
+maintainers = [{ name = "WiredNerd", email = "pbuschmail-poodle@yahoo.com" }]
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = ["click>=8"]
+
+[project.urls]
+# "Documentation" = "https://poodle.readthedocs.io/"
+"Homepage" = "https://github.com/WiredNerd/poodle"
+"Issue Tracker" = "https://github.com/WiredNerd/poodle/issues"
+
+[project.scripts]
+poodle = "poodle.cli:main"
+
+[tool.setuptools]
+
+[tool.poodle]
+source_folders = ["example/src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src","example/src"]
+testpaths = ["test"]
+addopts = "-vv --cov-reset --cov-report=html:reports/coverage --cov-report=term --cov-report=json:code-coverage.json"
+sort_mode = "random"
+sort_bucket = "session"
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+skip_empty = true
+exclude_also = ["import .*", "from .* import .*", "if TYPE_CHECKING:"]
+
+[tool.black]
+line-length = 120
+target-version = ['py38', 'py39', 'py310', 'py311']
+color = true
+
+[tool.isort]
+profile = 'black'
+
+[tool.mypy]
+files = "poodle"
+
+[tool.ruff]
+target-version = "py38"
+show-source = true
+select = ["ALL"]
+ignore = [
+    # "D203",   # 1 blank line required before class docstring
+    # "D213",   # multi-line-summary-second-line
+    # "EM101",  # Exception must not use a string literal, assign to variable first
+    # "S311",   # Standard pseudo-random generators are not suitable for cryptographic purposes
+    # "TRY003", # Avoid specifying long messages outside the exception class
+]
+line-length = 120
+exclude = [
+    ".eggs",
+    ".git",
+    ".mypy_cache",
+    ".pants.d",
+    ".ruff_cache",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "build",
+    "dist",
+    "venv",
+]
