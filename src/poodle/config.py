@@ -12,19 +12,20 @@ config_defaults = {
     "source_folders": [Path("src"), Path("lib")],
     "file_filters": ["^test_", "_test$"],
     "work_folder": Path(".poodle-temp"),
+    "runner_cmd": "pytest --assert=plain -o pythonpath=",
 }
 
 
 def build_config(source: tuple[str], config_file: str):
     (config_file, config_file_data) = get_config_file_data(config_file)
 
-    source_folders = get_source_folders(source, config_file_data)
-
     return PoodleConfig(
         config_file=config_file,
-        source_folders=source_folders,
+        source_folders=get_source_folders(source, config_file_data),
         file_filters=config_defaults["file_filters"],
         work_folder=config_defaults["work_folder"],
+        runner_cmd=config_defaults["runner_cmd"],
+        mutator_opts=get_mutator_opts_from_config(config_file_data),
     )
 
 
@@ -77,3 +78,13 @@ def get_source_folders_from_config(sources: tuple[str], config_file: dict) -> li
         return [Path(source) for source in config_file["source_folders"]]
 
     return [source for source in config_defaults["source_folders"] if source.is_dir()]
+
+
+def get_mutator_opts_from_config(config_file: dict) -> dict:
+    if hasattr(poodle_config, "mutator_opts"):
+        return poodle_config.mutator_opts
+
+    if "mutator_opts" in config_file:
+        return config_file["mutator_opts"]
+
+    return {}

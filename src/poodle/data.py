@@ -8,6 +8,8 @@ class PoodleConfig:
     source_folders: list[Path]
     file_filters: list[str]
     work_folder: Path
+    runner_cmd: str
+    mutator_opts: dict
 
 
 class PoodleWork:
@@ -37,7 +39,7 @@ class FileMutant:
 
 @dataclass
 class PoodleMutant:
-    source_folder: Path | None = None
+    source_folder: Path
     source_file: Path | None = None
     lineno: int | None = None
     col_offset: int | None = None
@@ -56,3 +58,16 @@ class PoodleMutant:
             end_col_offset=file_mutant.end_col_offset,
             text=file_mutant.text,
         )
+
+
+@dataclass
+class PoodleTestResult:
+    test_passed: bool
+    reason_code: str
+    reason_desc: str | None = None
+
+    RC_FOUND = "mutant_found"
+    RC_NOT_FOUND = "mutant_not_found"
+    RC_TIMEOUT = "timeout"
+    RC_INCOMPLETE = "incomplete"
+    RC_OTHER = "other"

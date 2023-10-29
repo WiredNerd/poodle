@@ -11,16 +11,18 @@
     "python.testing.pytestArgs": [
         "-vv",
         "-s",
-        "test"
+        "tests"
     ],
     "python.analysis.extraPaths": [
         "src",
-        "test",
+        "tests",
         "example/src",
+        "example/tests",
     ],
     "python.autoComplete.extraPaths": [
         "src",
         "example/src",
+        "example/tests",
     ],
     "python.testing.pytestPath": "src",
 }

@@ -24,3 +24,23 @@ def floor_division(x, y):
 
 def exponentiation(x, y):
     return x**y
+
+
+def left_shift(x, y):
+    return x << y
+
+
+def right_shift(x, y):
+    return x >> y
+
+
+def bit_or(x, y):
+    return x | y
+
+
+def bit_xor(x, y):
+    return x ^ y
+
+
+def bit_and(x, y):
+    return x & y

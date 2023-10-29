@@ -1,20 +1,18 @@
 import ast
 import multiprocessing
-import os
 import re
-import shlex
 import shutil
-import subprocess
-from ast import Module
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
+from pprint import pprint
 from zipfile import ZipFile
 
 from click import echo
 
 from poodle import mutators
-from poodle.data import PoodleConfig, PoodleMutant, PoodleWork
+from poodle.data import PoodleConfig, PoodleMutant, PoodleTestResult, PoodleWork
+from poodle.runners import command_line_runner
 
 
 def run(config: PoodleConfig):
@@ -32,7 +30,7 @@ def run(config: PoodleConfig):
     test_clean_runs(work, targets)
     test_mutants(work, mutants)
 
-    # shutil.rmtree(config.work_folder)
+    shutil.rmtree(config.work_folder)
 
 
 def target_files(work: PoodleWork):
@@ -86,30 +84,32 @@ def test_clean_runs(work: PoodleWork, targets: dict):
 def test_clean_run(work: PoodleWork, folder: Path):
     start = datetime.now()
     echo(f"Testing clean run of folder '{folder}'...", nl=False)
-    (mutation_found, test_timeout, reason) = test_mutant(
-        work.config.work_folder,
+    result = test_mutant(
+        work.config,
         work.folder_zips[folder],
         PoodleMutant(
             source_folder=folder,
         ),
         work.next_num(),
+        command_line_runner,
     )
-    if mutation_found:  # not expected
+    if result.test_passed:  # not expected
         echo("FAILED")
-        raise Exception("Clean Run Failed", folder, reason)
+        raise Exception("Clean Run Failed", result.reason_desc)
     else:
         echo(f"PASSED ({(datetime.now()-start)})")
 
 
-def test_mutants(work: PoodleWork, mutants: list[PoodleMutant]):
+def test_mutants(work: PoodleWork, mutants: list[PoodleMutant]) -> list[PoodleTestResult]:
     start = datetime.now()
     echo("Testing mutants")
     inputs = [
         (
-            work.config.work_folder,
+            work.config,
             work.folder_zips[mutant.source_folder],
             mutant,
             work.next_num(),
+            command_line_runner,
         )
         for mutant in mutants
     ]
@@ -117,11 +117,17 @@ def test_mutants(work: PoodleWork, mutants: list[PoodleMutant]):
         test_runs = pool.starmap_async(test_mutant, inputs)
         results = test_runs.get()
     echo(f"DONE ({(datetime.now()-start)})")
-    echo(results)
+    pprint(results)
 
 
-def test_mutant(work_folder: Path, folder_zip: Path, mutant: PoodleMutant, run_id: str):
-    run_folder = work_folder / ("run-" + run_id)
+def test_mutant(
+    config: PoodleConfig,
+    folder_zip: Path,
+    mutant: PoodleMutant,
+    run_id: str,
+    runner,
+) -> PoodleTestResult:
+    run_folder = config.work_folder / ("run-" + run_id)
     run_folder.mkdir()
 
     with ZipFile(folder_zip, "r") as zip_file:
@@ -140,21 +146,12 @@ def test_mutant(work_folder: Path, folder_zip: Path, mutant: PoodleMutant, run_i
 
         target_file.write_text(data="".join(file_lines), encoding="utf-8")
 
-    run_env = os.environ.copy()
-    run_env["PYTHONPATH"] = os.pathsep.join(
-        [
-            str(run_folder / mutant.source_folder),
-            run_env.get("PYTHONPATH", ""),
-        ]
-    )
-    run_env["PYTHONDONTWRITEBYTECODE"] = "1"
-    result = subprocess.run(
-        shlex.split("pytest -o pythonpath="),
-        env=run_env,
-        capture_output=True,
+    result = runner(
+        config=config,
+        run_folder=run_folder,
+        mutant=mutant,
     )
 
-    # shutil.rmtree(run_folder)
+    shutil.rmtree(run_folder)
 
-    # pass: bool, timeout: bool, reason: str
-    return (result.returncode != 0, False, str(result.returncode))
+    return result
