@@ -27,7 +27,7 @@ class TestCommandLineRunner:
             )
 
             config = mock.MagicMock()
-            config.runner_cmd = "pytest tests"
+            config.runner_opts = {"command_line": "pytest tests"}
 
             mutant = PoodleMutant(Path("src"), Path("target.py"), 1, 2, 3, 4, "Changed Line")
 
@@ -75,7 +75,7 @@ class TestCommandLineRunner:
             )
 
             config = mock.MagicMock()
-            config.runner_cmd = "pytest tests"
+            config.runner_opts = {"command_line": "pytest tests"}
 
             mutant = PoodleMutant(Path("src"), Path("target.py"), 1, 2, 3, 4, "Changed Line")
 
@@ -83,7 +83,6 @@ class TestCommandLineRunner:
                 config=config,
                 run_folder=Path("poodle-run-folder"),
                 mutant=mutant,
-                other="value",
             )
 
             subprocess_run.assert_called_with(
@@ -116,7 +115,7 @@ class TestCommandLineRunner:
             )
 
             config = mock.MagicMock()
-            config.runner_cmd = "pytest tests"
+            config.runner_opts = {"command_line": "pytest tests"}
 
             mutant = PoodleMutant(Path("src"), Path("target.py"), 1, 2, 3, 4, "Changed Line")
 
@@ -124,7 +123,6 @@ class TestCommandLineRunner:
                 config=config,
                 run_folder=Path("poodle-run-folder"),
                 mutant=mutant,
-                other="value",
             )
 
             subprocess_run.assert_called_with(
@@ -157,7 +155,7 @@ class TestCommandLineRunner:
             )
 
             config = mock.MagicMock()
-            config.runner_cmd = "pytest tests"
+            config.runner_opts = {"command_line": "pytest tests"}
 
             mutant = PoodleMutant(Path("src"), Path("target.py"), 1, 2, 3, 4, "Changed Line")
 
@@ -165,7 +163,6 @@ class TestCommandLineRunner:
                 config=config,
                 run_folder=Path("poodle-run-folder"),
                 mutant=mutant,
-                other="value",
             )
 
             subprocess_run.assert_called_with(

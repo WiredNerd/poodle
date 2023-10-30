@@ -44,40 +44,42 @@ class TestBinaryOperationMutator:
         mutator = BinaryOperationMutator(config)
         assert mutator.config == config
         assert mutator.file_mutants == []
-        assert mutator.type_map == mutator.type_map_levels[2]
+        assert mutator.type_map == mutator.type_map_levels["std"]
         mock_print.assert_not_called()
 
     def test_init_1(self, mock_print):
-        config = mock.MagicMock(mutator_opts={"bin_op_level": 1})
+        config = mock.MagicMock(mutator_opts={"bin_op_level": "min"})
         mutator = BinaryOperationMutator(config)
         assert mutator.config == config
         assert mutator.file_mutants == []
-        assert mutator.type_map == mutator.type_map_levels[1]
+        assert mutator.type_map == mutator.type_map_levels["min"]
         mock_print.assert_not_called()
 
     def test_init_2(self, mock_print):
-        config = mock.MagicMock(mutator_opts={"bin_op_level": "2"})
+        config = mock.MagicMock(mutator_opts={"bin_op_level": "std"})
         mutator = BinaryOperationMutator(config)
         assert mutator.config == config
         assert mutator.file_mutants == []
-        assert mutator.type_map == mutator.type_map_levels[2]
+        assert mutator.type_map == mutator.type_map_levels["std"]
         mock_print.assert_not_called()
 
     def test_init_3(self, mock_print):
-        config = mock.MagicMock(mutator_opts={"bin_op_level": "3"})
+        config = mock.MagicMock(mutator_opts={"bin_op_level": "max"})
         mutator = BinaryOperationMutator(config)
         assert mutator.config == config
         assert mutator.file_mutants == []
-        assert mutator.type_map == mutator.type_map_levels[3]
+        assert mutator.type_map == mutator.type_map_levels["max"]
         mock_print.assert_not_called()
 
     def test_init_4(self, mock_print):
-        config = mock.MagicMock(mutator_opts={"bin_op_level": "4"})
+        config = mock.MagicMock(mutator_opts={"bin_op_level": "super"})
         mutator = BinaryOperationMutator(config)
         assert mutator.config == config
         assert mutator.file_mutants == []
-        assert mutator.type_map == mutator.type_map_levels[2]
-        mock_print.assert_called_with("WARN: Invalid value operator_opts.bin_op_level=4.  Using Default value 2.")
+        assert mutator.type_map == mutator.type_map_levels["std"]
+        mock_print.assert_called_with(
+            "WARN: Invalid value operator_opts.bin_op_level=super.  Using Default value 'std'"
+        )
 
     def test_create_mutants(self):
         mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={}))
@@ -120,8 +122,8 @@ class TestBinaryOperationMutator:
             (ast.MatMult, []),
         ],
     )
-    def test_visit_BinOp_level_1(self, op_type, text_out):
-        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": 1}))
+    def test_visit_BinOp_level_min(self, op_type, text_out):
+        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": "min"}))
 
         node = ast.BinOp()
         node.left = ast.Constant()
@@ -157,8 +159,8 @@ class TestBinaryOperationMutator:
             (ast.MatMult, []),
         ],
     )
-    def test_visit_BinOp_level_2(self, op_type, text_out):
-        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": 2}))
+    def test_visit_BinOp_level_std(self, op_type, text_out):
+        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": "std"}))
 
         node = ast.BinOp()
         node.left = ast.Constant()
@@ -194,8 +196,8 @@ class TestBinaryOperationMutator:
             (ast.MatMult, []),
         ],
     )
-    def test_visit_BinOp_level_3(self, op_type, text_out):
-        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": 3}))
+    def test_visit_BinOp_level_max(self, op_type, text_out):
+        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": "max"}))
 
         node = ast.BinOp()
         node.left = ast.Constant()

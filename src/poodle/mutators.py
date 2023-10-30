@@ -5,6 +5,10 @@ from abc import ABC, abstractmethod
 
 from poodle.data import FileMutant, PoodleConfig
 
+# import ast
+# from poodle import PoodleConfig, FileMutant
+# create_mutants(config: PoodleConfig, parsed_ast: ast.Module) -> list[FileMutant]:
+
 
 class PoodleMutator(ABC):
     def __init__(self, config: PoodleConfig):
@@ -20,10 +24,10 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
         super().__init__(config)
         self.file_mutants: list[FileMutant] = []
 
-        level = int(self.config.mutator_opts.get("bin_op_level", 2))
+        level = self.config.mutator_opts.get("bin_op_level", "std")
         if level not in self.type_map_levels:
-            print(f"WARN: Invalid value operator_opts.bin_op_level={level}.  Using Default value 2.")
-            level = 2
+            print(f"WARN: Invalid value operator_opts.bin_op_level={level}.  Using Default value 'std'")
+            level = "std"
 
         self.type_map = self.type_map_levels[level]
 
@@ -46,7 +50,7 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
     # ast.MatMult   @ - Matrix Multiplication
 
     type_map_levels = {
-        1: {
+        "min": {
             ast.Add: ast.Sub,
             ast.Sub: ast.Add,
             ast.Mult: ast.Div,
@@ -60,7 +64,7 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
             ast.BitXor: ast.BitOr,
             ast.BitAnd: ast.BitXor,
         },
-        2: {
+        "std": {
             ast.Add: [ast.Sub, ast.Mult],
             ast.Sub: [ast.Add, ast.Div],
             ast.Mult: [ast.Div, ast.Add],
@@ -74,7 +78,7 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
             ast.BitXor: [ast.BitOr, ast.BitAnd],
             ast.BitAnd: [ast.BitXor, ast.BitOr],
         },
-        3: {
+        "max": {
             ast.Add: [ast.Sub, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow],
             ast.Sub: [ast.Add, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow],
             ast.Mult: [ast.Add, ast.Sub, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow],

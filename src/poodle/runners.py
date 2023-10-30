@@ -5,6 +5,8 @@ from pathlib import Path
 
 from poodle.data import PoodleConfig, PoodleMutant, PoodleTestResult
 
+# runner(config: PoodleConfig, run_folder: Path, mutant: PoodleMutant, **_) -> PoodleTestResult:
+
 
 def command_line_runner(config: PoodleConfig, run_folder: Path, mutant: PoodleMutant, **_) -> PoodleTestResult:
     run_env = os.environ.copy()
@@ -28,7 +30,7 @@ def command_line_runner(config: PoodleConfig, run_folder: Path, mutant: PoodleMu
     )
 
     result = subprocess.run(
-        shlex.split(config.runner_cmd),
+        shlex.split(config.runner_opts["command_line"]),
         env=run_env,
         capture_output=True,
     )

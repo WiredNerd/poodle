@@ -4,11 +4,11 @@ from pathlib import Path
 
 @dataclass
 class PoodleConfig:
-    config_file: str
+    config_file: Path | None
     source_folders: list[Path]
     file_filters: list[str]
     work_folder: Path
-    runner_cmd: str
+    runner_opts: dict
     mutator_opts: dict
 
 

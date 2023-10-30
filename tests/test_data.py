@@ -7,22 +7,22 @@ class TestPoodleConfig:
     @classmethod
     def create_poodle_config(cls):
         return PoodleConfig(
-            config_file="filename.toml",
+            config_file=Path("filename.toml"),
             source_folders=[Path("src")],
             file_filters=["test_"],
             work_folder=Path(".poodle"),
-            runner_cmd="pytest",
+            runner_opts={"command_line": "pytest tests"},
             mutator_opts={"bin_op_level": 2},
         )
 
     def test_poodle_config(self):
         config = self.create_poodle_config()
 
-        assert config.config_file == "filename.toml"
+        assert config.config_file == Path("filename.toml")
         assert config.source_folders == [Path("src")]
         assert config.file_filters == ["test_"]
         assert config.work_folder == Path(".poodle")
-        assert config.runner_cmd == "pytest"
+        assert config.runner_opts == {"command_line": "pytest tests"}
         assert config.mutator_opts == {"bin_op_level": 2}
 
 
@@ -30,7 +30,7 @@ class TestPoodleWork:
     def test_poodle_work(self):
         work = PoodleWork(config=TestPoodleConfig.create_poodle_config())
 
-        assert work.config.config_file == "filename.toml"
+        assert work.config.config_file == Path("filename.toml")
         assert work.folder_zips == {}
         assert work.next_num() == "1"
         assert work.next_num() == "2"
