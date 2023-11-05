@@ -1,10 +1,15 @@
 import tomllib
-from collections.abc import Iterable
 from contextlib import suppress
 from pathlib import Path
+from typing import Optional
 
 from poodle import PoodleInvalidInput
 from poodle.data import PoodleConfig
+
+try:
+    import tomllib
+except ModuleNotFoundError:
+    import tomli as tomllib
 
 poodle_config: any = None
 with suppress(ImportError):
@@ -31,7 +36,7 @@ def build_config(source: tuple[str], config_file: str):
     )
 
 
-def get_config_file_path(config_file: str) -> Path | None:
+def get_config_file_path(config_file: str) -> Optional[Path]:
     if config_file:
         path = Path(config_file)
         if path.is_file():
@@ -49,7 +54,7 @@ def get_config_file_path(config_file: str) -> Path | None:
     return None
 
 
-def get_config_file_data(config_file: Path | None) -> dict:
+def get_config_file_data(config_file: Optional[Path]) -> dict:
     if not config_file:
         return {}
 
