@@ -154,7 +154,7 @@ class TestGetSourceFolders:
         config.poodle_config = mock.MagicMock(source_folders=34)
         with pytest.raises(
             PoodleInvalidInput,
-            match="^poodle_config.source_folders must be of type Iterable\[PathStr\]$",
+            match=r"^poodle_config.source_folders must be of type Iterable\[PathStr\]$",
         ):
             config.get_source_folders_from_config(tuple(), {})
 
@@ -162,7 +162,7 @@ class TestGetSourceFolders:
         config.poodle_config = mock.MagicMock(source_folders=[34])
         with pytest.raises(
             PoodleInvalidInput,
-            match="^poodle_config.source_folders must be of type Iterable\[PathStr\]$",
+            match=r"^poodle_config.source_folders must be of type Iterable\[PathStr\]$",
         ):
             config.get_source_folders_from_config(tuple(), {})
 
@@ -175,14 +175,14 @@ class TestGetSourceFolders:
     def test_get_source_folders_from_config_poodle_config_file_invalid_iter(self):
         with pytest.raises(
             PoodleInvalidInput,
-            match="^source_folders in config file must be of type Iterable\[str\]$",
+            match=r"^source_folders in config file must be of type Iterable\[str\]$",
         ):
             config.get_source_folders_from_config(tuple(), {"source_folders": 55})
 
     def test_get_source_folders_from_config_poodle_config_file_invalid_str(self):
         with pytest.raises(
             PoodleInvalidInput,
-            match="^source_folders in config file must be of type Iterable\[str\]$",
+            match=r"^source_folders in config file must be of type Iterable\[str\]$",
         ):
             config.get_source_folders_from_config(tuple(), {"source_folders": [55]})
 

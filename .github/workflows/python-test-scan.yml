@@ -79,12 +79,32 @@ jobs:
       - name: Install Dependencies and Tools
         run: |
           pip install -r requirements.txt --upgrade
+          pip install mypy --upgrade
       - run: mypy src
+      - run: mypy tests
   ruff:
     name: Linter Checks with Ruff
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
-      - uses: chartboost/ruff-action@v1
+      - name: Ruff src
+        uses: chartboost/ruff-action@v1
         with:
           src: src
+          args: check --show-source
+      - name: Ruff src diff
+        uses: chartboost/ruff-action@v1
+        with:
+          src: src
+          args: check --diff
+      - name: Ruff tests
+        uses: chartboost/ruff-action@v1
+        with:
+          src: tests
+          args: check --show-source
+      - name: Ruff tests diff
+        uses: chartboost/ruff-action@v1
+        with:
+          src: tests
+          args: check --diff
+  
