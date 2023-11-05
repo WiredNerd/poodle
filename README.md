@@ -1,2 +1,2 @@
 # poodle
- Effecient Mutation Testing for Python
+ Efficient Mutation Testing for Python

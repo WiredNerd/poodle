@@ -1,2 +1,5 @@
+click>=8
+
 pytest
-pony
+pytest-sort
+pytest-cov
