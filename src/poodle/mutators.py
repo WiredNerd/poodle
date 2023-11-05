@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 from abc import ABC, abstractmethod
+from typing import Dict
 
 from poodle.data import FileMutant, PoodleConfig
 
@@ -29,7 +30,7 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
             print(f"WARN: Invalid value operator_opts.bin_op_level={level}.  Using Default value 'std'")
             level = "std"
 
-        self.type_map = self.type_map_levels[level]
+        self.type_map: dict = self.type_map_levels[level]
 
     def create_mutants(self, parsed_ast: ast.Module) -> list[FileMutant]:
         self.visit(parsed_ast)
@@ -49,7 +50,7 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
     # ast.BitAnd    &
     # ast.MatMult   @ - Matrix Multiplication
 
-    type_map_levels = {
+    type_map_levels: Dict[str, dict] = {
         "min": {
             ast.Add: ast.Sub,
             ast.Sub: ast.Add,

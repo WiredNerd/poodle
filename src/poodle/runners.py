@@ -39,7 +39,7 @@ def command_line_runner(config: PoodleConfig, run_folder: Path, mutant: PoodleMu
         return PoodleTestResult(
             test_passed=True,
             reason_code=PoodleTestResult.RC_FOUND,
-            reason_desc=result.stderr,
+            reason_desc=result.stderr.decode("utf-8"),
         )
     elif result.returncode == 0:
         return PoodleTestResult(
@@ -50,5 +50,5 @@ def command_line_runner(config: PoodleConfig, run_folder: Path, mutant: PoodleMu
         return PoodleTestResult(
             test_passed=True,
             reason_code=PoodleTestResult.RC_OTHER,
-            reason_desc=result.stderr,
+            reason_desc=result.stderr.decode("utf-8"),
         )

@@ -54,7 +54,7 @@ jobs:
           pip install isort --upgrade
       - run: python3 -m isort src --check --diff
       - run: python3 -m isort tests --check --diff
-      if: ${{ always() }}
+        if: ${{ always() }}
   black:
     name: Code Format with Black
     runs-on: [ubuntu-latest]
@@ -82,8 +82,8 @@ jobs:
         run: |
           pip install -r requirements.txt --upgrade
           pip install mypy --upgrade
-      - run: mypy src
-      - run: mypy tests
+      - run: mypy src --python-version 3.8
+      - run: mypy tests --python-version 3.8
         if: ${{ always() }}
   ruff:
     name: Linter Checks with Ruff

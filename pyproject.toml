@@ -64,6 +64,8 @@ color = true
 
 [tool.isort]
 profile = 'black'
+line_length = 120
+py_version = 38
 
 [tool.mypy]
 files = "poodle"
