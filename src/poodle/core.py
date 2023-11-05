@@ -1,11 +1,10 @@
 import ast
-import multiprocessing
+import concurrent.futures
 import re
 import shutil
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
-from pprint import pprint
 from zipfile import ZipFile
 
 from click import echo
@@ -28,7 +27,9 @@ def run(config: PoodleConfig):
     echo(f"Identified {len(mutants)} mutants")
 
     test_clean_runs(work, targets)
-    test_mutants(work, mutants)
+    results = test_mutants(work, mutants)
+
+    summary(results)
 
     shutil.rmtree(config.work_folder)
 
@@ -103,21 +104,57 @@ def test_clean_run(work: PoodleWork, folder: Path):
 def test_mutants(work: PoodleWork, mutants: list[PoodleMutant]) -> list[PoodleTestResult]:
     start = datetime.now()
     echo("Testing mutants")
-    inputs = [
-        (
-            work.config,
-            work.folder_zips[mutant.source_folder],
-            mutant,
-            work.next_num(),
-            command_line_runner,
-        )
-        for mutant in mutants
-    ]
-    with multiprocessing.Pool() as pool:
-        test_runs = pool.starmap_async(test_mutant, inputs)
-        results = test_runs.get()
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = [
+            executor.submit(
+                test_mutant,
+                work.config,
+                work.folder_zips[mutant.source_folder],
+                mutant,
+                work.next_num(),
+                command_line_runner,
+            )
+            for mutant in mutants
+        ]
+
+        stats = {
+            "tested": 0,
+            "found": 0,
+            "not_found": 0,
+            "timeout": 0,
+            "errors": 0,
+        }
+        tests = len(mutants)
+        for future in concurrent.futures.as_completed(futures):
+            if future.cancelled():
+                echo("Canceled")
+            else:
+                result: PoodleTestResult = future.result()
+                update_stats(stats, result)
+            echo(
+                f'COMPLETED {stats["tested"]:>4}/{tests:<4}'
+                f'\tFOUND {stats["found"]:>4}'
+                f'\tNOT FOUND {stats["not_found"]:>4}'
+                f'\tTIMEOUT {stats["timeout"]:>4}'
+                f'\tERRORS {stats["errors"]:>4}'
+            )
+
     echo(f"DONE ({(datetime.now()-start)})")
-    pprint(results)
+
+    return [future.result() for future in futures]
+
+
+def update_stats(stats: dict, result: PoodleTestResult):
+    stats["tested"] += 1
+    if result.test_passed:
+        stats["found"] += 1
+    elif result.reason_code == PoodleTestResult.RC_NOT_FOUND:
+        stats["not_found"] += 1
+    elif result.reason_code == PoodleTestResult.RC_TIMEOUT:
+        stats["timeout"] += 1
+    else:
+        stats["errors"] += 1
 
 
 def test_mutant(
@@ -146,7 +183,7 @@ def test_mutant(
 
         target_file.write_text(data="".join(file_lines), encoding="utf-8")
 
-    result = runner(
+    result: PoodleTestResult = runner(
         config=config,
         run_folder=run_folder,
         mutant=mutant,
@@ -155,3 +192,25 @@ def test_mutant(
     shutil.rmtree(run_folder)
 
     return result
+
+
+def summary(results: list[PoodleTestResult]):
+    stats = {
+        "tested": 0,
+        "found": 0,
+        "not_found": 0,
+        "timeout": 0,
+        "errors": 0,
+    }
+    tests = len(results)
+    for result in results:
+        update_stats(stats, result)
+
+    echo("Results Summary")
+    echo(f'Testing found {stats["found"]/tests:.1%} of Mutants')
+    if stats["not_found"]:
+        echo(f' - {stats["not_found"]} mutant(s) were not found')
+    if stats["timeout"]:
+        echo(f' - {stats["timeout"]} mutant(s) caused testing to timeout.')
+    if stats["errors"]:
+        echo(f' - {stats["errors"]} mutant(s) could not be tested due to an error.')
