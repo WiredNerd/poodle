@@ -53,7 +53,8 @@ jobs:
           pip install -r requirements.txt --upgrade
           pip install isort --upgrade
       - run: python3 -m isort src --check --diff
-      - run: python3 -m isort test --check --diff
+      - run: python3 -m isort tests --check --diff
+      if: ${{ always() }}
   black:
     name: Code Format with Black
     runs-on: [ubuntu-latest]
@@ -67,7 +68,8 @@ jobs:
           pip install -r requirements.txt --upgrade
           pip install black --upgrade
       - run: black --check src --diff
-      - run: black --check test --diff
+      - run: black --check tests --diff
+        if: ${{ always() }}
   mypy:
     name: Type Checks with Mypy
     runs-on: [ubuntu-latest]
@@ -82,6 +84,7 @@ jobs:
           pip install mypy --upgrade
       - run: mypy src
       - run: mypy tests
+        if: ${{ always() }}
   ruff:
     name: Linter Checks with Ruff
     runs-on: [ubuntu-latest]
@@ -94,16 +97,19 @@ jobs:
           args: check --show-source
       - name: Ruff src diff
         uses: chartboost/ruff-action@v1
+        if: ${{ always() }}
         with:
           src: src
           args: check --diff
       - name: Ruff tests
         uses: chartboost/ruff-action@v1
+        if: ${{ always() }}
         with:
           src: tests
           args: check --show-source
       - name: Ruff tests diff
         uses: chartboost/ruff-action@v1
+        if: ${{ always() }}
         with:
           src: tests
           args: check --diff
