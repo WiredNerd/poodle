@@ -1,4 +1,5 @@
 import ast
+from typing import List
 from unittest import mock
 
 import pytest
@@ -15,7 +16,7 @@ def mock_print():
 
 class TestPoodleMutator:
     class PoodleMutatorTest(PoodleMutator):
-        def create_mutants(self, parsed_ast: ast.Module) -> list[FileMutant]:
+        def create_mutants(self, parsed_ast: ast.Module) -> List[FileMutant]:
             return []
 
     def test_abstract(self):
