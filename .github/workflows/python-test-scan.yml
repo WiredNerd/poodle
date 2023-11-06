@@ -5,13 +5,13 @@ on:
     paths:
         - requirements.txt
         - src/*
-        - test/*
+        - tests/*
         - .github/workflows/python-test-scan.yml
   pull_request:
     paths:
         - requirements.txt
         - src/*
-        - test/*
+        - tests/*
   workflow_dispatch:
 
 concurrency: updates-project
