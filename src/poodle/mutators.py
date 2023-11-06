@@ -1,41 +1,39 @@
+"""Create Mutants."""
+
 from __future__ import annotations
 
 import ast
 from abc import ABC, abstractmethod
-from typing import Dict, List
+from typing import ClassVar
 
-from poodle.data import FileMutant, PoodleConfig
+from poodle.data import Mutant, PoodleConfig
 
-# import ast
-# from poodle import PoodleConfig, FileMutant
-# create_mutants(config: PoodleConfig, parsed_ast: ast.Module) -> List[FileMutant]:
+"""
+import ast
+from poodle import Mutant, PoodleConfig
+create_mutants(config: PoodleConfig, parsed_ast: ast.Module, **_) -> list[Mutant]:
+"""
 
 
 class PoodleMutator(ABC):
-    def __init__(self, config: PoodleConfig):
+    """Abstract class for Mutators."""
+
+    def __init__(self, config: PoodleConfig) -> PoodleConfig:
+        """Initialize PoodleMutator."""
         self.config = config
 
     @abstractmethod
-    def create_mutants(self, parsed_ast: ast.Module) -> List[FileMutant]:
-        pass
+    def create_mutants(self, parsed_ast: ast.Module) -> list[Mutant]:
+        """Create a list of Mutants for the provided parsed Module.
+
+        This will be called once with parsed ast for each Module.
+        """
 
 
 class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
-    def __init__(self, config: PoodleConfig):
-        super().__init__(config)
-        self.file_mutants: List[FileMutant] = []
+    """Mutate Binary Operations."""
 
-        level = self.config.mutator_opts.get("bin_op_level", "std")
-        if level not in self.type_map_levels:
-            print(f"WARN: Invalid value operator_opts.bin_op_level={level}.  Using Default value 'std'")
-            level = "std"
-
-        self.type_map: dict = self.type_map_levels[level]
-
-    def create_mutants(self, parsed_ast: ast.Module) -> List[FileMutant]:
-        self.visit(parsed_ast)
-        return self.file_mutants
-
+    # Operators as of Python 3.12:
     # ast.Add       +
     # ast.Sub       -
     # ast.Mult      *
@@ -50,7 +48,7 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
     # ast.BitAnd    &
     # ast.MatMult   @ - Matrix Multiplication
 
-    type_map_levels: Dict[str, dict] = {
+    type_map_levels: ClassVar[dict[str, dict]] = {
         "min": {
             ast.Add: ast.Sub,
             ast.Sub: ast.Add,
@@ -95,17 +93,36 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
         },
     }
 
-    def visit_BinOp(self, node: ast.BinOp):
+    def __init__(self, config: PoodleConfig) -> BinaryOperationMutator:
+        """Initialize BinaryOperationMutator."""
+        super().__init__(config)
+        self.mutants: list[Mutant] = []
+
+        level = self.config.mutator_opts.get("bin_op_level", "std")
+        if level not in self.type_map_levels:
+            print(f"WARN: Invalid value operator_opts.bin_op_level={level}.  Using Default value 'std'")
+            level = "std"
+
+        self.type_map: dict = self.type_map_levels[level]
+
+    def create_mutants(self, parsed_ast: ast.Module) -> list[Mutant]:
+        """Visit all Binary Operations and return created mutants."""
+        self.visit(parsed_ast)
+        return self.mutants
+
+    def visit_BinOp(self, node: ast.BinOp) -> None:  # noqa: N802
+        """Identify replacement Operations and create Mutants."""
         if type(node.op) in self.type_map:
             mut_types = self.type_map[type(node.op)]
 
             if not isinstance(mut_types, list):
-                self.file_mutants.append(self.create_file_mutant(node, mut_types))
+                self.mutants.append(self.create_mutant(node, mut_types))
             else:
-                self.file_mutants.extend([self.create_file_mutant(node, new_type) for new_type in mut_types])
+                self.mutants.extend([self.create_mutant(node, new_type) for new_type in mut_types])
 
-    def create_file_mutant(self, node: ast.BinOp, new_type: type) -> FileMutant:
-        return FileMutant(
+    def create_mutant(self, node: ast.BinOp, new_type: type) -> Mutant:
+        """Create Mutants."""
+        return Mutant(
             lineno=node.lineno,
             col_offset=node.col_offset,
             end_lineno=node.end_lineno,

@@ -5,7 +5,7 @@ from unittest import mock
 
 import pytest
 
-from poodle import PoodleInvalidInput, config
+from poodle import PoodleInputError, config
 
 
 @pytest.fixture(autouse=True)
@@ -107,7 +107,7 @@ class TestGetConfigFilePath:
         path_config = mock.MagicMock()
         path_config.is_file.return_value = False
         path_config.__repr__ = lambda _: "config.toml"
-        with pytest.raises(PoodleInvalidInput, match="^Config file not found: --config_file='config.toml'$"):
+        with pytest.raises(PoodleInputError, match="^Config file not found: --config_file='config.toml'$"):
             config.get_config_file_path(path_config)
 
     @mock.patch("poodle.config.Path")
@@ -137,7 +137,7 @@ class TestGetConfigFileData:
         get_config_file_data_toml.assert_called_with(Path("config.toml"))
 
     def test_get_config_file_data_invalid(self):
-        with pytest.raises(PoodleInvalidInput, match="^Config file type not supported: --config_file='config.txt'$"):
+        with pytest.raises(PoodleInputError, match="^Config file type not supported: --config_file='config.txt'$"):
             config.get_config_file_data(Path("config.txt"))
 
 
@@ -207,7 +207,7 @@ class TestGetSourceFolders:
     @mock.patch("poodle.config.get_path_list_from_config")
     def test_get_source_folders_not_found(self, get_path_list_from_config):
         get_path_list_from_config.return_value = []
-        with pytest.raises(PoodleInvalidInput, match="^No source folder found to mutate.$"):
+        with pytest.raises(PoodleInputError, match="^No source folder found to mutate.$"):
             config.get_source_folders(tuple(), {})
 
     @mock.patch("poodle.config.get_path_list_from_config")
@@ -218,7 +218,7 @@ class TestGetSourceFolders:
 
         get_path_list_from_config.return_value = [path_project]
 
-        with pytest.raises(PoodleInvalidInput, match="Source 'project' must be a folder."):
+        with pytest.raises(PoodleInputError, match="Source 'project' must be a folder."):
             config.get_source_folders(tuple(), {})
 
 
@@ -276,7 +276,7 @@ class TestGetPathFromConfig:
     def test_not_path(self, get_any_from_config):
         get_any_from_config.return_value = (123, "Source Name")
 
-        with pytest.raises(PoodleInvalidInput, match=r"^test_option from Source Name must be a valid StrPath$"):
+        with pytest.raises(PoodleInputError, match=r"^test_option from Source Name must be a valid StrPath$"):
             config.get_path_from_config(
                 option_name="test_option", config_data={}, command_line=[], default=Path("default_value")
             )
@@ -341,7 +341,7 @@ class TestGetPathListFromConfig:
     def test_not_iterable(self, get_any_from_config):
         get_any_from_config.return_value = (123, "Source Name")
         with pytest.raises(
-            PoodleInvalidInput, match=r"^test_option from Source Name must be a valid Iterable\[StrPath\]$"
+            PoodleInputError, match=r"^test_option from Source Name must be a valid Iterable\[StrPath\]$"
         ):
             config.get_path_list_from_config(
                 option_name="test_option", config_data={}, command_line=[], default=[Path("default_value")]
@@ -350,7 +350,7 @@ class TestGetPathListFromConfig:
     def test_not_path(self, get_any_from_config):
         get_any_from_config.return_value = ([123], "Source Name")
         with pytest.raises(
-            PoodleInvalidInput, match=r"^test_option from Source Name must be a valid Iterable\[StrPath\]$"
+            PoodleInputError, match=r"^test_option from Source Name must be a valid Iterable\[StrPath\]$"
         ):
             config.get_path_list_from_config(
                 option_name="test_option", config_data={}, command_line=[], default=[Path("default_value")]
@@ -471,7 +471,7 @@ class TestGetStrListFromConfig:
 
     def test_type_error(self, get_any_from_config):
         get_any_from_config.return_value = (123, "Source Name")
-        with pytest.raises(PoodleInvalidInput, match=r"^test_option from Source Name must be a valid Iterable\[str\]$"):
+        with pytest.raises(PoodleInputError, match=r"^test_option from Source Name must be a valid Iterable\[str\]$"):
             config.get_str_list_from_config(
                 option_name="test_option", config_data={}, command_line=[], default=["default_value"]
             )
@@ -539,7 +539,7 @@ class TestGetDictFromConfig:
         }
 
     def test_config_data_invalid(self):
-        with pytest.raises(PoodleInvalidInput, match="^mutator_opts in config file must be a valid dict$"):
+        with pytest.raises(PoodleInputError, match="^mutator_opts in config file must be a valid dict$"):
             config.get_dict_from_config(
                 option_name="mutator_opts",
                 default={"bin_op_level": "std"},
@@ -570,5 +570,5 @@ class TestGetDictFromConfig:
 
     def test_poodle_config_invalid(self):
         config.poodle_config = mock.MagicMock(mutator_opts="min")
-        with pytest.raises(PoodleInvalidInput, match="^poodle_config.mutator_opts must be a valid dict$"):
+        with pytest.raises(PoodleInputError, match="^poodle_config.mutator_opts must be a valid dict$"):
             config.get_dict_from_config(option_name="mutator_opts", default={"bin_op_level": "std"}, config_data={})

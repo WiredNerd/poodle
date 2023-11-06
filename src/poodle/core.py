@@ -5,13 +5,12 @@ import shutil
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
-from typing import List
 from zipfile import ZipFile
 
 from click import echo
 
 from poodle import mutators
-from poodle.data import PoodleConfig, PoodleMutant, PoodleTestResult, PoodleWork
+from poodle.data import PoodleConfig, PoodleTestResult, PoodleWork, SourceFileMutant
 from poodle.runners import command_line_runner
 
 
@@ -66,7 +65,7 @@ def create_mutants_for_file(work: PoodleWork, folder: Path, file: Path):
     bin_op_mut = mutators.BinaryOperationMutator(work.config)
     file_mutants = bin_op_mut.create_mutants(deepcopy(parsed_ast))
 
-    return [PoodleMutant.from_file_mutant(folder, file, file_mutant) for file_mutant in file_mutants]
+    return [SourceFileMutant.from_mutant(folder, file, file_mutant) for file_mutant in file_mutants]
 
 
 def create_temp_zips(work: PoodleWork, targets: dict):
@@ -89,7 +88,7 @@ def test_clean_run(work: PoodleWork, folder: Path):
     result = test_mutant(
         work.config,
         work.folder_zips[folder],
-        PoodleMutant(
+        SourceFileMutant(
             source_folder=folder,
         ),
         work.next_num(),
@@ -102,7 +101,7 @@ def test_clean_run(work: PoodleWork, folder: Path):
         echo(f"PASSED ({(datetime.now()-start)})")
 
 
-def test_mutants(work: PoodleWork, mutants: List[PoodleMutant]) -> List[PoodleTestResult]:
+def test_mutants(work: PoodleWork, mutants: list[SourceFileMutant]) -> list[PoodleTestResult]:
     start = datetime.now()
     echo("Testing mutants")
 
@@ -161,7 +160,7 @@ def update_stats(stats: dict, result: PoodleTestResult):
 def test_mutant(
     config: PoodleConfig,
     folder_zip: Path,
-    mutant: PoodleMutant,
+    mutant: SourceFileMutant,
     run_id: str,
     runner,
 ) -> PoodleTestResult:
@@ -195,7 +194,7 @@ def test_mutant(
     return result
 
 
-def summary(results: List[PoodleTestResult]):
+def summary(results: list[PoodleTestResult]):
     stats = {
         "tested": 0,
         "found": 0,

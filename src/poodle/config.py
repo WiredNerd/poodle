@@ -1,20 +1,22 @@
+"""Resolve configuration options and build PoodleConfig object."""
+
 from __future__ import annotations
 
 from contextlib import suppress
 from pathlib import Path
-from typing import Union
+from typing import Any
 
-from poodle import PoodleInvalidInput
+from poodle import PoodleInputError
 from poodle.data import PoodleConfig
 
 try:
-    import tomllib
-except ModuleNotFoundError:
-    import tomli as tomllib
+    import tomllib  # type: ignore [import-not-found]
+except ModuleNotFoundError:  # < py3.11
+    import tomli as tomllib  # type: ignore [no-redef]
 
-poodle_config: any = None
+poodle_config: Any = None
 with suppress(ImportError):
-    import poodle_config  # type: ignore
+    import poodle_config  # type: ignore [import-not-found]
 
 default_source_folders = [Path("src"), Path("lib")]
 default_file_filters = [r"^test_", r"_test$"]
@@ -23,7 +25,8 @@ default_mutator_opts = {}
 default_runner_opts = {"command_line": "pytest -x --assert=plain --no-header --no-summary -o pythonpath="}
 
 
-def build_config(command_line_sources: tuple[Path], config_file: Path | None):
+def build_config(command_line_sources: tuple[Path], config_file: Path | None) -> PoodleConfig:
+    """Build PoodleConfig object."""
     config_file_path = get_config_file_path(config_file)
     config_file_data = get_config_file_data(config_file_path)
 
@@ -38,12 +41,22 @@ def build_config(command_line_sources: tuple[Path], config_file: Path | None):
 
 
 def get_config_file_path(config_file: Path | None) -> Path | None:
+    """Identify which configuration file to use.
+
+    Checks in this order, first value is used.
+    Command Line, poodle.toml, pyproject.toml.
+    Returns None if no config file found.
+    """
     if config_file:
         if not config_file.is_file():
-            raise PoodleInvalidInput(f"Config file not found: --config_file='{config_file}'")
+            msg = f"Config file not found: --config_file='{config_file}'"
+            raise PoodleInputError(msg)
         return config_file
 
-    files = ["poodle.toml", "pyproject.toml"]  # TODO ["poodle.toml", "tox.ini", "setup.cfg", "pyproject.toml"]
+    files = [
+        "poodle.toml",
+        "pyproject.toml",
+    ]  # TODO(wirednerd): ["poodle.toml", "tox.ini", "setup.cfg", "pyproject.toml"]
 
     for file in files:
         path = Path(file)
@@ -54,25 +67,32 @@ def get_config_file_path(config_file: Path | None) -> Path | None:
 
 
 def get_config_file_data(config_file: Path | None) -> dict:
+    """Retrieve Poodle configuration from specified Config File."""
     if not config_file:
         return {}
 
     if config_file.suffix == ".toml":
         return get_config_file_data_toml(config_file)
 
-    # TODO tox.ini and setup.cfg
+    # TODO(wirednerd): tox.ini and setup.cfg
     # https://tox.wiki/en/3.24.5/config.html
 
-    raise PoodleInvalidInput(f"Config file type not supported: --config_file='{str(config_file)}'")
+    msg = f"Config file type not supported: --config_file='{config_file}'"
+    raise PoodleInputError(msg)
 
 
 def get_config_file_data_toml(config_file: Path) -> dict:
+    """Retrieve Poodle configuration from a 'toml' Config File."""
     config_data = tomllib.load(config_file.open(mode="rb"))
     config_data = config_data.get("tool", config_data)
     return config_data.get("poodle", {})
 
 
 def get_source_folders(command_line_sources: tuple[Path], config_data: dict) -> list[Path]:
+    """Retrieve list of source folders that contain files to mutate.
+
+    Verifies that all returned values are existing directories.
+    """
     source_folders = get_path_list_from_config(
         option_name="source_folders",
         config_data=config_data,
@@ -81,11 +101,12 @@ def get_source_folders(command_line_sources: tuple[Path], config_data: dict) -> 
     )
 
     if not source_folders:
-        raise PoodleInvalidInput("No source folder found to mutate.")
+        raise PoodleInputError("No source folder found to mutate.")
 
     for source in source_folders:
         if not source.is_dir():
-            raise PoodleInvalidInput(f"Source '{source}' must be a folder.")
+            msg = f"Source '{source}' must be a folder."
+            raise PoodleInputError(msg)
 
     return source_folders
 
@@ -108,14 +129,15 @@ def get_path_from_config(
     try:
         return Path(value)
     except TypeError:
-        raise PoodleInvalidInput(f"{option_name} from {source} must be a valid StrPath")
+        msg = f"{option_name} from {source} must be a valid StrPath"
+        raise PoodleInputError(msg) from None
 
 
 def get_path_list_from_config(
     option_name: str,
     config_data: dict,
-    default: list[Path] = [],
-    command_line: tuple[Path] = tuple(),
+    default: list[Path] | None = None,
+    command_line: tuple[Path] | None = None,
 ) -> Path:
     """Retrieve Config Option that should be a List of Paths.
 
@@ -123,6 +145,9 @@ def get_path_list_from_config(
     If input was a single Path, return as a list of Paths.
     Convert input Iterable to List.
     """
+    default = default or []
+    command_line = command_line or ()
+
     values, source = get_any_from_config(option_name=option_name, config_data=config_data, command_line=command_line)
 
     if not values:
@@ -137,7 +162,8 @@ def get_path_list_from_config(
 
         return [Path(value) for value in values]
     except TypeError:
-        raise PoodleInvalidInput(f"{option_name} from {source} must be a valid Iterable[StrPath]")
+        msg = f"{option_name} from {source} must be a valid Iterable[StrPath]"
+        raise PoodleInputError(msg) from None
 
 
 def get_str_from_config(
@@ -161,15 +187,18 @@ def get_str_from_config(
 def get_str_list_from_config(
     option_name: str,
     config_data: dict,
-    default: list[str] = [],
-    command_line: Union[str, tuple[str]] = tuple(),
-) -> List[str]:
+    default: list[str] | None = None,
+    command_line: str | tuple[str] | None = None,
+) -> list[str]:
     """Retrieve Config Option that should be a List of Strings.
 
     Retrieve highest priority value from config sources.
     If input was a single string, return as a list of strings.
     Convert input Iterable to List.
     """
+    default = default or []
+    command_line = command_line or ()
+
     values, source = get_any_from_config(option_name=option_name, config_data=config_data, command_line=command_line)
 
     if not values:
@@ -181,13 +210,14 @@ def get_str_list_from_config(
     try:
         return [str(value) for value in values]
     except TypeError:
-        raise PoodleInvalidInput(f"{option_name} from {source} must be a valid Iterable[str]")
+        msg = f"{option_name} from {source} must be a valid Iterable[str]"
+        raise PoodleInputError(msg) from None
 
 
 def get_any_from_config(
     option_name: str,
     config_data: dict,
-    command_line: Any,
+    command_line: any,
 ) -> tuple[any, str]:
     """Retrieve Config Option of any type.
 
@@ -212,8 +242,8 @@ def get_any_from_config(
 def get_dict_from_config(
     option_name: str,
     config_data: dict,
-    default: dict = {},
-    command_line: dict = {},
+    default: dict | None = None,
+    command_line: dict | None = None,
 ) -> dict:
     """Merge Key-Value pairs from Config sources to a dict.
 
@@ -222,19 +252,24 @@ def get_dict_from_config(
 
     Priority Order: Command Line, poodle_config.py, config file, defaults
     """
+    default = default or {}
+    command_line = command_line or {}
+
     option_value = default
 
     if option_name in config_data:
         try:
             option_value.update(config_data[option_name])
         except ValueError:
-            raise PoodleInvalidInput(f"{option_name} in config file must be a valid dict")
+            msg = f"{option_name} in config file must be a valid dict"
+            raise PoodleInputError(msg) from None
 
     if hasattr(poodle_config, option_name):
         try:
             option_value.update(getattr(poodle_config, option_name))
         except ValueError:
-            raise PoodleInvalidInput(f"poodle_config.{option_name} must be a valid dict")
+            msg = f"poodle_config.{option_name} must be a valid dict"
+            raise PoodleInputError(msg) from None
 
     if command_line:
         option_value.update(command_line)

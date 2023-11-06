@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from poodle.data import FileMutant, PoodleConfig, PoodleMutant, PoodleTestResult, PoodleWork
+from poodle.data import Mutant, PoodleConfig, SourceFileMutant, PoodleTestResult, PoodleWork
 
 
 class TestPoodleConfig:
@@ -39,7 +39,7 @@ class TestPoodleWork:
 class TestFileMutant:
     @classmethod
     def create_file_mutant(cls):
-        return FileMutant(
+        return Mutant(
             lineno=1,
             col_offset=2,
             end_lineno=3,
@@ -59,10 +59,10 @@ class TestFileMutant:
 
 class TestPoodleMutant:
     def test_poodle_mutant(self):
-        poodle_mutant = PoodleMutant.from_file_mutant(
+        poodle_mutant = SourceFileMutant.from_mutant(
             source_folder=Path("src"),
             source_file=Path("test.py"),
-            file_mutant=TestFileMutant.create_file_mutant(),
+            mutant=TestFileMutant.create_file_mutant(),
         )
 
         assert poodle_mutant.source_folder == Path("src")
@@ -74,7 +74,7 @@ class TestPoodleMutant:
         assert poodle_mutant.text == "mutant"
 
     def test_poodle_mutant_min(self):
-        poodle_mutant = PoodleMutant(
+        poodle_mutant = SourceFileMutant(
             source_folder=Path("src"),
         )
 

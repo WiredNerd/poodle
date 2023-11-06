@@ -6,7 +6,7 @@ from unittest import mock
 import pytest
 
 from poodle import runners
-from poodle.data import PoodleMutant
+from poodle.data import SourceFileMutant
 
 
 @pytest.fixture()
@@ -29,7 +29,7 @@ class TestCommandLineRunner:
             config = mock.MagicMock()
             config.runner_opts = {"command_line": "pytest tests"}
 
-            mutant = PoodleMutant(Path("src"), Path("target.py"), 1, 2, 3, 4, "Changed Line")
+            mutant = SourceFileMutant(Path("src"), Path("target.py"), 1, 2, 3, 4, "Changed Line")
 
             out = runners.command_line_runner(
                 config=config,
@@ -77,7 +77,7 @@ class TestCommandLineRunner:
             config = mock.MagicMock()
             config.runner_opts = {"command_line": "pytest tests"}
 
-            mutant = PoodleMutant(Path("src"), Path("target.py"), 1, 2, 3, 4, "Changed Line")
+            mutant = SourceFileMutant(Path("src"), Path("target.py"), 1, 2, 3, 4, "Changed Line")
 
             out = runners.command_line_runner(
                 config=config,
@@ -117,7 +117,7 @@ class TestCommandLineRunner:
             config = mock.MagicMock()
             config.runner_opts = {"command_line": "pytest tests"}
 
-            mutant = PoodleMutant(Path("src"), Path("target.py"), 1, 2, 3, 4, "Changed Line")
+            mutant = SourceFileMutant(Path("src"), Path("target.py"), 1, 2, 3, 4, "Changed Line")
 
             out = runners.command_line_runner(
                 config=config,
@@ -157,7 +157,7 @@ class TestCommandLineRunner:
             config = mock.MagicMock()
             config.runner_opts = {"command_line": "pytest tests"}
 
-            mutant = PoodleMutant(Path("src"), Path("target.py"), 1, 2, 3, 4, "Changed Line")
+            mutant = SourceFileMutant(Path("src"), Path("target.py"), 1, 2, 3, 4, "Changed Line")
 
             out = runners.command_line_runner(
                 config=config,
