@@ -23,7 +23,7 @@ class PoodleMutator(ABC):
 class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
     def __init__(self, config: PoodleConfig):
         super().__init__(config)
-        self.file_mutants: list[FileMutant] = []
+        self.file_mutants: List[FileMutant] = []
 
         level = self.config.mutator_opts.get("bin_op_level", "std")
         if level not in self.type_map_levels:
