@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 
 @dataclass
@@ -43,12 +42,12 @@ class FileMutant:
 @dataclass
 class PoodleMutant:
     source_folder: Path
-    source_file: Optional[Path] = None
-    lineno: Optional[int] = None
-    col_offset: Optional[int] = None
-    end_lineno: Optional[int] = None
-    end_col_offset: Optional[int] = None
-    text: Optional[str] = None
+    source_file: Path | None = None
+    lineno: int | None = None
+    col_offset: int | None = None
+    end_lineno: int | None = None
+    end_col_offset: int | None = None
+    text: str | None = None
 
     @classmethod
     def from_file_mutant(cls, source_folder: Path, source_file: Path, file_mutant: FileMutant):
@@ -67,7 +66,7 @@ class PoodleMutant:
 class PoodleTestResult:
     test_passed: bool
     reason_code: str
-    reason_desc: Optional[str] = None
+    reason_desc: str | None = None
 
     RC_FOUND = "mutant_found"
     RC_NOT_FOUND = "mutant_not_found"
