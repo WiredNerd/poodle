@@ -7,7 +7,7 @@ from typing import Optional
 
 @dataclass
 class PoodleConfig:
-    config_file: Optional[Path]
+    config_file: Path | None
     source_folders: list[Path]
     file_filters: list[str]
     work_folder: Path
