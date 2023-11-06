@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import ast
 from abc import ABC, abstractmethod
-from typing import Dict
+from typing import Dict, List
 
 from poodle.data import FileMutant, PoodleConfig
 
 # import ast
 # from poodle import PoodleConfig, FileMutant
-# create_mutants(config: PoodleConfig, parsed_ast: ast.Module) -> list[FileMutant]:
+# create_mutants(config: PoodleConfig, parsed_ast: ast.Module) -> List[FileMutant]:
 
 
 class PoodleMutator(ABC):
@@ -16,7 +16,7 @@ class PoodleMutator(ABC):
         self.config = config
 
     @abstractmethod
-    def create_mutants(self, parsed_ast: ast.Module) -> list[FileMutant]:
+    def create_mutants(self, parsed_ast: ast.Module) -> List[FileMutant]:
         pass
 
 
@@ -32,7 +32,7 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
 
         self.type_map: dict = self.type_map_levels[level]
 
-    def create_mutants(self, parsed_ast: ast.Module) -> list[FileMutant]:
+    def create_mutants(self, parsed_ast: ast.Module) -> List[FileMutant]:
         self.visit(parsed_ast)
         return self.file_mutants
 
