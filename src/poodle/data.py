@@ -1,13 +1,15 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 
 @dataclass
 class PoodleConfig:
     config_file: Optional[Path]
-    source_folders: List[Path]
-    file_filters: List[str]
+    source_folders: list[Path]
+    file_filters: list[str]
     work_folder: Path
     runner_opts: dict
     mutator_opts: dict
@@ -16,7 +18,7 @@ class PoodleConfig:
 class PoodleWork:
     def __init__(self, config: PoodleConfig):
         self.config = config
-        self.folder_zips: Dict[str, Path] = {}
+        self.folder_zips: dict[str, Path] = {}
         self.num_seq = self.number_sequence()
 
     def next_num(self):
