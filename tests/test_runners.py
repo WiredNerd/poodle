@@ -22,8 +22,8 @@ class TestCommandLineRunner:
             subprocess_run.return_value = CompletedProcess(
                 args="",
                 returncode=1,
-                stdout="output",
-                stderr="error",
+                stdout="output".encode("utf-8"),
+                stderr="error".encode("utf-8"),
             )
 
             config = mock.MagicMock()
@@ -70,8 +70,8 @@ class TestCommandLineRunner:
             subprocess_run.return_value = CompletedProcess(
                 args="",
                 returncode=1,
-                stdout="output",
-                stderr="error",
+                stdout="output".encode("utf-8"),
+                stderr="error".encode("utf-8"),
             )
 
             config = mock.MagicMock()
@@ -110,8 +110,8 @@ class TestCommandLineRunner:
             subprocess_run.return_value = CompletedProcess(
                 args="",
                 returncode=0,
-                stdout="output",
-                stderr="error",
+                stdout="output".encode("utf-8"),
+                stderr="error".encode("utf-8"),
             )
 
             config = mock.MagicMock()
@@ -150,8 +150,8 @@ class TestCommandLineRunner:
             subprocess_run.return_value = CompletedProcess(
                 args="",
                 returncode=2,
-                stdout="output",
-                stderr="error",
+                stdout="output".encode("utf-8"),
+                stderr="error".encode("utf-8"),
             )
 
             config = mock.MagicMock()
