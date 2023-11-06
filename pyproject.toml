@@ -69,6 +69,7 @@ py_version = 38
 
 [tool.mypy]
 files = "poodle"
+mypy_path = "src,tests"
 
 [tool.ruff]
 target-version = "py38"

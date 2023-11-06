@@ -1,6 +1,6 @@
 from contextlib import suppress
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Tuple, Union
 
 from poodle import PoodleInvalidInput
 from poodle.data import PoodleConfig
@@ -10,7 +10,7 @@ try:
 except ModuleNotFoundError:
     import tomli as tomllib
 
-poodle_config: any = None
+poodle_config: Any = None
 with suppress(ImportError):
     import poodle_config  # type: ignore
 
@@ -21,7 +21,7 @@ default_mutator_opts = {}
 default_runner_opts = {"command_line": "pytest -x --assert=plain --no-header --no-summary -o pythonpath="}
 
 
-def build_config(command_line_sources: tuple[Path], config_file: Optional[Path]):
+def build_config(command_line_sources: Tuple[Path], config_file: Optional[Path]):
     config_file_path = get_config_file_path(config_file)
     config_file_data = get_config_file_data(config_file_path)
 
@@ -70,7 +70,7 @@ def get_config_file_data_toml(config_file: Path) -> dict:
     return config_data.get("poodle", {})
 
 
-def get_source_folders(command_line_sources: tuple[Path], config_data: dict) -> list[Path]:
+def get_source_folders(command_line_sources: Tuple[Path], config_data: dict) -> List[Path]:
     source_folders = get_path_list_from_config(
         option_name="source_folders",
         config_data=config_data,
@@ -113,7 +113,7 @@ def get_path_list_from_config(
     option_name: str,
     config_data: dict,
     default: List[Path] = [],
-    command_line: tuple[Path] = tuple(),
+    command_line: Tuple[Path] = tuple(),
 ) -> Path:
     """Retrieve Config Option that should be a List of Paths.
 
@@ -160,7 +160,7 @@ def get_str_list_from_config(
     option_name: str,
     config_data: dict,
     default: List[str] = [],
-    command_line: Union[str, tuple[str]] = tuple(),
+    command_line: Union[str, Tuple[str]] = tuple(),
 ) -> List[str]:
     """Retrieve Config Option that should be a List of Strings.
 
@@ -185,8 +185,8 @@ def get_str_list_from_config(
 def get_any_from_config(
     option_name: str,
     config_data: dict,
-    command_line: any,
-) -> tuple[any, str]:
+    command_line: Any,
+) -> Tuple[Any, str]:
     """Retrieve Config Option of any type.
 
     Check sources in priority order, and return the first one found.

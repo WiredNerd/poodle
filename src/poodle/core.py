@@ -5,6 +5,7 @@ import shutil
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
+from typing import List
 from zipfile import ZipFile
 
 from click import echo
@@ -101,7 +102,7 @@ def test_clean_run(work: PoodleWork, folder: Path):
         echo(f"PASSED ({(datetime.now()-start)})")
 
 
-def test_mutants(work: PoodleWork, mutants: list[PoodleMutant]) -> list[PoodleTestResult]:
+def test_mutants(work: PoodleWork, mutants: List[PoodleMutant]) -> List[PoodleTestResult]:
     start = datetime.now()
     echo("Testing mutants")
 
@@ -194,7 +195,7 @@ def test_mutant(
     return result
 
 
-def summary(results: list[PoodleTestResult]):
+def summary(results: List[PoodleTestResult]):
     stats = {
         "tested": 0,
         "found": 0,
