@@ -82,12 +82,13 @@ jobs:
         run: |
           pip install -r requirements.txt --upgrade
           pip install mypy --upgrade
-      - run: mypy src tests --python-version 3.8
       - run: mypy src tests --python-version 3.9
         if: ${{ always() }}
       - run: mypy src tests --python-version 3.10
         if: ${{ always() }}
       - run: mypy src tests --python-version 3.11
+        if: ${{ always() }}
+      - run: mypy src tests --python-version 3.12
         if: ${{ always() }}
   ruff:
     name: Linter Checks with Ruff
