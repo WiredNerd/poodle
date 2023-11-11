@@ -7,17 +7,20 @@ import shlex
 import subprocess
 from typing import TYPE_CHECKING
 
-from poodle.data import PoodleConfig, PoodleTestResult, SourceFileMutant
+from poodle.data import Mutant, MutantTrialResult, PoodleConfig
 
 if TYPE_CHECKING:
     from pathlib import Path
 
-"""
-runner(config: PoodleConfig, run_folder: Path, mutant: PoodleMutant, **_) -> PoodleTestResult:
-"""
+
+# runner method signature:
+def runner(config: PoodleConfig, run_folder: Path, mutant: Mutant, **_) -> MutantTrialResult:
+    """Run trial of mutant in specified folder.
+
+    Files from the source folder have been copied to the run folder, and mutation has been applied."""
 
 
-def command_line_runner(config: PoodleConfig, run_folder: Path, mutant: SourceFileMutant, **_) -> PoodleTestResult:
+def command_line_runner(config: PoodleConfig, run_folder: Path, mutant: Mutant, **_) -> MutantTrialResult:
     """Run test of mutant with command line command in subprocess."""
     run_env = os.environ.copy()
     python_path = os.pathsep.join(
@@ -38,27 +41,29 @@ def command_line_runner(config: PoodleConfig, run_folder: Path, mutant: SourceFi
             "MUT_TEXT": str(mutant.text),
         },
     )
+    if "command_line_env" in config.runner_opts:
+        run_env.update(config.runner_opts["command_line_env"])
 
     result = subprocess.run(
         shlex.split(config.runner_opts["command_line"]),  # noqa: S603
         env=run_env,
         capture_output=True,
-        check=True,
+        check=False,
     )
 
     if result.returncode == 1:
-        return PoodleTestResult(
-            test_passed=True,
-            reason_code=PoodleTestResult.RC_FOUND,
+        return MutantTrialResult(
+            passed=True,
+            reason_code=MutantTrialResult.RC_FOUND,
             reason_desc=result.stderr.decode("utf-8"),
         )
     if result.returncode == 0:
-        return PoodleTestResult(
-            test_passed=False,
-            reason_code=PoodleTestResult.RC_NOT_FOUND,
+        return MutantTrialResult(
+            passed=False,
+            reason_code=MutantTrialResult.RC_NOT_FOUND,
         )
-    return PoodleTestResult(
-        test_passed=True,
-        reason_code=PoodleTestResult.RC_OTHER,
+    return MutantTrialResult(
+        passed=True,
+        reason_code=MutantTrialResult.RC_OTHER,
         reason_desc=result.stderr.decode("utf-8"),
     )

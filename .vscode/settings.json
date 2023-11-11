@@ -25,4 +25,12 @@
         "example/tests",
     ],
     "python.testing.pytestPath": "src",
+    "cSpell.words": [
+        "fromlist",
+        "keepends",
+        "Mult",
+        "PYTHONDONTWRITEBYTECODE",
+        "redef",
+        "wirednerd"
+    ],
 }

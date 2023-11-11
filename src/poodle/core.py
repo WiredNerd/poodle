@@ -1,17 +1,15 @@
-import ast
 import concurrent.futures
-import re
 import shutil
-from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
 from zipfile import ZipFile
 
 from click import echo
 
-from poodle import mutators
-from poodle.data import PoodleConfig, PoodleTestResult, PoodleWork, SourceFileMutant
+from poodle.data import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork
+from poodle.mutate.mutate import create_mutants_for_all_mutators, initialize_mutators
 from poodle.runners import command_line_runner
+from poodle.util import files_list_for_folder
 
 
 def run(config: PoodleConfig):
@@ -20,57 +18,36 @@ def run(config: PoodleConfig):
     if config.work_folder.exists():
         shutil.rmtree(config.work_folder)
 
-    targets = target_files(work)
-    create_temp_zips(work, targets)
+    create_temp_zips(work)
 
-    mutants = create_mutants(work, targets)
+    work.mutators = initialize_mutators(work)
+
+    mutants = create_mutants_for_all_mutators(work)
     echo(f"Identified {len(mutants)} mutants")
 
-    test_clean_runs(work, targets)
-    results = test_mutants(work, mutants)
+    clean_run_each_source_folder(work)
+    results = run_mutant_trails(work, mutants)
 
     summary(results)
+    list_failed(results)
 
     shutil.rmtree(config.work_folder)
 
 
-def target_files(work: PoodleWork):
-    return {folder: target_files_for_folder(work, folder) for folder in work.config.source_folders}
-
-
-def target_files_for_folder(work: PoodleWork, folder: Path):
-    target_files = [x for x in folder.rglob("*.py")]
-
-    for filter in work.config.file_filters:
-        target_files = [file for file in target_files if not re.match(filter, file.stem)]
-
-    return target_files
-
-
-def create_mutants(work: PoodleWork, targets: dict):
-    return [
-        mutant
-        for folder, files in targets.items()
-        for file in files
-        for mutant in create_mutants_for_file(
-            work,
+def target_copy_files(work: PoodleWork):
+    return {
+        folder: files_list_for_folder(
+            "*",
+            work.config.file_copy_filters,
             folder,
-            file,
         )
-    ]
+        for folder in work.config.source_folders
+    }
 
 
-def create_mutants_for_file(work: PoodleWork, folder: Path, file: Path):
-    parsed_ast = ast.parse(file.read_bytes(), file)
-    bin_op_mut = mutators.BinaryOperationMutator(work.config)
-    file_mutants = bin_op_mut.create_mutants(deepcopy(parsed_ast))
-
-    return [SourceFileMutant.from_mutant(folder, file, file_mutant) for file_mutant in file_mutants]
-
-
-def create_temp_zips(work: PoodleWork, targets: dict):
+def create_temp_zips(work: PoodleWork):
     work.config.work_folder.mkdir(parents=True, exist_ok=True)
-    for folder, files in targets.items():
+    for folder, files in target_copy_files(work).items():
         zip_file = work.config.work_folder / ("src-" + work.next_num() + ".zip")
         work.folder_zips[folder] = zip_file
         with ZipFile(zip_file, "w") as target_zip:
@@ -78,37 +55,43 @@ def create_temp_zips(work: PoodleWork, targets: dict):
                 target_zip.write(file)
 
 
-def test_clean_runs(work: PoodleWork, targets: dict):
-    return [test_clean_run(work, folder) for folder in targets]
+def clean_run_each_source_folder(work: PoodleWork):
+    return [clean_run_trial(work, folder) for folder in work.config.source_folders]
 
 
-def test_clean_run(work: PoodleWork, folder: Path):
+def clean_run_trial(work: PoodleWork, folder: Path):
     start = datetime.now()
     echo(f"Testing clean run of folder '{folder}'...", nl=False)
-    result = test_mutant(
+    mutant_trial = run_mutant_trial(
         work.config,
         work.folder_zips[folder],
-        SourceFileMutant(
+        Mutant(
             source_folder=folder,
+            source_file=None,
+            lineno=None,
+            col_offset=None,
+            end_lineno=None,
+            end_col_offset=None,
+            text=None,
         ),
         work.next_num(),
         command_line_runner,
     )
-    if result.test_passed:  # not expected
+    if mutant_trial.result.passed:  # not expected
         echo("FAILED")
-        raise Exception("Clean Run Failed", result.reason_desc)
+        raise Exception("Clean Run Failed", mutant_trial.result.reason_desc)
     else:
         echo(f"PASSED ({(datetime.now()-start)})")
 
 
-def test_mutants(work: PoodleWork, mutants: list[SourceFileMutant]) -> list[PoodleTestResult]:
+def run_mutant_trails(work: PoodleWork, mutants: list[Mutant]) -> list[MutantTrialResult]:
     start = datetime.now()
     echo("Testing mutants")
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = [
             executor.submit(
-                test_mutant,
+                run_mutant_trial,
                 work.config,
                 work.folder_zips[mutant.source_folder],
                 mutant,
@@ -125,15 +108,15 @@ def test_mutants(work: PoodleWork, mutants: list[SourceFileMutant]) -> list[Pood
             "timeout": 0,
             "errors": 0,
         }
-        tests = len(mutants)
+        num_trials = len(mutants)
         for future in concurrent.futures.as_completed(futures):
             if future.cancelled():
                 echo("Canceled")
             else:
-                result: PoodleTestResult = future.result()
-                update_stats(stats, result)
+                mutant_trial: MutantTrial = future.result()
+                update_stats(stats, mutant_trial.result)
             echo(
-                f'COMPLETED {stats["tested"]:>4}/{tests:<4}'
+                f'COMPLETED {stats["tested"]:>4}/{num_trials:<4}'
                 f'\tFOUND {stats["found"]:>4}'
                 f'\tNOT FOUND {stats["not_found"]:>4}'
                 f'\tTIMEOUT {stats["timeout"]:>4}'
@@ -145,25 +128,25 @@ def test_mutants(work: PoodleWork, mutants: list[SourceFileMutant]) -> list[Pood
     return [future.result() for future in futures]
 
 
-def update_stats(stats: dict, result: PoodleTestResult):
+def update_stats(stats: dict, result: MutantTrialResult):
     stats["tested"] += 1
-    if result.test_passed:
+    if result.passed:
         stats["found"] += 1
-    elif result.reason_code == PoodleTestResult.RC_NOT_FOUND:
+    elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
         stats["not_found"] += 1
-    elif result.reason_code == PoodleTestResult.RC_TIMEOUT:
+    elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
         stats["timeout"] += 1
     else:
         stats["errors"] += 1
 
 
-def test_mutant(
+def run_mutant_trial(
     config: PoodleConfig,
     folder_zip: Path,
-    mutant: SourceFileMutant,
+    mutant: Mutant,
     run_id: str,
     runner,
-) -> PoodleTestResult:
+) -> MutantTrial:
     run_folder = config.work_folder / ("run-" + run_id)
     run_folder.mkdir()
 
@@ -183,7 +166,7 @@ def test_mutant(
 
         target_file.write_text(data="".join(file_lines), encoding="utf-8")
 
-    result: PoodleTestResult = runner(
+    result: MutantTrialResult = runner(
         config=config,
         run_folder=run_folder,
         mutant=mutant,
@@ -191,10 +174,13 @@ def test_mutant(
 
     shutil.rmtree(run_folder)
 
-    return result
+    return MutantTrial(mutant, result)
 
 
-def summary(results: list[PoodleTestResult]):
+def summary(mutant_trials: list[MutantTrial]):
+    if not mutant_trials:
+        echo("No mutants found to test.")
+        return
     stats = {
         "tested": 0,
         "found": 0,
@@ -202,15 +188,30 @@ def summary(results: list[PoodleTestResult]):
         "timeout": 0,
         "errors": 0,
     }
-    tests = len(results)
-    for result in results:
-        update_stats(stats, result)
+    num_trials = len(mutant_trials)
+    for trial in mutant_trials:
+        update_stats(stats, trial.result)
 
     echo("Results Summary")
-    echo(f'Testing found {stats["found"]/tests:.1%} of Mutants')
+    echo(f'Testing found {stats["found"]/num_trials:.1%} of Mutants')
     if stats["not_found"]:
         echo(f' - {stats["not_found"]} mutant(s) were not found')
     if stats["timeout"]:
-        echo(f' - {stats["timeout"]} mutant(s) caused testing to timeout.')
+        echo(f' - {stats["timeout"]} mutant(s) caused trial to timeout.')
     if stats["errors"]:
         echo(f' - {stats["errors"]} mutant(s) could not be tested due to an error.')
+
+
+def list_failed(mutant_trials: list[MutantTrial]):
+    failed_trials = [trial for trial in mutant_trials if not trial.result.passed]
+    if failed_trials:
+        echo("\nFailed Trials:")
+        for trial in failed_trials:
+            mutant = trial.mutant
+            result = trial.result
+            echo(f"Mutant: {mutant.source_file.resolve()}:{mutant.lineno}")
+            echo(mutant.text)
+            echo(f"Result: {result.reason_code}")
+            if result.reason_desc:
+                echo(result.reason_desc)
+            echo("")

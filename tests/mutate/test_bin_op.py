@@ -1,33 +1,15 @@
 import ast
-from typing import List
 from unittest import mock
 
 import pytest
 
-from poodle.data import Mutant, PoodleConfig
-from poodle.mutators import BinaryOperationMutator, PoodleMutator
+from poodle.mutate.bin_op import BinaryOperationMutator
 
 
 @pytest.fixture()
 def mock_print():
     with mock.patch("builtins.print") as mock_print:
         yield mock_print
-
-
-class TestPoodleMutator:
-    class PoodleMutatorTest(PoodleMutator):
-        def create_mutants(self, parsed_ast: ast.Module) -> List[Mutant]:
-            return []
-
-    def test_abstract(self):
-        with pytest.raises(TypeError, match="^Can't instantiate abstract class.*create_mutants.*"):
-            PoodleMutator(config=mock.MagicMock(spec=PoodleConfig))
-
-    def test_init(self):
-        config = mock.MagicMock(spec=PoodleConfig)
-        mutator = self.PoodleMutatorTest(config=config)
-
-        assert mutator.config == config
 
 
 example_file = """
@@ -42,13 +24,13 @@ def subtraction(x, z):
 class TestBinaryOperationMutator:
     def test_init_default(self, mock_print):
         config = mock.MagicMock(mutator_opts={})
-        mutator = BinaryOperationMutator(config)
+        mutator = BinaryOperationMutator(config=config, other="value")
         assert mutator.config == config
         assert mutator.mutants == []
         assert mutator.type_map == mutator.type_map_levels["std"]
         mock_print.assert_not_called()
 
-    def test_init_1(self, mock_print):
+    def test_init_valid_level(self, mock_print):
         config = mock.MagicMock(mutator_opts={"bin_op_level": "min"})
         mutator = BinaryOperationMutator(config)
         assert mutator.config == config
@@ -56,23 +38,7 @@ class TestBinaryOperationMutator:
         assert mutator.type_map == mutator.type_map_levels["min"]
         mock_print.assert_not_called()
 
-    def test_init_2(self, mock_print):
-        config = mock.MagicMock(mutator_opts={"bin_op_level": "std"})
-        mutator = BinaryOperationMutator(config)
-        assert mutator.config == config
-        assert mutator.mutants == []
-        assert mutator.type_map == mutator.type_map_levels["std"]
-        mock_print.assert_not_called()
-
-    def test_init_3(self, mock_print):
-        config = mock.MagicMock(mutator_opts={"bin_op_level": "max"})
-        mutator = BinaryOperationMutator(config)
-        assert mutator.config == config
-        assert mutator.mutants == []
-        assert mutator.type_map == mutator.type_map_levels["max"]
-        mock_print.assert_not_called()
-
-    def test_init_4(self, mock_print):
+    def test_init_invalid_level(self, mock_print):
         config = mock.MagicMock(mutator_opts={"bin_op_level": "super"})
         mutator = BinaryOperationMutator(config)
         assert mutator.config == config
@@ -85,7 +51,7 @@ class TestBinaryOperationMutator:
     def test_create_mutants(self):
         mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={}))
 
-        file_mutants = mutator.create_mutants(ast.parse(example_file))
+        file_mutants = mutator.create_mutations(ast.parse(example_file))
 
         assert len(file_mutants) == 4
 
@@ -108,12 +74,12 @@ class TestBinaryOperationMutator:
     @pytest.mark.parametrize(
         ("op_type", "text_out"),
         [
-            (ast.Add, ["1 - 2"]),
-            (ast.Sub, ["1 + 2"]),
-            (ast.Mult, ["1 / 2"]),
-            (ast.Div, ["1 * 2"]),
+            (ast.Add, ["1 * 2"]),
+            (ast.Sub, ["1 / 2"]),
+            (ast.Mult, ["1 + 2"]),
+            (ast.Div, ["1 - 2"]),
             (ast.FloorDiv, ["1 / 2"]),
-            (ast.Mod, ["1 // 2"]),
+            (ast.Mod, ["1 - 2"]),
             (ast.Pow, ["1 * 2"]),
             (ast.RShift, ["1 << 2"]),
             (ast.LShift, ["1 >> 2"]),
@@ -149,9 +115,9 @@ class TestBinaryOperationMutator:
             (ast.Sub, ["1 + 2", "1 / 2"]),
             (ast.Mult, ["1 / 2", "1 + 2"]),
             (ast.Div, ["1 * 2", "1 - 2"]),
-            (ast.FloorDiv, ["1 / 2"]),
-            (ast.Mod, ["1 // 2"]),
-            (ast.Pow, ["1 * 2"]),
+            (ast.FloorDiv, ["1 * 2", "1 / 2"]),
+            (ast.Mod, ["1 // 2", "1 - 2"]),
+            (ast.Pow, ["1 * 2", "1 / 2"]),
             (ast.RShift, ["1 << 2"]),
             (ast.LShift, ["1 >> 2"]),
             (ast.BitOr, ["1 & 2", "1 ^ 2"]),

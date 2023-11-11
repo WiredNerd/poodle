@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from poodle.data import Mutant, PoodleConfig, SourceFileMutant, PoodleTestResult, PoodleWork
+from poodle.data import FileMutation, Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork
 
 
 class TestPoodleConfig:
@@ -10,9 +10,12 @@ class TestPoodleConfig:
             config_file=Path("filename.toml"),
             source_folders=[Path("src")],
             file_filters=["test_"],
+            file_copy_filters=["skip"],
             work_folder=Path(".poodle"),
-            runner_opts={"command_line": "pytest tests"},
             mutator_opts={"bin_op_level": 2},
+            skip_mutators=["null"],
+            add_mutators=["custom"],
+            runner_opts={"command_line": "pytest tests"},
         )
 
     def test_poodle_config(self):
@@ -21,9 +24,12 @@ class TestPoodleConfig:
         assert config.config_file == Path("filename.toml")
         assert config.source_folders == [Path("src")]
         assert config.file_filters == ["test_"]
+        assert config.file_copy_filters == ["skip"]
         assert config.work_folder == Path(".poodle")
-        assert config.runner_opts == {"command_line": "pytest tests"}
         assert config.mutator_opts == {"bin_op_level": 2}
+        assert config.skip_mutators == ["null"]
+        assert config.add_mutators == ["custom"]
+        assert config.runner_opts == {"command_line": "pytest tests"}
 
 
 class TestPoodleWork:
@@ -36,10 +42,10 @@ class TestPoodleWork:
         assert work.next_num() == "2"
 
 
-class TestFileMutant:
+class TestFileMutation:
     @classmethod
-    def create_file_mutant(cls):
-        return Mutant(
+    def create_file_mutation(cls):
+        return FileMutation(
             lineno=1,
             col_offset=2,
             end_lineno=3,
@@ -48,7 +54,7 @@ class TestFileMutant:
         )
 
     def test_file_mutant(self):
-        file_mutant = self.create_file_mutant()
+        file_mutant = self.create_file_mutation()
 
         assert file_mutant.lineno == 1
         assert file_mutant.col_offset == 2
@@ -57,12 +63,12 @@ class TestFileMutant:
         assert file_mutant.text == "mutant"
 
 
-class TestPoodleMutant:
-    def test_poodle_mutant(self):
-        poodle_mutant = SourceFileMutant.from_mutant(
+class TestMutant:
+    def test_init(self):
+        poodle_mutant = Mutant(
             source_folder=Path("src"),
             source_file=Path("test.py"),
-            mutant=TestFileMutant.create_file_mutant(),
+            **vars(TestFileMutation.create_file_mutation()),
         )
 
         assert poodle_mutant.source_folder == Path("src")
@@ -74,27 +80,45 @@ class TestPoodleMutant:
         assert poodle_mutant.text == "mutant"
 
     def test_poodle_mutant_min(self):
-        poodle_mutant = SourceFileMutant(
+        poodle_mutant = Mutant(
             source_folder=Path("src"),
+            source_file=None,
+            lineno=0,
+            col_offset=0,
+            end_lineno=0,
+            end_col_offset=0,
+            text="",
         )
 
         assert poodle_mutant.source_folder == Path("src")
         assert poodle_mutant.source_file is None
-        assert poodle_mutant.lineno is None
-        assert poodle_mutant.col_offset is None
-        assert poodle_mutant.end_lineno is None
-        assert poodle_mutant.end_col_offset is None
-        assert poodle_mutant.text is None
+        assert poodle_mutant.lineno == 0
+        assert poodle_mutant.col_offset == 0
+        assert poodle_mutant.end_lineno == 0
+        assert poodle_mutant.end_col_offset == 0
+        assert poodle_mutant.text == ""
 
 
-class TestPoodleTestResult:
-    def test_poodle_test_result(self):
-        result = PoodleTestResult(
-            test_passed=True,
+class TestMutantTrialResult:
+    def test_mutant_trial_result(self):
+        result = MutantTrialResult(passed=True, reason_code="test", reason_desc="it worked")
+
+        assert result.passed is True
+        assert result.reason_code == "test"
+        assert result.reason_desc == "it worked"
+        assert result.RC_FOUND == "mutant_found"
+        assert result.RC_NOT_FOUND == "mutant_not_found"
+        assert result.RC_TIMEOUT == "timeout"
+        assert result.RC_INCOMPLETE == "incomplete"
+        assert result.RC_OTHER == "other"
+
+    def test_mutant_trial_result_min(self):
+        result = MutantTrialResult(
+            passed=True,
             reason_code="test",
         )
 
-        assert result.test_passed is True
+        assert result.passed is True
         assert result.reason_code == "test"
         assert result.reason_desc is None
         assert result.RC_FOUND == "mutant_found"
@@ -102,3 +126,12 @@ class TestPoodleTestResult:
         assert result.RC_TIMEOUT == "timeout"
         assert result.RC_INCOMPLETE == "incomplete"
         assert result.RC_OTHER == "other"
+
+
+class TestMutantTrial:
+    def test_mutant_trial(self):
+        mutant = Mutant(source_folder=Path("."), source_file=None, **vars(TestFileMutation.create_file_mutation()))
+        result = MutantTrialResult(passed=True, reason_code="test")
+        trial = MutantTrial(mutant=mutant, result=result)
+        assert trial.mutant == mutant
+        assert trial.result == result

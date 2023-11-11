@@ -3,37 +3,18 @@
 from __future__ import annotations
 
 import ast
-from abc import ABC, abstractmethod
 from typing import ClassVar
 
-from poodle.data import Mutant, PoodleConfig
-
-"""
-import ast
-from poodle import Mutant, PoodleConfig
-create_mutants(config: PoodleConfig, parsed_ast: ast.Module, **_) -> list[Mutant]:
-"""
+from poodle.data import FileMutation, PoodleConfig
+from poodle.mutate import Mutator
 
 
-class PoodleMutator(ABC):
-    """Abstract class for Mutators."""
-
-    def __init__(self, config: PoodleConfig) -> PoodleConfig:
-        """Initialize PoodleMutator."""
-        self.config = config
-
-    @abstractmethod
-    def create_mutants(self, parsed_ast: ast.Module) -> list[Mutant]:
-        """Create a list of Mutants for the provided parsed Module.
-
-        This will be called once with parsed ast for each Module.
-        """
-
-
-class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
+class BinaryOperationMutator(ast.NodeVisitor, Mutator):
     """Mutate Binary Operations."""
 
-    # Operators as of Python 3.12:
+    # Binary Operators as of Python 3.12:
+    # https://docs.python.org/3/library/ast.html#ast.BinOp
+    # https://www.w3schools.com/python/python_operators.asp
     # ast.Add       +
     # ast.Sub       -
     # ast.Mult      *
@@ -46,16 +27,16 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
     # ast.BitOr     |
     # ast.BitXor    ^
     # ast.BitAnd    &
-    # ast.MatMult   @ - Matrix Multiplication
+    # ast.MatMult   @
 
     type_map_levels: ClassVar[dict[str, dict]] = {
         "min": {
-            ast.Add: ast.Sub,
-            ast.Sub: ast.Add,
-            ast.Mult: ast.Div,
-            ast.Div: ast.Mult,
+            ast.Add: ast.Mult,
+            ast.Sub: ast.Div,
+            ast.Mult: ast.Add,
+            ast.Div: ast.Sub,
             ast.FloorDiv: ast.Div,
-            ast.Mod: ast.FloorDiv,
+            ast.Mod: ast.Sub,
             ast.Pow: ast.Mult,
             ast.LShift: ast.RShift,
             ast.RShift: ast.LShift,
@@ -68,9 +49,9 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
             ast.Sub: [ast.Add, ast.Div],
             ast.Mult: [ast.Div, ast.Add],
             ast.Div: [ast.Mult, ast.Sub],
-            ast.FloorDiv: ast.Div,
-            ast.Mod: ast.FloorDiv,
-            ast.Pow: ast.Mult,
+            ast.FloorDiv: [ast.Mult, ast.Div],
+            ast.Mod: [ast.FloorDiv, ast.Sub],
+            ast.Pow: [ast.Mult, ast.Div],
             ast.LShift: ast.RShift,
             ast.RShift: ast.LShift,
             ast.BitOr: [ast.BitAnd, ast.BitXor],
@@ -93,10 +74,10 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
         },
     }
 
-    def __init__(self, config: PoodleConfig) -> BinaryOperationMutator:
+    def __init__(self, config: PoodleConfig, **_) -> BinaryOperationMutator:
         """Initialize BinaryOperationMutator."""
         super().__init__(config)
-        self.mutants: list[Mutant] = []
+        self.mutants: list[FileMutation] = []
 
         level = self.config.mutator_opts.get("bin_op_level", "std")
         if level not in self.type_map_levels:
@@ -105,7 +86,7 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
 
         self.type_map: dict = self.type_map_levels[level]
 
-    def create_mutants(self, parsed_ast: ast.Module) -> list[Mutant]:
+    def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
         """Visit all Binary Operations and return created mutants."""
         self.visit(parsed_ast)
         return self.mutants
@@ -120,9 +101,9 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
             else:
                 self.mutants.extend([self.create_mutant(node, new_type) for new_type in mut_types])
 
-    def create_mutant(self, node: ast.BinOp, new_type: type) -> Mutant:
+    def create_mutant(self, node: ast.BinOp, new_type: type) -> FileMutation:
         """Create Mutants."""
-        return Mutant(
+        return FileMutation(
             lineno=node.lineno,
             col_offset=node.col_offset,
             end_lineno=node.end_lineno,
