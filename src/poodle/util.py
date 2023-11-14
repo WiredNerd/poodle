@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from .types import MutantTrialResult
+from .data_types import MutantTrialResult
 
 
 def files_list_for_folder(glob: str, filter_regex: list[str], folder: Path) -> list[Path]:

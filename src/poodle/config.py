@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from . import PoodleInputError, poodle_config, tomllib
-from .types import PoodleConfig
+from .data_types import PoodleConfig
 
 default_source_folders = [Path("src"), Path("lib")]
 default_file_filters = [r"^test_.*\.py", r"_test\.py$"]

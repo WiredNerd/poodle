@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from poodle.types.data import FileMutation, Mutant, MutantTrial, MutantTrialResult, PoodleConfig
+from poodle.data_types.data import FileMutation, Mutant, MutantTrial, MutantTrialResult, PoodleConfig
 
 
 class TestPoodleConfig:

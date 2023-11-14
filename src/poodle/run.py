@@ -4,12 +4,13 @@ import concurrent.futures
 import shutil
 from datetime import datetime
 from pathlib import Path
+from typing import Callable
 from zipfile import ZipFile
 
 from click import echo
 
+from .data_types import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork
 from .runners import command_line
-from .types import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork
 from .util import dynamic_import, update_stats
 
 builtin_runners = {
@@ -17,7 +18,7 @@ builtin_runners = {
 }
 
 
-def get_runner(config: PoodleWork):
+def get_runner(config: PoodleConfig) -> Callable:
     if config.runner in builtin_runners:
         return builtin_runners[config.runner]
 

@@ -5,8 +5,8 @@ from unittest import mock
 
 import pytest
 
+from poodle.data_types import Mutant
 from poodle.runners import command_line
-from poodle.types import Mutant
 
 
 @pytest.fixture()

@@ -7,7 +7,7 @@ import shlex
 import subprocess
 from typing import TYPE_CHECKING
 
-from poodle.types import Mutant, MutantTrialResult, PoodleConfig
+from poodle.data_types import Mutant, MutantTrialResult, PoodleConfig
 
 if TYPE_CHECKING:
     from pathlib import Path

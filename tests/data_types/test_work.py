@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from poodle.types.work import PoodleWork
+from poodle.data_types.work import PoodleWork
 
 from .test_data import TestPoodleConfig
 

@@ -5,9 +5,9 @@ from zipfile import ZipFile
 
 from click import echo
 
+from .data_types import MutantTrial, PoodleConfig, PoodleWork
 from .mutate import create_mutants_for_all_mutators, initialize_mutators
 from .run import clean_run_each_source_folder, get_runner, run_mutant_trails
-from .types import MutantTrial, PoodleConfig, PoodleWork
 from .util import files_list_for_folder, update_stats
 
 

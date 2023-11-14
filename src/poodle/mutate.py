@@ -7,8 +7,8 @@ from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Callable
 
 from . import PoodleInputError
+from .data_types import FileMutation, Mutant, Mutator, PoodleWork
 from .mutators.bin_op import BinaryOperationMutator
-from .types import FileMutation, Mutant, Mutator, PoodleWork
 from .util import dynamic_import, files_list_for_folder
 
 if TYPE_CHECKING:
