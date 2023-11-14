@@ -5,8 +5,9 @@ from __future__ import annotations
 import ast
 from typing import ClassVar
 
-from poodle.data import FileMutation, PoodleConfig
-from poodle.mutate import Mutator
+from click import echo
+
+from poodle.types import FileMutation, Mutator, PoodleConfig
 
 
 class BinaryOperationMutator(ast.NodeVisitor, Mutator):
@@ -74,14 +75,14 @@ class BinaryOperationMutator(ast.NodeVisitor, Mutator):
         },
     }
 
-    def __init__(self, config: PoodleConfig, **_) -> BinaryOperationMutator:
+    def __init__(self, config: PoodleConfig, **_) -> None:
         """Initialize BinaryOperationMutator."""
         super().__init__(config)
         self.mutants: list[FileMutation] = []
 
         level = self.config.mutator_opts.get("bin_op_level", "std")
         if level not in self.type_map_levels:
-            print(f"WARN: Invalid value operator_opts.bin_op_level={level}.  Using Default value 'std'")
+            echo(f"WARN: Invalid value operator_opts.bin_op_level={level}.  Using Default value 'std'")  # TODO: Logging
             level = "std"
 
         self.type_map: dict = self.type_map_levels[level]
@@ -106,7 +107,7 @@ class BinaryOperationMutator(ast.NodeVisitor, Mutator):
         return FileMutation(
             lineno=node.lineno,
             col_offset=node.col_offset,
-            end_lineno=node.end_lineno,
-            end_col_offset=node.end_col_offset,
+            end_lineno=node.end_lineno or node.lineno,
+            end_col_offset=node.end_col_offset or node.col_offset,
             text=ast.unparse(ast.BinOp(left=node.left, op=new_type(), right=node.right)),
         )

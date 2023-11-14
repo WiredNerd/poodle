@@ -40,6 +40,7 @@ class TestBuildConfig:
     @mock.patch("poodle.config.get_config_file_path")
     @mock.patch("poodle.config.get_config_file_data")
     @mock.patch("poodle.config.get_source_folders")
+    @mock.patch("poodle.config.get_str_from_config")
     @mock.patch("poodle.config.get_str_list_from_config")
     @mock.patch("poodle.config.get_path_from_config")
     @mock.patch("poodle.config.get_dict_from_config")
@@ -50,6 +51,7 @@ class TestBuildConfig:
         get_dict_from_config,
         get_path_from_config,
         get_str_list_from_config,
+        get_str_from_config,
         get_source_folders,
         get_config_file_data,
         get_config_file_path,
@@ -71,20 +73,27 @@ class TestBuildConfig:
             mutator_opts={"mutator": "value"},
             skip_mutators=get_str_list_from_config.return_value,
             add_mutators=get_any_list_from_config.return_value,
+            runner=get_str_from_config.return_value,
             runner_opts={"runner": "value"},
         )
 
         get_source_folders.assert_called_with(command_line_sources, config_file_data)
+
+        get_str_from_config.assert_called_with("runner", config_file_data, default=config.default_runner)
+
         get_str_list_from_config.assert_any_call("file_filters", config_file_data, default=config.default_file_filters)
         get_str_list_from_config.assert_any_call(
             "file_copy_filters", config_file_data, default=config.default_file_copy_filters
         )
         get_str_list_from_config.assert_any_call("skip_mutators", config_file_data, default=[])
         assert get_str_list_from_config.call_count == 3
+
         get_path_from_config.assert_called_with("work_folder", config_file_data, default=config.default_work_folder)
+
         get_dict_from_config.assert_any_call("mutator_opts", config_file_data, default=config.default_mutator_opts)
         get_dict_from_config.assert_any_call("runner_opts", config_file_data, default=config.default_runner_opts)
         assert get_dict_from_config.call_count == 2
+
         get_any_list_from_config.assert_called_with("add_mutators", config_file_data)
 
 
@@ -255,6 +264,7 @@ class TestGetPathFromConfig:
         config.get_path_from_config(
             option_name="test_option",
             config_data={"test_option": Path("config_file_value")},
+            default=Path("default_value"),
         ) == None
 
         get_option_from_config.assert_called_with(

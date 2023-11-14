@@ -3,13 +3,13 @@ from unittest import mock
 
 import pytest
 
-from poodle.mutate.bin_op import BinaryOperationMutator
+from poodle.mutators.bin_op import BinaryOperationMutator
 
 
 @pytest.fixture()
-def mock_print():
-    with mock.patch("builtins.print") as mock_print:
-        yield mock_print
+def mock_echo():
+    with mock.patch("poodle.mutators.bin_op.echo") as mock_echo:
+        yield mock_echo
 
 
 example_file = """
@@ -22,31 +22,29 @@ def subtraction(x, z):
 
 
 class TestBinaryOperationMutator:
-    def test_init_default(self, mock_print):
+    def test_init_default(self, mock_echo):
         config = mock.MagicMock(mutator_opts={})
         mutator = BinaryOperationMutator(config=config, other="value")
         assert mutator.config == config
         assert mutator.mutants == []
         assert mutator.type_map == mutator.type_map_levels["std"]
-        mock_print.assert_not_called()
+        mock_echo.assert_not_called()
 
-    def test_init_valid_level(self, mock_print):
+    def test_init_valid_level(self, mock_echo):
         config = mock.MagicMock(mutator_opts={"bin_op_level": "min"})
         mutator = BinaryOperationMutator(config)
         assert mutator.config == config
         assert mutator.mutants == []
         assert mutator.type_map == mutator.type_map_levels["min"]
-        mock_print.assert_not_called()
+        mock_echo.assert_not_called()
 
-    def test_init_invalid_level(self, mock_print):
+    def test_init_invalid_level(self, mock_echo):
         config = mock.MagicMock(mutator_opts={"bin_op_level": "super"})
         mutator = BinaryOperationMutator(config)
         assert mutator.config == config
         assert mutator.mutants == []
         assert mutator.type_map == mutator.type_map_levels["std"]
-        mock_print.assert_called_with(
-            "WARN: Invalid value operator_opts.bin_op_level=super.  Using Default value 'std'"
-        )
+        mock_echo.assert_called_with("WARN: Invalid value operator_opts.bin_op_level=super.  Using Default value 'std'")
 
     def test_create_mutants(self):
         mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={}))

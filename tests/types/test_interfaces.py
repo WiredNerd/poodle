@@ -2,14 +2,8 @@ from unittest import mock
 
 import pytest
 
-from poodle.data import FileMutation, PoodleConfig
-from poodle.mutate import Mutator, create_mutations
-
-
-@pytest.fixture()
-def mock_print():
-    with mock.patch("builtins.print") as mock_print:
-        yield mock_print
+from poodle.types.data import FileMutation, PoodleConfig
+from poodle.types.interfaces import Mutator, create_mutations, runner
 
 
 def test_create_mutations():
@@ -18,7 +12,7 @@ def test_create_mutations():
 
 class TestMutator:
     class DummyMutator(Mutator):
-        def create_mutations(self, **_) -> list[FileMutation]:
+        def create_mutations(self, **_) -> list[FileMutation]:  # type: ignore [override]
             return []
 
     def test_abstract(self):
@@ -30,3 +24,15 @@ class TestMutator:
         mutator = self.DummyMutator(config=config, other="value")
 
         assert mutator.config == config
+
+
+def test_runner():
+    assert (
+        runner(
+            config=None,
+            run_folder=None,
+            mutant=None,
+            other="value",
+        )
+        is None
+    )

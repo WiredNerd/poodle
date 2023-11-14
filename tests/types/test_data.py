@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from poodle.data import FileMutation, Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork
+from poodle.types.data import FileMutation, Mutant, MutantTrial, MutantTrialResult, PoodleConfig
 
 
 class TestPoodleConfig:
@@ -15,6 +15,7 @@ class TestPoodleConfig:
             mutator_opts={"bin_op_level": 2},
             skip_mutators=["null"],
             add_mutators=["custom"],
+            runner="command_line",
             runner_opts={"command_line": "pytest tests"},
         )
 
@@ -29,17 +30,8 @@ class TestPoodleConfig:
         assert config.mutator_opts == {"bin_op_level": 2}
         assert config.skip_mutators == ["null"]
         assert config.add_mutators == ["custom"]
+        assert config.runner == "command_line"
         assert config.runner_opts == {"command_line": "pytest tests"}
-
-
-class TestPoodleWork:
-    def test_poodle_work(self):
-        work = PoodleWork(config=TestPoodleConfig.create_poodle_config())
-
-        assert work.config.config_file == Path("filename.toml")
-        assert work.folder_zips == {}
-        assert work.next_num() == "1"
-        assert work.next_num() == "2"
 
 
 class TestFileMutation:

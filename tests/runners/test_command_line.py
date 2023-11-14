@@ -5,8 +5,8 @@ from unittest import mock
 
 import pytest
 
-from poodle import runners
-from poodle.data import Mutant
+from poodle.runners import command_line
+from poodle.types import Mutant
 
 
 @pytest.fixture()
@@ -15,20 +15,8 @@ def subprocess_run():
         yield subprocess_run
 
 
-def test_runner():
-    assert (
-        runners.runner(
-            config=None,
-            run_folder=None,
-            mutant=None,
-            other="value",
-        )
-        is None
-    )
-
-
 class TestCommandLineRunner:
-    def test_command_line_runner(self, subprocess_run):
+    def test_runner(self, subprocess_run):
         with mock.patch.dict("os.environ", {"PYTHONPATH": "/project/src"}, clear=True):
             os.pathsep = ";"
             subprocess_run.return_value = CompletedProcess(
@@ -54,7 +42,7 @@ class TestCommandLineRunner:
                 text="Changed Line",
             )
 
-            out = runners.command_line_runner(
+            out = command_line.runner(
                 config=config,
                 run_folder=Path("poodle-run-folder"),
                 mutant=mutant,
@@ -89,7 +77,7 @@ class TestCommandLineRunner:
             assert out.reason_code == out.RC_FOUND
             assert out.reason_desc == "error"
 
-    def test_command_line_runner_unset_path(self, subprocess_run):
+    def test_unset_path(self, subprocess_run):
         with mock.patch.dict("os.environ", {}, clear=True):
             os.pathsep = ";"
             subprocess_run.return_value = CompletedProcess(
@@ -112,7 +100,7 @@ class TestCommandLineRunner:
                 text="Changed Line",
             )
 
-            out = runners.command_line_runner(
+            out = command_line.runner(
                 config=config,
                 run_folder=Path("poodle-run-folder"),
                 mutant=mutant,
@@ -138,7 +126,7 @@ class TestCommandLineRunner:
             assert out.reason_code == out.RC_FOUND
             assert out.reason_desc == "error"
 
-    def test_command_line_runner_rc_0(self, subprocess_run):
+    def test_rc_0(self, subprocess_run):
         with mock.patch.dict("os.environ", {}, clear=True):
             os.pathsep = ";"
             subprocess_run.return_value = CompletedProcess(
@@ -161,7 +149,7 @@ class TestCommandLineRunner:
                 text="Changed Line",
             )
 
-            out = runners.command_line_runner(
+            out = command_line.runner(
                 config=config,
                 run_folder=Path("poodle-run-folder"),
                 mutant=mutant,
@@ -187,7 +175,7 @@ class TestCommandLineRunner:
             assert out.reason_code == out.RC_NOT_FOUND
             assert out.reason_desc is None
 
-    def test_command_line_runner_rc_2(self, subprocess_run):
+    def test_rc_2(self, subprocess_run):
         with mock.patch.dict("os.environ", {}, clear=True):
             os.pathsep = ";"
             subprocess_run.return_value = CompletedProcess(
@@ -210,7 +198,7 @@ class TestCommandLineRunner:
                 text="Changed Line",
             )
 
-            out = runners.command_line_runner(
+            out = command_line.runner(
                 config=config,
                 run_folder=Path("poodle-run-folder"),
                 mutant=mutant,

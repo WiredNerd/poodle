@@ -7,20 +7,13 @@ import shlex
 import subprocess
 from typing import TYPE_CHECKING
 
-from poodle.data import Mutant, MutantTrialResult, PoodleConfig
+from poodle.types import Mutant, MutantTrialResult, PoodleConfig
 
 if TYPE_CHECKING:
     from pathlib import Path
 
 
-# runner method signature:
 def runner(config: PoodleConfig, run_folder: Path, mutant: Mutant, **_) -> MutantTrialResult:
-    """Run trial of mutant in specified folder.
-
-    Files from the source folder have been copied to the run folder, and mutation has been applied."""
-
-
-def command_line_runner(config: PoodleConfig, run_folder: Path, mutant: Mutant, **_) -> MutantTrialResult:
     """Run test of mutant with command line command in subprocess."""
     run_env = os.environ.copy()
     python_path = os.pathsep.join(

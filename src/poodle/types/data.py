@@ -3,12 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Callable, Generator
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from pathlib import Path
-
-    from poodle.mutate import Mutator
 
 
 @dataclass
@@ -23,32 +21,10 @@ class PoodleConfig:
 
     mutator_opts: dict
     skip_mutators: list[str]
-    add_mutators: list[str | Callable | Mutator | type]
+    add_mutators: list[Any]
 
+    runner: str
     runner_opts: dict
-
-
-class PoodleWork:
-    """Work-in-progress data gathered into single structure for easy passing between functions."""
-
-    mutators: list[Mutator | Callable] = []
-
-    def __init__(self, config: PoodleConfig) -> PoodleWork:
-        """Init from PoodleConfig."""
-        self.config = config
-        self.folder_zips: dict[str, Path] = {}
-
-        def number_generator() -> Generator[int]:
-            i = 1
-            while True:
-                yield i
-                i += 1
-
-        self._num_gen = number_generator()
-
-    def next_num(self) -> str:
-        """Return the next value from Sequence as a string."""
-        return str(next(self._num_gen))
 
 
 @dataclass
