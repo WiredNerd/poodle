@@ -16,6 +16,8 @@ default_work_folder = Path(".poodle-temp")
 default_mutator_opts: dict[str, Any] = {}
 default_runner = "command_line"
 default_runner_opts = {"command_line": "pytest -x --assert=plain --no-header --no-summary -o pythonpath="}
+default_reporters = ["summary", "not_found"]
+default_reporter_opts = {}
 
 
 def build_config(command_line_sources: tuple[Path], config_file: Path | None) -> PoodleConfig:
@@ -38,6 +40,8 @@ def build_config(command_line_sources: tuple[Path], config_file: Path | None) ->
         add_mutators=get_any_list_from_config("add_mutators", config_file_data),
         runner=get_str_from_config("runner", config_file_data, default=default_runner),
         runner_opts=get_dict_from_config("runner_opts", config_file_data, default=default_runner_opts),
+        reporters=get_str_list_from_config("reporters", config_file_data, default_reporters),
+        reporter_opts=get_dict_from_config("reporter_opts", config_file_data, default=default_reporter_opts),
     )
 
 

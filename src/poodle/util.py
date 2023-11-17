@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from .data_types import MutantTrialResult
+from .data_types import MutantTrialResult, TestingSummary
 
 
 def files_list_for_folder(glob: str, filter_regex: list[str], folder: Path) -> list[Path]:
@@ -23,16 +23,16 @@ def files_list_for_folder(glob: str, filter_regex: list[str], folder: Path) -> l
     return files
 
 
-def update_stats(stats: dict, result: MutantTrialResult):
-    stats["tested"] += 1
+def update_summary(summary: TestingSummary, result: MutantTrialResult):
+    summary.tested += 1
     if result.passed:
-        stats["found"] += 1
+        summary.found += 1
     elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
-        stats["not_found"] += 1
+        summary.not_found += 1
     elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
-        stats["timeout"] += 1
+        summary.timeout += 1
     else:
-        stats["errors"] += 1
+        summary.errors += 1
 
 
 def dynamic_import(object_to_import: str) -> Any:

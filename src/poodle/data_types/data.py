@@ -26,6 +26,9 @@ class PoodleConfig:
     runner: str
     runner_opts: dict
 
+    reporters: list[str]
+    reporter_opts: dict
+
 
 @dataclass
 class FileMutation:
@@ -67,3 +70,24 @@ class MutantTrial:
 
     mutant: Mutant
     result: MutantTrialResult
+
+
+@dataclass
+class TestingSummary:
+    """Summary Statistics for a Test Run."""
+
+    trials: int = 0
+    tested: int = 0
+    found: int = 0
+    not_found: int = 0
+    timeout: int = 0
+    errors: int = 0
+    success_rate: float = 0.0
+
+
+@dataclass
+class TestingResults:
+    """Collection of all trials and summary statistics."""
+
+    mutant_trials: list[MutantTrial]
+    summary: TestingSummary

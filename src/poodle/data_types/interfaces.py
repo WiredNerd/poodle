@@ -5,7 +5,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from .data import FileMutation, Mutant, MutantTrialResult, PoodleConfig
+from .data import FileMutation, Mutant, MutantTrialResult, PoodleConfig, TestingResults
 
 if TYPE_CHECKING:
     import ast
@@ -40,3 +40,8 @@ def runner(config: PoodleConfig, run_folder: Path, mutant: Mutant, **_) -> Mutan
 
     Files from the source folder have been copied to the run folder, and mutation has been applied.
     """
+
+
+# reporter method signature:
+def reporter(config: PoodleConfig, testing_results: TestingResults, **_) -> None:  # type: ignore [empty-body] # noqa: ARG001
+    """Report on Testing Results."""

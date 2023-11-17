@@ -7,7 +7,7 @@ from typing import ClassVar
 
 from click import echo
 
-from poodle.data_types import FileMutation, Mutator, PoodleConfig
+from ..data_types import FileMutation, Mutator, PoodleConfig
 
 
 class BinaryOperationMutator(ast.NodeVisitor, Mutator):

@@ -9,9 +9,9 @@ from zipfile import ZipFile
 
 from click import echo
 
-from .data_types import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork
+from .data_types import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork, TestingResults, TestingSummary
 from .runners import command_line
-from .util import dynamic_import, update_stats
+from .util import dynamic_import, update_summary
 
 builtin_runners = {
     "command_line": command_line.runner,
@@ -54,7 +54,7 @@ def clean_run_trial(work: PoodleWork, folder: Path):
         echo(f"PASSED ({(datetime.now()-start)})")
 
 
-def run_mutant_trails(work: PoodleWork, mutants: list[Mutant]) -> list[MutantTrial]:
+def run_mutant_trails(work: PoodleWork, mutants: list[Mutant]) -> TestingResults:
     start = datetime.now()
     echo("Testing mutants")
 
@@ -71,31 +71,28 @@ def run_mutant_trails(work: PoodleWork, mutants: list[Mutant]) -> list[MutantTri
             for mutant in mutants
         ]
 
-        stats = {
-            "tested": 0,
-            "found": 0,
-            "not_found": 0,
-            "timeout": 0,
-            "errors": 0,
-        }
+        summary = TestingSummary()
         num_trials = len(mutants)
         for future in concurrent.futures.as_completed(futures):
             if future.cancelled():
                 echo("Canceled")
             else:
                 mutant_trial: MutantTrial = future.result()
-                update_stats(stats, mutant_trial.result)
+                update_summary(summary, mutant_trial.result)
             echo(
-                f'COMPLETED {stats["tested"]:>4}/{num_trials:<4}'
-                f'\tFOUND {stats["found"]:>4}'
-                f'\tNOT FOUND {stats["not_found"]:>4}'
-                f'\tTIMEOUT {stats["timeout"]:>4}'
-                f'\tERRORS {stats["errors"]:>4}'
+                f"COMPLETED {summary.tested:>4}/{num_trials:<4}"
+                f"\tFOUND {summary.found:>4}"
+                f"\tNOT FOUND {summary.not_found:>4}"
+                f"\tTIMEOUT {summary.timeout:>4}"
+                f"\tERRORS {summary.errors:>4}"
             )
 
     echo(f"DONE ({(datetime.now()-start)})")
 
-    return [future.result() for future in futures]
+    return TestingResults(
+        mutant_trials=[future.result() for future in futures],
+        summary=summary,
+    )
 
 
 def run_mutant_trial(

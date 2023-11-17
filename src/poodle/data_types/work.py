@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Callable
 
+from ..reporters.basic import report_not_found, report_summary
 from .data import PoodleConfig
 from .interfaces import Mutator
 
@@ -21,6 +22,7 @@ class PoodleWork:
         self.folder_zips: dict[Path, Path] = {}
         self.mutators: list[Mutator | Callable] = []
         self.runner: Callable | None = None
+        self.reporters: list[Callable] = []
 
         def number_generator() -> Generator[int, Any, None]:
             i = 1
