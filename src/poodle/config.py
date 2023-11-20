@@ -29,23 +29,14 @@ def build_config(command_line_sources: tuple[Path], config_file: Path | None, ve
     config_file_path = get_config_file_path(config_file)
     config_file_data = get_config_file_data(config_file_path)
 
-    cmd_log_level = {
-        "q": logging.ERROR,
-        "v": logging.INFO,
-        "vv": logging.DEBUG,
-    }.get(verbosity, None)
-
     log_format = get_str_from_config("log_format", config_file_data, default=default_log_format)
     log_level: int | str = get_any_from_config(
-        "log_level", config_file_data, default=default_log_level, command_line=cmd_log_level
+        "log_level",
+        config_file_data,
+        default=default_log_level,
+        command_line=get_cmd_line_log_level(verbosity),
     )
     logging.basicConfig(format=log_format, level=log_level)
-
-    cmd_echo_enabled = {
-        "q": False,
-        "v": True,
-        "vv": True,
-    }.get(verbosity, None)
 
     return PoodleConfig(
         config_file=config_file_path,
@@ -60,16 +51,35 @@ def build_config(command_line_sources: tuple[Path], config_file: Path | None, ve
         log_format=log_format,
         log_level=log_level,
         echo_enabled=get_bool_from_config(
-            "echo_enabled", config_file_data, default=True, command_line=cmd_echo_enabled
+            "echo_enabled",
+            config_file_data,
+            default=True,
+            command_line=get_cmd_line_echo_enabled(verbosity),
         ),
         mutator_opts=get_dict_from_config("mutator_opts", config_file_data, default=default_mutator_opts),
         skip_mutators=get_str_list_from_config("skip_mutators", config_file_data, default=[]),
         add_mutators=get_any_list_from_config("add_mutators", config_file_data),
         runner=get_str_from_config("runner", config_file_data, default=default_runner),
         runner_opts=get_dict_from_config("runner_opts", config_file_data, default=default_runner_opts),
-        reporters=get_str_list_from_config("reporters", config_file_data, default_reporters),
+        reporters=get_str_list_from_config("reporters", config_file_data, default=default_reporters),
         reporter_opts=get_dict_from_config("reporter_opts", config_file_data, default=default_reporter_opts),
     )
+
+
+def get_cmd_line_log_level(verbosity: str | None) -> int | None:
+    return {
+        "q": logging.ERROR,
+        "v": logging.INFO,
+        "vv": logging.DEBUG,
+    }.get(verbosity, None)
+
+
+def get_cmd_line_echo_enabled(verbosity: str | None) -> bool | None:
+    return {
+        "q": False,
+        "v": True,
+        "vv": True,
+    }.get(verbosity, None)
 
 
 def get_config_file_path(config_file: Path | None) -> Path | None:

@@ -8,8 +8,7 @@ from poodle.mutators.bin_op import BinaryOperationMutator
 
 @pytest.fixture()
 def mock_echo():
-    with mock.patch("poodle.mutators.bin_op.echo") as mock_echo:
-        yield mock_echo
+    return mock.MagicMock()
 
 
 example_file = """
@@ -24,7 +23,7 @@ def subtraction(x, z):
 class TestBinaryOperationMutator:
     def test_init_default(self, mock_echo):
         config = mock.MagicMock(mutator_opts={})
-        mutator = BinaryOperationMutator(config=config, other="value")
+        mutator = BinaryOperationMutator(config=config, echo=mock_echo, other="value")
         assert mutator.config == config
         assert mutator.mutants == []
         assert mutator.type_map == mutator.type_map_levels["std"]
@@ -32,7 +31,7 @@ class TestBinaryOperationMutator:
 
     def test_init_valid_level(self, mock_echo):
         config = mock.MagicMock(mutator_opts={"bin_op_level": "min"})
-        mutator = BinaryOperationMutator(config)
+        mutator = BinaryOperationMutator(config, mock_echo)
         assert mutator.config == config
         assert mutator.mutants == []
         assert mutator.type_map == mutator.type_map_levels["min"]
@@ -40,14 +39,14 @@ class TestBinaryOperationMutator:
 
     def test_init_invalid_level(self, mock_echo):
         config = mock.MagicMock(mutator_opts={"bin_op_level": "super"})
-        mutator = BinaryOperationMutator(config)
+        mutator = BinaryOperationMutator(config, mock_echo)
         assert mutator.config == config
         assert mutator.mutants == []
         assert mutator.type_map == mutator.type_map_levels["std"]
         mock_echo.assert_called_with("WARN: Invalid value operator_opts.bin_op_level=super.  Using Default value 'std'")
 
-    def test_create_mutants(self):
-        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={}))
+    def test_create_mutants(self, mock_echo):
+        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={}), mock_echo)
 
         file_mutants = mutator.create_mutations(ast.parse(example_file))
 
@@ -87,8 +86,8 @@ class TestBinaryOperationMutator:
             (ast.MatMult, []),
         ],
     )
-    def test_visit_BinOp_level_min(self, op_type, text_out):
-        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": "min"}))
+    def test_visit_BinOp_level_min(self, op_type, text_out, mock_echo):
+        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": "min"}), mock_echo)
 
         node = ast.BinOp()
         node.left = ast.Constant()
@@ -124,8 +123,8 @@ class TestBinaryOperationMutator:
             (ast.MatMult, []),
         ],
     )
-    def test_visit_BinOp_level_std(self, op_type, text_out):
-        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": "std"}))
+    def test_visit_BinOp_level_std(self, op_type, text_out, mock_echo):
+        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": "std"}), mock_echo)
 
         node = ast.BinOp()
         node.left = ast.Constant()
@@ -161,8 +160,8 @@ class TestBinaryOperationMutator:
             (ast.MatMult, []),
         ],
     )
-    def test_visit_BinOp_level_max(self, op_type, text_out):
-        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": "max"}))
+    def test_visit_BinOp_level_max(self, op_type, text_out, mock_echo):
+        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": "max"}), mock_echo)
 
         node = ast.BinOp()
         node.left = ast.Constant()
@@ -180,7 +179,7 @@ class TestBinaryOperationMutator:
 
         assert [file_mutant.text for file_mutant in mutator.mutants] == text_out
 
-    def test_create_file_mutant(self):
+    def test_create_file_mutant(self, mock_echo):
         node = ast.BinOp()
         node.left = ast.Constant()
         node.left.value = 1
@@ -195,7 +194,7 @@ class TestBinaryOperationMutator:
 
         new_type = ast.Sub
 
-        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={}))
+        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={}), mock_echo)
         fm = mutator.create_mutant(node, new_type)
 
         assert fm.lineno == 20

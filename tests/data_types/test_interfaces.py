@@ -7,7 +7,7 @@ from poodle.data_types.interfaces import Mutator, create_mutations, runner
 
 
 def test_create_mutations():
-    assert create_mutations(config=None, parsed_ast=None, other=None) is None
+    assert create_mutations(config=None, echo=None, parsed_ast=None, other=None) is None
 
 
 class TestMutator:
@@ -21,7 +21,7 @@ class TestMutator:
 
     def test_init(self):
         config = mock.MagicMock(spec=PoodleConfig)
-        mutator = self.DummyMutator(config=config, other="value")
+        mutator = self.DummyMutator(config=config, echo=None, other="value")
 
         assert mutator.config == config
 
@@ -30,6 +30,7 @@ def test_runner():
     assert (
         runner(
             config=None,
+            echo=None,
             run_folder=None,
             mutant=None,
             other="value",

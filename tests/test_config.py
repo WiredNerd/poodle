@@ -1,4 +1,5 @@
 import importlib
+import logging
 from io import BytesIO
 from pathlib import Path
 from unittest import mock
@@ -16,6 +17,12 @@ def _test_wrapper():
     config.default_runner_opts = {"command_line": "pytest tests"}
     yield
     importlib.reload(config)
+
+
+@pytest.fixture()
+def logging_mock():
+    with mock.patch("poodle.config.logging") as logging_mock:
+        yield logging_mock
 
 
 @pytest.fixture()
@@ -44,10 +51,16 @@ class TestBuildConfig:
     @mock.patch("poodle.config.get_str_list_from_config")
     @mock.patch("poodle.config.get_path_from_config")
     @mock.patch("poodle.config.get_dict_from_config")
+    @mock.patch("poodle.config.get_bool_from_config")
+    @mock.patch("poodle.config.get_any_from_config")
     @mock.patch("poodle.config.get_any_list_from_config")
+    @mock.patch("poodle.config.get_cmd_line_echo_enabled")
     def test_build_config(
         self,
+        get_cmd_line_echo_enabled,
         get_any_list_from_config,
+        get_any_from_config,
+        get_bool_from_config,
         get_dict_from_config,
         get_path_from_config,
         get_str_list_from_config,
@@ -55,8 +68,13 @@ class TestBuildConfig:
         get_source_folders,
         get_config_file_data,
         get_config_file_path,
+        logging_mock,
     ):
-        get_dict_from_config.side_effect = [{"mutator": "value"}, {"runner": "value"}]
+        get_dict_from_config.side_effect = [
+            {"mutator": "value"},
+            {"runner": "value"},
+            {"reporter": "value"},
+        ]
 
         command_line_sources = (Path("src"),)
         config_file = Path("config.toml")
@@ -64,37 +82,109 @@ class TestBuildConfig:
         config_file_path = get_config_file_path.return_value
         config_file_data = get_config_file_data.return_value
 
-        assert config.build_config(command_line_sources, config_file) == config.PoodleConfig(
+        assert config.build_config(command_line_sources, config_file, "v") == config.PoodleConfig(
             config_file=config_file_path,
             source_folders=get_source_folders.return_value,
             file_filters=get_str_list_from_config.return_value,
             file_copy_filters=get_str_list_from_config.return_value,
             work_folder=get_path_from_config.return_value,
+            log_format=get_str_from_config.return_value,
+            log_level=get_any_from_config.return_value,
+            echo_enabled=get_bool_from_config.return_value,
             mutator_opts={"mutator": "value"},
             skip_mutators=get_str_list_from_config.return_value,
             add_mutators=get_any_list_from_config.return_value,
             runner=get_str_from_config.return_value,
             runner_opts={"runner": "value"},
+            reporters=get_str_list_from_config.return_value,
+            reporter_opts={"reporter": "value"},
         )
 
-        get_source_folders.assert_called_with(command_line_sources, config_file_data)
+        # log_format
+        get_str_from_config.assert_any_call("log_format", config_file_data, default=config.default_log_format)
+        # log_level
+        get_any_from_config.assert_any_call(
+            "log_level",
+            config_file_data,
+            default=config.default_log_level,
+            command_line=logging_mock.INFO,
+        )
+        logging_mock.basicConfig.assert_called_once_with(
+            format=get_str_from_config.return_value,
+            level=get_any_from_config.return_value,
+        )
 
-        get_str_from_config.assert_called_with("runner", config_file_data, default=config.default_runner)
-
+        # return PoodleConfig
+        # source_folders
+        get_source_folders.assert_called_once_with(command_line_sources, config_file_data)
+        # file_filters
         get_str_list_from_config.assert_any_call("file_filters", config_file_data, default=config.default_file_filters)
+        # file_copy_filters
         get_str_list_from_config.assert_any_call(
-            "file_copy_filters", config_file_data, default=config.default_file_copy_filters
+            "file_copy_filters",
+            config_file_data,
+            default=config.default_file_copy_filters,
         )
-        get_str_list_from_config.assert_any_call("skip_mutators", config_file_data, default=[])
-        assert get_str_list_from_config.call_count == 3
+        # work_folder
+        get_path_from_config.assert_any_call("work_folder", config_file_data, default=config.default_work_folder)
 
-        get_path_from_config.assert_called_with("work_folder", config_file_data, default=config.default_work_folder)
+        # echo_enabled
+        get_bool_from_config.assert_any_call(
+            "echo_enabled",
+            config_file_data,
+            default=True,
+            command_line=get_cmd_line_echo_enabled.return_value,
+        )
+        get_cmd_line_echo_enabled.assert_called_once_with("v")
 
+        # mutator_opts
         get_dict_from_config.assert_any_call("mutator_opts", config_file_data, default=config.default_mutator_opts)
-        get_dict_from_config.assert_any_call("runner_opts", config_file_data, default=config.default_runner_opts)
-        assert get_dict_from_config.call_count == 2
 
-        get_any_list_from_config.assert_called_with("add_mutators", config_file_data)
+        # skip_mutators
+        get_str_list_from_config.assert_any_call("skip_mutators", config_file_data, default=[])
+
+        # add_mutators
+        get_any_list_from_config.assert_any_call("add_mutators", config_file_data)
+
+        # runner
+        get_str_from_config.assert_any_call("runner", config_file_data, default=config.default_runner)
+
+        # runner_opts
+        get_dict_from_config.assert_any_call("runner_opts", config_file_data, default=config.default_runner_opts)
+
+        # reporters
+        get_str_list_from_config.assert_any_call("reporters", config_file_data, default=config.default_reporters)
+
+        # runner_opts
+        get_dict_from_config.assert_any_call("reporter_opts", config_file_data, default=config.default_reporter_opts)
+
+
+class TestGetCommandLineLoggingOptions:
+    @pytest.mark.parametrize(
+        ("verbosity", "expected"),
+        [
+            ("q", logging.ERROR),
+            ("v", logging.INFO),
+            ("vv", logging.DEBUG),
+            ("", None),
+            (None, None),
+        ],
+    )
+    def test_get_cmd_line_log_level(self, verbosity, expected):
+        assert config.get_cmd_line_log_level(verbosity) == expected
+
+    @pytest.mark.parametrize(
+        ("verbosity", "expected"),
+        [
+            ("q", False),
+            ("v", True),
+            ("vv", True),
+            ("", None),
+            (None, None),
+        ],
+    )
+    def test_get_cmd_line_echo_enabled(self, verbosity, expected):
+        assert config.get_cmd_line_echo_enabled(verbosity) == expected
 
 
 class TestGetConfigFilePath:
@@ -239,6 +329,60 @@ class TestGetSourceFolders:
 
         with pytest.raises(PoodleInputError, match="Source 'project' must be a folder."):
             config.get_source_folders(tuple(), {})
+
+
+class TestGetBoolFromConfig:
+    @pytest.mark.parametrize(("expected"), [(True), (False)])
+    def test_default(self, expected, get_option_from_config):
+        get_option_from_config.return_value = (None, None)
+
+        config.get_bool_from_config(
+            option_name="test_option",
+            config_data={"test_option": not expected},
+            command_line=not expected,
+            default=expected,
+        ) == expected
+
+        get_option_from_config.assert_called_with(
+            option_name="test_option",
+            config_data={"test_option": not expected},
+            command_line=not expected,
+        )
+
+    def test_default_inputs(self, get_option_from_config):
+        get_option_from_config.return_value = (None, None)
+
+        config.get_bool_from_config(
+            option_name="test_option",
+            config_data={"test_option": True},
+            default=True,
+        ) == True
+
+        get_option_from_config.assert_called_with(
+            option_name="test_option",
+            config_data={"test_option": True},
+            command_line=None,
+        )
+
+    @pytest.mark.parametrize(
+        ("option", "default", "expected"),
+        [
+            (True, False, True),
+            (False, True, False),
+            ("true", False, True),
+            ("False", True, False),
+            ("UNKNOWN", True, True),
+            ("UNKNOWN", False, False),
+        ],
+    )
+    def test_values(self, option, default, expected, get_option_from_config):
+        get_option_from_config.return_value = (option, None)
+
+        config.get_bool_from_config(
+            option_name="test_option",
+            config_data={},
+            default=default,
+        ) == expected
 
 
 class TestGetPathFromConfig:
