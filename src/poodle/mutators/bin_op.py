@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 import ast
-from typing import ClassVar
-
-from click import echo
+from typing import Callable, ClassVar
 
 from ..data_types import FileMutation, Mutator, PoodleConfig
 
@@ -75,9 +73,9 @@ class BinaryOperationMutator(ast.NodeVisitor, Mutator):
         },
     }
 
-    def __init__(self, config: PoodleConfig, **_) -> None:
+    def __init__(self, config: PoodleConfig, echo: Callable, *args, **kwargs) -> None:
         """Initialize BinaryOperationMutator."""
-        super().__init__(config)
+        super().__init__(config, echo, *args, **kwargs)
         self.mutants: list[FileMutation] = []
 
         level = self.config.mutator_opts.get("bin_op_level", "std")

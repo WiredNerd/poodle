@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import logging
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Callable
 
@@ -14,6 +15,8 @@ from .util import dynamic_import, files_list_for_folder
 if TYPE_CHECKING:
     from pathlib import Path
 
+logger = logging.getLogger(__name__)
+
 builtin_mutators = {
     "BinOp": BinaryOperationMutator,
 }
@@ -21,24 +24,29 @@ builtin_mutators = {
 
 def initialize_mutators(work: PoodleWork) -> list[Callable | Mutator]:
     """Initialize all mutators from standard list and from config options."""
+    logger.debug("START")
+
     mutators: list[Any] = [
         mutator for name, mutator in builtin_mutators.items() if name not in work.config.skip_mutators
     ]
     mutators.extend(work.config.add_mutators)
 
-    return [init_mutator(work, mut_def) for mut_def in mutators]
+    return [initialize_mutator(work, mut_def) for mut_def in mutators]
 
 
-def init_mutator(work: PoodleWork, mutator_def: Any) -> Callable | Mutator:  # noqa: ANN401
+def initialize_mutator(work: PoodleWork, mutator_def: Any) -> Callable | Mutator:  # noqa: ANN401
     """Import and initialize a Mutator.
 
     mutator_def may be string of object to import, Callable, Mutator subclass or Mutator subclass instance.
     """
+    logger.debug(mutator_def)
+
     if isinstance(mutator_def, str):
         mutator_def = dynamic_import(mutator_def)
 
     if isinstance(mutator_def, type) and issubclass(mutator_def, Mutator):
-        return mutator_def(config=work.config)
+        return mutator_def(config=work.config, echo=work.echo)
+
     if callable(mutator_def) or isinstance(mutator_def, Mutator):
         return mutator_def
 
@@ -51,6 +59,8 @@ def init_mutator(work: PoodleWork, mutator_def: Any) -> Callable | Mutator:  # n
 
 def create_mutants_for_all_mutators(work: PoodleWork) -> list[Mutant]:
     """Create consolidated, flattened list of all mutants to be tried."""
+    logger.debug("START")
+
     return [
         mutant
         for folder, files in get_target_files(work).items()
@@ -65,6 +75,7 @@ def create_mutants_for_all_mutators(work: PoodleWork) -> list[Mutant]:
 
 def get_target_files(work: PoodleWork) -> dict[Path, list[Path]]:
     """Create mapping from each source folder to all mutable files in that folder."""
+    logger.debug("START")
     return {
         folder: files_list_for_folder(
             "*.py",
@@ -83,6 +94,8 @@ def create_mutants_for_file(work: PoodleWork, folder: Path, file: Path) -> list[
     * TODO: Apply Filters.
     * Compile list of Mutants.
     """
+    logger.debug("Create Mutants for file %s", file)
+
     parsed_ast = ast.parse(file.read_bytes(), file)
 
     def call_mutator(mutator: Callable | Mutator) -> list[FileMutation]:

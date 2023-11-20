@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
 from . import PoodleInputError, poodle_config, tomllib
 from .data_types import PoodleConfig
+
+default_log_format = "%(levelname)s [%(process)d] %(name)s.%(funcName)s:%(lineno)d - %(message)s"
+default_log_level = logging.WARN
 
 default_source_folders = [Path("src"), Path("lib")]
 default_file_filters = [r"^test_.*\.py", r"_test\.py$"]
@@ -20,10 +24,28 @@ default_reporters = ["summary", "not_found"]
 default_reporter_opts = {}
 
 
-def build_config(command_line_sources: tuple[Path], config_file: Path | None) -> PoodleConfig:
+def build_config(command_line_sources: tuple[Path], config_file: Path | None, verbosity: str | None) -> PoodleConfig:
     """Build PoodleConfig object."""
     config_file_path = get_config_file_path(config_file)
     config_file_data = get_config_file_data(config_file_path)
+
+    cmd_log_level = {
+        "q": logging.ERROR,
+        "v": logging.INFO,
+        "vv": logging.DEBUG,
+    }.get(verbosity, None)
+
+    log_format = get_str_from_config("log_format", config_file_data, default=default_log_format)
+    log_level: int | str = get_any_from_config(
+        "log_level", config_file_data, default=default_log_level, command_line=cmd_log_level
+    )
+    logging.basicConfig(format=log_format, level=log_level)
+
+    cmd_echo_enabled = {
+        "q": False,
+        "v": True,
+        "vv": True,
+    }.get(verbosity, None)
 
     return PoodleConfig(
         config_file=config_file_path,
@@ -35,6 +57,11 @@ def build_config(command_line_sources: tuple[Path], config_file: Path | None) ->
             default=default_file_copy_filters,
         ),
         work_folder=get_path_from_config("work_folder", config_file_data, default=default_work_folder),
+        log_format=log_format,
+        log_level=log_level,
+        echo_enabled=get_bool_from_config(
+            "echo_enabled", config_file_data, default=True, command_line=cmd_echo_enabled
+        ),
         mutator_opts=get_dict_from_config("mutator_opts", config_file_data, default=default_mutator_opts),
         skip_mutators=get_str_list_from_config("skip_mutators", config_file_data, default=[]),
         add_mutators=get_any_list_from_config("add_mutators", config_file_data),
@@ -114,6 +141,27 @@ def get_source_folders(command_line_sources: tuple[Path], config_data: dict) -> 
             raise PoodleInputError(msg)
 
     return source_folders
+
+
+def get_bool_from_config(
+    option_name: str,
+    config_data: dict,
+    default: bool,
+    command_line: bool | str | None = None,
+) -> bool:
+    """Retrieve Config Option that should be a Boolean.
+
+    Retrieve highest priority value from config sources.
+    """
+    value, _ = get_option_from_config(option_name=option_name, config_data=config_data, command_line=command_line)
+
+    if isinstance(value, bool):
+        return value
+
+    if isinstance(value, str):
+        return value.upper() == "TRUE"
+
+    return default
 
 
 def get_path_from_config(
@@ -289,7 +337,7 @@ def get_option_from_config(
 
     Returns: Identified Config value, Source Name
     """
-    if command_line:
+    if command_line or command_line == False:
         return command_line, "Command Line"
 
     if hasattr(poodle_config, option_name):

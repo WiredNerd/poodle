@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-def runner(config: PoodleConfig, run_folder: Path, mutant: Mutant, **_) -> MutantTrialResult:
+def runner(config: PoodleConfig, run_folder: Path, mutant: Mutant, *_, **__) -> MutantTrialResult:
     """Run test of mutant with command line command in subprocess."""
     run_env = os.environ.copy()
     python_path = os.pathsep.join(

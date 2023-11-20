@@ -2,11 +2,16 @@
 
 from __future__ import annotations
 
+import logging
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable
 
-from ..reporters.basic import report_not_found, report_summary
+import click
+
 from .data import PoodleConfig
 from .interfaces import Mutator
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -23,6 +28,8 @@ class PoodleWork:
         self.mutators: list[Mutator | Callable] = []
         self.runner: Callable | None = None
         self.reporters: list[Callable] = []
+
+        self.echo = click.echo if config.echo_enabled else lambda *_, **__: None
 
         def number_generator() -> Generator[int, Any, None]:
             i = 1

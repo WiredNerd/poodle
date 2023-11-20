@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from click import echo
+from typing import Callable
 
 from ..data_types import PoodleConfig, TestingResults
 
 
-def report_summary(config: PoodleConfig, testing_results: TestingResults, **_) -> None:  # noqa: ARG001
+def report_summary(
+    echo: Callable, testing_results: TestingResults, *_, **__
+) -> None:  # noqa: ARG001
     summary = testing_results.summary
     if summary.trials < 1:
         echo("No mutants found to test.")
@@ -21,7 +23,9 @@ def report_summary(config: PoodleConfig, testing_results: TestingResults, **_) -
         echo(f" - {summary.errors} mutant(s) could not be tested due to an error.")
 
 
-def report_not_found(config: PoodleConfig, testing_results: TestingResults, **_) -> None:  # noqa: ARG001
+def report_not_found(
+     echo: Callable, testing_results: TestingResults, *_, **__
+) -> None:  # noqa: ARG001
     failed_trials = [trial for trial in testing_results.mutant_trials if not trial.result.passed]
     if failed_trials:
         echo("\nMutants Not Found:")

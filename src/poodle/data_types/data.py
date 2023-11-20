@@ -18,6 +18,9 @@ class PoodleConfig:
     file_filters: list[str]
     file_copy_filters: list[str]
     work_folder: Path
+    log_format: str
+    log_level: int | str
+    echo_enabled: bool
 
     mutator_opts: dict
     skip_mutators: list[str]

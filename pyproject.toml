@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "poodle"
+name = "poodle-test"
 description = "Mutation Testing Tool"
-version = "0.0.0.dev1"
+version = "0.0.1.a1"
 license = { file = "LICENSE" }
 keywords = [
     "test",
@@ -31,7 +31,7 @@ classifiers = [
 dependencies = ["click>=8", "tomli>=2; python_version<'3.11'"]
 
 [project.urls]
-# "Documentation" = "https://poodle.readthedocs.io/"
+"Documentation" = "https://poodle.readthedocs.io/"
 "Homepage" = "https://github.com/WiredNerd/poodle"
 "Issue Tracker" = "https://github.com/WiredNerd/poodle/issues"
 
