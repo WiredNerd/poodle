@@ -13,6 +13,10 @@ class PoodleInputError(ValueError):
     """An input value from Command Line, poodle_config.py, or a config file was invalid."""
 
 
+class PoodleTrialRunError(Exception):
+    """An unexpected error occurred when running a mutation trial or clean run."""
+
+
 try:
     import tomllib  # type: ignore [import-not-found]
 except ModuleNotFoundError:  # < py3.11

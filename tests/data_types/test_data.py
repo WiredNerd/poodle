@@ -21,7 +21,7 @@ class TestPoodleConfig:
             runner="command_line",
             runner_opts={"command_line": "pytest tests"},
             reporters=["summary"],
-            reporter_opts={"summary": "value"}
+            reporter_opts={"summary": "value"},
         )
 
     def test_poodle_config(self):
@@ -32,9 +32,9 @@ class TestPoodleConfig:
         assert config.file_filters == ["test_"]
         assert config.file_copy_filters == ["skip"]
         assert config.work_folder == Path(".poodle")
-        assert config.log_format=="$(message)s"
-        assert config.log_level==0
-        assert config.echo_enabled==True
+        assert config.log_format == "$(message)s"
+        assert config.log_level == 0
+        assert config.echo_enabled == True
         assert config.mutator_opts == {"bin_op_level": 2}
         assert config.skip_mutators == ["null"]
         assert config.add_mutators == ["custom"]

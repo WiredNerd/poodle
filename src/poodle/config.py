@@ -19,9 +19,11 @@ default_file_copy_filters = [r"^test_.*\.py", r"_test\.py$", r"^\."]
 default_work_folder = Path(".poodle-temp")
 default_mutator_opts: dict[str, Any] = {}
 default_runner = "command_line"
-default_runner_opts = {"command_line": "pytest -x --assert=plain --no-header --no-summary -o pythonpath="}
+default_runner_opts: dict[str, Any] = {
+    "command_line": "pytest -x --assert=plain --no-header --no-summary -o pythonpath="
+}
 default_reporters = ["summary", "not_found"]
-default_reporter_opts = {}
+default_reporter_opts: dict[str, Any] = {}
 
 
 def build_config(command_line_sources: tuple[Path], config_file: Path | None, verbosity: str | None) -> PoodleConfig:
@@ -67,19 +69,23 @@ def build_config(command_line_sources: tuple[Path], config_file: Path | None, ve
 
 
 def get_cmd_line_log_level(verbosity: str | None) -> int | None:
-    return {
-        "q": logging.ERROR,
-        "v": logging.INFO,
-        "vv": logging.DEBUG,
-    }.get(verbosity, None)
+    if verbosity:
+        return {
+            "q": logging.ERROR,
+            "v": logging.INFO,
+            "vv": logging.DEBUG,
+        }.get(verbosity, None)
+    return None
 
 
 def get_cmd_line_echo_enabled(verbosity: str | None) -> bool | None:
-    return {
-        "q": False,
-        "v": True,
-        "vv": True,
-    }.get(verbosity, None)
+    if verbosity:
+        return {
+            "q": False,
+            "v": True,
+            "vv": True,
+        }.get(verbosity, None)
+    return None
 
 
 def get_config_file_path(config_file: Path | None) -> Path | None:

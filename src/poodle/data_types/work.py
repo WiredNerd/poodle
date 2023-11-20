@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any, Callable
 
 import click
 
+from .. import PoodleTrialRunError
 from .data import PoodleConfig
 from .interfaces import Mutator
 
@@ -26,7 +27,7 @@ class PoodleWork:
         self.config = config
         self.folder_zips: dict[Path, Path] = {}
         self.mutators: list[Mutator | Callable] = []
-        self.runner: Callable | None = None
+        self.runner: Callable = lambda *_, **__: None
         self.reporters: list[Callable] = []
 
         self.echo = click.echo if config.echo_enabled else lambda *_, **__: None
