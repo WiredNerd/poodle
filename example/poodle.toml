@@ -1,5 +1,7 @@
 [poodle]
+# skip_mutators = "BinOp"
 
+# add_mutators = ["poodle.mutate.bin_op.BinaryOperationMutator"]
 
 [poodle.mutator_opts]
 bin_op_level = "std"

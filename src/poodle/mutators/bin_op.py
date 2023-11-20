@@ -1,40 +1,21 @@
+"""Create Mutants."""
+
 from __future__ import annotations
 
 import ast
-from abc import ABC, abstractmethod
+from typing import ClassVar
 
-from poodle.data import FileMutant, PoodleConfig
+from click import echo
 
-# import ast
-# from poodle import PoodleConfig, FileMutant
-# create_mutants(config: PoodleConfig, parsed_ast: ast.Module) -> list[FileMutant]:
+from ..data_types import FileMutation, Mutator, PoodleConfig
 
 
-class PoodleMutator(ABC):
-    def __init__(self, config: PoodleConfig):
-        self.config = config
+class BinaryOperationMutator(ast.NodeVisitor, Mutator):
+    """Mutate Binary Operations."""
 
-    @abstractmethod
-    def create_mutants(self, parsed_ast: ast.Module) -> list[FileMutant]:
-        pass
-
-
-class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
-    def __init__(self, config: PoodleConfig):
-        super().__init__(config)
-        self.file_mutants: list[FileMutant] = []
-
-        level = self.config.mutator_opts.get("bin_op_level", "std")
-        if level not in self.type_map_levels:
-            print(f"WARN: Invalid value operator_opts.bin_op_level={level}.  Using Default value 'std'")
-            level = "std"
-
-        self.type_map = self.type_map_levels[level]
-
-    def create_mutants(self, parsed_ast: ast.Module) -> list[FileMutant]:
-        self.visit(parsed_ast)
-        return self.file_mutants
-
+    # Binary Operators as of Python 3.12:
+    # https://docs.python.org/3/library/ast.html#ast.BinOp
+    # https://www.w3schools.com/python/python_operators.asp
     # ast.Add       +
     # ast.Sub       -
     # ast.Mult      *
@@ -47,16 +28,16 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
     # ast.BitOr     |
     # ast.BitXor    ^
     # ast.BitAnd    &
-    # ast.MatMult   @ - Matrix Multiplication
+    # ast.MatMult   @
 
-    type_map_levels = {
+    type_map_levels: ClassVar[dict[str, dict]] = {
         "min": {
-            ast.Add: ast.Sub,
-            ast.Sub: ast.Add,
-            ast.Mult: ast.Div,
-            ast.Div: ast.Mult,
+            ast.Add: ast.Mult,
+            ast.Sub: ast.Div,
+            ast.Mult: ast.Add,
+            ast.Div: ast.Sub,
             ast.FloorDiv: ast.Div,
-            ast.Mod: ast.FloorDiv,
+            ast.Mod: ast.Sub,
             ast.Pow: ast.Mult,
             ast.LShift: ast.RShift,
             ast.RShift: ast.LShift,
@@ -69,9 +50,9 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
             ast.Sub: [ast.Add, ast.Div],
             ast.Mult: [ast.Div, ast.Add],
             ast.Div: [ast.Mult, ast.Sub],
-            ast.FloorDiv: ast.Div,
-            ast.Mod: ast.FloorDiv,
-            ast.Pow: ast.Mult,
+            ast.FloorDiv: [ast.Mult, ast.Div],
+            ast.Mod: [ast.FloorDiv, ast.Sub],
+            ast.Pow: [ast.Mult, ast.Div],
             ast.LShift: ast.RShift,
             ast.RShift: ast.LShift,
             ast.BitOr: [ast.BitAnd, ast.BitXor],
@@ -94,20 +75,39 @@ class BinaryOperationMutator(ast.NodeVisitor, PoodleMutator):
         },
     }
 
-    def visit_BinOp(self, node: ast.BinOp):
+    def __init__(self, config: PoodleConfig, **_) -> None:
+        """Initialize BinaryOperationMutator."""
+        super().__init__(config)
+        self.mutants: list[FileMutation] = []
+
+        level = self.config.mutator_opts.get("bin_op_level", "std")
+        if level not in self.type_map_levels:
+            echo(f"WARN: Invalid value operator_opts.bin_op_level={level}.  Using Default value 'std'")  # TODO: Logging
+            level = "std"
+
+        self.type_map: dict = self.type_map_levels[level]
+
+    def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
+        """Visit all Binary Operations and return created mutants."""
+        self.visit(parsed_ast)
+        return self.mutants
+
+    def visit_BinOp(self, node: ast.BinOp) -> None:  # noqa: N802
+        """Identify replacement Operations and create Mutants."""
         if type(node.op) in self.type_map:
             mut_types = self.type_map[type(node.op)]
 
             if not isinstance(mut_types, list):
-                self.file_mutants.append(self.create_file_mutant(node, mut_types))
+                self.mutants.append(self.create_mutant(node, mut_types))
             else:
-                self.file_mutants.extend([self.create_file_mutant(node, new_type) for new_type in mut_types])
+                self.mutants.extend([self.create_mutant(node, new_type) for new_type in mut_types])
 
-    def create_file_mutant(self, node: ast.BinOp, new_type: type) -> FileMutant:
-        return FileMutant(
+    def create_mutant(self, node: ast.BinOp, new_type: type) -> FileMutation:
+        """Create Mutants."""
+        return FileMutation(
             lineno=node.lineno,
             col_offset=node.col_offset,
-            end_lineno=node.end_lineno,
-            end_col_offset=node.end_col_offset,
+            end_lineno=node.end_lineno or node.lineno,
+            end_col_offset=node.end_col_offset or node.col_offset,
             text=ast.unparse(ast.BinOp(left=node.left, op=new_type(), right=node.right)),
         )

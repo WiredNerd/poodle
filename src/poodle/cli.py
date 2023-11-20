@@ -1,19 +1,21 @@
+from __future__ import annotations
+
 import sys
+from pathlib import Path
 
 import click
-from click import echo
 
-from poodle import core
-from poodle.config import build_config
+from . import core
+from .config import build_config
 
 
 @click.command()
-@click.argument("source", type=click.Path(exists=True), nargs=-1)
-@click.option("-C", "--config_file", help="Configuration File.")
+@click.argument("source", type=click.Path(exists=True, path_type=Path), nargs=-1)
+@click.option("-C", "--config_file", help="Configuration File.", type=click.Path(exists=True, path_type=Path))
 # @click.option("-P", "--max_parallel", type=int, help="Maximum number of parallel runners.")
 # @click.option("-F", "--folder-prefix", help="Prefix for runner folder names")
 # @click.option("-R", "--runner", help="Runner Name or Module Name for runner to use")
-def main(source, config_file):
+def main(source: tuple[Path], config_file: Path):
     """Run Mutation testing"""
     try:
         config = build_config(source, config_file)

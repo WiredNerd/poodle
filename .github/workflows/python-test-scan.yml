@@ -4,14 +4,14 @@ on:
   push:
     paths:
         - requirements.txt
-        - src/*
-        - test/*
+        - src/**
+        - tests/**
         - .github/workflows/python-test-scan.yml
   pull_request:
     paths:
         - requirements.txt
-        - src/*
-        - test/*
+        - src/**
+        - tests/**
   workflow_dispatch:
 
 concurrency: updates-project
@@ -24,22 +24,22 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.8'
+          python-version: '3.11'
       - name: Install Dependencies and Tools
         run: |
           pip install -r requirements.txt --upgrade
       - run: pytest --cov=src
-      - name: save-json-report
-        if: ${{ github.event_name != 'pull_request' }}
+      - name: commit-json-report
+        if: ${{ github.ref_name == 'main' }}
         uses: EndBug/add-and-commit@v9
         with:
           add: "code-coverage.json"
           pull: "--rebase=true --autostash"
-      - name: save-reports
+      - name: artifact-html-report
         uses: actions/upload-artifact@v3
         with:
           name: Coverage Report
-          path: reports/coverage
+          path: cov-html
   isort:
     name: Import Checks with ISort
     runs-on: [ubuntu-latest]
@@ -47,13 +47,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.8'
+          python-version: '3.11'
       - name: Install Dependencies and Tools
         run: |
           pip install -r requirements.txt --upgrade
           pip install isort --upgrade
       - run: python3 -m isort src --check --diff
-      - run: python3 -m isort test --check --diff
+      - run: python3 -m isort tests --check --diff
+        if: ${{ always() }}
   black:
     name: Code Format with Black
     runs-on: [ubuntu-latest]
@@ -61,13 +62,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.8'
+          python-version: '3.11'
       - name: Install Dependencies and Tools
         run: |
           pip install -r requirements.txt --upgrade
           pip install black --upgrade
       - run: black --check src --diff
-      - run: black --check test --diff
+      - run: black --check tests --diff
+        if: ${{ always() }}
   mypy:
     name: Type Checks with Mypy
     runs-on: [ubuntu-latest]
@@ -75,16 +77,45 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.8'
+          python-version: '3.11'
       - name: Install Dependencies and Tools
         run: |
           pip install -r requirements.txt --upgrade
-      - run: mypy src
+          pip install mypy --upgrade
+      - run: mypy src tests --python-version 3.9
+        if: ${{ always() }}
+      - run: mypy src tests --python-version 3.10
+        if: ${{ always() }}
+      - run: mypy src tests --python-version 3.11
+        if: ${{ always() }}
+      - run: mypy src tests --python-version 3.12
+        if: ${{ always() }}
   ruff:
     name: Linter Checks with Ruff
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
-      - uses: chartboost/ruff-action@v1
+      - name: Ruff src
+        uses: chartboost/ruff-action@v1
         with:
           src: src
+          args: check --show-source
+      - name: Ruff src diff
+        uses: chartboost/ruff-action@v1
+        if: ${{ always() }}
+        with:
+          src: src
+          args: check --diff
+      - name: Ruff tests
+        uses: chartboost/ruff-action@v1
+        if: ${{ always() }}
+        with:
+          src: tests
+          args: check --show-source
+      - name: Ruff tests diff
+        uses: chartboost/ruff-action@v1
+        if: ${{ always() }}
+        with:
+          src: tests
+          args: check --diff
+  

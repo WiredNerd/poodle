@@ -34,6 +34,7 @@ Replace: With
         '|': '&',
         '^': '&',
         '**': '*',
+
         '~': '',
 
         '+=': ['-=', '='],
@@ -71,12 +72,6 @@ Replace: With
         'True': 'False',
         'False': 'True',
 
-## number_mutation
-https://docs.python.org/3/reference/lexical_analysis.html#integer-literals
-Adds 1 to integers. 
-Add 1 to floats between 1e-5 < abs(parsed) < 1e5 or parsed==0.0
-    Else multiply by 2
-
 ## name_mutation
 Replace: With
         'True': 'False',
@@ -84,6 +79,19 @@ Replace: With
         'deepcopy': 'copy',
         'None': '""',
 
+## and_or_test_mutation
+Replace: With
+and: or
+or: and
+
+
+## number_mutation
+https://docs.python.org/3/reference/lexical_analysis.html#integer-literals
+Adds 1 to integers. 
+Add 1 to floats between 1e-5 < abs(parsed) < 1e5 or parsed==0.0
+    Else multiply by 2
+
+## function
 Replace Function Call with None
 Replace array/dictionary lookup with None
 
@@ -102,11 +110,6 @@ Adds "XX" to the beginning and ending of the fString
 ## argument_mutation
 Mutate the arguments one by one from dict(a=b) to dict(aXX=b)
 
-## and_or_test_mutation
-Replace: With
-and: or
-or: and
-
 ## lambda_mutation
 If lambda simply returns None, instead return 0
 Else change lambda to simply return None
@@ -117,47 +120,4 @@ else change last value to None
 
 ## decorator_mutation
 Remove decorator
-
-# mutatest mutators 3.1.0
-
-## visit_AugAssign
-Ignore if op is not Add,Sub,Mult,Div
-Randomly replaces with different type of AugAssign +=, -=, *=, /+
-
-## visit_BinOp
-Replace with random other member of group:
-Group: ast.Add, ast.Sub, ast.Div, ast.Mult, ast.Pow, ast.Mod, ast.FloorDiv
-Group: BitAnd, BitOr, BitXor
-Group: LShift, RShift
-
-## visit_BoolOp
-Replace with random other member of group:
-Group: ast.And, ast.Or
-
-## visit_Compare
-Replace with random other member of group:
-Group: ast.Eq, ast.NotEq, ast.Lt, ast.LtE, ast.Gt, ast.GtE
-Group: ast.Is, ast.IsNot
-Group: ast.In, ast.NotIn
-
-Logic about cases where there would be multiple ops?
-
-## visit_If
-If True changes to If False
-If False changes to If True
-All other If statements not mutated
-
-## visit_Index
-Depreciated, use index value instead
-Replace with random other member of group:
-Group: 0, positive (1), negative (-1)
-
-## visit_Constant (mixin_NameConstant)
-Replace with random other member of group:
-Group True, False, None
-Ignore other types
-
-# visit_Subscript
-Group (no lower bound), (no upper bound), (unbounded)
-Ignore others
 
