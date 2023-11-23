@@ -47,3 +47,19 @@ def test_bit_xor():
 
 def test_bit_and():
     assert bit_and(5, 12) == 4
+
+
+def test_unary_add():
+    assert unary_add(4) == 4
+
+
+def test_unary_sub():
+    assert unary_sub(5) == -5
+
+
+def test_unary_not():
+    assert unary_not(True) is False
+
+
+def test_unary_invert():
+    assert unary_invert(4) == -5

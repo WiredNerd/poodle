@@ -20,7 +20,7 @@ default_work_folder = Path(".poodle-temp")
 default_mutator_opts: dict[str, Any] = {}
 default_runner = "command_line"
 default_runner_opts: dict[str, Any] = {
-    "command_line": "pytest -x --assert=plain --no-header --no-summary -o pythonpath="
+    "command_line": "pytest -x --assert=plain -o pythonpath="
 }
 default_reporters = ["summary", "not_found"]
 default_reporter_opts: dict[str, Any] = {}

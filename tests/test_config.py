@@ -39,7 +39,7 @@ def test_defaults():
     assert config.default_work_folder == Path(".poodle-temp")
     assert config.default_mutator_opts == {}
     assert config.default_runner_opts == {
-        "command_line": "pytest -x --assert=plain --no-header --no-summary -o pythonpath="
+        "command_line": "pytest -x --assert=plain -o pythonpath="
     }
 
 

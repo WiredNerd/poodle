@@ -75,7 +75,7 @@ class TestCommandLineRunner:
 
             assert out.passed is True
             assert out.reason_code == out.RC_FOUND
-            assert out.reason_desc == "error"
+            assert out.reason_desc == "output\nerror"
 
     def test_unset_path(self, subprocess_run):
         with mock.patch.dict("os.environ", {}, clear=True):
@@ -124,7 +124,7 @@ class TestCommandLineRunner:
 
             assert out.passed is True
             assert out.reason_code == out.RC_FOUND
-            assert out.reason_desc == "error"
+            assert out.reason_desc == "output\nerror"
 
     def test_rc_0(self, subprocess_run):
         with mock.patch.dict("os.environ", {}, clear=True):
@@ -222,4 +222,4 @@ class TestCommandLineRunner:
 
             assert out.passed is True
             assert out.reason_code == out.RC_OTHER
-            assert out.reason_desc == "error"
+            assert out.reason_desc == "output\nerror"

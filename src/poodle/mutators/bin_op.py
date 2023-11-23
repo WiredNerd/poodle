@@ -1,4 +1,4 @@
-"""Create Mutants."""
+"""Mutate Operations."""
 
 from __future__ import annotations
 
@@ -9,10 +9,10 @@ from ..data_types import FileMutation, Mutator, PoodleConfig
 
 
 class BinaryOperationMutator(ast.NodeVisitor, Mutator):
-    """Mutate Binary Operations."""
+    """Mutate Binary Operations and Operations in Augmented Assignments."""
 
     # Binary Operators as of Python 3.12:
-    # https://docs.python.org/3/library/ast.html#ast.BinOp
+    # https://docs.python.org/3/library/ast.html#ast.AugAssign
     # https://www.w3schools.com/python/python_operators.asp
     # ast.Add       +
     # ast.Sub       -
@@ -78,17 +78,50 @@ class BinaryOperationMutator(ast.NodeVisitor, Mutator):
         super().__init__(config, echo, *args, **kwargs)
         self.mutants: list[FileMutation] = []
 
-        level = self.config.mutator_opts.get("bin_op_level", "std")
+        level = self.config.mutator_opts.get("operator_level", "std")
         if level not in self.type_map_levels:
-            echo(f"WARN: Invalid value operator_opts.bin_op_level={level}.  Using Default value 'std'")  # TODO: Logging
+            echo(f"WARN: Invalid value operator_opts.operator_level={level}.  Using Default value 'std'")
             level = "std"
 
         self.type_map: dict = self.type_map_levels[level]
 
     def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
-        """Visit all Binary Operations and return created mutants."""
+        """Visit ast nodes and return created mutants."""
+        self.mutants = []
         self.visit(parsed_ast)
         return self.mutants
+
+    def visit_AugAssign(self, node: ast.AugAssign) -> None:
+        """Identify replacement Operations and create Mutants."""
+        self.mutants.append(self.create_assign_mutant(node))
+
+        if type(node.op) in self.type_map:
+            mut_types = self.type_map[type(node.op)]
+
+            if not isinstance(mut_types, list):
+                self.mutants.append(self.create_aug_assign_mutant(node, mut_types))
+            else:
+                self.mutants.extend([self.create_aug_assign_mutant(node, new_type) for new_type in mut_types])
+
+    def create_aug_assign_mutant(self, node: ast.AugAssign, new_type: type) -> FileMutation:
+        """Create replacement AugAssign with alternate operation."""
+        return FileMutation(
+            lineno=node.lineno,
+            col_offset=node.col_offset,
+            end_lineno=node.end_lineno or node.lineno,
+            end_col_offset=node.end_col_offset or node.col_offset,
+            text=ast.unparse(ast.AugAssign(target=node.target, op=new_type(), value=node.value)),
+        )
+
+    def create_assign_mutant(self, node: ast.AugAssign) -> FileMutation:
+        """Create Assign to replace AugAssign."""
+        return FileMutation(
+            lineno=node.lineno,
+            col_offset=node.col_offset,
+            end_lineno=node.end_lineno or node.lineno,
+            end_col_offset=node.end_col_offset or node.col_offset,
+            text=ast.unparse(ast.Assign(lineno=node.lineno, targets=[node.target], value=node.value)),
+        )
 
     def visit_BinOp(self, node: ast.BinOp) -> None:  # noqa: N802
         """Identify replacement Operations and create Mutants."""
@@ -96,11 +129,11 @@ class BinaryOperationMutator(ast.NodeVisitor, Mutator):
             mut_types = self.type_map[type(node.op)]
 
             if not isinstance(mut_types, list):
-                self.mutants.append(self.create_mutant(node, mut_types))
+                self.mutants.append(self.create_bin_op_mutant(node, mut_types))
             else:
-                self.mutants.extend([self.create_mutant(node, new_type) for new_type in mut_types])
+                self.mutants.extend([self.create_bin_op_mutant(node, new_type) for new_type in mut_types])
 
-    def create_mutant(self, node: ast.BinOp, new_type: type) -> FileMutation:
+    def create_bin_op_mutant(self, node: ast.BinOp, new_type: type) -> FileMutation:
         """Create Mutants."""
         return FileMutation(
             lineno=node.lineno,

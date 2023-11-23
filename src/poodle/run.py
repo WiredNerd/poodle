@@ -152,8 +152,15 @@ def run_mutant_trial(  # noqa: PLR0913
         target_file = Path(run_folder / mutant.source_file)
         file_lines = target_file.read_text("utf-8").splitlines(keepends=True)
 
-        prefix = file_lines[mutant.lineno - 1][: mutant.col_offset]
-        suffix = file_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+        try:
+            prefix = file_lines[mutant.lineno - 1][: mutant.col_offset]
+            suffix = file_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+        except IndexError:
+            echo(mutant)
+            echo(len(file_lines))
+            echo(file_lines[mutant.lineno - 1])
+            echo(len(file_lines[mutant.lineno - 1]))
+            raise
 
         file_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
         for _ in range(mutant.lineno, mutant.end_lineno):

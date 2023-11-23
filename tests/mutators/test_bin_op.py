@@ -30,7 +30,7 @@ class TestBinaryOperationMutator:
         mock_echo.assert_not_called()
 
     def test_init_valid_level(self, mock_echo):
-        config = mock.MagicMock(mutator_opts={"bin_op_level": "min"})
+        config = mock.MagicMock(mutator_opts={"operator_level": "min"})
         mutator = BinaryOperationMutator(config, mock_echo)
         assert mutator.config == config
         assert mutator.mutants == []
@@ -38,12 +38,12 @@ class TestBinaryOperationMutator:
         mock_echo.assert_not_called()
 
     def test_init_invalid_level(self, mock_echo):
-        config = mock.MagicMock(mutator_opts={"bin_op_level": "super"})
+        config = mock.MagicMock(mutator_opts={"operator_level": "super"})
         mutator = BinaryOperationMutator(config, mock_echo)
         assert mutator.config == config
         assert mutator.mutants == []
         assert mutator.type_map == mutator.type_map_levels["std"]
-        mock_echo.assert_called_with("WARN: Invalid value operator_opts.bin_op_level=super.  Using Default value 'std'")
+        mock_echo.assert_called_with("WARN: Invalid value operator_opts.operator_level=super.  Using Default value 'std'")
 
     def test_create_mutants(self, mock_echo):
         mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={}), mock_echo)
@@ -87,7 +87,7 @@ class TestBinaryOperationMutator:
         ],
     )
     def test_visit_BinOp_level_min(self, op_type, text_out, mock_echo):
-        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": "min"}), mock_echo)
+        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"operator_level": "min"}), mock_echo)
 
         node = ast.BinOp()
         node.left = ast.Constant()
@@ -124,7 +124,7 @@ class TestBinaryOperationMutator:
         ],
     )
     def test_visit_BinOp_level_std(self, op_type, text_out, mock_echo):
-        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": "std"}), mock_echo)
+        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"operator_level": "std"}), mock_echo)
 
         node = ast.BinOp()
         node.left = ast.Constant()
@@ -161,7 +161,7 @@ class TestBinaryOperationMutator:
         ],
     )
     def test_visit_BinOp_level_max(self, op_type, text_out, mock_echo):
-        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"bin_op_level": "max"}), mock_echo)
+        mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"operator_level": "max"}), mock_echo)
 
         node = ast.BinOp()
         node.left = ast.Constant()
@@ -195,7 +195,7 @@ class TestBinaryOperationMutator:
         new_type = ast.Sub
 
         mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={}), mock_echo)
-        fm = mutator.create_mutant(node, new_type)
+        fm = mutator.create_bin_op_mutant(node, new_type)
 
         assert fm.lineno == 20
         assert fm.col_offset == 4

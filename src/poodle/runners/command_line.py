@@ -48,7 +48,7 @@ def runner(config: PoodleConfig, run_folder: Path, mutant: Mutant, *_, **__) -> 
         return MutantTrialResult(
             passed=True,
             reason_code=MutantTrialResult.RC_FOUND,
-            reason_desc=result.stderr.decode("utf-8"),
+            reason_desc=result.stdout.decode("utf-8") + "\n" + result.stderr.decode("utf-8"),
         )
     if result.returncode == 0:
         return MutantTrialResult(
@@ -58,5 +58,5 @@ def runner(config: PoodleConfig, run_folder: Path, mutant: Mutant, *_, **__) -> 
     return MutantTrialResult(
         passed=True,
         reason_code=MutantTrialResult.RC_OTHER,
-        reason_desc=result.stderr.decode("utf-8"),
+        reason_desc=result.stdout.decode("utf-8") + "\n" + result.stderr.decode("utf-8"),
     )
