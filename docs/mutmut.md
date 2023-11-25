@@ -91,7 +91,7 @@ Adds 1 to integers.
 Add 1 to floats between 1e-5 < abs(parsed) < 1e5 or parsed==0.0
     Else multiply by 2
 
-## function
+## name_mutation function
 Replace Function Call with None
 Replace array/dictionary lookup with None
 

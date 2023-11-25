@@ -32,3 +32,11 @@ def value_in(a, b):
 
 def value_not_in(a, b):
     return a not in b
+
+
+def is_a_or_b(a, b):
+    return a or b
+
+
+def is_a_and_b(a, b):
+    return a and b

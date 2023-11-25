@@ -105,22 +105,14 @@ class BinaryOperationMutator(ast.NodeVisitor, Mutator):
 
     def create_aug_assign_mutant(self, node: ast.AugAssign, new_type: type) -> FileMutation:
         """Create replacement AugAssign with alternate operation."""
-        return FileMutation(
-            lineno=node.lineno,
-            col_offset=node.col_offset,
-            end_lineno=node.end_lineno or node.lineno,
-            end_col_offset=node.end_col_offset or node.col_offset,
-            text=ast.unparse(ast.AugAssign(target=node.target, op=new_type(), value=node.value)),
+        return self.create_file_mutation(
+            node, ast.unparse(ast.AugAssign(target=node.target, op=new_type(), value=node.value))
         )
 
     def create_assign_mutant(self, node: ast.AugAssign) -> FileMutation:
         """Create Assign to replace AugAssign."""
-        return FileMutation(
-            lineno=node.lineno,
-            col_offset=node.col_offset,
-            end_lineno=node.end_lineno or node.lineno,
-            end_col_offset=node.end_col_offset or node.col_offset,
-            text=ast.unparse(ast.Assign(lineno=node.lineno, targets=[node.target], value=node.value)),
+        return self.create_file_mutation(
+            node, ast.unparse(ast.Assign(lineno=node.lineno, targets=[node.target], value=node.value))
         )
 
     def visit_BinOp(self, node: ast.BinOp) -> None:  # noqa: N802
@@ -135,10 +127,4 @@ class BinaryOperationMutator(ast.NodeVisitor, Mutator):
 
     def create_bin_op_mutant(self, node: ast.BinOp, new_type: type) -> FileMutation:
         """Create Mutants."""
-        return FileMutation(
-            lineno=node.lineno,
-            col_offset=node.col_offset,
-            end_lineno=node.end_lineno or node.lineno,
-            end_col_offset=node.end_col_offset or node.col_offset,
-            text=ast.unparse(ast.BinOp(left=node.left, op=new_type(), right=node.right)),
-        )
+        return self.create_file_mutation(node, ast.unparse(ast.BinOp(left=node.left, op=new_type(), right=node.right)))

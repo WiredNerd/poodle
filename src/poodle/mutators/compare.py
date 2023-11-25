@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import ast
+from _ast import BoolOp
 from copy import deepcopy
+from typing import Any
 
 from ..data_types import FileMutation, Mutator
 
@@ -34,6 +36,8 @@ class ComparisonMutator(ast.NodeVisitor, Mutator):
         ast.IsNot: [ast.Is],
         ast.In: [ast.NotIn],
         ast.NotIn: [ast.In],
+        ast.Or: [ast.And],
+        ast.And: [ast.Or],
     }
 
     mutants: list[FileMutation]
@@ -45,18 +49,17 @@ class ComparisonMutator(ast.NodeVisitor, Mutator):
         return self.mutants
 
     def visit_Compare(self, node: ast.Compare) -> None:
+        if ast.unparse(node) in ("__name__ == '__main__'"):
+            return
+
         for idx, op in enumerate(node.ops):
             for new_op in self.type_map[type(op)]:
                 mut = deepcopy(node)
                 mut.ops[idx] = new_op()
-                self.mutants.append(self.create_mutant(node, ast.unparse(mut)))
+                self.mutants.append(self.create_file_mutation(node, ast.unparse(mut)))
 
-    def create_mutant(self, node: ast.Compare, text: str):
-        """Create Mutants."""
-        return FileMutation(
-            lineno=node.lineno,
-            col_offset=node.col_offset,
-            end_lineno=node.end_lineno or node.lineno,
-            end_col_offset=node.end_col_offset or node.col_offset,
-            text=text,
-        )
+    def visit_BoolOp(self, node: ast.BoolOp) -> None:
+        for new_op in self.type_map[type(node.op)]:
+            mut = deepcopy(node)
+            mut.op = new_op()
+            self.mutants.append(self.create_file_mutation(node, ast.unparse(mut)))

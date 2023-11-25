@@ -10,7 +10,10 @@ from typing import TYPE_CHECKING, Any, Callable
 from . import PoodleInputError
 from .data_types import FileMutation, Mutant, Mutator, PoodleWork
 from .mutators.bin_op import BinaryOperationMutator
+from .mutators.calls import DictArrayCallMutator, FunctionCallMutator
 from .mutators.compare import ComparisonMutator
+from .mutators.constant import NumberMutator, StringMutator
+from .mutators.key_word import KeywordMutator
 from .mutators.unary_op import UnaryOperationMutator
 from .util import dynamic_import, files_list_for_folder
 
@@ -23,6 +26,11 @@ builtin_mutators = {
     "BinOp": BinaryOperationMutator,
     "UnaryOp": UnaryOperationMutator,
     "Compare": ComparisonMutator,
+    "Keyword": KeywordMutator,
+    "Number": NumberMutator,
+    "String": StringMutator,
+    "FunctionCall": FunctionCallMutator,
+    "DictArrayCall": DictArrayCallMutator,
 }
 
 

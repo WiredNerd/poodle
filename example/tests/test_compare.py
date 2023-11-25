@@ -39,3 +39,17 @@ def test_value_in():
 
 def test_value_not_in():
     assert value_not_in(4, [1, 2, 3]) is True
+
+
+def test_is_a_or_b():
+    assert is_a_or_b(True, True) is True
+    assert is_a_or_b(True, False) is True
+    assert is_a_or_b(False, True) is True
+    assert is_a_or_b(False, False) is False
+
+
+def test_is_a_and_b():
+    assert is_a_and_b(True, True) is True
+    assert is_a_and_b(True, False) is False
+    assert is_a_and_b(False, True) is False
+    assert is_a_and_b(False, False) is False

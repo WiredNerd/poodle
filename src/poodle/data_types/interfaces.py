@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
+import ast
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Callable
 
 from .data import FileMutation, Mutant, MutantTrialResult, PoodleConfig, TestingResults
 
 if TYPE_CHECKING:
-    import ast
     from pathlib import Path
 
 
@@ -33,6 +33,21 @@ class Mutator(ABC):
 
         This will be called once with parsed ast for each Module.
         """
+
+    def create_file_mutation(self, node: ast.AST, text: str):
+        """Create a FileMutation copying location data from specified node."""
+        return FileMutation(
+            lineno=node.lineno,
+            col_offset=node.col_offset,
+            end_lineno=node.end_lineno or node.lineno,
+            end_col_offset=node.end_col_offset or node.col_offset,
+            text=text,
+        )
+
+    def add_parent_attr(self, parsed_ast: ast.Module):
+        for node in ast.walk(parsed_ast):
+            for child in ast.iter_child_nodes(node):
+                child.parent = node
 
 
 # runner method signature:
