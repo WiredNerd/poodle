@@ -10,7 +10,13 @@ from typing import TYPE_CHECKING, Any, Callable
 from . import PoodleInputError
 from .data_types import FileMutation, Mutant, Mutator, PoodleWork
 from .mutators.bin_op import BinaryOperationMutator
-from .mutators.calls import DictArrayCallMutator, FunctionCallMutator
+from .mutators.calls import (
+    DecoratorMutator,
+    DictArrayCallMutator,
+    FunctionCallMutator,
+    LambdaReturnMutator,
+    ReturnMutator,
+)
 from .mutators.compare import ComparisonMutator
 from .mutators.constant import NumberMutator, StringMutator
 from .mutators.key_word import KeywordMutator
@@ -31,6 +37,9 @@ builtin_mutators = {
     "String": StringMutator,
     "FunctionCall": FunctionCallMutator,
     "DictArrayCall": DictArrayCallMutator,
+    "Lambda": LambdaReturnMutator,
+    "Return": ReturnMutator,
+    "Decorator": DecoratorMutator,
 }
 
 

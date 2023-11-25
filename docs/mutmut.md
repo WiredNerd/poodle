@@ -95,7 +95,6 @@ Add 1 to floats between 1e-5 < abs(parsed) < 1e5 or parsed==0.0
 Replace Function Call with None
 Replace array/dictionary lookup with None
 
-
 ## string_mutation
 Ignore strings that are triple quoted 
 "We assume here that triple-quoted stuff are docs or other things that mutation is meaningless for"
@@ -106,6 +105,7 @@ mutation = prefix + value[0] + 'XX' + value[1:-1] + 'XX' + value[-1]
 
 ## fstring_mutation
 Adds "XX" to the beginning and ending of the fString
+
 
 ## argument_mutation
 Mutate the arguments one by one from dict(a=b) to dict(aXX=b)

@@ -11,10 +11,10 @@
 | String & F-String | Add "XX" near beginning and end of string | - | Add "XX" near beginning and end of string |
 | Subscript Slice | See Number Mutation | Change between [:x], [x:] and [:] | See Number Mutation |
 | Call replacement | Replace call to Function, Array, or Dict lookup with None | - | Replace call to Function, Array, or Dict lookup with None |
-| | | |
-| Argument | Change field names | - | TBD |
-| Lambda | Change return value | - | TBD |
-| Expression | Change last value of expression | - | TBD |
-| Decorator | Remove decorator | - | TBD |
+| Lambda | Change return value | - | Change return value |
+| Function Return | - | - | Change return value |
+| Decorator | Remove decorator | - | Remove decorator |
+| Argument | Change field names | - | - |
+| Expression | Change last value of expression | - | - |
 
 Disclaimer: These tools internally work very differently so comparison above is not exact.
