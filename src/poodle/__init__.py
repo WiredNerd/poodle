@@ -1,4 +1,4 @@
-"""Poodle Mutation Testing."""
+"""Poodle Mutation Test Tool."""
 
 from __future__ import annotations
 

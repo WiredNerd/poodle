@@ -19,9 +19,7 @@ default_file_copy_filters = [r"^test_.*\.py", r"_test\.py$", r"^\."]
 default_work_folder = Path(".poodle-temp")
 default_mutator_opts: dict[str, Any] = {}
 default_runner = "command_line"
-default_runner_opts: dict[str, Any] = {
-    "command_line": "pytest -x --assert=plain -o pythonpath="
-}
+default_runner_opts: dict[str, Any] = {"command_line": "pytest -x --assert=plain -o pythonpath="}
 default_reporters = ["summary", "not_found"]
 default_reporter_opts: dict[str, Any] = {}
 
@@ -69,22 +67,24 @@ def build_config(command_line_sources: tuple[Path], config_file: Path | None, ve
 
 
 def get_cmd_line_log_level(verbosity: str | None) -> int | None:
+    """Map verbosity input to logging level."""
     if verbosity:
         return {
             "q": logging.ERROR,
             "v": logging.INFO,
             "vv": logging.DEBUG,
-        }.get(verbosity, None)
+        }.get(verbosity)
     return None
 
 
 def get_cmd_line_echo_enabled(verbosity: str | None) -> bool | None:
+    """Map verbosity input to enable/disable echo statements."""
     if verbosity:
         return {
             "q": False,
             "v": True,
             "vv": True,
-        }.get(verbosity, None)
+        }.get(verbosity)
     return None
 
 
@@ -104,7 +104,7 @@ def get_config_file_path(config_file: Path | None) -> Path | None:
     files = [
         "poodle.toml",
         "pyproject.toml",
-    ]  # TODO(wirednerd): ["poodle.toml", "tox.ini", "setup.cfg", "pyproject.toml"]
+    ]  # TODO: ["poodle.toml", "tox.ini", "setup.cfg", "pyproject.toml"]
 
     for file in files:
         path = Path(file)
@@ -122,7 +122,7 @@ def get_config_file_data(config_file: Path | None) -> dict:
     if config_file.suffix == ".toml":
         return get_config_file_data_toml(config_file)
 
-    # TODO(wirednerd): tox.ini and setup.cfg
+    # TODO: tox.ini and setup.cfg
     # https://tox.wiki/en/3.24.5/config.html
 
     msg = f"Config file type not supported: --config_file='{config_file}'"
@@ -162,7 +162,7 @@ def get_source_folders(command_line_sources: tuple[Path], config_data: dict) -> 
 def get_bool_from_config(
     option_name: str,
     config_data: dict,
-    default: bool,
+    default: bool,  # noqa: FBT001
     command_line: bool | str | None = None,
 ) -> bool:
     """Retrieve Config Option that should be a Boolean.
@@ -192,7 +192,7 @@ def get_path_from_config(
     """
     value, source = get_option_from_config(option_name=option_name, config_data=config_data, command_line=command_line)
 
-    if not value:
+    if value is None:
         return default
 
     try:
@@ -300,7 +300,7 @@ def get_str_from_config(
     """
     value, _ = get_option_from_config(option_name=option_name, config_data=config_data, command_line=command_line)
 
-    if not value:
+    if value is None:
         return default
 
     return str(value)
@@ -353,7 +353,7 @@ def get_option_from_config(
 
     Returns: Identified Config value, Source Name
     """
-    if command_line or command_line == False:
+    if command_line or command_line is False:
         return command_line, "Command Line"
 
     if hasattr(poodle_config, option_name):

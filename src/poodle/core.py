@@ -1,3 +1,5 @@
+"""Poodle core run process."""
+
 from __future__ import annotations
 
 import logging
@@ -15,10 +17,11 @@ from .util import create_temp_zips, pprint_str
 logger = logging.getLogger(__name__)
 
 
-def run(config: PoodleConfig):
+def run(config: PoodleConfig) -> None:
+    """Poodle core run process."""
     try:
         work = PoodleWork(config)  # sets logging defaults
-        logger.info("\n" + pprint_str(config))
+        logger.info("\n%s", pprint_str(config))
 
         if config.work_folder.exists():
             logger.info("delete %s", config.work_folder)

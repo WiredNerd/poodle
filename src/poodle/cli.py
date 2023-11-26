@@ -1,12 +1,13 @@
+"""Command Line Interface."""
+
 from __future__ import annotations
 
 import sys
 from pathlib import Path
 
 import click
-from click import Context
 
-from . import core
+from . import PoodleInputError, core
 from .config import build_config
 
 CONTEXT_SETTINGS = {
@@ -23,12 +24,12 @@ CONTEXT_SETTINGS = {
 # @click.option("-P", "--max_parallel", type=int, help="Maximum number of parallel runners.")
 # @click.option("-F", "--folder-prefix", help="Prefix for runner folder names")
 # @click.option("-R", "--runner", help="Runner Name or Module Name for runner to use")
-def main(source: tuple[Path], config_file: Path | None, verbosity: str | None):
-    """Run Mutation testing"""
+def main(source: tuple[Path], config_file: Path | None, verbosity: str | None) -> None:
+    """Poodle Mutation Test Tool."""
     try:
         config = build_config(source, config_file, verbosity)
-    except ValueError as ve:
-        click.echo(ve.args)
+    except PoodleInputError as err:
+        click.echo(err.args)
         sys.exit(4)
 
     core.run(config)

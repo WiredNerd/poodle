@@ -9,18 +9,20 @@ from typing import TYPE_CHECKING, Any, Callable
 
 from . import PoodleInputError
 from .data_types import FileMutation, Mutant, Mutator, PoodleWork
-from .mutators.bin_op import BinaryOperationMutator
-from .mutators.calls import (
+from .mutators import (
+    AugAssignMutator,
+    BinaryOperationMutator,
+    ComparisonMutator,
     DecoratorMutator,
     DictArrayCallMutator,
     FunctionCallMutator,
+    KeywordMutator,
     LambdaReturnMutator,
+    NumberMutator,
     ReturnMutator,
+    StringMutator,
+    UnaryOperationMutator,
 )
-from .mutators.compare import ComparisonMutator
-from .mutators.constant import NumberMutator, StringMutator
-from .mutators.key_word import KeywordMutator
-from .mutators.unary_op import UnaryOperationMutator
 from .util import dynamic_import, files_list_for_folder
 
 if TYPE_CHECKING:
@@ -30,6 +32,7 @@ logger = logging.getLogger(__name__)
 
 builtin_mutators = {
     "BinOp": BinaryOperationMutator,
+    "AugAssign": AugAssignMutator,
     "UnaryOp": UnaryOperationMutator,
     "Compare": ComparisonMutator,
     "Keyword": KeywordMutator,

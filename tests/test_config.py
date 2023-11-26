@@ -38,9 +38,7 @@ def test_defaults():
     assert config.default_file_copy_filters == [r"^test_.*\.py", r"_test\.py$", r"^\."]
     assert config.default_work_folder == Path(".poodle-temp")
     assert config.default_mutator_opts == {}
-    assert config.default_runner_opts == {
-        "command_line": "pytest -x --assert=plain -o pythonpath="
-    }
+    assert config.default_runner_opts == {"command_line": "pytest -x --assert=plain -o pythonpath="}
 
 
 class TestBuildConfig:
@@ -200,6 +198,7 @@ class TestGetConfigFilePath:
                 return mock_path.poodle_toml_path
             if filename == "pyproject.toml":
                 return mock_path.pyproject_toml_path
+            return None
 
         mock_path.side_effect = get_path
 
@@ -317,7 +316,7 @@ class TestGetSourceFolders:
     def test_get_source_folders_not_found(self, get_path_list_from_config):
         get_path_list_from_config.return_value = []
         with pytest.raises(PoodleInputError, match="^No source folder found to mutate.$"):
-            config.get_source_folders(tuple(), {})
+            config.get_source_folders((), {})
 
     @mock.patch("poodle.config.get_path_list_from_config")
     def test_get_source_folders_not_folder(self, get_path_list_from_config):
@@ -328,7 +327,7 @@ class TestGetSourceFolders:
         get_path_list_from_config.return_value = [path_project]
 
         with pytest.raises(PoodleInputError, match="Source 'project' must be a folder."):
-            config.get_source_folders(tuple(), {})
+            config.get_source_folders((), {})
 
 
 class TestGetBoolFromConfig:
@@ -336,12 +335,15 @@ class TestGetBoolFromConfig:
     def test_default(self, expected, get_option_from_config):
         get_option_from_config.return_value = (None, None)
 
-        config.get_bool_from_config(
-            option_name="test_option",
-            config_data={"test_option": not expected},
-            command_line=not expected,
-            default=expected,
-        ) == expected
+        assert (
+            config.get_bool_from_config(
+                option_name="test_option",
+                config_data={"test_option": not expected},
+                command_line=not expected,
+                default=expected,
+            )
+            == expected
+        )
 
         get_option_from_config.assert_called_with(
             option_name="test_option",
@@ -352,11 +354,14 @@ class TestGetBoolFromConfig:
     def test_default_inputs(self, get_option_from_config):
         get_option_from_config.return_value = (None, None)
 
-        config.get_bool_from_config(
-            option_name="test_option",
-            config_data={"test_option": True},
-            default=True,
-        ) == True
+        assert (
+            config.get_bool_from_config(
+                option_name="test_option",
+                config_data={"test_option": True},
+                default=True,
+            )
+            is True
+        )
 
         get_option_from_config.assert_called_with(
             option_name="test_option",
@@ -371,25 +376,28 @@ class TestGetBoolFromConfig:
             (False, True, False),
             ("true", False, True),
             ("False", True, False),
-            ("UNKNOWN", True, True),
-            ("UNKNOWN", False, False),
+            (None, True, True),
+            (None, False, False),
         ],
     )
     def test_values(self, option, default, expected, get_option_from_config):
         get_option_from_config.return_value = (option, None)
 
-        config.get_bool_from_config(
-            option_name="test_option",
-            config_data={},
-            default=default,
-        ) == expected
+        assert (
+            config.get_bool_from_config(
+                option_name="test_option",
+                config_data={},
+                default=default,
+            )
+            == expected
+        )
 
 
 class TestGetPathFromConfig:
     def test_default(self, get_option_from_config):
         get_option_from_config.return_value = (None, None)
 
-        config.get_path_from_config(
+        assert config.get_path_from_config(
             option_name="test_option",
             config_data={"test_option": Path("config_file_value")},
             command_line=Path("command_line_value"),
@@ -405,11 +413,11 @@ class TestGetPathFromConfig:
     def test_default_inputs(self, get_option_from_config):
         get_option_from_config.return_value = (None, None)
 
-        config.get_path_from_config(
+        assert config.get_path_from_config(
             option_name="test_option",
             config_data={"test_option": Path("config_file_value")},
             default=Path("default_value"),
-        ) == None
+        ) == Path("default_value")
 
         get_option_from_config.assert_called_with(
             option_name="test_option",
@@ -420,7 +428,7 @@ class TestGetPathFromConfig:
     def test_string(self, get_option_from_config):
         get_option_from_config.return_value = ("return_value", "Source Name")
 
-        config.get_path_from_config(
+        assert config.get_path_from_config(
             option_name="test_option",
             config_data={"test_option": "config_file_value"},
             command_line="command_line_value",
@@ -430,19 +438,25 @@ class TestGetPathFromConfig:
     def test_empty_string(self, get_option_from_config):
         get_option_from_config.return_value = ("", "Source Name")
 
-        config.get_path_from_config(
-            option_name="test_option",
-            config_data={"test_option": "config_file_value"},
-            command_line="command_line_value",
-            default="default_value",
-        ) == Path("")
+        assert (
+            config.get_path_from_config(
+                option_name="test_option",
+                config_data={"test_option": "config_file_value"},
+                command_line="command_line_value",
+                default=Path("default_value"),
+            )
+            == Path()
+        )
 
     def test_not_path(self, get_option_from_config):
         get_option_from_config.return_value = (123, "Source Name")
 
         with pytest.raises(PoodleInputError, match=r"^test_option from Source Name must be a valid StrPath$"):
             config.get_path_from_config(
-                option_name="test_option", config_data={}, command_line=[], default=Path("default_value")
+                option_name="test_option",
+                config_data={},
+                command_line=[],
+                default=Path("default_value"),
             )
 
 
@@ -475,49 +489,69 @@ class TestGetPathListFromConfig:
         get_option_from_config.assert_called_with(
             option_name="test_option",
             config_data={"test_option": [Path("config_file_value")]},
-            command_line=tuple(),
+            command_line=(),
         )
 
     def test_path(self, get_option_from_config):
         get_option_from_config.return_value = (Path("return_value"), "Source Name")
         assert config.get_path_list_from_config(
-            option_name="test_option", config_data={}, command_line=[], default=[Path("default_value")]
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=[Path("default_value")],
         ) == [Path("return_value")]
 
     def test_string(self, get_option_from_config):
         get_option_from_config.return_value = ("return_value", "Source Name")
         assert config.get_path_list_from_config(
-            option_name="test_option", config_data={}, command_line=[], default=[Path("default_value")]
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=[Path("default_value")],
         ) == [Path("return_value")]
 
     def test_path_list(self, get_option_from_config):
         get_option_from_config.return_value = ((Path("return_value"), Path("other_value")), "Source Name")
         assert config.get_path_list_from_config(
-            option_name="test_option", config_data={}, command_line=[], default=[Path("default_value")]
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=[Path("default_value")],
         ) == [Path("return_value"), Path("other_value")]
 
     def test_string_list(self, get_option_from_config):
         get_option_from_config.return_value = (("return_value", "other_value"), "Source Name")
         assert config.get_path_list_from_config(
-            option_name="test_option", config_data={}, command_line=[], default=[Path("default_value")]
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=[Path("default_value")],
         ) == [Path("return_value"), Path("other_value")]
 
     def test_not_iterable(self, get_option_from_config):
         get_option_from_config.return_value = (123, "Source Name")
         with pytest.raises(
-            PoodleInputError, match=r"^test_option from Source Name must be a valid Iterable\[StrPath\]$"
+            PoodleInputError,
+            match=r"^test_option from Source Name must be a valid Iterable\[StrPath\]$",
         ):
             config.get_path_list_from_config(
-                option_name="test_option", config_data={}, command_line=[], default=[Path("default_value")]
+                option_name="test_option",
+                config_data={},
+                command_line=[],
+                default=[Path("default_value")],
             )
 
     def test_not_path(self, get_option_from_config):
         get_option_from_config.return_value = ([123], "Source Name")
         with pytest.raises(
-            PoodleInputError, match=r"^test_option from Source Name must be a valid Iterable\[StrPath\]$"
+            PoodleInputError,
+            match=r"^test_option from Source Name must be a valid Iterable\[StrPath\]$",
         ):
             config.get_path_list_from_config(
-                option_name="test_option", config_data={}, command_line=[], default=[Path("default_value")]
+                option_name="test_option",
+                config_data={},
+                command_line=[],
+                default=[Path("default_value")],
             )
 
 
@@ -529,12 +563,15 @@ class TestGetStrFromConfig:
     def test_default(self, get_option_from_config):
         get_option_from_config.return_value = (None, None)
 
-        config.get_str_from_config(
-            option_name="test_option",
-            config_data={"test_option": "config_file_value"},
-            command_line="command_line_value",
-            default="default_value",
-        ) == "default_value"
+        assert (
+            config.get_str_from_config(
+                option_name="test_option",
+                config_data={"test_option": "config_file_value"},
+                command_line="command_line_value",
+                default="default_value",
+            )
+            == "default_value"
+        )
 
         get_option_from_config.assert_called_with(
             option_name="test_option",
@@ -545,10 +582,13 @@ class TestGetStrFromConfig:
     def test_default_inputs(self, get_option_from_config):
         get_option_from_config.return_value = (None, None)
 
-        config.get_str_from_config(
-            option_name="test_option",
-            config_data={"test_option": "config_file_value"},
-        ) == ""
+        assert (
+            config.get_str_from_config(
+                option_name="test_option",
+                config_data={"test_option": "config_file_value"},
+            )
+            == ""
+        )
 
         get_option_from_config.assert_called_with(
             option_name="test_option",
@@ -559,32 +599,41 @@ class TestGetStrFromConfig:
     def test_string(self, get_option_from_config):
         get_option_from_config.return_value = ("return_value", "Source Name")
 
-        config.get_str_from_config(
-            option_name="test_option",
-            config_data={"test_option": "config_file_value"},
-            command_line="command_line_value",
-            default="default_value",
-        ) == "return_value"
+        assert (
+            config.get_str_from_config(
+                option_name="test_option",
+                config_data={"test_option": "config_file_value"},
+                command_line="command_line_value",
+                default="default_value",
+            )
+            == "return_value"
+        )
 
     def test_empty_string(self, get_option_from_config):
         get_option_from_config.return_value = ("", "Source Name")
 
-        config.get_str_from_config(
-            option_name="test_option",
-            config_data={"test_option": "config_file_value"},
-            command_line="command_line_value",
-            default="default_value",
-        ) == ""
+        assert (
+            config.get_str_from_config(
+                option_name="test_option",
+                config_data={"test_option": "config_file_value"},
+                command_line="command_line_value",
+                default="default_value",
+            )
+            == ""
+        )
 
     def test_convert(self, get_option_from_config):
         get_option_from_config.return_value = (Path("source.py"), "Source Name")
 
-        config.get_str_from_config(
-            option_name="test_option",
-            config_data={"test_option": "config_file_value"},
-            command_line="command_line_value",
-            default="default_value",
-        ) == "source.py"
+        assert (
+            config.get_str_from_config(
+                option_name="test_option",
+                config_data={"test_option": "config_file_value"},
+                command_line="command_line_value",
+                default="default_value",
+            )
+            == "source.py"
+        )
 
 
 class TestGetStrListFromConfig:
@@ -616,32 +665,44 @@ class TestGetStrListFromConfig:
         get_option_from_config.assert_called_with(
             option_name="test_option",
             config_data={"test_option": ["config_file_value"]},
-            command_line=tuple(),
+            command_line=(),
         )
 
     def test_string(self, get_option_from_config):
         get_option_from_config.return_value = ("return_value", "Source Name")
         assert config.get_str_list_from_config(
-            option_name="test_option", config_data={}, command_line=[], default=["default_value"]
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=["default_value"],
         ) == ["return_value"]
 
     def test_string_list(self, get_option_from_config):
         get_option_from_config.return_value = (("return_value", "other_value"), "Source Name")
         assert config.get_str_list_from_config(
-            option_name="test_option", config_data={}, command_line=[], default=["default_value"]
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=["default_value"],
         ) == ["return_value", "other_value"]
 
     def test_string_list_convert(self, get_option_from_config):
         get_option_from_config.return_value = ((Path("output.txt"),), "Source Name")
         assert config.get_str_list_from_config(
-            option_name="test_option", config_data={}, command_line=[], default=["default_value"]
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=["default_value"],
         ) == ["output.txt"]
 
     def test_type_error(self, get_option_from_config):
         get_option_from_config.return_value = (123, "Source Name")
         with pytest.raises(PoodleInputError, match=r"^test_option from Source Name must be a valid Iterable\[str\]$"):
             config.get_str_list_from_config(
-                option_name="test_option", config_data={}, command_line=[], default=["default_value"]
+                option_name="test_option",
+                config_data={},
+                command_line=[],
+                default=["default_value"],
             )
 
 
@@ -719,7 +780,7 @@ class TestGetDictFromConfig:
             mutator_opts={
                 "bin_op_level": "max",
                 "poodle_config_option": "EFGH",
-            }
+            },
         )
         assert config.get_dict_from_config(
             option_name="mutator_opts",

@@ -1,11 +1,19 @@
 from pathlib import Path
 
-from poodle.data_types.data import FileMutation, Mutant, MutantTrial, MutantTrialResult, PoodleConfig
+from poodle.data_types.data import (
+    FileMutation,
+    Mutant,
+    MutantTrial,
+    MutantTrialResult,
+    PoodleConfig,
+    TestingResults,
+    TestingSummary,
+)
 
 
 class TestPoodleConfig:
-    @classmethod
-    def create_poodle_config(cls):
+    @staticmethod
+    def create_poodle_config():
         return PoodleConfig(
             config_file=Path("filename.toml"),
             source_folders=[Path("src")],
@@ -34,7 +42,7 @@ class TestPoodleConfig:
         assert config.work_folder == Path(".poodle")
         assert config.log_format == "$(message)s"
         assert config.log_level == 0
-        assert config.echo_enabled == True
+        assert config.echo_enabled is True
         assert config.mutator_opts == {"bin_op_level": 2}
         assert config.skip_mutators == ["null"]
         assert config.add_mutators == ["custom"]
@@ -45,8 +53,8 @@ class TestPoodleConfig:
 
 
 class TestFileMutation:
-    @classmethod
-    def create_file_mutation(cls):
+    @staticmethod
+    def create_file_mutation():
         return FileMutation(
             lineno=1,
             col_offset=2,
@@ -132,8 +140,44 @@ class TestMutantTrialResult:
 
 class TestMutantTrial:
     def test_mutant_trial(self):
-        mutant = Mutant(source_folder=Path("."), source_file=None, **vars(TestFileMutation.create_file_mutation()))
+        mutant = Mutant(source_folder=Path(), source_file=None, **vars(TestFileMutation.create_file_mutation()))
         result = MutantTrialResult(passed=True, reason_code="test")
         trial = MutantTrial(mutant=mutant, result=result)
         assert trial.mutant == mutant
         assert trial.result == result
+
+
+class TestTestingSummary:
+    def test_testing_summary(self):
+        testing_summary = TestingSummary(
+            trials=1,
+            tested=2,
+            found=3,
+            not_found=4,
+            timeout=5,
+            errors=6,
+            success_rate=7.8,
+        )
+
+        assert testing_summary.trials == 1
+        assert testing_summary.tested == 2
+        assert testing_summary.found == 3
+        assert testing_summary.not_found == 4
+        assert testing_summary.timeout == 5
+        assert testing_summary.errors == 6
+        assert testing_summary.success_rate == 7.8
+
+
+class TestTestingResults:
+    def test_testing_results(self):
+        mutant = Mutant(source_folder=Path(), source_file=None, **vars(TestFileMutation.create_file_mutation()))
+        result = MutantTrialResult(passed=True, reason_code="test")
+        trial = MutantTrial(mutant=mutant, result=result)
+        testing_summary = TestingSummary(trials=4)
+        results = TestingResults(
+            mutant_trials=[trial],
+            summary=testing_summary,
+        )
+
+        assert results.summary == testing_summary
+        assert results.mutant_trials == [trial]

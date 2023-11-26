@@ -1,17 +1,15 @@
-"""Mutate ...."""
+"""Mutate Functions and Calls."""
 
 from __future__ import annotations
 
 import ast
-from _ast import FunctionDef, Lambda
 from copy import deepcopy
-from typing import Any
 
-from ..data_types import FileMutation, Mutator
+from poodle.data_types import FileMutation, Mutator
 
 
 class FunctionCallMutator(ast.NodeVisitor, Mutator):
-    """Mutate ..."""
+    """Mutate Function Calls."""
 
     mutants: list[FileMutation]
 
@@ -22,11 +20,12 @@ class FunctionCallMutator(ast.NodeVisitor, Mutator):
         return self.mutants
 
     def visit_Call(self, node: ast.Call) -> None:
+        """Replace Function calls with None."""
         self.mutants.append(self.create_file_mutation(node, "None"))
 
 
 class DictArrayCallMutator(ast.NodeVisitor, Mutator):
-    """Mutate ..."""
+    """Mutate Calls to Dict or Array."""
 
     mutants: list[FileMutation]
 
@@ -38,15 +37,16 @@ class DictArrayCallMutator(ast.NodeVisitor, Mutator):
         return self.mutants
 
     def visit_Subscript(self, node: ast.Subscript) -> None:
+        """Replace Call to retrieve from Dict or Array with None."""
         # Skip if Subscript is part of annotation
-        if hasattr(node.parent, "annotation") and node.parent.annotation is node:
+        if hasattr(node.parent, "annotation") and node.parent.annotation is node:  # type: ignore [attr-defined]
             return
 
         self.mutants.append(self.create_file_mutation(node, "None"))
 
 
 class LambdaReturnMutator(ast.NodeVisitor, Mutator):
-    """Mutate ..."""
+    """Mutate Return from Lambdas."""
 
     mutants: list[FileMutation]
 
@@ -57,6 +57,7 @@ class LambdaReturnMutator(ast.NodeVisitor, Mutator):
         return self.mutants
 
     def visit_Lambda(self, node: ast.Lambda) -> None:
+        """Replace body of Lambda with None or empty string."""
         if isinstance(node.body, ast.Constant) and node.body.value is None:
             node.body = ast.Constant("")
             self.mutants.append(self.create_file_mutation(node, ast.unparse(node)))
@@ -66,7 +67,7 @@ class LambdaReturnMutator(ast.NodeVisitor, Mutator):
 
 
 class ReturnMutator(ast.NodeVisitor, Mutator):
-    """Mutate ..."""
+    """Mutate Return from Functions."""
 
     mutants: list[FileMutation]
 
@@ -77,6 +78,7 @@ class ReturnMutator(ast.NodeVisitor, Mutator):
         return self.mutants
 
     def visit_Return(self, node: ast.Return) -> None:
+        """Replace return statements with return None or Return empty string."""
         if isinstance(node.value, ast.Constant) and node.value.value is None:
             node.value = ast.Constant("")
             self.mutants.append(self.create_file_mutation(node, ast.unparse(node)))
@@ -86,7 +88,7 @@ class ReturnMutator(ast.NodeVisitor, Mutator):
 
 
 class DecoratorMutator(ast.NodeVisitor, Mutator):
-    """Mutate ..."""
+    """Mutate Decorators."""
 
     mutants: list[FileMutation]
 
@@ -97,10 +99,9 @@ class DecoratorMutator(ast.NodeVisitor, Mutator):
         return self.mutants
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        """Remove Decorators on Function Definitions."""
         if node.decorator_list:
-            decorator_list = node.decorator_list
-            for idx in range(0,len(node.decorator_list)):
-                mod_list = deepcopy(decorator_list)
-                mod_list.pop(idx)
-                node.decorator_list = mod_list
-                self.mutants.append(self.create_file_mutation(node, ast.unparse(node)))
+            for idx in range(len(node.decorator_list)):
+                new_node = deepcopy(node)
+                new_node.decorator_list.pop(idx)
+                self.mutants.append(self.create_file_mutation(node, ast.unparse(new_node)))

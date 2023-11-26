@@ -1,18 +1,18 @@
-"""Mutate Operations."""
+"""Mutate Operators."""
 
 from __future__ import annotations
 
 import ast
 from typing import Callable, ClassVar
 
-from ..data_types import FileMutation, Mutator, PoodleConfig
+from poodle.data_types import FileMutation, Mutator, PoodleConfig
 
 
-class BinaryOperationMutator(ast.NodeVisitor, Mutator):
-    """Mutate Binary Operations and Operations in Augmented Assignments."""
+class OperationMutator(ast.NodeVisitor, Mutator):
+    """Base class for mutating operations."""
 
     # Binary Operators as of Python 3.12:
-    # https://docs.python.org/3/library/ast.html#ast.AugAssign
+    # https://docs.python.org/3/library/ast.html#ast.BinOp
     # https://www.w3schools.com/python/python_operators.asp
     # ast.Add       +
     # ast.Sub       -
@@ -28,20 +28,20 @@ class BinaryOperationMutator(ast.NodeVisitor, Mutator):
     # ast.BitAnd    &
     # ast.MatMult   @
 
-    type_map_levels: ClassVar[dict[str, dict]] = {
+    type_map_levels: ClassVar[dict[str, dict[type, list[type]]]] = {
         "min": {
-            ast.Add: ast.Mult,
-            ast.Sub: ast.Div,
-            ast.Mult: ast.Add,
-            ast.Div: ast.Sub,
-            ast.FloorDiv: ast.Div,
-            ast.Mod: ast.Sub,
-            ast.Pow: ast.Mult,
-            ast.LShift: ast.RShift,
-            ast.RShift: ast.LShift,
-            ast.BitOr: ast.BitAnd,
-            ast.BitXor: ast.BitOr,
-            ast.BitAnd: ast.BitXor,
+            ast.Add: [ast.Mult],
+            ast.Sub: [ast.Div],
+            ast.Mult: [ast.Add],
+            ast.Div: [ast.Sub],
+            ast.FloorDiv: [ast.Div],
+            ast.Mod: [ast.Sub],
+            ast.Pow: [ast.Mult],
+            ast.LShift: [ast.RShift],
+            ast.RShift: [ast.LShift],
+            ast.BitOr: [ast.BitAnd],
+            ast.BitXor: [ast.BitOr],
+            ast.BitAnd: [ast.BitXor],
         },
         "std": {
             ast.Add: [ast.Sub, ast.Mult],
@@ -51,8 +51,8 @@ class BinaryOperationMutator(ast.NodeVisitor, Mutator):
             ast.FloorDiv: [ast.Mult, ast.Div],
             ast.Mod: [ast.FloorDiv, ast.Sub],
             ast.Pow: [ast.Mult, ast.Div],
-            ast.LShift: ast.RShift,
-            ast.RShift: ast.LShift,
+            ast.LShift: [ast.RShift],
+            ast.RShift: [ast.LShift],
             ast.BitOr: [ast.BitAnd, ast.BitXor],
             ast.BitXor: [ast.BitOr, ast.BitAnd],
             ast.BitAnd: [ast.BitXor, ast.BitOr],
@@ -74,7 +74,7 @@ class BinaryOperationMutator(ast.NodeVisitor, Mutator):
     }
 
     def __init__(self, config: PoodleConfig, echo: Callable, *args, **kwargs) -> None:
-        """Initialize BinaryOperationMutator."""
+        """Initialize and read settings."""
         super().__init__(config, echo, *args, **kwargs)
         self.mutants: list[FileMutation] = []
 
@@ -83,7 +83,7 @@ class BinaryOperationMutator(ast.NodeVisitor, Mutator):
             echo(f"WARN: Invalid value operator_opts.operator_level={level}.  Using Default value 'std'")
             level = "std"
 
-        self.type_map: dict = self.type_map_levels[level]
+        self.type_map: dict[type, list[type]] = self.type_map_levels[level]
 
     def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
         """Visit ast nodes and return created mutants."""
@@ -91,40 +91,42 @@ class BinaryOperationMutator(ast.NodeVisitor, Mutator):
         self.visit(parsed_ast)
         return self.mutants
 
+
+class BinaryOperationMutator(OperationMutator):
+    """Mutate Binary Operations."""
+
+    def visit_BinOp(self, node: ast.BinOp) -> None:
+        """Identify replacement Operations and create Mutants."""
+        if type(node.op) in self.type_map:
+            mut_types = self.type_map[type(node.op)]
+            self.mutants.extend([self.create_bin_op_mutant(node, new_type) for new_type in mut_types])
+
+    def create_bin_op_mutant(self, node: ast.BinOp, new_type: type) -> FileMutation:
+        """Create BinOp with replacement operation."""
+        return self.create_file_mutation(node, ast.unparse(ast.BinOp(left=node.left, op=new_type(), right=node.right)))
+
+
+class AugAssignMutator(OperationMutator):
+    """Mutate Augmented Assignments."""
+
     def visit_AugAssign(self, node: ast.AugAssign) -> None:
         """Identify replacement Operations and create Mutants."""
         self.mutants.append(self.create_assign_mutant(node))
 
         if type(node.op) in self.type_map:
             mut_types = self.type_map[type(node.op)]
-
-            if not isinstance(mut_types, list):
-                self.mutants.append(self.create_aug_assign_mutant(node, mut_types))
-            else:
-                self.mutants.extend([self.create_aug_assign_mutant(node, new_type) for new_type in mut_types])
-
-    def create_aug_assign_mutant(self, node: ast.AugAssign, new_type: type) -> FileMutation:
-        """Create replacement AugAssign with alternate operation."""
-        return self.create_file_mutation(
-            node, ast.unparse(ast.AugAssign(target=node.target, op=new_type(), value=node.value))
-        )
+            self.mutants.extend([self.create_aug_assign_mutant(node, new_type) for new_type in mut_types])
 
     def create_assign_mutant(self, node: ast.AugAssign) -> FileMutation:
         """Create Assign to replace AugAssign."""
         return self.create_file_mutation(
-            node, ast.unparse(ast.Assign(lineno=node.lineno, targets=[node.target], value=node.value))
+            node,
+            ast.unparse(ast.Assign(lineno=node.lineno, targets=[node.target], value=node.value)),
         )
 
-    def visit_BinOp(self, node: ast.BinOp) -> None:  # noqa: N802
-        """Identify replacement Operations and create Mutants."""
-        if type(node.op) in self.type_map:
-            mut_types = self.type_map[type(node.op)]
-
-            if not isinstance(mut_types, list):
-                self.mutants.append(self.create_bin_op_mutant(node, mut_types))
-            else:
-                self.mutants.extend([self.create_bin_op_mutant(node, new_type) for new_type in mut_types])
-
-    def create_bin_op_mutant(self, node: ast.BinOp, new_type: type) -> FileMutation:
-        """Create Mutants."""
-        return self.create_file_mutation(node, ast.unparse(ast.BinOp(left=node.left, op=new_type(), right=node.right)))
+    def create_aug_assign_mutant(self, node: ast.AugAssign, new_type: type) -> FileMutation:
+        """Create replacement AugAssign with alternate operation."""
+        return self.create_file_mutation(
+            node,
+            ast.unparse(ast.AugAssign(target=node.target, op=new_type(), value=node.value)),
+        )

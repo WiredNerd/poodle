@@ -1,11 +1,15 @@
+"""Basic Mutation Test Result Reporters."""
+
 from __future__ import annotations
 
-from typing import Callable
+from typing import TYPE_CHECKING, Callable
 
-from ..data_types import TestingResults
+if TYPE_CHECKING:
+    from poodle.data_types import TestingResults
 
 
-def report_summary(echo: Callable, testing_results: TestingResults, *_, **__) -> None:  # noqa: ARG001
+def report_summary(echo: Callable, testing_results: TestingResults, *_, **__) -> None:
+    """Echo quick summary to console."""
     summary = testing_results.summary
     if summary.trials < 1:
         echo("No mutants found to test.")
@@ -21,7 +25,8 @@ def report_summary(echo: Callable, testing_results: TestingResults, *_, **__) ->
         echo(f" - {summary.errors} mutant(s) could not be tested due to an error.")
 
 
-def report_not_found(echo: Callable, testing_results: TestingResults, *_, **__) -> None:  # noqa: ARG001
+def report_not_found(echo: Callable, testing_results: TestingResults, *_, **__) -> None:
+    """Echo information about Trials that did not pass."""
     failed_trials = [trial for trial in testing_results.mutant_trials if not trial.result.passed]
     if failed_trials:
         echo("\nMutants Not Found:")

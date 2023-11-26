@@ -22,8 +22,8 @@ class TestCommandLineRunner:
             subprocess_run.return_value = CompletedProcess(
                 args="",
                 returncode=1,
-                stdout="output".encode("utf-8"),
-                stderr="error".encode("utf-8"),
+                stdout=b"output",
+                stderr=b"error",
             )
 
             config = mock.MagicMock()
@@ -53,7 +53,7 @@ class TestCommandLineRunner:
                 [
                     str(Path("poodle-run-folder").resolve() / Path("src")),
                     "/project/src",
-                ]
+                ],
             )
 
             subprocess_run.assert_called_with(
@@ -83,8 +83,8 @@ class TestCommandLineRunner:
             subprocess_run.return_value = CompletedProcess(
                 args="",
                 returncode=1,
-                stdout="output".encode("utf-8"),
-                stderr="error".encode("utf-8"),
+                stdout=b"output",
+                stderr=b"error",
             )
 
             config = mock.MagicMock()
@@ -132,8 +132,8 @@ class TestCommandLineRunner:
             subprocess_run.return_value = CompletedProcess(
                 args="",
                 returncode=0,
-                stdout="output".encode("utf-8"),
-                stderr="error".encode("utf-8"),
+                stdout=b"output",
+                stderr=b"error",
             )
 
             config = mock.MagicMock()
@@ -181,8 +181,8 @@ class TestCommandLineRunner:
             subprocess_run.return_value = CompletedProcess(
                 args="",
                 returncode=2,
-                stdout="output".encode("utf-8"),
-                stderr="error".encode("utf-8"),
+                stdout=b"output",
+                stderr=b"error",
             )
 
             config = mock.MagicMock()
