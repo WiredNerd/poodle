@@ -56,6 +56,7 @@ class TestFileMutation:
     @staticmethod
     def create_file_mutation():
         return FileMutation(
+            mutator_name="test",
             lineno=1,
             col_offset=2,
             end_lineno=3,
@@ -91,6 +92,7 @@ class TestMutant:
 
     def test_poodle_mutant_min(self):
         poodle_mutant = Mutant(
+            mutator_name="test",
             source_folder=Path("src"),
             source_file=None,
             lineno=0,
@@ -100,6 +102,7 @@ class TestMutant:
             text="",
         )
 
+        assert poodle_mutant.mutator_name == "test"
         assert poodle_mutant.source_folder == Path("src")
         assert poodle_mutant.source_file is None
         assert poodle_mutant.lineno == 0

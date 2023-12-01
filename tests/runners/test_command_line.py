@@ -33,6 +33,7 @@ class TestCommandLineRunner:
             }
 
             mutant = Mutant(
+                mutator_name="test",
                 source_folder=Path("src"),
                 source_file=Path("target.py"),
                 lineno=1,
@@ -91,6 +92,7 @@ class TestCommandLineRunner:
             config.runner_opts = {"command_line": "pytest tests"}
 
             mutant = Mutant(
+                mutator_name="test",
                 source_folder=Path("src"),
                 source_file=Path("target.py"),
                 lineno=1,
@@ -140,6 +142,7 @@ class TestCommandLineRunner:
             config.runner_opts = {"command_line": "pytest tests"}
 
             mutant = Mutant(
+                mutator_name="test",
                 source_folder=Path("src"),
                 source_file=Path("target.py"),
                 lineno=1,
@@ -189,6 +192,7 @@ class TestCommandLineRunner:
             config.runner_opts = {"command_line": "pytest tests"}
 
             mutant = Mutant(
+                mutator_name="test",
                 source_folder=Path("src"),
                 source_file=Path("target.py"),
                 lineno=1,

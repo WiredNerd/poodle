@@ -9,12 +9,14 @@ from poodle.data_types.interfaces import Mutator, create_mutations, reporter, ru
 
 
 def test_create_mutations():
-    assert create_mutations(config=None, echo=None, parsed_ast=None, other=None) is None
+    assert create_mutations(config=None, echo=None, parsed_ast=None, other=None, file_lines=None) is None
 
 
 class TestMutator:
     class DummyMutator(Mutator):
-        def create_mutations(self, **_) -> list[FileMutation]:  # type: ignore [override]
+        mutator_name = "DummyMutator"
+
+        def create_mutations(self, *_, **__) -> list[FileMutation]:  # type: ignore [override]
             return []
 
     def test_abstract(self):
@@ -28,10 +30,14 @@ class TestMutator:
         assert mutator.config == config
         assert mutator.echo == click.echo
 
+    def test_mutator_name(self):
+        assert self.DummyMutator.mutator_name == "DummyMutator"
+
     def test_create_file_mutation(self):
         node = mock.MagicMock(lineno=1, col_offset=2, end_lineno=3, end_col_offset=4)
-        file_mutation = Mutator.create_file_mutation(node, "changed text")
+        file_mutation = self.DummyMutator.create_file_mutation(node, "changed text")
 
+        assert file_mutation.mutator_name == "DummyMutator"
         assert file_mutation.lineno == 1
         assert file_mutation.col_offset == 2
         assert file_mutation.end_lineno == 3

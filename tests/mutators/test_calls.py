@@ -18,6 +18,9 @@ def mock_echo():
 
 
 class TestFunctionCallMutator:
+    def test_mutator_name(self):
+        assert FunctionCallMutator.mutator_name == "FuncCall"
+
     def test_create_mutations(self, mock_echo):
         config = mock.MagicMock(mutator_opts={})
         mutator = FunctionCallMutator(config=config, echo=mock_echo, other="value")
@@ -33,6 +36,9 @@ class TestFunctionCallMutator:
 
 
 class TestDictArrayCallMutator:
+    def test_mutator_name(self):
+        assert DictArrayCallMutator.mutator_name == "DictArray"
+
     def test_dict_call_mutator(self, mock_echo):
         config = mock.MagicMock(mutator_opts={})
         mutator = DictArrayCallMutator(config=config, echo=mock_echo, other="value")
@@ -81,6 +87,9 @@ class TestDictArrayCallMutator:
 
 
 class TestLambdaReturnMutator:
+    def test_mutator_name(self):
+        assert LambdaReturnMutator.mutator_name == "Lambda"
+
     def test_lambda_return_mutator(self, mock_echo):
         config = mock.MagicMock(mutator_opts={})
         mutator = LambdaReturnMutator(config=config, echo=mock_echo, other="value")
@@ -109,6 +118,9 @@ class TestLambdaReturnMutator:
 
 
 class TestReturnMutator:
+    def test_mutator_name(self):
+        assert ReturnMutator.mutator_name == "Return"
+
     def test_return_mutator(self, mock_echo):
         config = mock.MagicMock(mutator_opts={})
         mutator = ReturnMutator(config=config, echo=mock_echo, other="value")
@@ -149,6 +161,9 @@ class TestReturnMutator:
 
 
 class TestDecoratorMutator:
+    def test_mutator_name(self):
+        assert DecoratorMutator.mutator_name == "Decorator"
+
     def test_decorator_mutator(self, mock_echo):
         config = mock.MagicMock(mutator_opts={})
         mutator = DecoratorMutator(config=config, echo=mock_echo, other="value")

@@ -139,28 +139,43 @@ def create_mutants_for_file(work: PoodleWork, folder: Path, file: Path) -> list[
 
 
 def parse_filters(file_lines: list[str]) -> dict[int, set[str]]:
+    r"""Parse text for comments to filter mutations.
+
+    Block all mutations:
+
+    \# pragma: no mutate
+
+    \# nomut
+
+    Block only specific mutations:
+
+    \# nomut: mutator,mutator
+    """
     line_filters: dict[int, set[str]] = {}
 
     for lineno, line in enumerate(file_lines, start=1):
         if re.search(r"#\s*pragma:\s*no mutate[\s#$]*", line):
             add_line_filter(line_filters, lineno, "all")
         no_mut_filter: list[str] = re.findall(r"#\s*nomut:?\s*([A-Za-z0-9,\s]*)[#$]*", line)
-        for filters in no_mut_filter:
-            for filter in filters.split(","):
-                add_line_filter(line_filters, lineno, filter.strip())
+        for mutators in no_mut_filter:
+            for mutator in mutators.split(","):
+                add_line_filter(line_filters, lineno, mutator.strip())
 
     return line_filters
 
 
-def add_line_filter(line_filters: dict[int, set[str]], lineno: int, filter: str):
+def add_line_filter(line_filters: dict[int, set[str]], lineno: int, mutator: str) -> None:
+    """Add filter to line_filters dict."""
     if lineno not in line_filters:
         line_filters[lineno] = set()
-    line_filters[lineno].add("all" if filter == "" else filter.lower())
+    line_filters[lineno].add("all" if mutator == "" else mutator.lower())
 
 
-def is_filtered(line_filters: dict[int, set[str]], file_mutant: FileMutation):
+def is_filtered(line_filters: dict[int, set[str]], file_mutant: FileMutation) -> bool:
+    """Identify if this mutant matches any filters."""
     for lineno in range(file_mutant.lineno, file_mutant.end_lineno + 1):
-        if lineno in line_filters:
-            if "all" in line_filters[lineno] or file_mutant.mutator_name.lower() in line_filters[lineno]:
-                return True
+        if lineno in line_filters and (
+            "all" in line_filters[lineno] or file_mutant.mutator_name.lower() in line_filters[lineno]
+        ):
+            return True
     return False

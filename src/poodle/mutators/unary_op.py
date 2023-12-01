@@ -20,7 +20,7 @@ class UnaryOperationMutator(ast.NodeVisitor, Mutator):
     mutator_name = "UnaryOp"
     mutants: list[FileMutation]
 
-    def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
+    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
         """Visit all Unary Operations and return created mutants."""
         self.mutants = []
         self.visit(parsed_ast)

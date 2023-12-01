@@ -14,7 +14,7 @@ class FunctionCallMutator(ast.NodeVisitor, Mutator):
     mutator_name = "FuncCall"
     mutants: list[FileMutation]
 
-    def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
+    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
         """Visit all nodes and return created mutants."""
         self.mutants = []
         self.visit(parsed_ast)
@@ -31,7 +31,7 @@ class DictArrayCallMutator(ast.NodeVisitor, Mutator):
     mutator_name = "DictArray"
     mutants: list[FileMutation]
 
-    def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
+    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
         """Visit all nodes and return created mutants."""
         self.mutants = []
         self.add_parent_attr(parsed_ast)
@@ -53,7 +53,7 @@ class LambdaReturnMutator(ast.NodeVisitor, Mutator):
     mutator_name = "Lambda"
     mutants: list[FileMutation]
 
-    def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
+    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
         """Visit all nodes and return created mutants."""
         self.mutants = []
         self.visit(parsed_ast)
@@ -75,7 +75,7 @@ class ReturnMutator(ast.NodeVisitor, Mutator):
     mutator_name = "Return"
     mutants: list[FileMutation]
 
-    def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
+    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
         """Visit all nodes and return created mutants."""
         self.mutants = []
         self.visit(parsed_ast)
@@ -97,7 +97,7 @@ class DecoratorMutator(ast.NodeVisitor, Mutator):
     mutator_name = "Decorator"
     mutants: list[FileMutation]
 
-    def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
+    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
         """Visit all nodes and return created mutants."""
         self.mutants = []
         self.visit(parsed_ast)

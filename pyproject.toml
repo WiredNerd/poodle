@@ -76,6 +76,7 @@ target-version = "py39"
 show-source = true
 select = ["ALL"]
 ignore = [
+    "COM812", # missing-trailing-comma
     "D203",   # 1 blank line required before class docstring
     "D213",   # multi-line-summary-second-line
     "EM101",  # Exception must not use a string literal, assign to variable first
@@ -87,6 +88,7 @@ ignore = [
     "ANN102", # Missing type annotation for cls in method
     "ANN002", # Missing type annotation for *args
     "ANN003", # Missing type annotation for **kwargs
+    "ISC001", # single-line-implicit-string-concatenation
 ]
 line-length = 120
 exclude = [
@@ -113,6 +115,9 @@ known-first-party = ["poodle"]
 "src/poodle/mutators/*" = [
     "N802", # Function name should be lowercase
 ]
+"src/poodle/data_types/interfaces.py" = [
+    "ARG001", # Unused function argument
+]
 "tests/*" = [
     "D100",    # Missing docstring in public module
     "D101",    # Missing docstring in public class
@@ -134,3 +139,5 @@ known-first-party = ["poodle"]
 "tests/mutators/*" = [
     "N802", # Function name should be lowercase
 ]
+
+[tool.ruff.format]

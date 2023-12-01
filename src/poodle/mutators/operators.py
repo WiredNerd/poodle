@@ -85,7 +85,7 @@ class OperationMutator(ast.NodeVisitor, Mutator):
 
         self.type_map: dict[type, list[type]] = self.type_map_levels[level]
 
-    def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
+    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
         """Visit ast nodes and return created mutants."""
         self.mutants = []
         self.visit(parsed_ast)

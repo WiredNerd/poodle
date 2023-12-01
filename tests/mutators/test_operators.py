@@ -72,6 +72,9 @@ class TestOperationMutator:
 
 
 class TestBinaryOperationMutator:
+    def test_mutator_name(self):
+        assert BinaryOperationMutator.mutator_name == "BinOp"
+
     @pytest.mark.parametrize(
         ("op_type", "text_out"),
         [
@@ -179,6 +182,9 @@ class TestBinaryOperationMutator:
 
 
 class TestAugAssignMutator:
+    def test_mutator_name(self):
+        assert AugAssignMutator.mutator_name == "AugAssign"
+
     @pytest.mark.parametrize(
         ("op_type", "text_out"),
         [

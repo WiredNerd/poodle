@@ -12,7 +12,14 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-def create_mutations(config: PoodleConfig, echo: Callable, parsed_ast: ast.Module, file_lines: list[str], *_, **__) -> list[FileMutation]:  # type: ignore [empty-body] # noqa: ARG001
+def create_mutations(  # type: ignore [empty-body]
+    config: PoodleConfig,
+    echo: Callable,
+    parsed_ast: ast.Module,
+    file_lines: list[str],
+    *_,
+    **__,
+) -> list[FileMutation]:
     """Create a list of Mutants for the provided parsed Module.
 
     This will be called once with parsed ast for each Module.
@@ -89,7 +96,7 @@ class Mutator(ABC):
 
 
 # runner method signature:
-def runner(config: PoodleConfig, echo: Callable, run_folder: Path, mutant: Mutant, *_, **__) -> MutantTrialResult:  # type: ignore [empty-body] # noqa: ARG001
+def runner(config: PoodleConfig, echo: Callable, run_folder: Path, mutant: Mutant, *_, **__) -> MutantTrialResult:  # type: ignore [empty-body]
     """Run trial of mutant in specified folder.
 
     Files from the source folder have been copied to the run folder, and mutation has been applied.
@@ -97,5 +104,5 @@ def runner(config: PoodleConfig, echo: Callable, run_folder: Path, mutant: Mutan
 
 
 # reporter method signature:
-def reporter(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -> None:  # type: ignore [empty-body] # noqa: ARG001
+def reporter(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -> None:  # type: ignore [empty-body]
     """Report on Testing Results."""

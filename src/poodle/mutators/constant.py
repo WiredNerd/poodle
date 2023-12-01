@@ -18,7 +18,7 @@ class NumberMutator(ast.NodeVisitor, Mutator):
     mutator_name = "Number"
     mutants: list[FileMutation]
 
-    def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
+    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
         """Visit all nodes and return created mutants."""
         self.mutants = []
         self.visit(parsed_ast)
@@ -46,7 +46,7 @@ class StringMutator(ast.NodeVisitor, Mutator):
     mutator_name = "String"
     mutants: list[FileMutation]
 
-    def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
+    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
         """Visit all nodes and return created mutants."""
         self.mutants = []
         self.add_parent_attr(parsed_ast)
@@ -68,7 +68,7 @@ class KeywordMutator(ast.NodeVisitor, Mutator):
     mutator_name = "Keyword"
     mutants: list[FileMutation]
 
-    def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
+    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
         """Visit all nodes and return created mutants."""
         self.mutants = []
         self.visit(parsed_ast)

@@ -41,22 +41,20 @@ class ComparisonMutator(ast.NodeVisitor, Mutator):
         ast.And: [ast.Or],
     }
 
-    filter_patterns: ClassVar[list[str]] = [
-        r"__name__ == '__main__'",
-    ]
-
     mutator_name = "Compare"
-    mutants: list[FileMutation]
 
     def __init__(self, *args, **kwargs) -> None:
         """Initialize and read settings."""
         super().__init__(*args, **kwargs)
+        self.mutants: list[FileMutation] = []
 
-        filter_opts = self.config.mutator_opts.get("compare_filters", [])
-        if filter_opts:
-            self.filter_patterns.extend(filter_opts)
+        self.filter_patterns: list[str] = [
+            r"__name__ == '__main__'",
+        ]
 
-    def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
+        self.filter_patterns += self.config.mutator_opts.get("compare_filters", [])
+
+    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
         """Visit all Comparisons and return created mutants."""
         self.mutants = []
         self.visit(parsed_ast)
@@ -77,6 +75,11 @@ class ComparisonMutator(ast.NodeVisitor, Mutator):
 
     def visit_BoolOp(self, node: ast.BoolOp) -> None:
         """Identify replacement Operations and create Mutants."""
+        text = ast.unparse(node)
+        for pattern in self.filter_patterns:
+            if re.match(pattern, text):
+                return
+
         for new_op in self.type_map[type(node.op)]:
             mut = deepcopy(node)
             mut.op = new_op()
