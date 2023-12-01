@@ -77,34 +77,39 @@ def run_mutant_trails(work: PoodleWork, mutants: list[Mutant]) -> TestingResults
     start = time.time()
     work.echo("Testing mutants")
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        futures = [
-            executor.submit(
-                run_mutant_trial,
-                work.config,
-                work.echo,
-                work.folder_zips[mutant.source_folder],
-                mutant,
-                work.next_num(),
-                work.runner,
-            )
-            for mutant in mutants
-        ]
+        try:
+            futures = [
+                executor.submit(
+                    run_mutant_trial,
+                    work.config,
+                    work.echo,
+                    work.folder_zips[mutant.source_folder],
+                    mutant,
+                    work.next_num(),
+                    work.runner,
+                )
+                for mutant in mutants
+            ]
 
-        summary = TestingSummary()
-        num_trials = len(mutants)
-        for future in concurrent.futures.as_completed(futures):
-            if future.cancelled():
-                work.echo("Canceled")
-            else:
-                mutant_trial: MutantTrial = future.result()
-                update_summary(summary, mutant_trial.result)
-            work.echo(
-                f"COMPLETED {summary.tested:>4}/{num_trials:<4}"
-                f"\tFOUND {summary.found:>4}"
-                f"\tNOT FOUND {summary.not_found:>4}"
-                f"\tTIMEOUT {summary.timeout:>4}"
-                f"\tERRORS {summary.errors:>4}",
-            )
+            summary = TestingSummary()
+            num_trials = len(mutants)
+            for future in concurrent.futures.as_completed(futures):
+                if future.cancelled():
+                    work.echo("Canceled")
+                else:
+                    mutant_trial: MutantTrial = future.result()
+                    update_summary(summary, mutant_trial.result)
+                work.echo(
+                    f"COMPLETED {summary.tested:>4}/{num_trials:<4}"
+                    f"\tFOUND {summary.found:>4}"
+                    f"\tNOT FOUND {summary.not_found:>4}"
+                    f"\tTIMEOUT {summary.timeout:>4}"
+                    f"\tERRORS {summary.errors:>4}",
+                )
+        except KeyboardInterrupt:
+            work.echo("Received Keyboard Interrupt.  Cancelling Remaining Trials.")
+            executor.shutdown(wait=True, cancel_futures=True)
+            raise
 
     logger.info("Elapsed Time %.2f s", time.time() - start)
 

@@ -32,7 +32,11 @@ def main(source: tuple[Path], config_file: Path | None, verbosity: str | None) -
         click.echo(err.args)
         sys.exit(4)
 
-    core.run(config)
+    try:
+        core.run(config)
+    except KeyboardInterrupt:
+        click.echo("Aborted due to Keyboard Interrupt!")
+        sys.exit(2)
 
 
 # Exit code 0: All tests were collected and passed successfully

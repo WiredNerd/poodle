@@ -59,11 +59,15 @@ class StringMutator(ast.NodeVisitor, Mutator):
             return
 
         if isinstance(node.value, str):
-            self.mutants.append(self.create_file_mutation(node, "XX" + node.value + "XX"))
+            node.value = f"XX{node.value}XX"
+            self.mutants.append(self.create_file_mutation(node, ast.unparse(node)))
 
 
 class KeywordMutator(ast.NodeVisitor, Mutator):
-    """Mutate Keywords."""
+    """Mutate Keywords.
+
+    continue, break, False, True, None
+    """
 
     mutator_name = "Keyword"
     mutants: list[FileMutation]

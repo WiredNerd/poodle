@@ -70,6 +70,16 @@ jobs:
       - run: black --check src --diff
       - run: black --check tests --diff
         if: ${{ always() }}
+  ruff-fmt:
+    name: Code Format with Ruff
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ruff format
+        uses: chartboost/ruff-action@v1
+        with:
+          src: src tests
+          args: format --diff
   mypy:
     name: Type Checks with Mypy
     runs-on: [ubuntu-latest]

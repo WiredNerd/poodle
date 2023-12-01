@@ -32,3 +32,8 @@ jobs:
               run: |
                 pip install -r requirements.txt --upgrade
             - run: pytest
+            - name: Poodle example project
+              run : |
+                pip install --editable .
+                cd example
+                poodle
