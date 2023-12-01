@@ -3,9 +3,6 @@ name: Python Mutation Test
 on: 
   push:
     paths:
-      - requirements.txt
-      - src/**
-      - tests/**
       - .github/workflows/python-mutation-test.yml
   pull_request:
     paths:
