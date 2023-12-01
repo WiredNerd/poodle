@@ -17,6 +17,7 @@ class UnaryOperationMutator(ast.NodeVisitor, Mutator):
     # ast.Not       not
     # ast.Invert    ~
 
+    mutator_name = "UnaryOp"
     mutants: list[FileMutation]
 
     def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:

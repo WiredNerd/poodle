@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 import logging
+import re
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Callable
 
@@ -31,18 +32,18 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 builtin_mutators = {
-    "BinOp": BinaryOperationMutator,
-    "AugAssign": AugAssignMutator,
-    "UnaryOp": UnaryOperationMutator,
-    "Compare": ComparisonMutator,
-    "Keyword": KeywordMutator,
-    "Number": NumberMutator,
-    "String": StringMutator,
-    "FunctionCall": FunctionCallMutator,
-    "DictArrayCall": DictArrayCallMutator,
-    "Lambda": LambdaReturnMutator,
-    "Return": ReturnMutator,
-    "Decorator": DecoratorMutator,
+    BinaryOperationMutator.mutator_name: BinaryOperationMutator,
+    AugAssignMutator.mutator_name: AugAssignMutator,
+    UnaryOperationMutator.mutator_name: UnaryOperationMutator,
+    ComparisonMutator.mutator_name: ComparisonMutator,
+    KeywordMutator.mutator_name: KeywordMutator,
+    NumberMutator.mutator_name: NumberMutator,
+    StringMutator.mutator_name: StringMutator,
+    FunctionCallMutator.mutator_name: FunctionCallMutator,
+    DictArrayCallMutator.mutator_name: DictArrayCallMutator,
+    LambdaReturnMutator.mutator_name: LambdaReturnMutator,
+    ReturnMutator.mutator_name: ReturnMutator,
+    DecoratorMutator.mutator_name: DecoratorMutator,
 }
 
 
@@ -115,19 +116,51 @@ def create_mutants_for_file(work: PoodleWork, folder: Path, file: Path) -> list[
 
     * Parse ast from file.
     * Pass file ast to all mutators.
-    * TODO: Apply Filters.
+    * Apply Filters.
     * Compile list of Mutants.
     """
     logger.debug("Create Mutants for file %s", file)
 
     parsed_ast = ast.parse(file.read_bytes(), file)
+    file_lines = file.read_text().splitlines()
 
     def call_mutator(mutator: Callable | Mutator) -> list[FileMutation]:
         if isinstance(mutator, Mutator):
-            return mutator.create_mutations(parsed_ast=deepcopy(parsed_ast))
-        return mutator(config=work.config, parsed_ast=deepcopy(parsed_ast))
+            return mutator.create_mutations(parsed_ast=deepcopy(parsed_ast), file_lines=deepcopy(file_lines))
+        return mutator(config=work.config, parsed_ast=deepcopy(parsed_ast), file_lines=deepcopy(file_lines))
 
     mutant_nested_list = [call_mutator(mutator) for mutator in work.mutators]
     file_mutants = [mutant for mutant_list in mutant_nested_list if mutant_list for mutant in mutant_list]
 
+    line_filters = parse_filters(file_lines)
+    file_mutants = [mut for mut in file_mutants if not is_filtered(line_filters, mut)]
+
     return [Mutant(source_folder=folder, source_file=file, **vars(file_mutant)) for file_mutant in file_mutants]
+
+
+def parse_filters(file_lines: list[str]) -> dict[int, set[str]]:
+    line_filters: dict[int, set[str]] = {}
+
+    for lineno, line in enumerate(file_lines, start=1):
+        if re.search(r"#\s*pragma:\s*no mutate[\s#$]*", line):
+            add_line_filter(line_filters, lineno, "all")
+        no_mut_filter: list[str] = re.findall(r"#\s*nomut:?\s*([A-Za-z0-9,\s]*)[#$]*", line)
+        for filters in no_mut_filter:
+            for filter in filters.split(","):
+                add_line_filter(line_filters, lineno, filter.strip())
+
+    return line_filters
+
+
+def add_line_filter(line_filters: dict[int, set[str]], lineno: int, filter: str):
+    if lineno not in line_filters:
+        line_filters[lineno] = set()
+    line_filters[lineno].add("all" if filter == "" else filter.lower())
+
+
+def is_filtered(line_filters: dict[int, set[str]], file_mutant: FileMutation):
+    for lineno in range(file_mutant.lineno, file_mutant.end_lineno + 1):
+        if lineno in line_filters:
+            if "all" in line_filters[lineno] or file_mutant.mutator_name.lower() in line_filters[lineno]:
+                return True
+    return False

@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-def create_mutations(config: PoodleConfig, echo: Callable, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:  # type: ignore [empty-body] # noqa: ARG001
+def create_mutations(config: PoodleConfig, echo: Callable, parsed_ast: ast.Module, file_lines: list[str], *_, **__) -> list[FileMutation]:  # type: ignore [empty-body] # noqa: ARG001
     """Create a list of Mutants for the provided parsed Module.
 
     This will be called once with parsed ast for each Module.
@@ -27,8 +27,10 @@ class Mutator(ABC):
         self.config = config
         self.echo = echo
 
+    mutator_name = ""
+
     @abstractmethod
-    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
+    def create_mutations(self, parsed_ast: ast.Module, file_lines: list[str], *_, **__) -> list[FileMutation]:
         """Create a list of Mutants for the provided parsed Module.
 
         This will be called once with parsed ast for each Module.
@@ -40,6 +42,7 @@ class Mutator(ABC):
         lineno, col_offset, end_lineno, end_col_offset = cls.get_location(node)
 
         return FileMutation(
+            mutator_name=cls.mutator_name,
             lineno=lineno,
             col_offset=col_offset,
             end_lineno=end_lineno,

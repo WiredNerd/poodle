@@ -11,6 +11,7 @@ from poodle.data_types import FileMutation, Mutator
 class FunctionCallMutator(ast.NodeVisitor, Mutator):
     """Mutate Function Calls."""
 
+    mutator_name = "FuncCall"
     mutants: list[FileMutation]
 
     def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
@@ -27,6 +28,7 @@ class FunctionCallMutator(ast.NodeVisitor, Mutator):
 class DictArrayCallMutator(ast.NodeVisitor, Mutator):
     """Mutate Calls to Dict or Array."""
 
+    mutator_name = "DictArray"
     mutants: list[FileMutation]
 
     def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
@@ -48,6 +50,7 @@ class DictArrayCallMutator(ast.NodeVisitor, Mutator):
 class LambdaReturnMutator(ast.NodeVisitor, Mutator):
     """Mutate Return from Lambdas."""
 
+    mutator_name = "Lambda"
     mutants: list[FileMutation]
 
     def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
@@ -69,6 +72,7 @@ class LambdaReturnMutator(ast.NodeVisitor, Mutator):
 class ReturnMutator(ast.NodeVisitor, Mutator):
     """Mutate Return from Functions."""
 
+    mutator_name = "Return"
     mutants: list[FileMutation]
 
     def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:
@@ -90,6 +94,7 @@ class ReturnMutator(ast.NodeVisitor, Mutator):
 class DecoratorMutator(ast.NodeVisitor, Mutator):
     """Mutate Decorators."""
 
+    mutator_name = "Decorator"
     mutants: list[FileMutation]
 
     def create_mutations(self, parsed_ast: ast.Module, **_) -> list[FileMutation]:

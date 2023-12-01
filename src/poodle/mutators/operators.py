@@ -95,6 +95,8 @@ class OperationMutator(ast.NodeVisitor, Mutator):
 class BinaryOperationMutator(OperationMutator):
     """Mutate Binary Operations."""
 
+    mutator_name = "BinOp"
+
     def visit_BinOp(self, node: ast.BinOp) -> None:
         """Identify replacement Operations and create Mutants."""
         if type(node.op) in self.type_map:
@@ -108,6 +110,8 @@ class BinaryOperationMutator(OperationMutator):
 
 class AugAssignMutator(OperationMutator):
     """Mutate Augmented Assignments."""
+
+    mutator_name = "AugAssign"
 
     def visit_AugAssign(self, node: ast.AugAssign) -> None:
         """Identify replacement Operations and create Mutants."""

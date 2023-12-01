@@ -45,6 +45,7 @@ class ComparisonMutator(ast.NodeVisitor, Mutator):
         r"__name__ == '__main__'",
     ]
 
+    mutator_name = "Compare"
     mutants: list[FileMutation]
 
     def __init__(self, *args, **kwargs) -> None:

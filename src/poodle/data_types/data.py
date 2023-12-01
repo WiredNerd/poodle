@@ -37,6 +37,7 @@ class PoodleConfig:
 class FileMutation:
     """Mutation instructions for the current file."""
 
+    mutator_name: str
     lineno: int
     col_offset: int
     end_lineno: int

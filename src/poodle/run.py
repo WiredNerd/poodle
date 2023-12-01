@@ -49,6 +49,7 @@ def clean_run_trial(work: PoodleWork, folder: Path) -> None:
         work.echo,
         work.folder_zips[folder],
         Mutant(
+            mutator_name="",
             source_folder=folder,
             source_file=None,
             lineno=0,
