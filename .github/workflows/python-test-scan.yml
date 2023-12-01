@@ -27,6 +27,7 @@ jobs:
           python-version: '3.12'
       - name: Install Dependencies and Tools
         run: |
+          python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
       - run: pytest --cov=src
       - name: commit-json-report
@@ -50,6 +51,7 @@ jobs:
           python-version: '3.12'
       - name: Install Dependencies and Tools
         run: |
+          python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
           pip install isort --upgrade
       - run: python3 -m isort src --check --diff
@@ -65,6 +67,7 @@ jobs:
           python-version: '3.12'
       - name: Install Dependencies and Tools
         run: |
+          python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
           pip install black --upgrade
       - run: black --check src --diff
@@ -90,6 +93,7 @@ jobs:
           python-version: '3.12'
       - name: Install Dependencies and Tools
         run: |
+          python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
           pip install mypy --upgrade
       - run: mypy src tests --python-version 3.9

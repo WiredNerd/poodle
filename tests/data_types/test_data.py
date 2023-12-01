@@ -1,4 +1,8 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from poodle.data_types.data import (
     FileMutation,
@@ -9,6 +13,28 @@ from poodle.data_types.data import (
     TestingResults,
     TestingSummary,
 )
+
+
+@dataclass
+class PoodleConfigStub(PoodleConfig):
+    config_file: Path | None = None
+    source_folders: list[Path] = None  # type: ignore [assignment]
+    file_filters: list[str] = None  # type: ignore [assignment]
+    file_copy_filters: list[str] = None  # type: ignore [assignment]
+    work_folder: Path = None  # type: ignore [assignment]
+    log_format: str = None  # type: ignore [assignment]
+    log_level: int | str = None  # type: ignore [assignment]
+    echo_enabled: bool = None  # type: ignore [assignment]
+
+    mutator_opts: dict = None  # type: ignore [assignment]
+    skip_mutators: list[str] = None  # type: ignore [assignment]
+    add_mutators: list[Any] = None  # type: ignore [assignment]
+
+    runner: str = None  # type: ignore [assignment]
+    runner_opts: dict = None  # type: ignore [assignment]
+
+    reporters: list[str] = None  # type: ignore [assignment]
+    reporter_opts: dict = None  # type: ignore [assignment]
 
 
 class TestPoodleConfig:
@@ -169,6 +195,55 @@ class TestTestingSummary:
         assert testing_summary.timeout == 5
         assert testing_summary.errors == 6
         assert testing_summary.success_rate == 7.8
+
+    def test_iadd(self):
+        summary = TestingSummary(trials=10)
+        expected = TestingSummary(trials=10)
+
+        summary += 1
+        assert summary == expected
+
+        summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
+        expected.tested += 1
+        expected.found += 1
+        expected.success_rate = 0.1
+        assert summary == expected
+
+        summary += MutantTrialResult(False, MutantTrialResult.RC_NOT_FOUND)
+        expected.tested += 1
+        expected.not_found += 1
+        assert summary == expected
+
+        summary += MutantTrialResult(False, MutantTrialResult.RC_TIMEOUT)
+        expected.tested += 1
+        expected.timeout += 1
+        assert summary == expected
+
+        summary += MutantTrialResult(False, MutantTrialResult.RC_OTHER)
+        expected.tested += 1
+        expected.errors += 1
+        assert summary == expected
+
+        summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
+        expected.tested += 1
+        expected.found += 1
+        expected.success_rate = 0.2
+        assert summary == expected
+
+        summary += MutantTrialResult(False, MutantTrialResult.RC_NOT_FOUND)
+        expected.tested += 1
+        expected.not_found += 1
+        assert summary == expected
+
+        summary += MutantTrialResult(False, MutantTrialResult.RC_TIMEOUT)
+        expected.tested += 1
+        expected.timeout += 1
+        assert summary == expected
+
+        summary += MutantTrialResult(False, MutantTrialResult.RC_OTHER)
+        expected.tested += 1
+        expected.errors += 1
+        assert summary == expected
 
 
 class TestTestingResults:

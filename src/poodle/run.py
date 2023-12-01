@@ -15,7 +15,7 @@ from click import style
 from . import PoodleTrialRunError
 from .data_types import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork, TestingResults, TestingSummary
 from .runners import command_line
-from .util import dynamic_import, update_summary
+from .util import dynamic_import
 
 logger = logging.getLogger(__name__)
 
@@ -92,15 +92,15 @@ def run_mutant_trails(work: PoodleWork, mutants: list[Mutant]) -> TestingResults
             ]
 
             summary = TestingSummary()
-            num_trials = len(mutants)
+            summary.trials = len(mutants)
             for future in concurrent.futures.as_completed(futures):
                 if future.cancelled():
                     work.echo("Canceled")
                 else:
                     mutant_trial: MutantTrial = future.result()
-                    update_summary(summary, mutant_trial.result)
+                    summary += mutant_trial.result
                 work.echo(
-                    f"COMPLETED {summary.tested:>4}/{num_trials:<4}"
+                    f"COMPLETED {summary.tested:>4}/{summary.trials:<4}"
                     f"\tFOUND {summary.found:>4}"
                     f"\tNOT FOUND {summary.not_found:>4}"
                     f"\tTIMEOUT {summary.timeout:>4}"

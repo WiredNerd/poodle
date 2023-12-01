@@ -39,11 +39,6 @@ def run(config: PoodleConfig) -> None:
         clean_run_each_source_folder(work)
         results = run_mutant_trails(work, mutants)
 
-        summary = results.summary
-        summary.trials = len(results.mutant_trials)
-        if summary.trials > 0:
-            summary.success_rate = round(summary.found / summary.trials, 1)
-
         for reporter in work.reporters:
             reporter(config=config, echo=work.echo, testing_results=results)
 

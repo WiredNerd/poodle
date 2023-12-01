@@ -15,10 +15,10 @@ def report_summary(echo: Callable, testing_results: TestingResults, *_, **__) ->
         echo("No mutants found to test.")
         return
 
-    echo("Results Summary")
-    echo(f"Testing found {summary.success_rate:.1%} of Mutants")
+    echo("*** Results Summary ***")
+    echo(f"Testing found {summary.success_rate:.1%} of Mutants.")
     if summary.not_found:
-        echo(f" - {summary.not_found} mutant(s) were not found")
+        echo(f" - {summary.not_found} mutant(s) were not found.")
     if summary.timeout:
         echo(f" - {summary.timeout} mutant(s) caused trial to timeout.")
     if summary.errors:

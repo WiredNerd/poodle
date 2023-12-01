@@ -27,6 +27,7 @@ jobs:
           python-version: '3.11'
       - name: Install Dependencies and Tools
         run: |
+          python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
           pip install mutmut --upgrade
           pip install --editable .
@@ -64,6 +65,7 @@ jobs:
           python-version: '3.12'
       - name: Install Dependencies and Tools
         run: |
+          python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
           pip install --editable .
       - name: Poodle

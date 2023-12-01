@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from typing_extensions import Self
+
 
 @dataclass
 class PoodleConfig:
@@ -87,6 +89,24 @@ class TestingSummary:
     timeout: int = 0
     errors: int = 0
     success_rate: float = 0.0
+
+    def __iadd__(self, result: MutantTrialResult) -> Self:
+        """Update Testing Summary with data from MutantTrialResult."""
+        if isinstance(result, MutantTrialResult):
+            self.tested += 1
+            if result.passed:
+                self.found += 1
+            elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+                self.not_found += 1
+            elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+                self.timeout += 1
+            else:
+                self.errors += 1
+
+        if self.trials > 0:
+            self.success_rate = round(self.found / self.trials, 1)
+
+        return self
 
 
 @dataclass
