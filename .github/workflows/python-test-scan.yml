@@ -3,15 +3,15 @@ name: Python Tests and Scans
 on: 
   push:
     paths:
-        - requirements.txt
-        - src/**
-        - tests/**
-        - .github/workflows/python-test-scan.yml
+      - requirements.txt
+      - src/**
+      - tests/**
+      - .github/workflows/python-test-scan.yml
   pull_request:
     paths:
-        - requirements.txt
-        - src/**
-        - tests/**
+      - requirements.txt
+      - src/**
+      - tests/**
   workflow_dispatch:
 
 concurrency: updates-project
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Install Dependencies and Tools
         run: |
           pip install -r requirements.txt --upgrade
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Install Dependencies and Tools
         run: |
           pip install -r requirements.txt --upgrade
@@ -62,7 +62,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Install Dependencies and Tools
         run: |
           pip install -r requirements.txt --upgrade
@@ -87,7 +87,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Install Dependencies and Tools
         run: |
           pip install -r requirements.txt --upgrade

@@ -1,39 +1,39 @@
 name: Python Platform Tests
 
 on: 
-    push:
-        paths:
-            - requirements.txt
-            - src/**
-            - tests/**
-            - .github/workflows/python-test-matrix.yml
-    pull_request:
-        paths:
-            - requirements.txt
-            - src/**
-            - tests/**
-    workflow_dispatch:
+  push:
+    paths:
+      - requirements.txt
+      - src/**
+      - tests/**
+      - .github/workflows/python-test-matrix.yml
+  pull_request:
+    paths:
+      - requirements.txt
+      - src/**
+      - tests/**
+  workflow_dispatch:
 
 jobs:
-    pytest-matrix:
-        name: Pytest
-        runs-on: ${{ matrix.os }}
-        strategy:
-            fail-fast: false
-            matrix:
-                os: [windows-latest, ubuntu-latest, macos-latest]
-                py: ['3.9','3.10','3.11','3.12']
-        steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-python@v4
-              with:
-                  python-version: ${{ matrix.py }}
-            - name: Install Dependencies and Tools
-              run: |
-                pip install -r requirements.txt --upgrade
-            - run: pytest
-            - name: Poodle example project
-              run : |
-                pip install --editable .
-                cd example
-                poodle
+  pytest-matrix:
+    name: Pytest & Poodle
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        py: ['3.9','3.10','3.11','3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.py }}
+      - name: Install Dependencies and Tools
+        run: |
+          pip install -r requirements.txt --upgrade
+      - run: pytest
+      - name: Poodle example project
+        run : |
+          pip install --editable .
+          cd example
+          poodle
