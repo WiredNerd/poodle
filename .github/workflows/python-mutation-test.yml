@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: '3.11'
       - name: Install Dependencies and Tools
         run: |
           pip install -r requirements.txt --upgrade
@@ -33,7 +33,7 @@ jobs:
       - name: coverage
         run: pytest --cov=src --sort-mode=fastest --cov-context=test
       - name: Mutmut
-        run: python3 -m mutmut run --no-progress --rerun-all --paths-to-mutate src 
+        run: python3 -m mutmut run --no-progress --rerun-all --paths-to-mutate src --use-coverage
           --runner "pytest -x --assert=plain --sort-bucket-mode=diffcov --sort-bucket=function --sort-mode=fastest"
       - run: python3 -m mutmut results
         if: ${{ always() }}
