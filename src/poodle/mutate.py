@@ -49,8 +49,6 @@ builtin_mutators = {
 
 def initialize_mutators(work: PoodleWork) -> list[Callable | Mutator]:
     """Initialize all mutators from standard list and from config options."""
-    logger.debug("START")
-
     mutators: list[Any] = [
         mutator for name, mutator in builtin_mutators.items() if name not in work.config.skip_mutators
     ]
@@ -67,7 +65,11 @@ def initialize_mutator(work: PoodleWork, mutator_def: Any) -> Callable | Mutator
     logger.debug(mutator_def)
 
     if isinstance(mutator_def, str):
-        mutator_def = dynamic_import(mutator_def)
+        try:
+            mutator_def = dynamic_import(mutator_def)
+        except:
+            msg = f"Import failed for mutator '{mutator_def}'"
+            raise PoodleInputError(msg)
 
     if isinstance(mutator_def, type) and issubclass(mutator_def, Mutator):
         return mutator_def(config=work.config, echo=work.echo)
@@ -76,7 +78,7 @@ def initialize_mutator(work: PoodleWork, mutator_def: Any) -> Callable | Mutator
         return mutator_def
 
     msg = (
-        f"Unable to create mutator '{mutator_def}' of type={type(mutator_def)}."
+        f"Unable to create mutator '{mutator_def}' of type={type(mutator_def)}. "
         "Expected String, Callable, Mutator subclass or Mutator subclass instance."
     )
     raise PoodleInputError(msg)
@@ -84,8 +86,6 @@ def initialize_mutator(work: PoodleWork, mutator_def: Any) -> Callable | Mutator
 
 def create_mutants_for_all_mutators(work: PoodleWork) -> list[Mutant]:
     """Create consolidated, flattened list of all mutants to be tried."""
-    logger.debug("START")
-
     return [
         mutant
         for folder, files in get_target_files(work).items()
@@ -100,7 +100,6 @@ def create_mutants_for_all_mutators(work: PoodleWork) -> list[Mutant]:
 
 def get_target_files(work: PoodleWork) -> dict[Path, list[Path]]:
     """Create mapping from each source folder to all mutable files in that folder."""
-    logger.debug("START")
     return {
         folder: files_list_for_folder(
             "*.py",

@@ -17,7 +17,7 @@ from .util import create_temp_zips, pprint_str
 logger = logging.getLogger(__name__)
 
 
-def run(config: PoodleConfig) -> None:
+def main(config: PoodleConfig) -> None:
     """Poodle core run process."""
     try:
         work = PoodleWork(config)  # sets logging defaults

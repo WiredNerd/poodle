@@ -33,7 +33,7 @@ def main(source: tuple[Path], config_file: Path | None, verbosity: str | None) -
         sys.exit(4)
 
     try:
-        core.run(config)
+        core.main(config)
     except KeyboardInterrupt:
         click.echo("Aborted due to Keyboard Interrupt!")
         sys.exit(2)

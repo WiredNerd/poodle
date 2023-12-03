@@ -141,5 +141,8 @@ known-first-party = ["poodle"]
 "tests/mutators/*" = [
     "N802", # Function name should be lowercase
 ]
+"tests/test_core.py" = [
+    "ARG002", # Unused method argument
+]
 
 [tool.ruff.format]
