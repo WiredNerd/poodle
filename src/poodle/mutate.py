@@ -67,9 +67,9 @@ def initialize_mutator(work: PoodleWork, mutator_def: Any) -> Callable | Mutator
     if isinstance(mutator_def, str):
         try:
             mutator_def = dynamic_import(mutator_def)
-        except:
+        except Exception as ex:  # noqa: BLE001
             msg = f"Import failed for mutator '{mutator_def}'"
-            raise PoodleInputError(msg)
+            raise PoodleInputError(msg) from ex
 
     if isinstance(mutator_def, type) and issubclass(mutator_def, Mutator):
         return mutator_def(config=work.config, echo=work.echo)

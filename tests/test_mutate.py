@@ -59,7 +59,7 @@ class TestInit:
     def test_initialize_mutator_str_func(self, logger_mock):
         config = PoodleConfigStub()
         work = PoodleWork(config)
-        mutate.initialize_mutator(work, "tests.test_mutate.fake_mutator") == fake_mutator
+        assert mutate.initialize_mutator(work, "tests.test_mutate.fake_mutator") == fake_mutator
         logger_mock.debug.assert_called_with("tests.test_mutate.fake_mutator")
 
     def test_initialize_mutator_class(self, logger_mock):
@@ -82,7 +82,7 @@ class TestInit:
     def test_initialize_mutator_func(self, logger_mock):
         config = PoodleConfigStub()
         work = PoodleWork(config)
-        mutate.initialize_mutator(work, fake_mutator) == fake_mutator
+        assert mutate.initialize_mutator(work, fake_mutator) == fake_mutator
         logger_mock.debug.assert_called_with(fake_mutator)
 
     def test_initialize_mutator_invalid_error(self, logger_mock):
@@ -96,7 +96,7 @@ class TestInit:
             ),
         ):
             mutate.initialize_mutator(work, 3)
-            logger_mock.debug.assert_called_with("fake_mutator")
+        logger_mock.debug.assert_called_with(3)
 
     def test_initialize_mutator_import_error(self, logger_mock):
         config = PoodleConfigStub()
@@ -106,7 +106,7 @@ class TestInit:
             match="^Import failed for mutator 'fake_mutator'$",
         ):
             mutate.initialize_mutator(work, "fake_mutator")
-            logger_mock.debug.assert_called_with("fake_mutator")
+        logger_mock.debug.assert_called_with("fake_mutator")
 
 
 class TestCreateMutants:
@@ -121,7 +121,7 @@ class TestCreateMutants:
             "example_2": ["file_3.py", "file_4.py"],
         }
 
-        def mock_create_mutants_for_file(work, folder, file):
+        def mock_create_mutants_for_file(work, folder, file):  # noqa: ARG001
             return [mock.MagicMock(folder=folder, file=file)]
 
         create_mutants_for_file.side_effect = mock_create_mutants_for_file
@@ -183,7 +183,7 @@ class TestCreateMutants:
         def deepcopy_mock(obj):
             if obj == parsed_ast:
                 return deepcopy.parsed_ast
-            elif obj == file_lines:
+            if obj == file_lines:
                 return deepcopy.file_lines
             return deepcopy.other
 
