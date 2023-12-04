@@ -74,7 +74,7 @@ def report_not_found(echo: Callable, testing_results: TestingResults, *_, **__) 
         else:
             echo(
                 f"source_file={mutant.source_file} lineno={mutant.lineno} col_offset={mutant.col_offset} "
-                + f"end_lineno={mutant.end_lineno} end_col_offset={mutant.end_col_offset}"
+                f"end_lineno={mutant.end_lineno} end_col_offset={mutant.end_col_offset}"
             )
             echo("text:")
             echo(mutant.text)

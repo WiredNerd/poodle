@@ -165,7 +165,7 @@ class TestReportNotFound:
         source_file = mock.MagicMock()
         source_file.read_text.return_value.splitlines.return_value = ["lambda x: x + 1\n"]
         source_file.resolve.return_value = "src/example.py"
-        source_file.__str__.return_value = "example.py"
+        source_file.__str__.return_value = "example.py"  # type: ignore [attr-defined]
 
         results = TestingResults(
             mutant_trials=[

@@ -193,7 +193,8 @@ def is_filtered(line_filters: dict[int, set[str]], file_mutant: FileMutation) ->
     return False
 
 
-def mutate_lines(mutant: Mutant, file_lines: list[str]):
+def mutate_lines(mutant: Mutant, file_lines: list[str]) -> list[str]:
+    """Apply mutation to list of lines from file."""
     mut_lines = deepcopy(file_lines)
     prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
