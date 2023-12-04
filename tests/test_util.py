@@ -33,11 +33,15 @@ class TestFilesList:
             Path("file_test_2.py"),
         ]
         mock_folder.rglob.assert_called_with("*.py")
-        mock_logger.debug.assert_called_with(
-            "folder=%s glob='%s' filters=%s files=%s",
-            mock_folder,
+        mock_logger.debug.assert_any_call(
+            "files_list_for_folder glob=%s filter_regex=%s folder=%s",
             "*.py",
             [r"^test_.*\.py$", r"_test\.py$"],
+            mock_folder,
+        )
+        mock_logger.debug.assert_any_call(
+            "files_list_for_folder results: folder=%s files=%s",
+            mock_folder,
             files,
         )
 
@@ -67,17 +71,25 @@ class TestFilesList:
         mock_logger.debug.assert_has_calls(
             [
                 mock.call(
-                    "folder=%s glob='%s' filters=%s files=%s",
-                    mock_folder_1,
+                    "files_list_for_folder glob=%s filter_regex=%s folder=%s",
                     "*",
                     [r"^test_.*\.py$", r"_test\.py$"],
+                    mock_folder_1,
+                ),
+                mock.call(
+                    "files_list_for_folder results: folder=%s files=%s",
+                    mock_folder_1,
                     [Path("file_1.py")],
                 ),
                 mock.call(
-                    "folder=%s glob='%s' filters=%s files=%s",
-                    mock_folder_2,
+                    "files_list_for_folder glob=%s filter_regex=%s folder=%s",
                     "*",
                     [r"^test_.*\.py$", r"_test\.py$"],
+                    mock_folder_2,
+                ),
+                mock.call(
+                    "files_list_for_folder results: folder=%s files=%s",
+                    mock_folder_2,
                     [Path("file_test_2.py")],
                 ),
             ]

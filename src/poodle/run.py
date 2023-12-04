@@ -76,7 +76,7 @@ def run_mutant_trails(work: PoodleWork, mutants: list[Mutant]) -> TestingResults
     """
     start = time.time()
     work.echo("Testing mutants")
-    with concurrent.futures.ProcessPoolExecutor() as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=work.config.max_workers) as executor:
         try:
             futures = [
                 executor.submit(

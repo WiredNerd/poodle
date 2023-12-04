@@ -46,9 +46,14 @@ testpaths = ["tests"]
 addopts = "-vv --cov-reset --cov-report=html:reports/coverage --cov-report=term --cov-report=json:code-coverage.json"
 sort_mode = "random"
 sort_bucket = "session"
+filterwarnings = [
+    "ignore:.*cannot collect test class .TestingSummary",
+    "ignore:.*cannot collect test class .TestingResults",
+]
 
 [tool.poodle]
 source_folders = ["src"]
+exclude = ["cli.py","core.py"]
 
 [tool.poodle.runner_opts]
 
@@ -116,6 +121,9 @@ known-first-party = ["poodle"]
 ]
 "src/poodle/mutators/*" = [
     "N802", # Function name should be lowercase
+]
+"src/poodle/cli.py" = [
+    "PLR0913", # Too many arguments in function definition
 ]
 "src/poodle/data_types/interfaces.py" = [
     "ARG001", # Unused function argument

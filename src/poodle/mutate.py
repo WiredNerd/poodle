@@ -100,6 +100,19 @@ def create_mutants_for_all_mutators(work: PoodleWork) -> list[Mutant]:
 
 def get_target_files(work: PoodleWork) -> dict[Path, list[Path]]:
     """Create mapping from each source folder to all mutable files in that folder."""
+    logger.debug(
+        "get_target_files source_folders=%s only_files=%s file_filters=%s",
+        work.config.source_folders,
+        work.config.only_files,
+        work.config.source_folders,
+    )
+    if work.config.only_files:
+        out: dict[Path, list[Path]] = {}
+        for folder in work.config.source_folders:
+            out[folder] = []
+            for glob in work.config.only_files:
+                out[folder] += list(folder.rglob(glob))
+        return out
     return {
         folder: files_list_for_folder(
             "*.py",

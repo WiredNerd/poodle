@@ -23,12 +23,14 @@ def files_list_for_folder(glob: str, filter_regex: list[str], folder: Path) -> l
     Search recursively for files matching glob.
     Remove files matching any of the filter_regex values.
     """
+    logger.debug("files_list_for_folder glob=%s filter_regex=%s folder=%s", glob, filter_regex, folder)
+
     files = list(folder.rglob(glob))
 
     for regex in filter_regex:
         files = [file for file in files if not re.search(regex, file.name)]
 
-    logger.debug("folder=%s glob='%s' filters=%s files=%s", folder, glob, filter_regex, files)
+    logger.debug("files_list_for_folder results: folder=%s files=%s", folder, files)
     return files
 
 

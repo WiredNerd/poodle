@@ -41,7 +41,25 @@ def test_defaults():
     assert config.default_runner_opts == {"command_line": "pytest -x --assert=plain -o pythonpath="}
 
 
+class TestMaxWorkers:
+    @mock.patch("poodle.config.os")
+    def test_default_max_workers_affinity(self, os_mock):
+        os_mock.sched_getaffinity.return_value = [1, 2, 3, 4, 5, 6]
+        os_mock.cpu_count.return_value = 8
+        assert config.default_max_workers() == 5
+        os_mock.sched_getaffinity.assert_called_with(0)
+        os_mock.cpu_count.assert_not_called()
+
+    @mock.patch("poodle.config.os")
+    def test_default_max_workers_cpu(self, os_mock):
+        del os_mock.sched_getaffinity
+        os_mock.cpu_count.return_value = 8
+        assert config.default_max_workers() == 7
+        os_mock.cpu_count.assert_called()
+
+
 class TestBuildConfig:
+    @mock.patch("poodle.config.os")
     @mock.patch("poodle.config.get_config_file_path")
     @mock.patch("poodle.config.get_config_file_data")
     @mock.patch("poodle.config.get_source_folders")
@@ -50,6 +68,7 @@ class TestBuildConfig:
     @mock.patch("poodle.config.get_path_from_config")
     @mock.patch("poodle.config.get_dict_from_config")
     @mock.patch("poodle.config.get_bool_from_config")
+    @mock.patch("poodle.config.get_int_from_config")
     @mock.patch("poodle.config.get_any_from_config")
     @mock.patch("poodle.config.get_any_list_from_config")
     @mock.patch("poodle.config.get_cmd_line_echo_enabled")
@@ -58,6 +77,7 @@ class TestBuildConfig:
         get_cmd_line_echo_enabled,
         get_any_list_from_config,
         get_any_from_config,
+        get_int_from_config,
         get_bool_from_config,
         get_dict_from_config,
         get_path_from_config,
@@ -66,6 +86,7 @@ class TestBuildConfig:
         get_source_folders,
         get_config_file_data,
         get_config_file_path,
+        mock_os,
         logging_mock,
     ):
         get_dict_from_config.side_effect = [
@@ -74,18 +95,29 @@ class TestBuildConfig:
             {"reporter": "value"},
         ]
 
-        command_line_sources = (Path("src"),)
-        config_file = Path("config.toml")
+        cmd_sources = (Path("src"),)
+        cmd_config_file = Path("config.toml")
 
         config_file_path = get_config_file_path.return_value
         config_file_data = get_config_file_data.return_value
 
-        assert config.build_config(command_line_sources, config_file, "v") == config.PoodleConfig(
+        mock_os.sched_getaffinity.return_value = [1, 2, 3, 4, 5, 6]
+
+        assert config.build_config(
+            cmd_sources,
+            cmd_config_file,
+            cmd_verbosity="v",
+            cmd_max_workers=3,
+            cmd_excludes=("notcov.py",),
+            cmd_only_files=("example.py",),
+        ) == config.PoodleConfig(
             config_file=config_file_path,
             source_folders=get_source_folders.return_value,
-            file_filters=get_str_list_from_config.return_value,
+            only_files=get_str_list_from_config.return_value,
+            file_filters=get_str_list_from_config.return_value.__iadd__.return_value.__iadd__.return_value,
             file_copy_filters=get_str_list_from_config.return_value,
             work_folder=get_path_from_config.return_value,
+            max_workers=get_int_from_config.return_value,
             log_format=get_str_from_config.return_value,
             log_level=get_any_from_config.return_value,
             echo_enabled=get_bool_from_config.return_value,
@@ -97,6 +129,33 @@ class TestBuildConfig:
             reporters=get_str_list_from_config.return_value,
             reporter_opts={"reporter": "value"},
         )
+
+        # return PoodleConfig
+        # source_folders
+        get_source_folders.assert_called_once_with(cmd_sources, config_file_data)
+        # only_files
+        get_str_list_from_config.assert_any_call(
+            "only_files",
+            config_file_data,
+            default=[],
+            command_line=("example.py",),
+        )
+        # file_filters
+        get_str_list_from_config.assert_any_call("file_filters", config_file_data, default=config.default_file_filters)
+        get_str_list_from_config.assert_any_call("exclude", config_file_data, default=[])
+        get_str_list_from_config.return_value.__iadd__.assert_any_call(get_str_list_from_config.return_value)
+        get_str_list_from_config.return_value.__iadd__.return_value.__iadd__.assert_any_call(("notcov.py",))
+        # file_copy_filters
+        get_str_list_from_config.assert_any_call(
+            "file_copy_filters",
+            config_file_data,
+            default=config.default_file_copy_filters,
+        )
+        # work_folder
+        get_path_from_config.assert_any_call("work_folder", config_file_data, default=config.default_work_folder)
+
+        # max_workers
+        get_int_from_config.assert_any_call("max_workers", config_file_data, default=5, command_line=3)
 
         # log_format
         get_str_from_config.assert_any_call("log_format", config_file_data, default=config.default_log_format)
@@ -111,20 +170,6 @@ class TestBuildConfig:
             format=get_str_from_config.return_value,
             level=get_any_from_config.return_value,
         )
-
-        # return PoodleConfig
-        # source_folders
-        get_source_folders.assert_called_once_with(command_line_sources, config_file_data)
-        # file_filters
-        get_str_list_from_config.assert_any_call("file_filters", config_file_data, default=config.default_file_filters)
-        # file_copy_filters
-        get_str_list_from_config.assert_any_call(
-            "file_copy_filters",
-            config_file_data,
-            default=config.default_file_copy_filters,
-        )
-        # work_folder
-        get_path_from_config.assert_any_call("work_folder", config_file_data, default=config.default_work_folder)
 
         # echo_enabled
         get_bool_from_config.assert_any_call(
@@ -153,7 +198,7 @@ class TestBuildConfig:
         # reporters
         get_str_list_from_config.assert_any_call("reporters", config_file_data, default=config.default_reporters)
 
-        # runner_opts
+        # reporter_opts
         get_dict_from_config.assert_any_call("reporter_opts", config_file_data, default=config.default_reporter_opts)
 
 
@@ -555,8 +600,177 @@ class TestGetPathListFromConfig:
             )
 
 
-# TODO: TestGetAnyFromConfig
-# TODO: TestGetAnyListFromConfig
+class TestGetAnyFromConfig:
+    def test_default(self, get_option_from_config):
+        get_option_from_config.return_value = (None, None)
+
+        assert (
+            config.get_any_from_config(
+                option_name="test_option",
+                config_data={"test_option": 3},
+                command_line="4",
+                default=5.5,
+            )
+            == 5.5
+        )
+
+        get_option_from_config.assert_called_with(
+            option_name="test_option",
+            config_data={"test_option": 3},
+            command_line="4",
+        )
+
+    def test_default_inputs(self, get_option_from_config):
+        get_option_from_config.return_value = (None, None)
+
+        assert (
+            config.get_any_from_config(
+                option_name="test_option",
+                config_data={"test_option": 3},
+            )
+            is None
+        )
+
+        get_option_from_config.assert_called_with(
+            option_name="test_option",
+            config_data={"test_option": 3},
+            command_line=None,
+        )
+
+    def test_return_value(self, get_option_from_config):
+        get_option_from_config.return_value = (False, "Source Name")
+
+        assert (
+            config.get_any_from_config(
+                option_name="test_option",
+                config_data={"test_option": "3"},
+                command_line="4",
+                default="5",
+            )
+            is False
+        )
+
+
+class TestGetAnyListFromConfig:
+    def test_default(self, get_option_from_config):
+        get_option_from_config.return_value = (None, None)
+        assert config.get_any_list_from_config(
+            option_name="test_option",
+            config_data={"test_option": ["config_file_value"]},
+            command_line=["command_line_value"],
+            default=["default_value"],
+        ) == ["default_value"]
+
+        get_option_from_config.assert_called_with(
+            option_name="test_option",
+            config_data={"test_option": ["config_file_value"]},
+            command_line=["command_line_value"],
+        )
+
+    def test_default_inputs(self, get_option_from_config):
+        get_option_from_config.return_value = (None, None)
+        assert (
+            config.get_any_list_from_config(
+                option_name="test_option",
+                config_data={"test_option": ["config_file_value"]},
+            )
+            == []
+        )
+
+        get_option_from_config.assert_called_with(
+            option_name="test_option",
+            config_data={"test_option": ["config_file_value"]},
+            command_line=(),
+        )
+
+    def test_string(self, get_option_from_config):
+        get_option_from_config.return_value = ("return_value", "Source Name")
+        assert config.get_any_list_from_config(
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=["default_value"],
+        ) == ["return_value"]
+
+    def test_iterable(self, get_option_from_config):
+        get_option_from_config.return_value = (iter(["return_value", "other_value"]), "Source Name")
+        assert config.get_any_list_from_config(
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=["default_value"],
+        ) == ["return_value", "other_value"]
+
+    def test_tuple(self, get_option_from_config):
+        get_option_from_config.return_value = (("return_value", "other_value"), "Source Name")
+        assert config.get_any_list_from_config(
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=["default_value"],
+        ) == ["return_value", "other_value"]
+
+
+class TestGetIntFromConfig:
+    def test_default(self, get_option_from_config):
+        get_option_from_config.return_value = (None, None)
+
+        assert (
+            config.get_int_from_config(
+                option_name="test_option",
+                config_data={"test_option": 3},
+                command_line=4,
+                default=5,
+            )
+            == 5
+        )
+
+        get_option_from_config.assert_called_with(
+            option_name="test_option",
+            config_data={"test_option": 3},
+            command_line=4,
+        )
+
+    def test_default_inputs(self, get_option_from_config):
+        get_option_from_config.return_value = (None, None)
+
+        assert (
+            config.get_int_from_config(
+                option_name="test_option",
+                config_data={"test_option": 3},
+            )
+            is None
+        )
+
+        get_option_from_config.assert_called_with(
+            option_name="test_option",
+            config_data={"test_option": 3},
+            command_line=None,
+        )
+
+    def test_str_to_int(self, get_option_from_config):
+        get_option_from_config.return_value = ("5", "Source Name")
+
+        assert (
+            config.get_int_from_config(
+                option_name="test_option",
+                config_data={"test_option": "3"},
+                command_line="4",
+                default="5",
+            )
+            == 5
+        )
+
+    def test_convert_error(self, get_option_from_config):
+        get_option_from_config.return_value = ("a", "Source Name")
+
+        with pytest.raises(ValueError, match="^test_option from Source Name must be a valid int$"):
+            config.get_int_from_config(
+                option_name="test_option",
+                config_data={"test_option": "3"},
+                command_line="4",
+                default="5",
+            )
 
 
 class TestGetStrFromConfig:

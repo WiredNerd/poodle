@@ -21,13 +21,28 @@ CONTEXT_SETTINGS = {
 @click.option("-q", "verbosity", help="Quiet mode: disabled normal output, and loglevel=ERROR", flag_value="q")
 @click.option("-v", "verbosity", help="Verbose mode: loglevel=INFO", flag_value="v")
 @click.option("-vv", "verbosity", help="Very Verbose mode: loglevel=DEBUG", flag_value="vv")
-# @click.option("-P", "--max_parallel", type=int, help="Maximum number of parallel runners.")
-# @click.option("-F", "--folder-prefix", help="Prefix for runner folder names")
+@click.option("-P", "--max_workers", type=int, help="Maximum number of parallel workers.")
+@click.option(
+    "--exclude", "excludes", multiple=True, help="Add a regex filter for which files NOT to mutate.  Multiple allowed."
+)
+@click.option(
+    "--only",
+    "only_files",
+    multiple=True,
+    help="Glob pattern for files to mutate.  If specified, no other files will be mutated.  Multiple allowed.",
+)
 # @click.option("-R", "--runner", help="Runner Name or Module Name for runner to use")
-def main(source: tuple[Path], config_file: Path | None, verbosity: str | None) -> None:
+def main(
+    source: tuple[Path],
+    config_file: Path | None,
+    verbosity: str | None,
+    max_workers: int | None,
+    excludes: tuple[str],
+    only_files: tuple[str],
+) -> None:
     """Poodle Mutation Test Tool."""
     try:
-        config = build_config(source, config_file, verbosity)
+        config = build_config(source, config_file, verbosity, max_workers, excludes, only_files)
     except PoodleInputError as err:
         click.echo(err.args)
         sys.exit(4)
@@ -39,6 +54,7 @@ def main(source: tuple[Path], config_file: Path | None, verbosity: str | None) -
         sys.exit(2)
 
 
+# pytest return codes
 # Exit code 0: All tests were collected and passed successfully
 # Exit code 1: Tests were collected and run but some of the tests failed
 # Exit code 2: Test execution was interrupted by the user

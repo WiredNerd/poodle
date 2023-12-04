@@ -142,6 +142,20 @@ class TestCreateMutants:
             ("example_2", "file_4.py"),
         ]
 
+    def test_get_target_files_only(self):
+        folder1 = mock.MagicMock()
+        folder1.rglob.return_value = iter(["example1.py", "example2.py"])
+        folder2 = mock.MagicMock()
+        folder2.rglob.return_value = iter([])
+
+        config = PoodleConfigStub(only_files=["example1.py", "example2.py"], source_folders=[folder1, folder2])
+        work = PoodleWork(config)
+
+        assert mutate.get_target_files(work) == {
+            folder1: ["example1.py", "example2.py"],
+            folder2: [],
+        }
+
     @mock.patch("poodle.mutate.files_list_for_folder")
     def test_get_target_files(self, files_list_for_folder):
         config = PoodleConfigStub(file_filters=["test.*.py"], source_folders=["example_1", "example_2"])

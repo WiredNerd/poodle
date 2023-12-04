@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
@@ -24,9 +25,23 @@ default_reporters = ["summary", "not_found"]
 default_reporter_opts: dict[str, Any] = {}
 
 
-def build_config(command_line_sources: tuple[Path], config_file: Path | None, verbosity: str | None) -> PoodleConfig:
+def default_max_workers() -> int:
+    """Calculate Default for max_workers as one less than available processors."""
+    if hasattr(os, "sched_getaffinity"):
+        return len(os.sched_getaffinity(0)) - 1
+    return os.cpu_count() - 1
+
+
+def build_config(  # noqa: PLR0913
+    cmd_sources: tuple[Path],
+    cmd_config_file: Path | None,
+    cmd_verbosity: str | None,
+    cmd_max_workers: int | None,
+    cmd_excludes: tuple[str],
+    cmd_only_files: tuple[str],
+) -> PoodleConfig:
     """Build PoodleConfig object."""
-    config_file_path = get_config_file_path(config_file)
+    config_file_path = get_config_file_path(cmd_config_file)
     config_file_data = get_config_file_data(config_file_path)
 
     log_format = get_str_from_config("log_format", config_file_data, default=default_log_format)
@@ -34,27 +49,38 @@ def build_config(command_line_sources: tuple[Path], config_file: Path | None, ve
         "log_level",
         config_file_data,
         default=default_log_level,
-        command_line=get_cmd_line_log_level(verbosity),
+        command_line=get_cmd_line_log_level(cmd_verbosity),
     )
     logging.basicConfig(format=log_format, level=log_level)
 
+    file_filters = get_str_list_from_config("file_filters", config_file_data, default=default_file_filters)
+    file_filters += get_str_list_from_config("exclude", config_file_data, default=[])
+    file_filters += cmd_excludes
+
     return PoodleConfig(
         config_file=config_file_path,
-        source_folders=get_source_folders(command_line_sources, config_file_data),
-        file_filters=get_str_list_from_config("file_filters", config_file_data, default=default_file_filters),
+        source_folders=get_source_folders(cmd_sources, config_file_data),
+        only_files=get_str_list_from_config("only_files", config_file_data, default=[], command_line=cmd_only_files),
+        file_filters=file_filters,
         file_copy_filters=get_str_list_from_config(
             "file_copy_filters",
             config_file_data,
             default=default_file_copy_filters,
         ),
         work_folder=get_path_from_config("work_folder", config_file_data, default=default_work_folder),
+        max_workers=get_int_from_config(
+            "max_workers",
+            config_file_data,
+            default=default_max_workers(),
+            command_line=cmd_max_workers,
+        ),
         log_format=log_format,
         log_level=log_level,
         echo_enabled=get_bool_from_config(
             "echo_enabled",
             config_file_data,
             default=True,
-            command_line=get_cmd_line_echo_enabled(verbosity),
+            command_line=get_cmd_line_echo_enabled(cmd_verbosity),
         ),
         mutator_opts=get_dict_from_config("mutator_opts", config_file_data, default=default_mutator_opts),
         skip_mutators=get_str_list_from_config("skip_mutators", config_file_data, default=[]),
@@ -251,7 +277,7 @@ def get_any_from_config(
     """
     value, _ = get_option_from_config(option_name=option_name, config_data=config_data, command_line=command_line)
 
-    if not value:
+    if value is None:
         return default
     return value
 
@@ -276,7 +302,7 @@ def get_any_list_from_config(
         command_line=command_line_fix,
     )
 
-    if not values:
+    if values is None:
         return default_fix
 
     if isinstance(values, str):
@@ -286,6 +312,28 @@ def get_any_list_from_config(
         return list(values)
 
     return [values]
+
+
+def get_int_from_config(
+    option_name: str,
+    config_data: dict,
+    default: int | None = None,
+    command_line: int | None = None,
+) -> int | None:
+    """Retrieve Config Option that should be an int or None.
+
+    Retrieve highest priority value from config sources.
+    """
+    value, source = get_option_from_config(option_name=option_name, config_data=config_data, command_line=command_line)
+
+    if value is None:
+        return default
+
+    try:
+        return int(value)
+    except ValueError:
+        msg = f"{option_name} from {source} must be a valid int"
+        raise PoodleInputError(msg) from None
 
 
 def get_str_from_config(

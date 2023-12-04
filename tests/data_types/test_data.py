@@ -19,9 +19,13 @@ from poodle.data_types.data import (
 class PoodleConfigStub(PoodleConfig):
     config_file: Path | None = None
     source_folders: list[Path] = None  # type: ignore [assignment]
+    only_files: list[str] = None  # type: ignore [assignment]
     file_filters: list[str] = None  # type: ignore [assignment]
     file_copy_filters: list[str] = None  # type: ignore [assignment]
     work_folder: Path = None  # type: ignore [assignment]
+
+    max_workers: int | None = None
+
     log_format: str = None  # type: ignore [assignment]
     log_level: int | str = None  # type: ignore [assignment]
     echo_enabled: bool = None  # type: ignore [assignment]
@@ -43,9 +47,11 @@ class TestPoodleConfig:
         return PoodleConfig(
             config_file=Path("filename.toml"),
             source_folders=[Path("src")],
+            only_files=["example.py"],
             file_filters=["test_"],
             file_copy_filters=["skip"],
             work_folder=Path(".poodle"),
+            max_workers=3,
             log_format="$(message)s",
             log_level=0,
             echo_enabled=True,
@@ -63,17 +69,24 @@ class TestPoodleConfig:
 
         assert config.config_file == Path("filename.toml")
         assert config.source_folders == [Path("src")]
+        assert config.only_files == ["example.py"]
         assert config.file_filters == ["test_"]
         assert config.file_copy_filters == ["skip"]
         assert config.work_folder == Path(".poodle")
+
+        assert config.max_workers == 3
+
         assert config.log_format == "$(message)s"
         assert config.log_level == 0
         assert config.echo_enabled is True
+
         assert config.mutator_opts == {"bin_op_level": 2}
         assert config.skip_mutators == ["null"]
         assert config.add_mutators == ["custom"]
+
         assert config.runner == "command_line"
         assert config.runner_opts == {"command_line": "pytest tests"}
+
         assert config.reporters == ["summary"]
         assert config.reporter_opts == {"summary": "value"}
 
