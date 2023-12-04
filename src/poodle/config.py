@@ -16,7 +16,7 @@ default_log_level = logging.WARN
 
 default_source_folders = [Path("src"), Path("lib")]
 default_file_filters = [r"^test_.*\.py", r"_test\.py$"]
-default_file_copy_filters = [r"^test_.*\.py", r"_test\.py$", r"^\."]
+default_file_copy_filters = [r"^test_.*\.py", r"_test\.py$", r"^\.", r"^__pycache__$", r".*\.egg-info$"]
 default_work_folder = Path(".poodle-temp")
 default_mutator_opts: dict[str, Any] = {}
 default_runner = "command_line"
@@ -29,7 +29,10 @@ def default_max_workers() -> int:
     """Calculate Default for max_workers as one less than available processors."""
     if hasattr(os, "sched_getaffinity"):
         return len(os.sched_getaffinity(0)) - 1
-    return os.cpu_count() - 1
+    cpu_count = os.cpu_count() or 1
+    if cpu_count > 1:
+        return cpu_count - 1
+    return cpu_count
 
 
 def build_config(  # noqa: PLR0913

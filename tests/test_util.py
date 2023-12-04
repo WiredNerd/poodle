@@ -22,21 +22,21 @@ class TestFilesList:
     def test_files_list_for_folder(self, mock_logger):
         mock_folder = mock.MagicMock()
         mock_folder.rglob.return_value = (
-            Path("file_1.py"),
-            Path("test_file_1.py"),
-            Path("file_test_2.py"),
-            Path("file_2_test.py"),
+            Path("src/project/file_1.py"),
+            Path("src/project/file_test_2.py"),
+            Path("src/project/__pycache__/file_1.pyc"),
+            Path("src/project/__pycache__/file_test_2.pyc"),
         )
-        files = util.files_list_for_folder("*.py", [r"^test_.*\.py$", r"_test\.py$"], mock_folder)
+        files = util.files_list_for_folder("*.py", [r"^test_.*\.py$", r"_test\.py$", r"^__pycache__$"], mock_folder)
         assert files == [
-            Path("file_1.py"),
-            Path("file_test_2.py"),
+            Path("src/project/file_1.py"),
+            Path("src/project/file_test_2.py"),
         ]
         mock_folder.rglob.assert_called_with("*.py")
         mock_logger.debug.assert_any_call(
             "files_list_for_folder glob=%s filter_regex=%s folder=%s",
             "*.py",
-            [r"^test_.*\.py$", r"_test\.py$"],
+            [r"^test_.*\.py$", r"_test\.py$", r"^__pycache__$"],
             mock_folder,
         )
         mock_logger.debug.assert_any_call(

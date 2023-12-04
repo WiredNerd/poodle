@@ -28,7 +28,7 @@ def files_list_for_folder(glob: str, filter_regex: list[str], folder: Path) -> l
     files = list(folder.rglob(glob))
 
     for regex in filter_regex:
-        files = [file for file in files if not re.search(regex, file.name)]
+        files = [file for file in files if not any(re.search(regex, part) for part in file.parts)]
 
     logger.debug("files_list_for_folder results: folder=%s files=%s", folder, files)
     return files

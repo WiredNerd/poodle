@@ -35,7 +35,13 @@ def test_defaults():
     importlib.reload(config)
     assert config.default_source_folders == [Path("src"), Path("lib")]
     assert config.default_file_filters == [r"^test_.*\.py", r"_test\.py$"]
-    assert config.default_file_copy_filters == [r"^test_.*\.py", r"_test\.py$", r"^\."]
+    assert config.default_file_copy_filters == [
+        r"^test_.*\.py",
+        r"_test\.py$",
+        r"^\.",
+        r"^__pycache__$",
+        r".*\.egg-info$",
+    ]
     assert config.default_work_folder == Path(".poodle-temp")
     assert config.default_mutator_opts == {}
     assert config.default_runner_opts == {"command_line": "pytest -x --assert=plain -o pythonpath="}
@@ -53,8 +59,22 @@ class TestMaxWorkers:
     @mock.patch("poodle.config.os")
     def test_default_max_workers_cpu(self, os_mock):
         del os_mock.sched_getaffinity
-        os_mock.cpu_count.return_value = 8
-        assert config.default_max_workers() == 7
+        os_mock.cpu_count.return_value = 2
+        assert config.default_max_workers() == 1
+        os_mock.cpu_count.assert_called()
+
+    @mock.patch("poodle.config.os")
+    def test_default_max_workers_cpu_1(self, os_mock):
+        del os_mock.sched_getaffinity
+        os_mock.cpu_count.return_value = 1
+        assert config.default_max_workers() == 1
+        os_mock.cpu_count.assert_called()
+
+    @mock.patch("poodle.config.os")
+    def test_default_max_workers_neither(self, os_mock):
+        del os_mock.sched_getaffinity
+        os_mock.cpu_count.return_value = None
+        assert config.default_max_workers() == 1
         os_mock.cpu_count.assert_called()
 
 
