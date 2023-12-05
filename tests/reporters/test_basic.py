@@ -193,7 +193,7 @@ class TestReportNotFound:
         report_not_found(mock_echo, results)
         diff_str = (
             "--- src/example.py\n"
-            "+++ [Mutant] src/example.py\n"
+            "+++ [Mutant] src/example.py:1\n"
             "@@ -1 +1 @@\n"
             "-lambda x: x + 1\n"
             "+lambda x: None\n"
@@ -203,6 +203,12 @@ class TestReportNotFound:
             click.style("*** Mutants Not Found ***", fg="yellow"),
             "",
             "Mutant Trial Result: Mutant Not Found",
+            "Mutator: NoSource",
+            "source_file=None lineno=1 col_offset=10 end_lineno=1 end_col_offset=15",
+            "text:",
+            "None",
+            "",
+            "Mutant Trial Result: Mutant Not Found",
             "Mutator: NotFound",
             diff_str,
             "",
@@ -210,12 +216,6 @@ class TestReportNotFound:
             "Mutator: ReasonDesc",
             "error message",
             diff_str,
-            "",
-            "Mutant Trial Result: Mutant Not Found",
-            "Mutator: NoSource",
-            "source_file=None lineno=1 col_offset=10 end_lineno=1 end_col_offset=15",
-            "text:",
-            "None",
         ]
         actual_report = [args[0][0] for args in mock_echo.call_args_list]
         assert expected_report == actual_report

@@ -75,6 +75,7 @@ class KeywordMutator(ast.NodeVisitor, Mutator):
     def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
         """Visit all nodes and return created mutants."""
         self.mutants = []
+        self.add_parent_attr(parsed_ast)
         self.visit(parsed_ast)
         return self.mutants
 
@@ -88,9 +89,12 @@ class KeywordMutator(ast.NodeVisitor, Mutator):
 
     def visit_Constant(self, node: ast.Constant) -> None:
         """Replace True, False, and None."""
+        if self.is_annotation(node):
+            return
+
         if node.value is True:
             self.mutants.append(self.create_file_mutation(node, "False"))
         if node.value is False:
             self.mutants.append(self.create_file_mutation(node, "True"))
         if node.value is None:
-            self.mutants.append(self.create_file_mutation(node, "''"))
+            self.mutants.append(self.create_file_mutation(node, "' '"))

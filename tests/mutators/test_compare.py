@@ -76,3 +76,17 @@ class TestComparisonMutator:
 
         if_or = "if special_obj2 in obj_list:\n   pass"
         assert mutator.create_mutations(ast.parse(if_or)) == []
+
+    def test_is_annotation(self, mock_echo):
+        mutator = ComparisonMutator(config=mock.MagicMock(mutator_opts={}), echo=mock_echo)
+
+        module = "\n".join(  # noqa: FLY002
+            [
+                "def example(y:int or str)-> int or str:",
+                "    x:int or str = y",
+                "    return y",
+            ],
+        )
+        file_mutants = mutator.create_mutations(ast.parse(module))
+
+        assert file_mutants == []

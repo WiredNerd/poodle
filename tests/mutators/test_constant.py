@@ -80,7 +80,7 @@ class TestKeywordMutator:
             ("break", ["continue"]),
             ("False", ["True"]),
             ("True", ["False"]),
-            ("None", ["''"]),
+            ("None", ["' '"]),
         ],
     )
     def test_create_mutations(self, source, mutants, mock_echo):
@@ -96,3 +96,16 @@ class TestKeywordMutator:
             assert file_mutants[i].col_offset == 0
             assert file_mutants[i].end_col_offset == len(source)
             assert file_mutants[i].text == mutants[i]
+
+    def test_annotations(self, mock_echo):
+        mutator = KeywordMutator(config=mock.MagicMock(mutator_opts={}), echo=mock_echo)
+        module = "\n".join(  # noqa: FLY002
+            [
+                "def example(y:str | None)->str | None:",
+                "    x: str | None = y",
+                "    return y",
+            ],
+        )
+        file_mutants = mutator.create_mutations(ast.parse(module))
+
+        assert file_mutants == []

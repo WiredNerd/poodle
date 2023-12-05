@@ -40,8 +40,7 @@ class DictArrayCallMutator(ast.NodeVisitor, Mutator):
 
     def visit_Subscript(self, node: ast.Subscript) -> None:
         """Replace Call to retrieve from Dict or Array with None."""
-        # Skip if Subscript is part of annotation
-        if hasattr(node.parent, "annotation") and node.parent.annotation is node:  # type: ignore [attr-defined]
+        if self.is_annotation(node):
             return
 
         self.mutants.append(self.create_file_mutation(node, "None"))
@@ -83,6 +82,8 @@ class ReturnMutator(ast.NodeVisitor, Mutator):
 
     def visit_Return(self, node: ast.Return) -> None:
         """Replace return statements with return None or Return empty string."""
+        if node.value is None:
+            return
         if isinstance(node.value, ast.Constant) and node.value.value is None:
             node.value = ast.Constant("")
             self.mutants.append(self.create_file_mutation(node, ast.unparse(node)))

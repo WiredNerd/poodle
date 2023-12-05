@@ -180,6 +180,18 @@ class TestBinaryOperationMutator:
 
         assert [file_mutant.text for file_mutant in mutator.mutants] == text_out
 
+    def test_annotations(self, mock_echo):
+        mutator = BinaryOperationMutator(config=mock.MagicMock(mutator_opts={}), echo=mock_echo)
+        module = "\n".join(  # noqa: FLY002
+            [
+                "def example(y:str | None)->str | None:",
+                "    x: str | None = y",
+                "    return y",
+            ],
+        )
+        file_mutants = mutator.create_mutations(ast.parse(module))
+
+        assert file_mutants == []
 
 class TestAugAssignMutator:
     def test_mutator_name(self):

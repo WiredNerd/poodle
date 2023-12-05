@@ -88,6 +88,7 @@ class OperationMutator(ast.NodeVisitor, Mutator):
     def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
         """Visit ast nodes and return created mutants."""
         self.mutants = []
+        self.add_parent_attr(parsed_ast)
         self.visit(parsed_ast)
         return self.mutants
 
@@ -99,6 +100,9 @@ class BinaryOperationMutator(OperationMutator):
 
     def visit_BinOp(self, node: ast.BinOp) -> None:
         """Identify replacement Operations and create Mutants."""
+        if self.is_annotation(node):
+            return
+
         if type(node.op) in self.type_map:
             mut_types = self.type_map[type(node.op)]
             self.mutants.extend([self.create_bin_op_mutant(node, new_type) for new_type in mut_types])

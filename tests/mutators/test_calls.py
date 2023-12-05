@@ -72,12 +72,13 @@ class TestDictArrayCallMutator:
 
         assert file_mutants == []
 
-    def test_skip_annotation_in_function(self, mock_echo):
+    def test_skip_annotation(self, mock_echo):
         config = mock.MagicMock(mutator_opts={})
         mutator = DictArrayCallMutator(config=config, echo=mock_echo, other="value")
         module = "\n".join(  # noqa: FLY002
             [
-                "def example(y: list[str]):",
+                "def example(y: list[str])->list[str]:",
+                "    x:list[str]=y",
                 "    return y",
             ],
         )
@@ -159,6 +160,18 @@ class TestReturnMutator:
         assert file_mutants[0].end_col_offset == 15
         assert file_mutants[0].text == "return ''"
 
+    def test_return_mutator_standalone(self, mock_echo):
+        config = mock.MagicMock(mutator_opts={})
+        mutator = ReturnMutator(config=config, echo=mock_echo, other="value")
+        module = "\n".join(  # noqa: FLY002
+            [
+                "def example(y):",
+                "    return",
+            ],
+        )
+        file_mutants = mutator.create_mutations(ast.parse(module))
+
+        assert file_mutants == []
 
 class TestDecoratorMutator:
     def test_mutator_name(self):

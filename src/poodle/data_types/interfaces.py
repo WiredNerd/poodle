@@ -94,6 +94,23 @@ class Mutator(ABC):
             for child in ast.iter_child_nodes(node):
                 child.parent = node  # type: ignore [attr-defined]
 
+    @classmethod
+    def is_annotation(cls, node: ast.AST, child_node: ast.AST | None = None) -> bool:
+        """Recursively search parent nodes to see if the starting node is part of an annotation.
+
+        Returns true if a parent node points to this node in an annotation or returns attribute.
+        """
+        if not hasattr(node, "parent") or not node.parent:
+            return False
+
+        if hasattr(node, "annotation") and getattr(node, "annotation") == child_node:
+            return True
+
+        if hasattr(node, "returns") and getattr(node, "returns") == child_node:
+            return True
+
+        return cls.is_annotation(node.parent, child_node=node)
+
 
 # runner method signature:
 def runner(config: PoodleConfig, echo: Callable, run_folder: Path, mutant: Mutant, *_, **__) -> MutantTrialResult:  # type: ignore [empty-body]

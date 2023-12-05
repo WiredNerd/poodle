@@ -33,7 +33,11 @@ def get_option_from_config():
 
 def test_defaults():
     importlib.reload(config)
+    assert config.default_log_format == "%(levelname)s [%(process)d] %(name)s.%(funcName)s:%(lineno)d - %(message)s"
+    assert config.default_log_level == logging.WARN
+
     assert config.default_source_folders == [Path("src"), Path("lib")]
+
     assert config.default_file_filters == [r"^test_.*\.py", r"_test\.py$"]
     assert config.default_file_copy_filters == [
         r"^test_.*\.py",
@@ -43,8 +47,14 @@ def test_defaults():
         r".*\.egg-info$",
     ]
     assert config.default_work_folder == Path(".poodle-temp")
+
     assert config.default_mutator_opts == {}
+
+    assert config.default_runner == "command_line"
     assert config.default_runner_opts == {"command_line": "pytest -x --assert=plain -o pythonpath="}
+
+    assert config.default_reporters == ["summary", "not_found"]
+    assert config.default_reporter_opts == {}
 
 
 class TestMaxWorkers:
@@ -730,6 +740,15 @@ class TestGetAnyListFromConfig:
             default=["default_value"],
         ) == ["return_value", "other_value"]
 
+    def test_int(self, get_option_from_config):
+        get_option_from_config.return_value = (3, "Source Name")
+        assert config.get_any_list_from_config(
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=["default_value"],
+        ) == [3]
+
 
 class TestGetIntFromConfig:
     def test_default(self, get_option_from_config):
@@ -972,16 +991,19 @@ class TestGetOptionFromConfig:
         assert value is None
         assert source is None
 
+    def test_command_line_false(self):
+        value, source = config.get_option_from_config(
+            option_name="test_option",
+            config_data={},
+            command_line=False,
+        )
+        assert value is False
+        assert source == "Command Line"
+
 
 class TestGetDictFromConfig:
     def test_default_only(self):
-        assert config.get_dict_from_config(
-            option_name="mutator_opts",
-            default={"bin_op_level": "std"},
-            config_data={},
-        ) == {
-            "bin_op_level": "std",
-        }
+        assert config.get_dict_from_config(option_name="mutator_opts", config_data={}) == {}
 
     def test_config_data(self):
         assert config.get_dict_from_config(
@@ -1025,10 +1047,12 @@ class TestGetDictFromConfig:
                     "config_file_option": "ABCD",
                 },
             },
+            command_line={"cmd_option": "cmd_value"},
         ) == {
             "bin_op_level": "max",
             "config_file_option": "ABCD",
             "poodle_config_option": "EFGH",
+            "cmd_option": "cmd_value",
         }
 
     def test_poodle_config_invalid(self):

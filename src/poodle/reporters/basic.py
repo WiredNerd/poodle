@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import difflib
+from operator import attrgetter
 from typing import TYPE_CHECKING, Callable
 
 import click
 
-from poodle.data_types import MutantTrialResult
+from poodle.data_types import MutantTrial, MutantTrialResult
 from poodle.mutate import mutate_lines
 
 if TYPE_CHECKING:
@@ -46,6 +47,15 @@ def report_not_found(echo: Callable, testing_results: TestingResults, *_, **__) 
     if not failed_trials:
         return
 
+    failed_trials.sort(
+        key=lambda trial: (
+            trial.mutant.source_folder,
+            str(trial.mutant.source_file) or "",
+            trial.mutant.lineno,
+            trial.mutant.mutator_name,
+        )
+    )
+
     echo("")
     echo(click.style("*** Mutants Not Found ***", fg="yellow"))
     for trial in failed_trials:
@@ -66,7 +76,7 @@ def report_not_found(echo: Callable, testing_results: TestingResults, *_, **__) 
                     a=file_lines,
                     b=mutate_lines(mutant, file_lines),
                     fromfile=file_name,
-                    tofile=f"[Mutant] {file_name}",
+                    tofile=f"[Mutant] {file_name}:{mutant.lineno}",
                 )
             )
 
