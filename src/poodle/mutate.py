@@ -134,7 +134,7 @@ def create_mutants_for_file(work: PoodleWork, folder: Path, file: Path) -> list[
     logger.debug("Create Mutants for file %s", file)
 
     parsed_ast = ast.parse(file.read_bytes(), file)
-    file_lines = file.read_text().splitlines()
+    file_lines = file.read_text("utf-8").splitlines()
 
     def call_mutator(mutator: Callable | Mutator) -> list[FileMutation]:
         if isinstance(mutator, Mutator):

@@ -1,12 +1,12 @@
-def is_none(a):
+def is_none(a) -> None | bool:
     return a is None
 
 
-def is_true(a):
+def is_true(a) -> None | bool:
     return a is True
 
 
-def is_false(a):
+def is_false(a) -> None | bool:
     return a is False
 
 
@@ -60,4 +60,4 @@ def float_constant_neg():
 
 def str_value():
     """docstring"""
-    return "value"
+    return "こんにちは"

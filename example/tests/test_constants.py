@@ -65,4 +65,4 @@ def test_float_constant_neg():
 
 
 def test_str_value():
-    assert str_value() == "value"
+    assert str_value() == "こんにちは"

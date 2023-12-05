@@ -8,11 +8,11 @@ def function_call():
     str_value()
 
 
-def dict_subscript(input_dict: dict[Any, Any], key):
+def dict_subscript(input_dict: dict[Any, Any], key) -> dict[Any, Any]:
     return input_dict[key]
 
 
-def list_item(input_list: list[Any], idx):
+def list_item(input_list: list[Any], idx) -> list[Any]:
     return input_list[idx]
 
 

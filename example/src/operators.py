@@ -34,7 +34,7 @@ def right_shift(x, y):
     return x >> y
 
 
-def bit_or(x, y):
+def bit_or(x, y) -> str | int:
     return x | y
 
 
