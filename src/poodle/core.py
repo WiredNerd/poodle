@@ -60,5 +60,4 @@ def main(config: PoodleConfig) -> None:
 def calc_timeout(config: PoodleConfig, clean_run_results: dict[Path, MutantTrial]) -> float:
     """Determine timeout value to use in runner."""
     max_clean_run = max([trial.duration for trial in clean_run_results.values()])
-    # TODO: config.timeout_multiplier
-    return max(float(max_clean_run) * 10, config.min_timeout)
+    return max(float(max_clean_run) * config.timeout_multiplier, config.min_timeout)

@@ -13,8 +13,6 @@ from poodle import PoodleInputError, config
 def _test_wrapper():
     importlib.reload(config)
     config.poodle_config = None
-    config.default_mutator_opts = {"bin_op_level": "std"}
-    config.default_runner_opts = {"command_line": "pytest tests"}
     yield
     importlib.reload(config)
 
@@ -51,6 +49,7 @@ def test_defaults():
     assert config.default_mutator_opts == {}
 
     assert config.default_min_timeout == 10
+    assert config.default_timeout_multiplier == 10
     assert config.default_runner == "command_line"
     assert config.default_runner_opts == {"command_line": "pytest -x --assert=plain -o pythonpath="}
 
@@ -156,6 +155,7 @@ class TestBuildConfig:
             skip_mutators=get_str_list_from_config.return_value,
             add_mutators=get_any_list_from_config.return_value,
             min_timeout=get_int_from_config.return_value,
+            timeout_multiplier=get_int_from_config.return_value,
             runner=get_str_from_config.return_value,
             runner_opts={"runner": "value"},
             reporters=get_str_list_from_config.return_value,
@@ -224,6 +224,9 @@ class TestBuildConfig:
         # min_timeout
         get_int_from_config.assert_any_call("min_timeout", config_file_data)
 
+        # timeout_multiplier
+        get_int_from_config.assert_any_call("timeout_multiplier", config_file_data)
+
         # runner
         get_str_from_config.assert_any_call("runner", config_file_data, default=config.default_runner)
 
@@ -235,6 +238,39 @@ class TestBuildConfig:
 
         # reporter_opts
         get_dict_from_config.assert_any_call("reporter_opts", config_file_data, default=config.default_reporter_opts)
+
+    @mock.patch("poodle.config.get_config_file_data")
+    def test_build_config_defaults(self, get_config_file_data):
+        get_config_file_data.return_value = {}
+
+        assert config.build_config(
+            cmd_sources=(),
+            cmd_config_file=None,
+            cmd_verbosity=None,
+            cmd_max_workers=None,
+            cmd_excludes=(),
+            cmd_only_files=(),
+        ) == config.PoodleConfig(
+            config_file=Path("pyproject.toml"),
+            source_folders=[Path("src")],
+            only_files=[],
+            file_filters=config.default_file_filters,
+            file_copy_filters=config.default_file_copy_filters,
+            work_folder=Path(".poodle-temp"),
+            max_workers=config.default_max_workers(),
+            log_format=config.default_log_format,
+            log_level=logging.WARN,
+            echo_enabled=True,
+            mutator_opts={},
+            skip_mutators=[],
+            add_mutators=[],
+            min_timeout=10,
+            timeout_multiplier=10,
+            runner="command_line",
+            runner_opts={"command_line": "pytest -x --assert=plain -o pythonpath="},
+            reporters=["summary", "not_found"],
+            reporter_opts={},
+        )
 
 
 class TestGetCommandLineLoggingOptions:

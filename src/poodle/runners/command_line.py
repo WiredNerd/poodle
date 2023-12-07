@@ -59,7 +59,9 @@ def runner(
         return MutantTrialResult(
             passed=True,
             reason_code=MutantTrialResult.RC_FOUND,
-            reason_desc=result.stdout.decode("utf-8") + "\n" + result.stderr.decode("utf-8"),
+            reason_desc=result.stdout.decode("utf-8", errors="replace")
+            + "\n"
+            + result.stderr.decode("utf-8", errors="replace"),
         )
     if result.returncode == 0:
         return MutantTrialResult(
@@ -69,5 +71,7 @@ def runner(
     return MutantTrialResult(
         passed=True,
         reason_code=MutantTrialResult.RC_OTHER,
-        reason_desc=result.stdout.decode("utf-8") + "\n" + result.stderr.decode("utf-8"),
+        reason_desc=result.stdout.decode("utf-8", errors="replace")
+        + "\n"
+        + result.stderr.decode("utf-8", errors="replace"),
     )

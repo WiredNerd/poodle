@@ -22,6 +22,7 @@ default_work_folder = Path(".poodle-temp")
 default_mutator_opts: dict[str, Any] = {}
 
 default_min_timeout = 10
+default_timeout_multiplier = 10
 default_runner = "command_line"
 default_runner_opts: dict[str, Any] = {"command_line": "pytest -x --assert=plain -o pythonpath="}
 
@@ -93,6 +94,7 @@ def build_config(  # noqa: PLR0913
         skip_mutators=get_str_list_from_config("skip_mutators", config_file_data, default=[]),
         add_mutators=get_any_list_from_config("add_mutators", config_file_data),
         min_timeout=get_int_from_config("min_timeout", config_file_data) or default_min_timeout,
+        timeout_multiplier=get_int_from_config("timeout_multiplier", config_file_data) or default_timeout_multiplier,
         runner=get_str_from_config("runner", config_file_data, default=default_runner),
         runner_opts=get_dict_from_config("runner_opts", config_file_data, default=default_runner_opts),
         reporters=get_str_list_from_config("reporters", config_file_data, default=default_reporters),

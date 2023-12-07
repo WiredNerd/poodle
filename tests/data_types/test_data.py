@@ -35,6 +35,7 @@ class PoodleConfigStub(PoodleConfig):
     add_mutators: list[Any] = None  # type: ignore [assignment]
 
     min_timeout: int = None  # type: ignore [assignment]
+    timeout_multiplier: int = None  # type: ignore [assignment]
     runner: str = None  # type: ignore [assignment]
     runner_opts: dict = None  # type: ignore [assignment]
 
@@ -60,6 +61,7 @@ class TestPoodleConfig:
             skip_mutators=["null"],
             add_mutators=["custom"],
             min_timeout=15,
+            timeout_multiplier=10,
             runner="command_line",
             runner_opts={"command_line": "pytest tests"},
             reporters=["summary"],
@@ -87,6 +89,7 @@ class TestPoodleConfig:
         assert config.add_mutators == ["custom"]
 
         assert config.min_timeout == 15
+        assert config.timeout_multiplier == 10
         assert config.runner == "command_line"
         assert config.runner_opts == {"command_line": "pytest tests"}
 

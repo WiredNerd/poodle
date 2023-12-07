@@ -33,6 +33,7 @@ class PoodleConfig:
     add_mutators: list[Any]
 
     min_timeout: int
+    timeout_multiplier: int
     runner: str
     runner_opts: dict
 
@@ -110,7 +111,7 @@ class TestingSummary:
                 self.errors += 1
 
         if self.trials > 0:
-            self.success_rate = round(self.found / self.trials, 1)
+            self.success_rate = self.found / self.trials
 
         return self
 

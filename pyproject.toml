@@ -87,7 +87,7 @@ ignore = [
     "D203",   # 1 blank line required before class docstring
     "D213",   # multi-line-summary-second-line
     "EM101",  # Exception must not use a string literal, assign to variable first
-    "FIX002", # TODO
+    "FIX002", # Found a TODO
     "TD002",  # Missing author in TODO
     "TD003",  # Missing issue link on the line following this TODO
     "TRY003", # Avoid specifying long messages outside the exception class
