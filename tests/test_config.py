@@ -50,6 +50,7 @@ def test_defaults():
 
     assert config.default_mutator_opts == {}
 
+    assert config.default_min_timeout == 10
     assert config.default_runner == "command_line"
     assert config.default_runner_opts == {"command_line": "pytest -x --assert=plain -o pythonpath="}
 
@@ -154,6 +155,7 @@ class TestBuildConfig:
             mutator_opts={"mutator": "value"},
             skip_mutators=get_str_list_from_config.return_value,
             add_mutators=get_any_list_from_config.return_value,
+            min_timeout=get_int_from_config.return_value,
             runner=get_str_from_config.return_value,
             runner_opts={"runner": "value"},
             reporters=get_str_list_from_config.return_value,
@@ -218,6 +220,9 @@ class TestBuildConfig:
 
         # add_mutators
         get_any_list_from_config.assert_any_call("add_mutators", config_file_data)
+
+        # min_timeout
+        get_int_from_config.assert_any_call("min_timeout", config_file_data)
 
         # runner
         get_str_from_config.assert_any_call("runner", config_file_data, default=config.default_runner)

@@ -103,17 +103,25 @@ class Mutator(ABC):
         if not hasattr(node, "parent") or not node.parent:
             return False
 
-        if hasattr(node, "annotation") and getattr(node, "annotation") == child_node:
+        if hasattr(node, "annotation") and node.annotation == child_node:
             return True
 
-        if hasattr(node, "returns") and getattr(node, "returns") == child_node:
+        if hasattr(node, "returns") and node.returns == child_node:
             return True
 
         return cls.is_annotation(node.parent, child_node=node)
 
 
 # runner method signature:
-def runner(config: PoodleConfig, echo: Callable, run_folder: Path, mutant: Mutant, *_, **__) -> MutantTrialResult:  # type: ignore [empty-body]
+def runner(  # type: ignore [empty-body]
+    config: PoodleConfig,
+    echo: Callable,
+    run_folder: Path,
+    mutant: Mutant,
+    timeout: float | None,
+    *_,
+    **__,
+) -> MutantTrialResult:
     """Run trial of mutant in specified folder.
 
     Files from the source folder have been copied to the run folder, and mutation has been applied.
@@ -121,5 +129,11 @@ def runner(config: PoodleConfig, echo: Callable, run_folder: Path, mutant: Mutan
 
 
 # reporter method signature:
-def reporter(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -> None:  # type: ignore [empty-body]
+def reporter(  # type: ignore [empty-body]
+    config: PoodleConfig,
+    echo: Callable,
+    testing_results: TestingResults,
+    *_,
+    **__,
+) -> None:
     """Report on Testing Results."""

@@ -1,11 +1,11 @@
 import os
 from pathlib import Path
-from subprocess import CompletedProcess
+from subprocess import CompletedProcess, TimeoutExpired
 from unittest import mock
 
 import pytest
 
-from poodle.data_types import Mutant
+from poodle.data_types import Mutant, MutantTrialResult
 from poodle.runners import command_line
 
 
@@ -47,6 +47,7 @@ class TestCommandLineRunner:
                 config=config,
                 run_folder=Path("poodle-run-folder"),
                 mutant=mutant,
+                timeout=1,
                 other="value",
             )
 
@@ -72,6 +73,7 @@ class TestCommandLineRunner:
                 },
                 capture_output=True,
                 check=False,
+                timeout=1,
             )
 
             assert out.passed is True
@@ -106,6 +108,7 @@ class TestCommandLineRunner:
                 config=config,
                 run_folder=Path("poodle-run-folder"),
                 mutant=mutant,
+                timeout=1,
             )
 
             subprocess_run.assert_called_with(
@@ -122,6 +125,7 @@ class TestCommandLineRunner:
                 },
                 capture_output=True,
                 check=False,
+                timeout=1,
             )
 
             assert out.passed is True
@@ -156,6 +160,7 @@ class TestCommandLineRunner:
                 config=config,
                 run_folder=Path("poodle-run-folder"),
                 mutant=mutant,
+                timeout=1,
             )
 
             subprocess_run.assert_called_with(
@@ -172,6 +177,7 @@ class TestCommandLineRunner:
                 },
                 capture_output=True,
                 check=False,
+                timeout=1,
             )
 
             assert out.passed is False
@@ -206,6 +212,7 @@ class TestCommandLineRunner:
                 config=config,
                 run_folder=Path("poodle-run-folder"),
                 mutant=mutant,
+                timeout=1,
             )
 
             subprocess_run.assert_called_with(
@@ -222,8 +229,39 @@ class TestCommandLineRunner:
                 },
                 capture_output=True,
                 check=False,
+                timeout=1,
             )
 
             assert out.passed is True
             assert out.reason_code == out.RC_OTHER
             assert out.reason_desc == "output\nerror"
+
+    def test_timeout(self, subprocess_run):
+        with mock.patch.dict("os.environ", {}, clear=True):
+            os.pathsep = ";"
+            subprocess_run.side_effect = TimeoutExpired(cmd="pytest tests", timeout=10.0, output="running pytest")
+
+            config = mock.MagicMock()
+            config.runner_opts = {"command_line": "pytest tests"}
+
+            mutant = Mutant(
+                mutator_name="test",
+                source_folder=Path("src"),
+                source_file=Path("target.py"),
+                lineno=1,
+                col_offset=2,
+                end_lineno=3,
+                end_col_offset=4,
+                text="Changed Line",
+            )
+
+            out = command_line.runner(
+                config=config,
+                run_folder=Path("poodle-run-folder"),
+                mutant=mutant,
+                timeout=10.0,
+            )
+
+            assert out.passed is False
+            assert out.reason_code == MutantTrialResult.RC_TIMEOUT
+            assert out.reason_desc == "TimeoutExpired Command 'pytest tests' timed out after 10.0 seconds"

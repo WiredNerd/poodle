@@ -193,6 +193,7 @@ class TestBinaryOperationMutator:
 
         assert file_mutants == []
 
+
 class TestAugAssignMutator:
     def test_mutator_name(self):
         assert AugAssignMutator.mutator_name == "AugAssign"

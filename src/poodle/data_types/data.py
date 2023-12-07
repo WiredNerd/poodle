@@ -32,6 +32,7 @@ class PoodleConfig:
     skip_mutators: list[str]
     add_mutators: list[Any]
 
+    min_timeout: int
     runner: str
     runner_opts: dict
 
@@ -80,6 +81,7 @@ class MutantTrial:
 
     mutant: Mutant
     result: MutantTrialResult
+    duration: float
 
 
 @dataclass

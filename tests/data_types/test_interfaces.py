@@ -143,7 +143,7 @@ class TestMutator:
 
 
 def test_runner():
-    assert runner(config=None, echo=None, run_folder=None, mutant=None, other="value") is None
+    assert runner(config=None, echo=None, run_folder=None, mutant=None, timeout=None, other="value") is None
 
 
 def test_reporter():

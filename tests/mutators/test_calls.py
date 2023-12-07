@@ -173,6 +173,7 @@ class TestReturnMutator:
 
         assert file_mutants == []
 
+
 class TestDecoratorMutator:
     def test_mutator_name(self):
         assert DecoratorMutator.mutator_name == "Decorator"

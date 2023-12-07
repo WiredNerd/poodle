@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import difflib
-from operator import attrgetter
 from typing import TYPE_CHECKING, Callable
 
 import click
 
-from poodle.data_types import MutantTrial, MutantTrialResult
+from poodle.data_types import MutantTrialResult
 from poodle.mutate import mutate_lines
 
 if TYPE_CHECKING:

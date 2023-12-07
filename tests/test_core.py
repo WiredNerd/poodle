@@ -3,6 +3,7 @@ from unittest import mock
 import pytest
 
 from poodle import PoodleInputError, PoodleTrialRunError, core
+from poodle.data_types import MutantTrial
 from tests.data_types.test_data import PoodleConfigStub
 
 
@@ -45,7 +46,7 @@ class TestMain:
     ):
         work_folder = mock.MagicMock()
         work_folder.exists.return_value = True
-        config = PoodleConfigStub(work_folder=work_folder, echo_enabled=True)
+        config = PoodleConfigStub(work_folder=work_folder, echo_enabled=True, min_timeout=10)
 
         reporter1 = mock.MagicMock()
         reporter2 = mock.MagicMock()
@@ -54,6 +55,8 @@ class TestMain:
         mutant1 = mock.MagicMock()
         mutant2 = mock.MagicMock()
         create_mutants_for_all_mutators.return_value = [mutant1, mutant2]
+
+        clean_run_each_source_folder.return_value = {"folder": MutantTrial(mutant=None, result=None, duration=1.0)}  # type: ignore [arg-type]
 
         core.main(config)
 
@@ -88,7 +91,7 @@ class TestMain:
         work.echo.assert_called_with("Identified 2 mutants")
 
         clean_run_each_source_folder.assert_called_with(work)
-        run_mutant_trails.assert_called_with(work, [mutant1, mutant2])
+        run_mutant_trails.assert_called_with(work, [mutant1, mutant2], 10.0)
         results = run_mutant_trails.return_value
 
         reporter1.assert_called_with(config=config, echo=work.echo, testing_results=results)
@@ -124,7 +127,7 @@ class TestMain:
     ):
         work_folder = mock.MagicMock()
         work_folder.exists.return_value = False
-        config = PoodleConfigStub(work_folder=work_folder, echo_enabled=True)
+        config = PoodleConfigStub(work_folder=work_folder, echo_enabled=True, min_timeout=10)
 
         reporter1 = mock.MagicMock()
         reporter2 = mock.MagicMock()
@@ -133,6 +136,8 @@ class TestMain:
         mutant1 = mock.MagicMock()
         mutant2 = mock.MagicMock()
         create_mutants_for_all_mutators.return_value = [mutant1, mutant2]
+
+        clean_run_each_source_folder.return_value = {"folder": MutantTrial(mutant=None, result=None, duration=1.0)}  # type: ignore [arg-type]
 
         core.main(config)
 
@@ -212,3 +217,19 @@ class TestMain:
 
         core_click.echo.assert_any_call("Trial Error")
         core_click.echo.assert_any_call("Execution Failed")
+
+
+class TestTimeout:
+    def test_calc_timeout(self):
+        config = PoodleConfigStub(min_timeout=10)
+        clean_run_results = {
+            "folder": MutantTrial(mutant=None, result=None, duration=2.01),
+        }
+        assert round(core.calc_timeout(config, clean_run_results), 1) == 20.1
+
+    def test_calc_timeout_min(self):
+        config = PoodleConfigStub(min_timeout=10)
+        clean_run_results = {
+            "folder": MutantTrial(mutant=None, result=None, duration=0.1),
+        }
+        assert round(core.calc_timeout(config, clean_run_results), 1) == 10.0

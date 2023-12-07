@@ -34,6 +34,7 @@ class PoodleConfigStub(PoodleConfig):
     skip_mutators: list[str] = None  # type: ignore [assignment]
     add_mutators: list[Any] = None  # type: ignore [assignment]
 
+    min_timeout: int = None  # type: ignore [assignment]
     runner: str = None  # type: ignore [assignment]
     runner_opts: dict = None  # type: ignore [assignment]
 
@@ -58,6 +59,7 @@ class TestPoodleConfig:
             mutator_opts={"bin_op_level": 2},
             skip_mutators=["null"],
             add_mutators=["custom"],
+            min_timeout=15,
             runner="command_line",
             runner_opts={"command_line": "pytest tests"},
             reporters=["summary"],
@@ -84,6 +86,7 @@ class TestPoodleConfig:
         assert config.skip_mutators == ["null"]
         assert config.add_mutators == ["custom"]
 
+        assert config.min_timeout == 15
         assert config.runner == "command_line"
         assert config.runner_opts == {"command_line": "pytest tests"}
 
@@ -184,9 +187,10 @@ class TestMutantTrial:
     def test_mutant_trial(self):
         mutant = Mutant(source_folder=Path(), source_file=None, **vars(TestFileMutation.create_file_mutation()))
         result = MutantTrialResult(passed=True, reason_code="test")
-        trial = MutantTrial(mutant=mutant, result=result)
+        trial = MutantTrial(mutant=mutant, result=result, duration=1.2)
         assert trial.mutant == mutant
         assert trial.result == result
+        assert trial.duration == 1.2
 
 
 class TestTestingSummary:
@@ -263,7 +267,7 @@ class TestTestingResults:
     def test_testing_results(self):
         mutant = Mutant(source_folder=Path(), source_file=None, **vars(TestFileMutation.create_file_mutation()))
         result = MutantTrialResult(passed=True, reason_code="test")
-        trial = MutantTrial(mutant=mutant, result=result)
+        trial = MutantTrial(mutant=mutant, result=result, duration=1.2)
         testing_summary = TestingSummary(trials=4)
         results = TestingResults(
             mutant_trials=[trial],

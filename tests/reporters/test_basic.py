@@ -125,6 +125,7 @@ class TestReportNotFound:
         passed=False,  # noqa: FBT002
         reason_code=MutantTrialResult.RC_NOT_FOUND,
         reason_desc=None,
+        duration=1.0,
     ):
         source_file = None
         if isinstance(source, str):
@@ -147,6 +148,7 @@ class TestReportNotFound:
                 reason_code=reason_code,
                 reason_desc=reason_desc,
             ),
+            duration=duration,
         )
 
     def test_all_passed(self, mock_echo: mock.MagicMock):

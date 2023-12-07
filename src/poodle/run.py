@@ -35,13 +35,12 @@ def get_runner(config: PoodleConfig) -> Callable:
     return dynamic_import(config.runner)
 
 
-def clean_run_each_source_folder(work: PoodleWork) -> None:
+def clean_run_each_source_folder(work: PoodleWork) -> dict[Path, MutantTrial]:
     """Run a trial on each source folder with no mutation."""
-    for folder in work.config.source_folders:
-        clean_run_trial(work, folder)
+    return {folder: clean_run_trial(work, folder) for folder in work.config.source_folders}
 
 
-def clean_run_trial(work: PoodleWork, folder: Path) -> None:
+def clean_run_trial(work: PoodleWork, folder: Path) -> MutantTrial:
     """Run a trial with no mutation."""
     start = time.time()
     work.echo(f"Testing clean run of folder '{folder}'...", nl=False)
@@ -61,6 +60,7 @@ def clean_run_trial(work: PoodleWork, folder: Path) -> None:
         ),
         work.next_num(),
         work.runner,
+        timeout=None,
     )
     if mutant_trial.result.passed:  # not expected
         work.echo(style("FAILED", fg="red"))
@@ -69,8 +69,10 @@ def clean_run_trial(work: PoodleWork, folder: Path) -> None:
     work.echo("PASSED")
     logger.info("Elapsed Time %.2f s", time.time() - start)
 
+    return mutant_trial
 
-def run_mutant_trails(work: PoodleWork, mutants: list[Mutant]) -> TestingResults:
+
+def run_mutant_trails(work: PoodleWork, mutants: list[Mutant], timeout: float) -> TestingResults:
     """Run the Mutant Trials and collect results.
 
     Report status as execution proceeds.
@@ -88,6 +90,7 @@ def run_mutant_trails(work: PoodleWork, mutants: list[Mutant]) -> TestingResults
                     mutant,
                     work.next_num(),
                     work.runner,
+                    timeout,
                 )
                 for mutant in mutants
             ]
@@ -127,6 +130,7 @@ def run_mutant_trial(  # noqa: PLR0913
     mutant: Mutant,
     run_id: str,
     runner: Callable,
+    timeout: float | None,
 ) -> MutantTrial:
     """Run Trial for specified Mutant.
 
@@ -168,10 +172,12 @@ def run_mutant_trial(  # noqa: PLR0913
         echo=echo,
         run_folder=run_folder,
         mutant=mutant,
+        timeout=timeout,
     )
 
     shutil.rmtree(run_folder)
 
-    logger.debug("END: run_id=%s - Elapsed Time %.2f s", run_id, time.time() - start)
+    duration = time.time() - start
+    logger.debug("END: run_id=%s - Elapsed Time %.2f s", run_id, duration)
 
-    return MutantTrial(mutant, result)
+    return MutantTrial(mutant=mutant, result=result, duration=duration)
