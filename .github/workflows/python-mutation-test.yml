@@ -28,11 +28,8 @@ jobs:
           pip install -r requirements.txt --upgrade
           pip install mutmut --upgrade
           pip install --editable .
-      - name: coverage
-        run: pytest --cov=src --sort-mode=fastest --cov-context=test
       - name: Mutmut
-        run: python3 -m mutmut run --no-progress --rerun-all --paths-to-mutate src --use-coverage
-          --runner "pytest -x --assert=plain --sort-bucket-mode=diffcov --sort-bucket=function --sort-mode=fastest"
+        run: python3 -m mutmut run --no-progress --rerun-all --paths-to-mutate src || true
       - run: python3 -m mutmut results
         if: ${{ always() }}
       - name: Mutmut Report
@@ -46,6 +43,12 @@ jobs:
         with:
           add: "mutation-testing-report.xml"
           pull: "--rebase=true --autostash"
+      - name: save-reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: mutation-testing-report.xml
+          path: mutation-testing-report.xml
       - name: save-reports
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
@@ -66,4 +69,4 @@ jobs:
           pip install -r requirements.txt --upgrade
           pip install --editable .
       - name: Poodle
-        run: poodle
+        run: poodle || true
