@@ -1,21 +1,20 @@
-"""Shared Data Classes used by Poodle."""
+"""Containers for Work-in-progress data."""
 
 from __future__ import annotations
 
 import logging
-from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable
 
 import click
-
-from .data import PoodleConfig
-from .interfaces import Mutator
 
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from collections.abc import Generator
     from pathlib import Path
+
+    from .data import PoodleConfig
+    from .interfaces import Mutator
 
 
 class PoodleWork:
@@ -26,7 +25,7 @@ class PoodleWork:
         self.config = config
         self.folder_zips: dict[Path, Path] = {}
         self.mutators: list[Mutator | Callable] = []
-        self.runner: Callable | None = None
+        self.runner: Callable = lambda *_, **__: None
         self.reporters: list[Callable] = []
 
         self.echo = click.echo if config.echo_enabled else lambda *_, **__: None

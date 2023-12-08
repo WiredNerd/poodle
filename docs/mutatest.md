@@ -1,6 +1,6 @@
 # mutatest mutators 3.1.0
 
-## visit_BinOp
+## visit_BinOp (x)
 Replace with random other member of group:
 Group: ast.Add, ast.Sub, ast.Div, ast.Mult, ast.Pow, ast.Mod, ast.FloorDiv
 Group: BitAnd, BitOr, BitXor

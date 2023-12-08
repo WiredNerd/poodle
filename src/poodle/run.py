@@ -1,3 +1,5 @@
+"""Run Mutation Trials."""
+
 from __future__ import annotations
 
 import concurrent.futures
@@ -10,9 +12,11 @@ from zipfile import ZipFile
 
 from click import style
 
+from . import PoodleTrialRunError
 from .data_types import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork, TestingResults, TestingSummary
+from .mutate import mutate_lines
 from .runners import command_line
-from .util import dynamic_import, update_summary
+from .util import dynamic_import
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +26,7 @@ builtin_runners = {
 
 
 def get_runner(config: PoodleConfig) -> Callable:
+    """Retrieve runner callable given internal runner name or external runner python name."""
     logger.debug("Runner: %s", config.runner)
 
     if config.runner in builtin_runners:
@@ -30,11 +35,13 @@ def get_runner(config: PoodleConfig) -> Callable:
     return dynamic_import(config.runner)
 
 
-def clean_run_each_source_folder(work: PoodleWork):
-    return [clean_run_trial(work, folder) for folder in work.config.source_folders]
+def clean_run_each_source_folder(work: PoodleWork) -> dict[Path, MutantTrial]:
+    """Run a trial on each source folder with no mutation."""
+    return {folder: clean_run_trial(work, folder) for folder in work.config.source_folders}
 
 
-def clean_run_trial(work: PoodleWork, folder: Path):
+def clean_run_trial(work: PoodleWork, folder: Path) -> MutantTrial:
+    """Run a trial with no mutation."""
     start = time.time()
     work.echo(f"Testing clean run of folder '{folder}'...", nl=False)
     mutant_trial = run_mutant_trial(
@@ -42,6 +49,7 @@ def clean_run_trial(work: PoodleWork, folder: Path):
         work.echo,
         work.folder_zips[folder],
         Mutant(
+            mutator_name="",
             source_folder=folder,
             source_file=None,
             lineno=0,
@@ -52,48 +60,60 @@ def clean_run_trial(work: PoodleWork, folder: Path):
         ),
         work.next_num(),
         work.runner,
+        timeout=None,
     )
     if mutant_trial.result.passed:  # not expected
         work.echo(style("FAILED", fg="red"))
-        raise Exception("Clean Run Failed", mutant_trial.result.reason_desc)
-    else:
-        work.echo(f"PASSED")
+        raise PoodleTrialRunError("Clean Run Failed", mutant_trial.result.reason_desc)
 
+    work.echo("PASSED")
     logger.info("Elapsed Time %.2f s", time.time() - start)
 
+    return mutant_trial
 
-def run_mutant_trails(work: PoodleWork, mutants: list[Mutant]) -> TestingResults:
+
+def run_mutant_trails(work: PoodleWork, mutants: list[Mutant], timeout: float) -> TestingResults:
+    """Run the Mutant Trials and collect results.
+
+    Report status as execution proceeds.
+    """
     start = time.time()
     work.echo("Testing mutants")
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        futures = [
-            executor.submit(
-                run_mutant_trial,
-                work.config,
-                work.echo,
-                work.folder_zips[mutant.source_folder],
-                mutant,
-                work.next_num(),
-                work.runner,
-            )
-            for mutant in mutants
-        ]
+    with concurrent.futures.ProcessPoolExecutor(max_workers=work.config.max_workers) as executor:
+        try:
+            futures = [
+                executor.submit(
+                    run_mutant_trial,
+                    work.config,
+                    work.echo,
+                    work.folder_zips[mutant.source_folder],
+                    mutant,
+                    work.next_num(),
+                    work.runner,
+                    timeout,
+                )
+                for mutant in mutants
+            ]
 
-        summary = TestingSummary()
-        num_trials = len(mutants)
-        for future in concurrent.futures.as_completed(futures):
-            if future.cancelled():
-                work.echo("Canceled")
-            else:
-                mutant_trial: MutantTrial = future.result()
-                update_summary(summary, mutant_trial.result)
-            work.echo(
-                f"COMPLETED {summary.tested:>4}/{num_trials:<4}"
-                f"\tFOUND {summary.found:>4}"
-                f"\tNOT FOUND {summary.not_found:>4}"
-                f"\tTIMEOUT {summary.timeout:>4}"
-                f"\tERRORS {summary.errors:>4}"
-            )
+            summary = TestingSummary()
+            summary.trials = len(mutants)
+            for future in concurrent.futures.as_completed(futures):
+                if future.cancelled():
+                    work.echo("Canceled")
+                else:
+                    mutant_trial: MutantTrial = future.result()
+                    summary += mutant_trial.result
+                work.echo(
+                    f"COMPLETED {summary.tested:>4}/{summary.trials:<4}"
+                    f"\tFOUND {summary.found:>4}"
+                    f"\tNOT FOUND {summary.not_found:>4}"
+                    f"\tTIMEOUT {summary.timeout:>4}"
+                    f"\tERRORS {summary.errors:>4}",
+                )
+        except KeyboardInterrupt:
+            work.echo("Received Keyboard Interrupt.  Cancelling Remaining Trials.")
+            executor.shutdown(wait=True, cancel_futures=True)
+            raise
 
     logger.info("Elapsed Time %.2f s", time.time() - start)
 
@@ -103,14 +123,24 @@ def run_mutant_trails(work: PoodleWork, mutants: list[Mutant]) -> TestingResults
     )
 
 
-def run_mutant_trial(
+def run_mutant_trial(  # noqa: PLR0913
     config: PoodleConfig,
     echo: Callable,
     folder_zip: Path,
     mutant: Mutant,
     run_id: str,
-    runner,
+    runner: Callable,
+    timeout: float | None,
 ) -> MutantTrial:
+    """Run Trial for specified Mutant.
+
+    Create a Run Folder.
+    Unzip the zip file to the Run Folder.
+    Apply Mutation.
+    Call the Trial Runner.
+    Delete the Run Folder.
+    Return MutantTrial with result data.
+    """
     start = time.time()
     logging.basicConfig(format=config.log_format, level=config.log_level)
 
@@ -132,14 +162,7 @@ def run_mutant_trial(
     if mutant.source_file:
         target_file = Path(run_folder / mutant.source_file)
         file_lines = target_file.read_text("utf-8").splitlines(keepends=True)
-
-        prefix = file_lines[mutant.lineno - 1][: mutant.col_offset]
-        suffix = file_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
-
-        file_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
-        for _ in range(mutant.lineno, mutant.end_lineno):
-            file_lines.pop(mutant.lineno)
-
+        file_lines = mutate_lines(mutant, file_lines)
         target_file.write_text(data="".join(file_lines), encoding="utf-8")
 
     logger.debug("START: run_id=%s", run_id)
@@ -149,10 +172,12 @@ def run_mutant_trial(
         echo=echo,
         run_folder=run_folder,
         mutant=mutant,
+        timeout=timeout,
     )
 
     shutil.rmtree(run_folder)
 
-    logger.debug("END: run_id=%s - Elapsed Time %.2f s", run_id, time.time() - start)
+    duration = time.time() - start
+    logger.debug("END: run_id=%s - Elapsed Time %.2f s", run_id, duration)
 
-    return MutantTrial(mutant, result)
+    return MutantTrial(mutant=mutant, result=result, duration=duration)

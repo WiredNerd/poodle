@@ -1,4 +1,4 @@
-"""Poodle Mutation Testing."""
+"""Poodle Mutation Test Tool."""
 
 from __future__ import annotations
 
@@ -11,6 +11,10 @@ from typing import Any
 
 class PoodleInputError(ValueError):
     """An input value from Command Line, poodle_config.py, or a config file was invalid."""
+
+
+class PoodleTrialRunError(Exception):
+    """An unexpected error occurred when running a mutation trial or clean run."""
 
 
 try:

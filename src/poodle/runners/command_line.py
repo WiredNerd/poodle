@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import shlex
 import subprocess
+from subprocess import TimeoutExpired
 from typing import TYPE_CHECKING
 
 from poodle.data_types import Mutant, MutantTrialResult, PoodleConfig
@@ -13,7 +14,9 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-def runner(config: PoodleConfig, run_folder: Path, mutant: Mutant, *_, **__) -> MutantTrialResult:
+def runner(
+    config: PoodleConfig, run_folder: Path, mutant: Mutant, timeout: float | None, *_, **__
+) -> MutantTrialResult:
     """Run test of mutant with command line command in subprocess."""
     run_env = os.environ.copy()
     python_path = os.pathsep.join(
@@ -37,18 +40,28 @@ def runner(config: PoodleConfig, run_folder: Path, mutant: Mutant, *_, **__) -> 
     if "command_line_env" in config.runner_opts:
         run_env.update(config.runner_opts["command_line_env"])
 
-    result = subprocess.run(
-        shlex.split(config.runner_opts["command_line"]),  # noqa: S603
-        env=run_env,
-        capture_output=True,
-        check=False,
-    )
+    try:
+        result = subprocess.run(
+            shlex.split(config.runner_opts["command_line"]),  # noqa: S603
+            env=run_env,
+            capture_output=True,
+            check=False,
+            timeout=timeout,
+        )
+    except TimeoutExpired as te:
+        return MutantTrialResult(
+            passed=False,
+            reason_code=MutantTrialResult.RC_TIMEOUT,
+            reason_desc=f"TimeoutExpired {te}",
+        )
 
     if result.returncode == 1:
         return MutantTrialResult(
             passed=True,
             reason_code=MutantTrialResult.RC_FOUND,
-            reason_desc=result.stderr.decode("utf-8"),
+            reason_desc=result.stdout.decode("utf-8", errors="replace")
+            + "\n"
+            + result.stderr.decode("utf-8", errors="replace"),
         )
     if result.returncode == 0:
         return MutantTrialResult(
@@ -58,5 +71,7 @@ def runner(config: PoodleConfig, run_folder: Path, mutant: Mutant, *_, **__) -> 
     return MutantTrialResult(
         passed=True,
         reason_code=MutantTrialResult.RC_OTHER,
-        reason_desc=result.stderr.decode("utf-8"),
+        reason_desc=result.stdout.decode("utf-8", errors="replace")
+        + "\n"
+        + result.stderr.decode("utf-8", errors="replace"),
     )

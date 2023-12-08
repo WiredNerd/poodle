@@ -1,6 +1,6 @@
-![python>=3.9](https://img.shields.io/badge/python->=3.8-orange)
-[![PyPI - Version](https://img.shields.io/pypi/v/poodle-test)](https://pypi.org/project/poodle)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/poodle-test)
+[![python>=3.9](https://img.shields.io/badge/python->=3.8-orange)](https://pypi.org/project/poodle-test)
+[![PyPI - Version](https://img.shields.io/pypi/v/poodle-test)](https://pypi.org/project/poodle-test)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/poodle-test)](https://pypi.org/project/poodle-test)
 [![Homepage](https://img.shields.io/badge/Homepage-github-white)](https://github.com/WiredNerd/poodle)
 
 

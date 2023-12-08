@@ -27,10 +27,12 @@
     "python.testing.pytestPath": "src",
     "cSpell.words": [
         "fromlist",
+        "getaffinity",
         "keepends",
         "Mult",
         "PYTHONDONTWRITEBYTECODE",
         "redef",
+        "tofile",
         "wirednerd"
     ],
 }

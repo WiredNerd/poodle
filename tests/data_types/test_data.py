@@ -1,22 +1,71 @@
-from pathlib import Path
+from __future__ import annotations
 
-from poodle.data_types.data import FileMutation, Mutant, MutantTrial, MutantTrialResult, PoodleConfig
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+from poodle.data_types.data import (
+    FileMutation,
+    Mutant,
+    MutantTrial,
+    MutantTrialResult,
+    PoodleConfig,
+    TestingResults,
+    TestingSummary,
+)
+
+
+@dataclass
+class PoodleConfigStub(PoodleConfig):
+    config_file: Path | None = None
+    source_folders: list[Path] = None  # type: ignore [assignment]
+    only_files: list[str] = None  # type: ignore [assignment]
+    file_filters: list[str] = None  # type: ignore [assignment]
+    file_copy_filters: list[str] = None  # type: ignore [assignment]
+    work_folder: Path = None  # type: ignore [assignment]
+
+    max_workers: int | None = None
+
+    log_format: str = None  # type: ignore [assignment]
+    log_level: int | str = None  # type: ignore [assignment]
+    echo_enabled: bool = None  # type: ignore [assignment]
+
+    mutator_opts: dict = None  # type: ignore [assignment]
+    skip_mutators: list[str] = None  # type: ignore [assignment]
+    add_mutators: list[Any] = None  # type: ignore [assignment]
+
+    min_timeout: int = None  # type: ignore [assignment]
+    timeout_multiplier: int = None  # type: ignore [assignment]
+    runner: str = None  # type: ignore [assignment]
+    runner_opts: dict = None  # type: ignore [assignment]
+
+    reporters: list[str] = None  # type: ignore [assignment]
+    reporter_opts: dict = None  # type: ignore [assignment]
 
 
 class TestPoodleConfig:
-    @classmethod
-    def create_poodle_config(cls):
+    @staticmethod
+    def create_poodle_config():
         return PoodleConfig(
             config_file=Path("filename.toml"),
             source_folders=[Path("src")],
+            only_files=["example.py"],
             file_filters=["test_"],
             file_copy_filters=["skip"],
             work_folder=Path(".poodle"),
+            max_workers=3,
+            log_format="$(message)s",
+            log_level=0,
+            echo_enabled=True,
             mutator_opts={"bin_op_level": 2},
             skip_mutators=["null"],
             add_mutators=["custom"],
+            min_timeout=15,
+            timeout_multiplier=10,
             runner="command_line",
             runner_opts={"command_line": "pytest tests"},
+            reporters=["summary"],
+            reporter_opts={"summary": "value"},
         )
 
     def test_poodle_config(self):
@@ -24,20 +73,35 @@ class TestPoodleConfig:
 
         assert config.config_file == Path("filename.toml")
         assert config.source_folders == [Path("src")]
+        assert config.only_files == ["example.py"]
         assert config.file_filters == ["test_"]
         assert config.file_copy_filters == ["skip"]
         assert config.work_folder == Path(".poodle")
+
+        assert config.max_workers == 3
+
+        assert config.log_format == "$(message)s"
+        assert config.log_level == 0
+        assert config.echo_enabled is True
+
         assert config.mutator_opts == {"bin_op_level": 2}
         assert config.skip_mutators == ["null"]
         assert config.add_mutators == ["custom"]
+
+        assert config.min_timeout == 15
+        assert config.timeout_multiplier == 10
         assert config.runner == "command_line"
         assert config.runner_opts == {"command_line": "pytest tests"}
 
+        assert config.reporters == ["summary"]
+        assert config.reporter_opts == {"summary": "value"}
+
 
 class TestFileMutation:
-    @classmethod
-    def create_file_mutation(cls):
+    @staticmethod
+    def create_file_mutation():
         return FileMutation(
+            mutator_name="test",
             lineno=1,
             col_offset=2,
             end_lineno=3,
@@ -73,6 +137,7 @@ class TestMutant:
 
     def test_poodle_mutant_min(self):
         poodle_mutant = Mutant(
+            mutator_name="test",
             source_folder=Path("src"),
             source_file=None,
             lineno=0,
@@ -82,6 +147,7 @@ class TestMutant:
             text="",
         )
 
+        assert poodle_mutant.mutator_name == "test"
         assert poodle_mutant.source_folder == Path("src")
         assert poodle_mutant.source_file is None
         assert poodle_mutant.lineno == 0
@@ -122,8 +188,94 @@ class TestMutantTrialResult:
 
 class TestMutantTrial:
     def test_mutant_trial(self):
-        mutant = Mutant(source_folder=Path("."), source_file=None, **vars(TestFileMutation.create_file_mutation()))
+        mutant = Mutant(source_folder=Path(), source_file=None, **vars(TestFileMutation.create_file_mutation()))
         result = MutantTrialResult(passed=True, reason_code="test")
-        trial = MutantTrial(mutant=mutant, result=result)
+        trial = MutantTrial(mutant=mutant, result=result, duration=1.2)
         assert trial.mutant == mutant
         assert trial.result == result
+        assert trial.duration == 1.2
+
+
+class TestTestingSummary:
+    def test_testing_summary(self):
+        testing_summary = TestingSummary(
+            trials=1,
+            tested=2,
+            found=3,
+            not_found=4,
+            timeout=5,
+            errors=6,
+            success_rate=7.8,
+        )
+
+        assert testing_summary.trials == 1
+        assert testing_summary.tested == 2
+        assert testing_summary.found == 3
+        assert testing_summary.not_found == 4
+        assert testing_summary.timeout == 5
+        assert testing_summary.errors == 6
+        assert testing_summary.success_rate == 7.8
+
+    def test_iadd(self):
+        summary = TestingSummary(trials=10)
+        expected = TestingSummary(trials=10)
+
+        summary += 1
+        assert summary == expected
+
+        summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
+        expected.tested += 1
+        expected.found += 1
+        expected.success_rate = 0.1
+        assert summary == expected
+
+        summary += MutantTrialResult(False, MutantTrialResult.RC_NOT_FOUND)
+        expected.tested += 1
+        expected.not_found += 1
+        assert summary == expected
+
+        summary += MutantTrialResult(False, MutantTrialResult.RC_TIMEOUT)
+        expected.tested += 1
+        expected.timeout += 1
+        assert summary == expected
+
+        summary += MutantTrialResult(False, MutantTrialResult.RC_OTHER)
+        expected.tested += 1
+        expected.errors += 1
+        assert summary == expected
+
+        summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
+        expected.tested += 1
+        expected.found += 1
+        expected.success_rate = 0.2
+        assert summary == expected
+
+        summary += MutantTrialResult(False, MutantTrialResult.RC_NOT_FOUND)
+        expected.tested += 1
+        expected.not_found += 1
+        assert summary == expected
+
+        summary += MutantTrialResult(False, MutantTrialResult.RC_TIMEOUT)
+        expected.tested += 1
+        expected.timeout += 1
+        assert summary == expected
+
+        summary += MutantTrialResult(False, MutantTrialResult.RC_OTHER)
+        expected.tested += 1
+        expected.errors += 1
+        assert summary == expected
+
+
+class TestTestingResults:
+    def test_testing_results(self):
+        mutant = Mutant(source_folder=Path(), source_file=None, **vars(TestFileMutation.create_file_mutation()))
+        result = MutantTrialResult(passed=True, reason_code="test")
+        trial = MutantTrial(mutant=mutant, result=result, duration=1.2)
+        testing_summary = TestingSummary(trials=4)
+        results = TestingResults(
+            mutant_trials=[trial],
+            summary=testing_summary,
+        )
+
+        assert results.summary == testing_summary
+        assert results.mutant_trials == [trial]

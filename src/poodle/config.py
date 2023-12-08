@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
@@ -15,61 +16,112 @@ default_log_level = logging.WARN
 
 default_source_folders = [Path("src"), Path("lib")]
 default_file_filters = [r"^test_.*\.py", r"_test\.py$"]
-default_file_copy_filters = [r"^test_.*\.py", r"_test\.py$", r"^\."]
+default_file_copy_filters = [r"^test_.*\.py", r"_test\.py$", r"^\.", r"^__pycache__$", r".*\.egg-info$"]
 default_work_folder = Path(".poodle-temp")
+
 default_mutator_opts: dict[str, Any] = {}
+
+default_min_timeout = 10
+default_timeout_multiplier = 10
 default_runner = "command_line"
-default_runner_opts = {"command_line": "pytest -x --assert=plain --no-header --no-summary -o pythonpath="}
+default_runner_opts: dict[str, Any] = {"command_line": "pytest -x --assert=plain -o pythonpath="}
+
 default_reporters = ["summary", "not_found"]
-default_reporter_opts = {}
+default_reporter_opts: dict[str, Any] = {}
 
 
-def build_config(command_line_sources: tuple[Path], config_file: Path | None, verbosity: str | None) -> PoodleConfig:
+def default_max_workers() -> int:
+    """Calculate Default for max_workers as one less than available processors."""
+    if hasattr(os, "sched_getaffinity"):
+        return len(os.sched_getaffinity(0)) - 1
+    cpu_count = os.cpu_count() or 1  # nomut: Number
+    if cpu_count > 1:
+        return cpu_count - 1
+    return cpu_count
+
+
+def build_config(  # noqa: PLR0913
+    cmd_sources: tuple[Path],
+    cmd_config_file: Path | None,
+    cmd_verbosity: str | None,
+    cmd_max_workers: int | None,
+    cmd_excludes: tuple[str],
+    cmd_only_files: tuple[str],
+) -> PoodleConfig:
     """Build PoodleConfig object."""
-    config_file_path = get_config_file_path(config_file)
+    config_file_path = get_config_file_path(cmd_config_file)
     config_file_data = get_config_file_data(config_file_path)
-
-    cmd_log_level = {
-        "q": logging.ERROR,
-        "v": logging.INFO,
-        "vv": logging.DEBUG,
-    }.get(verbosity, None)
 
     log_format = get_str_from_config("log_format", config_file_data, default=default_log_format)
     log_level: int | str = get_any_from_config(
-        "log_level", config_file_data, default=default_log_level, command_line=cmd_log_level
+        "log_level",
+        config_file_data,
+        default=default_log_level,
+        command_line=get_cmd_line_log_level(cmd_verbosity),
     )
     logging.basicConfig(format=log_format, level=log_level)
 
-    cmd_echo_enabled = {
-        "q": False,
-        "v": True,
-        "vv": True,
-    }.get(verbosity, None)
+    file_filters = get_str_list_from_config("file_filters", config_file_data, default=default_file_filters)
+    file_filters += get_str_list_from_config("exclude", config_file_data, default=[])
+    file_filters += cmd_excludes
 
     return PoodleConfig(
         config_file=config_file_path,
-        source_folders=get_source_folders(command_line_sources, config_file_data),
-        file_filters=get_str_list_from_config("file_filters", config_file_data, default=default_file_filters),
+        source_folders=get_source_folders(cmd_sources, config_file_data),
+        only_files=get_str_list_from_config("only_files", config_file_data, default=[], command_line=cmd_only_files),
+        file_filters=file_filters,
         file_copy_filters=get_str_list_from_config(
             "file_copy_filters",
             config_file_data,
             default=default_file_copy_filters,
         ),
         work_folder=get_path_from_config("work_folder", config_file_data, default=default_work_folder),
+        max_workers=get_int_from_config(
+            "max_workers",
+            config_file_data,
+            default=default_max_workers(),
+            command_line=cmd_max_workers,
+        ),
         log_format=log_format,
         log_level=log_level,
         echo_enabled=get_bool_from_config(
-            "echo_enabled", config_file_data, default=True, command_line=cmd_echo_enabled
+            "echo_enabled",
+            config_file_data,
+            default=True,
+            command_line=get_cmd_line_echo_enabled(cmd_verbosity),
         ),
         mutator_opts=get_dict_from_config("mutator_opts", config_file_data, default=default_mutator_opts),
         skip_mutators=get_str_list_from_config("skip_mutators", config_file_data, default=[]),
         add_mutators=get_any_list_from_config("add_mutators", config_file_data),
+        min_timeout=get_int_from_config("min_timeout", config_file_data) or default_min_timeout,
+        timeout_multiplier=get_int_from_config("timeout_multiplier", config_file_data) or default_timeout_multiplier,
         runner=get_str_from_config("runner", config_file_data, default=default_runner),
         runner_opts=get_dict_from_config("runner_opts", config_file_data, default=default_runner_opts),
-        reporters=get_str_list_from_config("reporters", config_file_data, default_reporters),
+        reporters=get_str_list_from_config("reporters", config_file_data, default=default_reporters),
         reporter_opts=get_dict_from_config("reporter_opts", config_file_data, default=default_reporter_opts),
     )
+
+
+def get_cmd_line_log_level(verbosity: str | None) -> int | None:
+    """Map verbosity input to logging level."""
+    if verbosity:
+        return {
+            "q": logging.ERROR,
+            "v": logging.INFO,
+            "vv": logging.DEBUG,
+        }.get(verbosity)
+    return None
+
+
+def get_cmd_line_echo_enabled(verbosity: str | None) -> bool | None:
+    """Map verbosity input to enable/disable echo statements."""
+    if verbosity:
+        return {
+            "q": False,
+            "v": True,
+            "vv": True,
+        }.get(verbosity)
+    return None
 
 
 def get_config_file_path(config_file: Path | None) -> Path | None:
@@ -88,7 +140,7 @@ def get_config_file_path(config_file: Path | None) -> Path | None:
     files = [
         "poodle.toml",
         "pyproject.toml",
-    ]  # TODO(wirednerd): ["poodle.toml", "tox.ini", "setup.cfg", "pyproject.toml"]
+    ]  # TODO: ["poodle.toml", "tox.ini", "setup.cfg", "pyproject.toml"]
 
     for file in files:
         path = Path(file)
@@ -106,7 +158,7 @@ def get_config_file_data(config_file: Path | None) -> dict:
     if config_file.suffix == ".toml":
         return get_config_file_data_toml(config_file)
 
-    # TODO(wirednerd): tox.ini and setup.cfg
+    # TODO: tox.ini and setup.cfg
     # https://tox.wiki/en/3.24.5/config.html
 
     msg = f"Config file type not supported: --config_file='{config_file}'"
@@ -146,7 +198,7 @@ def get_source_folders(command_line_sources: tuple[Path], config_data: dict) -> 
 def get_bool_from_config(
     option_name: str,
     config_data: dict,
-    default: bool,
+    default: bool,  # noqa: FBT001
     command_line: bool | str | None = None,
 ) -> bool:
     """Retrieve Config Option that should be a Boolean.
@@ -176,7 +228,7 @@ def get_path_from_config(
     """
     value, source = get_option_from_config(option_name=option_name, config_data=config_data, command_line=command_line)
 
-    if not value:
+    if value is None:
         return default
 
     try:
@@ -235,7 +287,7 @@ def get_any_from_config(
     """
     value, _ = get_option_from_config(option_name=option_name, config_data=config_data, command_line=command_line)
 
-    if not value:
+    if value is None:
         return default
     return value
 
@@ -260,7 +312,7 @@ def get_any_list_from_config(
         command_line=command_line_fix,
     )
 
-    if not values:
+    if values is None:
         return default_fix
 
     if isinstance(values, str):
@@ -270,6 +322,28 @@ def get_any_list_from_config(
         return list(values)
 
     return [values]
+
+
+def get_int_from_config(
+    option_name: str,
+    config_data: dict,
+    default: int | None = None,
+    command_line: int | None = None,
+) -> int | None:
+    """Retrieve Config Option that should be an int or None.
+
+    Retrieve highest priority value from config sources.
+    """
+    value, source = get_option_from_config(option_name=option_name, config_data=config_data, command_line=command_line)
+
+    if value is None:
+        return default
+
+    try:
+        return int(value)
+    except ValueError:
+        msg = f"{option_name} from {source} must be a valid int"
+        raise PoodleInputError(msg) from None
 
 
 def get_str_from_config(
@@ -284,7 +358,7 @@ def get_str_from_config(
     """
     value, _ = get_option_from_config(option_name=option_name, config_data=config_data, command_line=command_line)
 
-    if not value:
+    if value is None:
         return default
 
     return str(value)
@@ -337,7 +411,7 @@ def get_option_from_config(
 
     Returns: Identified Config value, Source Name
     """
-    if command_line or command_line == False:
+    if command_line or command_line is False:
         return command_line, "Command Line"
 
     if hasattr(poodle_config, option_name):

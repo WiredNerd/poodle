@@ -34,7 +34,7 @@ def right_shift(x, y):
     return x >> y
 
 
-def bit_or(x, y):
+def bit_or(x, y) -> str | int:
     return x | y
 
 
@@ -44,3 +44,19 @@ def bit_xor(x, y):
 
 def bit_and(x, y):
     return x & y
+
+
+def unary_add(x):
+    return +x
+
+
+def unary_sub(x):
+    return -x
+
+
+def unary_not(x):
+    return not x
+
+
+def unary_invert(x):
+    return ~x

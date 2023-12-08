@@ -3,15 +3,15 @@ name: Python Tests and Scans
 on: 
   push:
     paths:
-        - requirements.txt
-        - src/**
-        - tests/**
-        - .github/workflows/python-test-scan.yml
+      - requirements.txt
+      - src/**
+      - tests/**
+      - .github/workflows/python-test-scan.yml
   pull_request:
     paths:
-        - requirements.txt
-        - src/**
-        - tests/**
+      - requirements.txt
+      - src/**
+      - tests/**
   workflow_dispatch:
 
 concurrency: updates-project
@@ -24,9 +24,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Install Dependencies and Tools
         run: |
+          python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
       - run: pytest --cov=src
       - name: commit-json-report
@@ -47,9 +48,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Install Dependencies and Tools
         run: |
+          python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
           pip install isort --upgrade
       - run: python3 -m isort src --check --diff
@@ -62,14 +64,25 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Install Dependencies and Tools
         run: |
+          python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
           pip install black --upgrade
       - run: black --check src --diff
       - run: black --check tests --diff
         if: ${{ always() }}
+  ruff-fmt:
+    name: Code Format with Ruff
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ruff format
+        uses: chartboost/ruff-action@v1
+        with:
+          src: src tests
+          args: format --diff
   mypy:
     name: Type Checks with Mypy
     runs-on: [ubuntu-latest]
@@ -77,9 +90,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Install Dependencies and Tools
         run: |
+          python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
           pip install mypy --upgrade
       - run: mypy src tests --python-version 3.9

@@ -1,16 +1,21 @@
+"""Report Testing Results."""
+
 from __future__ import annotations
 
 import logging
-from collections.abc import Generator
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
-from .data_types import PoodleConfig
 from .reporters import report_not_found, report_summary
 from .util import dynamic_import
 
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
+    from .data_types import PoodleConfig
+
 logger = logging.getLogger(__name__)
 
-builtin_reporters = {
+builtin_reporters: dict[str, Callable] = {
     "summary": report_summary,
     "not_found": report_not_found,
 }

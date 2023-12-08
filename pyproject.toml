@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "poodle-test"
 description = "Mutation Testing Tool"
-version = "0.0.1.a1"
+version = "0.0.1.a6"
 license = { file = "LICENSE" }
 keywords = [
     "test",
@@ -40,15 +40,22 @@ poodle = "poodle.cli:main"
 
 [tool.setuptools]
 
-[tool.poodle]
-source_folders = ["example/src"]
-
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
 addopts = "-vv --cov-reset --cov-report=html:reports/coverage --cov-report=term --cov-report=json:code-coverage.json"
 sort_mode = "random"
 sort_bucket = "session"
+filterwarnings = [
+    "ignore:.*cannot collect test class .TestingSummary",
+    "ignore:.*cannot collect test class .TestingResults",
+]
+
+[tool.poodle]
+source_folders = ["src"]
+exclude = ['cli\.py','run\.py','__init__\.py']
+
+[tool.poodle.runner_opts]
 
 [tool.coverage.run]
 branch = true
@@ -76,9 +83,11 @@ target-version = "py39"
 show-source = true
 select = ["ALL"]
 ignore = [
+    "COM812", # missing-trailing-comma
     "D203",   # 1 blank line required before class docstring
     "D213",   # multi-line-summary-second-line
     "EM101",  # Exception must not use a string literal, assign to variable first
+    "FIX002", # Found a TODO
     "TD002",  # Missing author in TODO
     "TD003",  # Missing issue link on the line following this TODO
     "TRY003", # Avoid specifying long messages outside the exception class
@@ -86,6 +95,7 @@ ignore = [
     "ANN102", # Missing type annotation for cls in method
     "ANN002", # Missing type annotation for *args
     "ANN003", # Missing type annotation for **kwargs
+    "ISC001", # single-line-implicit-string-concatenation
 ]
 line-length = 120
 exclude = [
@@ -102,7 +112,45 @@ exclude = [
     "venv",
 ]
 
+[tool.ruff.lint.isort]
+known-first-party = ["poodle"]
+
 [tool.ruff.per-file-ignores]
-"src/poodle/__init__.py" = [
+"src/*/__init__.py" = [
     "F401", # imported but unused
 ]
+"src/poodle/mutators/*" = [
+    "N802", # Function name should be lowercase
+]
+"src/poodle/cli.py" = [
+    "PLR0913", # Too many arguments in function definition
+]
+"src/poodle/data_types/interfaces.py" = [
+    "ARG001", # Unused function argument
+]
+"tests/*" = [
+    "D100",    # Missing docstring in public module
+    "D101",    # Missing docstring in public class
+    "D102",    # Missing docstring in public method
+    "D103",    # Missing docstring in public function
+    "D104",    # Missing docstring in public package
+    "D106",    # Missing docstring in public nested class
+    "S101",    # Use of `assert` detected
+    "ANN001",  # Missing type annotation for function argument
+    "ANN201",  # Missing return type annotation for public function
+    "ANN202",  # Missing return type annotation for private function
+    "ANN205",  # Missing return type annotation for staticmethod
+    "ANN206",  # Missing return type annotation for classmethod
+    "FBT003",  #  Boolean positional value in function call
+    "ERA001",  # Found commented-out code
+    "PLR0913", # Too many arguments in function definition
+    "PLR2004", # Magic value used in comparison
+]
+"tests/mutators/*" = [
+    "N802", # Function name should be lowercase
+]
+"tests/test_core.py" = [
+    "ARG002", # Unused method argument
+]
+
+[tool.ruff.format]
