@@ -14,7 +14,7 @@ release = ''
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['myst_parser']
+extensions = ['myst_parser',"sphinx_design"]
 
 source_suffix = {
     '.rst': 'restructuredtext',
@@ -51,4 +51,6 @@ exclude_patterns = []
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'furo'
-# html_static_path = ['_static']
+html_static_path = ['_static']
+html_logo = '_static/poodle-logo.gif'
+html_favicon = '_static/poodle.ico'
