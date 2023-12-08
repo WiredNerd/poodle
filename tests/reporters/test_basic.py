@@ -8,6 +8,7 @@ import pytest
 
 from poodle.data_types import Mutant, MutantTrial, MutantTrialResult, TestingResults, TestingSummary
 from poodle.reporters import report_not_found, report_summary
+from tests.data_types.test_data import PoodleConfigStub
 
 
 @pytest.fixture()
@@ -160,7 +161,7 @@ class TestReportNotFound:
             ],
             summary=TestingSummary(),
         )
-        report_not_found(mock_echo, results)
+        report_not_found(config=PoodleConfigStub(), echo=mock_echo, testing_results=results)
         mock_echo.assert_not_called()
 
     def test_failed(self, mock_echo: mock.MagicMock):
@@ -192,7 +193,7 @@ class TestReportNotFound:
             ],
             summary=TestingSummary(),
         )
-        report_not_found(mock_echo, results)
+        report_not_found(config=PoodleConfigStub(), echo=mock_echo, testing_results=results)
         diff_str = (
             "--- src/example.py\n"
             "+++ [Mutant] src/example.py:1\n"
@@ -220,7 +221,7 @@ class TestReportNotFound:
             diff_str,
         ]
         actual_report = [args[0][0] for args in mock_echo.call_args_list]
-        assert expected_report == actual_report
+        assert actual_report == expected_report
 
         source_file.read_text.assert_called_with("utf-8")
         source_file.read_text.return_value.splitlines.assert_called_with(keepends=True)

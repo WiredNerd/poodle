@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import difflib
+from pathlib import Path
 from typing import TYPE_CHECKING, Callable
 
 import click
 
-from poodle.data_types import MutantTrialResult
+from poodle.data_types import MutantTrialResult, PoodleConfig
 from poodle.mutate import mutate_lines
 
 if TYPE_CHECKING:
@@ -40,8 +41,11 @@ display_reason_code = {
 }
 
 
-def report_not_found(echo: Callable, testing_results: TestingResults, *_, **__) -> None:
+def report_not_found(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -> None:
     """Echo information about Trials that did not pass."""
+
+    out_lines = []
+
     failed_trials = [trial for trial in testing_results.mutant_trials if not trial.result.passed]
     if not failed_trials:
         return
@@ -55,17 +59,17 @@ def report_not_found(echo: Callable, testing_results: TestingResults, *_, **__) 
         )
     )
 
-    echo("")
-    echo(click.style("*** Mutants Not Found ***", fg="yellow"))
+    out_lines.append("")
+    out_lines.append(click.style("*** Mutants Not Found ***", fg="yellow"))
     for trial in failed_trials:
         mutant = trial.mutant
         result = trial.result
 
-        echo("")
-        echo(f"Mutant Trial Result: {display_reason_code.get(result.reason_code, result.reason_code)}")
-        echo(f"Mutator: {mutant.mutator_name}")
+        out_lines.append("")
+        out_lines.append(f"Mutant Trial Result: {display_reason_code.get(result.reason_code, result.reason_code)}")
+        out_lines.append(f"Mutator: {mutant.mutator_name}")
         if result.reason_desc:
-            echo(result.reason_desc)
+            out_lines.append(result.reason_desc)
 
         if mutant.source_file:
             file_lines = mutant.source_file.read_text("utf-8").splitlines(keepends=True)
@@ -79,11 +83,18 @@ def report_not_found(echo: Callable, testing_results: TestingResults, *_, **__) 
                 )
             )
 
-            echo("".join(diff))
+            out_lines.append("".join(diff))
         else:
-            echo(
+            out_lines.append(
                 f"source_file={mutant.source_file} lineno={mutant.lineno} col_offset={mutant.col_offset} "
                 f"end_lineno={mutant.end_lineno} end_col_offset={mutant.end_col_offset}"
             )
-            echo("text:")
-            echo(mutant.text)
+            out_lines.append("text:")
+            out_lines.append(mutant.text)
+
+    not_found_file = config.reporter_opts.get("not_found_file")
+    if not_found_file:
+        Path(not_found_file).write_text("\n".join(out_lines))
+    else:
+        for line in out_lines:
+            echo(line)
