@@ -193,7 +193,11 @@ class TestReportNotFound:
             ],
             summary=TestingSummary(),
         )
-        report_not_found(config=PoodleConfigStub(), echo=mock_echo, testing_results=results)
+        report_not_found(
+            config=PoodleConfigStub(reporter_opts={}),
+            echo=mock_echo,
+            testing_results=results,
+        )
         diff_str = (
             "--- src/example.py\n"
             "+++ [Mutant] src/example.py:1\n"

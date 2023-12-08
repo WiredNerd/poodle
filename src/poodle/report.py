@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-builtin_reporters = {
+builtin_reporters: dict[str, Callable] = {
     "summary": report_summary,
     "not_found": report_not_found,
 }

@@ -43,7 +43,6 @@ display_reason_code = {
 
 def report_not_found(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -> None:
     """Echo information about Trials that did not pass."""
-
     out_lines = []
 
     failed_trials = [trial for trial in testing_results.mutant_trials if not trial.result.passed]
