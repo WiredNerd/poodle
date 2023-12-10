@@ -1,13 +1,12 @@
-import click
+from unittest import mock
 
-from poodle.data_types.work import PoodleWork
-
-from .test_data import TestPoodleConfig
+from poodle.data_types.work import EchoWrapper, PoodleWork
+from tests.data_types.test_data import PoodleConfigStub
 
 
 class TestPoodleWork:
     def test_poodle_work(self):
-        config = TestPoodleConfig.create_poodle_config()
+        config = PoodleConfigStub(echo_enabled=True, echo_no_color=True)
         work = PoodleWork(config=config)
 
         assert work.config == config
@@ -15,15 +14,31 @@ class TestPoodleWork:
         assert work.mutators == []
         assert work.runner() is None
         assert work.reporters == []
-        assert work.echo == click.echo
+        assert work._echo_wrapper.echo_enabled is True
+        assert work._echo_wrapper.echo_no_color is True
+
+        assert work.echo == work._echo_wrapper.echo
 
         assert work.next_num() == "1"
         assert work.next_num() == "2"
 
-    def test_poodle_work_no_echo(self):
-        config = TestPoodleConfig.create_poodle_config()
-        config.echo_enabled = False
 
-        work = PoodleWork(config=config)
-        assert work.echo != click.echo
-        assert work.echo() is None
+class TestEchoWrapper:
+    @mock.patch("poodle.data_types.work.click")
+    def test_echo(self, click):
+        wrap = EchoWrapper(True, False)
+        file = mock.MagicMock()
+        wrap.echo("test", file=file, nl=False, err=True, fg="black")
+        click.secho.assert_called_with("test", file, False, True, None, fg="black")
+
+    @mock.patch("poodle.data_types.work.click")
+    def test_echo_no_color(self, click):
+        wrap = EchoWrapper(True, True)
+        wrap.echo("test")
+        click.secho.assert_called_with("test", None, True, False, False)
+
+    @mock.patch("poodle.data_types.work.click")
+    def test_echo_no_echo(self, click):
+        wrap = EchoWrapper(False, True)
+        wrap.echo("test")
+        click.secho.assert_not_called()

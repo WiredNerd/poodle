@@ -29,6 +29,7 @@ class PoodleConfigStub(PoodleConfig):
     log_format: str = None  # type: ignore [assignment]
     log_level: int | str = None  # type: ignore [assignment]
     echo_enabled: bool = None  # type: ignore [assignment]
+    echo_no_color: bool = None  # type: ignore [assignment]
 
     mutator_opts: dict = None  # type: ignore [assignment]
     skip_mutators: list[str] = None  # type: ignore [assignment]
@@ -57,6 +58,7 @@ class TestPoodleConfig:
             log_format="$(message)s",
             log_level=0,
             echo_enabled=True,
+            echo_no_color=False,
             mutator_opts={"bin_op_level": 2},
             skip_mutators=["null"],
             add_mutators=["custom"],
@@ -83,6 +85,7 @@ class TestPoodleConfig:
         assert config.log_format == "$(message)s"
         assert config.log_level == 0
         assert config.echo_enabled is True
+        assert config.echo_no_color is False
 
         assert config.mutator_opts == {"bin_op_level": 2}
         assert config.skip_mutators == ["null"]

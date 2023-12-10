@@ -34,19 +34,18 @@ pip install poodle-test --upgrade
 ```
 
 ```
-Usage: poodle [OPTIONS] [SOURCE]...
+Usage: poodle [OPTIONS] [SOURCES]...
 
   Poodle Mutation Test Tool.
 
 Options:
-  -C, --config_file PATH     Configuration File.
-  -q                         Quiet mode: disabled normal output, and loglevel=ERROR
-  -v                         Verbose mode: loglevel=INFO
-  -vv                        Very Verbose mode: loglevel=DEBUG
-  -P, --max_workers INTEGER  Maximum number of parallel workers.
-  --exclude TEXT             Add a regex filter for which files NOT to mutate.  Multiple allowed.
-  --only TEXT                Glob pattern for files to mutate.  If specified, no other files will be mutated.  Multiple allowed.
-  --help                     Show this message and exit.
+  -c PATH         Configuration File.
+  -q              Quiet mode: q, qq, or qq
+  -v              Verbose mode: v, vv, or vvv
+  -w INTEGER      Maximum number of parallel workers.
+  --exclude TEXT  Add a regex exclude file filter. Multiple allowed.
+  --only TEXT     Glob pattern for files to mutate. Multiple allowed.
+  --help          Show this message and exit.
 ```
 
 ## Table of Contents

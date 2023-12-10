@@ -26,7 +26,8 @@ class PoodleConfig:
 
     log_format: str
     log_level: int | str
-    echo_enabled: bool
+    echo_enabled: bool | None
+    echo_no_color: bool | None
 
     mutator_opts: dict
     skip_mutators: list[str]

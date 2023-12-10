@@ -43,7 +43,8 @@ def default_max_workers() -> int:
 def build_config(  # noqa: PLR0913
     cmd_sources: tuple[Path],
     cmd_config_file: Path | None,
-    cmd_verbosity: str | None,
+    cmd_quiet: int,
+    cmd_verbose: int,
     cmd_max_workers: int | None,
     cmd_excludes: tuple[str],
     cmd_only_files: tuple[str],
@@ -57,7 +58,7 @@ def build_config(  # noqa: PLR0913
         "log_level",
         config_file_data,
         default=default_log_level,
-        command_line=get_cmd_line_log_level(cmd_verbosity),
+        command_line=get_cmd_line_log_level(cmd_quiet, cmd_verbose),
     )
     logging.basicConfig(format=log_format, level=log_level)
 
@@ -88,8 +89,9 @@ def build_config(  # noqa: PLR0913
             "echo_enabled",
             config_file_data,
             default=True,
-            command_line=get_cmd_line_echo_enabled(cmd_verbosity),
+            command_line=get_cmd_line_echo_enabled(cmd_quiet),
         ),
+        echo_no_color=get_bool_from_config("echo_no_color", config_file_data),
         mutator_opts=get_dict_from_config("mutator_opts", config_file_data, default=default_mutator_opts),
         skip_mutators=get_str_list_from_config("skip_mutators", config_file_data, default=[]),
         add_mutators=get_any_list_from_config("add_mutators", config_file_data),
@@ -102,26 +104,28 @@ def build_config(  # noqa: PLR0913
     )
 
 
-def get_cmd_line_log_level(verbosity: str | None) -> int | None:
+def get_cmd_line_log_level(cmd_quiet: int, cmd_verbose: int) -> int | None:
     """Map verbosity input to logging level."""
-    if verbosity:
-        return {
-            "q": logging.ERROR,
-            "v": logging.INFO,
-            "vv": logging.DEBUG,
-        }.get(verbosity)
+    if cmd_quiet >= 3:
+        return logging.CRITICAL
+    if cmd_quiet == 2:
+        return logging.ERROR
+    if cmd_quiet == 1:
+        return logging.WARN
+
+    if cmd_verbose == 1:
+        return logging.INFO
+    if cmd_verbose == 2:
+        return logging.DEBUG
+    if cmd_verbose >= 3:
+        return logging.NOTSET
+
     return None
 
 
-def get_cmd_line_echo_enabled(verbosity: str | None) -> bool | None:
+def get_cmd_line_echo_enabled(cmd_quiet: int) -> bool | None:
     """Map verbosity input to enable/disable echo statements."""
-    if verbosity:
-        return {
-            "q": False,
-            "v": True,
-            "vv": True,
-        }.get(verbosity)
-    return None
+    return cmd_quiet < 1
 
 
 def get_config_file_path(config_file: Path | None) -> Path | None:
@@ -133,7 +137,14 @@ def get_config_file_path(config_file: Path | None) -> Path | None:
     """
     if config_file:
         if not config_file.is_file():
-            msg = f"Config file not found: --config_file='{config_file}'"
+            msg = f"Config file not found: '{config_file}'"
+            raise PoodleInputError(msg)
+        return config_file
+
+    if hasattr(poodle_config, "config_file"):
+        config_file = Path(poodle_config.config_file)
+        if not config_file.is_file():
+            msg = f"config_file not found: '{poodle_config.config_file}'"
             raise PoodleInputError(msg)
         return config_file
 
@@ -198,9 +209,9 @@ def get_source_folders(command_line_sources: tuple[Path], config_data: dict) -> 
 def get_bool_from_config(
     option_name: str,
     config_data: dict,
-    default: bool,  # noqa: FBT001
+    default: bool | None = None,
     command_line: bool | str | None = None,
-) -> bool:
+) -> bool | None:
     """Retrieve Config Option that should be a Boolean.
 
     Retrieve highest priority value from config sources.

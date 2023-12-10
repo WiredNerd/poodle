@@ -1,5 +1,15 @@
 # Usage & Configuration
 
+```text
+              /\___/\              ,'.-.'.           .-"-.
+              `)9 9('              '\~ o/`          /|6 6|\
+              {_:Y:.}_              { @ }          {/(_0_)\}
+--------------( )U-'( )----------oOo-----oOo------oOo--U--oO--------------------
+____|_______|_______|_______|_______|_______|_______|_______|_______|_______|___
+```
+
+
+
 ## Terminology
 
 Mutation Testing can introduce some confusing language.  For example, we run the test suite and a test case failed.  In mutation testing, we want to testing to fail, so the test suite passed.  passed == failed?
@@ -30,22 +40,104 @@ Errors
 ## Command Line
 
 ```
-Usage: poodle [OPTIONS] [SOURCE]...
+Usage: poodle [OPTIONS] [SOURCES]...
 
   Poodle Mutation Test Tool.
 
 Options:
-  -C, --config_file PATH     Configuration File.
-  -q                         Quiet mode: disabled normal output, and loglevel=ERROR
-  -v                         Verbose mode: loglevel=INFO
-  -vv                        Very Verbose mode: loglevel=DEBUG
-  -P, --max_workers INTEGER  Maximum number of parallel workers.
-  --exclude TEXT             Add a regex filter for which files NOT to mutate.  Multiple allowed.
-  --only TEXT                Glob pattern for files to mutate.  If specified, no other files will be mutated.  Multiple allowed.
-  --help                     Show this message and exit.
+  -c PATH         Configuration File.
+  -q              Quiet mode: q, qq, or qq
+  -v              Verbose mode: v, vv, or vvv
+  -w INTEGER      Maximum number of parallel workers.
+  --exclude TEXT  Add a regex exclude file filter. Multiple allowed.
+  --only TEXT     Glob pattern for files to mutate. Multiple allowed.
+  --help          Show this message and exit.
 ```
 
-### SOURCE
+### Command Line Options
+
+* SOURCES [Source Folders](#source_folders)
+* -c [Configuration File](#config_file)
+* -q [Quiet Mode]()
+* -v [Verbose Mode]()
+* -w [Max Workers]()
+* --exclude []()
+* --only []()
+
+
+### Quiet Mode
+
+This option suppresses normal output, and set's log level to ERROR
+
+### Verbose Mode
+
+This set's log level to INFO
+
+### max_workers
+
+By default, poodle sets the number of workers to be one less than the available CPUs from `os.sched_getaffinity` or `os.cpu_count`.  Use this option to manually set the number of workers.  With too few workers, available CPU is underutilized.  With too many workers, additional overhead of process switching slows execution.
+
+### exclude
+
+This option excludes files that match the specified regex from the mutation processes.
+
+Multiple allowed.
+
+### only
+
+This option restricts mutation to only the specified file
+
+## Configuration Module
+
+Poodle imports module `poodle_config.py`, if available, to set configuration options.
+
+## Configuration File
+
+Poodle will search for available configuration files, and use the first available file from this list:
+
+1. poodle.toml
+2. pyproject.toml
+
+## OPTIONS
+
+Unless otherwise stated, options are chosen in this priority order:
+1. Command Line options
+2. Module poodle_config.py
+3. Chosen [Configuration File](#config_file)
+
+### config_file
+
+By default, Poodle will search for available configuration files, and use the first available file from this list:
+
+1. poodle.toml
+2. pyproject.toml
+
+the config_file option is used to specify an alternate config file.
+
+Do not use config_file for specifying location of poodle_config.py
+
+Accepted formats: toml
+
+::::{tab-set}
+
+:::{tab-item} Command Line
+poodle -c=config.toml
+:::
+
+:::{tab-item} poodle_config.py
+```python3
+config_file = "config.toml"
+```
+:::
+
+
+::::
+
+### source_folders
+
+Folder(s) that contain your modules and/or packages.
+
+**Default:** ["src", "lib"]
 
 Running each Trial consists of 3 steps:
 
@@ -53,7 +145,7 @@ Running each Trial consists of 3 steps:
 2. Apply a single mutation to the copy of the source file.
 3. Run test suite with the temporary folder added to the python path.
 
-The list of Source folders is the root folder of a python project that should be copied to a temporary location.
+The list of source folders is a root folder that should be copied to a temporary location.
 
 Typically, this is a folder like 'src' or 'lib'.  But could be almost anything depending on your project structure.  
 
@@ -63,34 +155,70 @@ If the python files are in the working folder, specify this as '.'
 
 More than one can be specified.
 
-**Default:** src, lib
 :::{note}
-Any folders specified in command line or in config files must exist.  If none is specified, it will use 'src' and/or 'lib' if they exist.
+Any folders specified in command line or in config files must exist.  If none is specified, it will use 'src' and/or 'lib' only if they exist.
 :::
 
-Example: passing two folders, 'src' and 'build'
+::::{tab-set}
+
+:::{tab-item} Command Line
 ```bash
-poodle src build
+poodle myapp myotherapp
 ```
+:::
 
-### config_file
+:::{tab-item} poodle_config.py
+```python3
+source_folders = ["myapp", "myotherapp"]
+```
+:::
 
-By default, poodle will search the current working directory for 'poodle.toml' and 'pyproject.toml'.
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+source_folders = ["myapp", "myotherapp"]
+```
+:::
 
-the config_file option is used to specify an alternate config file.
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+source_folders = ["myapp", "myotherapp"]
+```
+:::
 
-Do not use config_file for specifying location of poodle_config.py
+::::
 
-Accepted formats: toml
+### only_files
 
-### Quiet Mode
+### file_filters
 
+### file_copy_filters
 
+### work_folder
 
-## poodle_config.py
+### max_workers
 
-## poodle.toml
+### log_format
 
-## pyproject.toml
+### log_level
 
-## All Options
+### echo_enabled
+
+### mutator_opts
+
+### skip_mutators
+
+### add_mutators
+
+### min_timeout
+
+### timeout_multiplier
+
+### runner
+
+### runner_opts
+
+### reporters
+
+### reporter_opts
