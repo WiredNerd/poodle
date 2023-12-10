@@ -92,6 +92,7 @@ class TestBuildConfig:
     @mock.patch("poodle.config.os")
     @mock.patch("poodle.config.get_config_file_path")
     @mock.patch("poodle.config.get_config_file_data")
+    @mock.patch("poodle.config.get_cmd_line_log_level")
     @mock.patch("poodle.config.get_source_folders")
     @mock.patch("poodle.config.get_str_from_config")
     @mock.patch("poodle.config.get_str_list_from_config")
@@ -114,6 +115,7 @@ class TestBuildConfig:
         get_str_list_from_config,
         get_str_from_config,
         get_source_folders,
+        get_cmd_line_log_level,
         get_config_file_data,
         get_config_file_path,
         mock_os,
@@ -136,7 +138,8 @@ class TestBuildConfig:
         assert config.build_config(
             cmd_sources,
             cmd_config_file,
-            cmd_verbosity="v",
+            cmd_quiet=1,
+            cmd_verbose=2,
             cmd_max_workers=3,
             cmd_excludes=("notcov.py",),
             cmd_only_files=("example.py",),
@@ -151,6 +154,7 @@ class TestBuildConfig:
             log_format=get_str_from_config.return_value,
             log_level=get_any_from_config.return_value,
             echo_enabled=get_bool_from_config.return_value,
+            echo_no_color=get_bool_from_config.return_value,
             mutator_opts={"mutator": "value"},
             skip_mutators=get_str_list_from_config.return_value,
             add_mutators=get_any_list_from_config.return_value,
@@ -196,8 +200,9 @@ class TestBuildConfig:
             "log_level",
             config_file_data,
             default=config.default_log_level,
-            command_line=logging_mock.INFO,
+            command_line=get_cmd_line_log_level.return_value,
         )
+        get_cmd_line_log_level.assert_called_with(1, 2)
         logging_mock.basicConfig.assert_called_once_with(
             format=get_str_from_config.return_value,
             level=get_any_from_config.return_value,
@@ -210,7 +215,10 @@ class TestBuildConfig:
             default=True,
             command_line=get_cmd_line_echo_enabled.return_value,
         )
-        get_cmd_line_echo_enabled.assert_called_once_with("v")
+        get_cmd_line_echo_enabled.assert_called_once_with(1)
+
+        # echo_no_color
+        get_bool_from_config.assert_any_call("echo_no_color", config_file_data)
 
         # mutator_opts
         get_dict_from_config.assert_any_call("mutator_opts", config_file_data, default=config.default_mutator_opts)
@@ -246,7 +254,8 @@ class TestBuildConfig:
         assert config.build_config(
             cmd_sources=(),
             cmd_config_file=None,
-            cmd_verbosity=None,
+            cmd_quiet=0,
+            cmd_verbose=0,
             cmd_max_workers=None,
             cmd_excludes=(),
             cmd_only_files=(),
@@ -261,6 +270,7 @@ class TestBuildConfig:
             log_format=config.default_log_format,
             log_level=logging.WARN,
             echo_enabled=True,
+            echo_no_color=None,
             mutator_opts={},
             skip_mutators=[],
             add_mutators=[],
@@ -275,30 +285,33 @@ class TestBuildConfig:
 
 class TestGetCommandLineLoggingOptions:
     @pytest.mark.parametrize(
-        ("verbosity", "expected"),
+        ("cmd_quiet", "cmd_verbose", "expected"),
         [
-            ("q", logging.ERROR),
-            ("v", logging.INFO),
-            ("vv", logging.DEBUG),
-            ("", None),
-            (None, None),
+            (0, 0, None),
+            (1, 0, logging.WARN),
+            (2, 0, logging.ERROR),
+            (3, 0, logging.CRITICAL),
+            (4, 0, logging.CRITICAL),
+            (1, 1, logging.WARN),
+            (0, 1, logging.INFO),
+            (0, 2, logging.DEBUG),
+            (0, 3, logging.NOTSET),
+            (0, 4, logging.NOTSET),
         ],
     )
-    def test_get_cmd_line_log_level(self, verbosity, expected):
-        assert config.get_cmd_line_log_level(verbosity) == expected
+    def test_get_cmd_line_log_level(self, cmd_quiet, cmd_verbose, expected):
+        assert config.get_cmd_line_log_level(cmd_quiet, cmd_verbose) == expected
 
     @pytest.mark.parametrize(
-        ("verbosity", "expected"),
+        ("cmd_quiet", "expected"),
         [
-            ("q", False),
-            ("v", True),
-            ("vv", True),
-            ("", None),
-            (None, None),
+            (0, True),
+            (1, False),
+            (2, False),
         ],
     )
-    def test_get_cmd_line_echo_enabled(self, verbosity, expected):
-        assert config.get_cmd_line_echo_enabled(verbosity) == expected
+    def test_get_cmd_line_echo_enabled(self, cmd_quiet, expected):
+        assert config.get_cmd_line_echo_enabled(cmd_quiet) == expected
 
 
 class TestGetConfigFilePath:
@@ -331,8 +344,24 @@ class TestGetConfigFilePath:
         path_config = mock.MagicMock()
         path_config.is_file.return_value = False
         path_config.__repr__ = lambda _: "config.toml"
-        with pytest.raises(PoodleInputError, match="^Config file not found: --config_file='config.toml'$"):
+        with pytest.raises(PoodleInputError, match="^Config file not found: 'config.toml'$"):
             config.get_config_file_path(path_config)
+
+    @mock.patch("poodle.config.Path")
+    @mock.patch("poodle.config.poodle_config")
+    def test_get_config_file_path_poodle_config(self, poodle_config, mock_path):
+        self.setup_mock_path(mock_path, True, False, False)
+        poodle_config.config_file = "config.toml"
+        assert config.get_config_file_path(None) == mock_path.config_file_path
+
+    @mock.patch("poodle.config.Path")
+    @mock.patch("poodle.config.poodle_config")
+    def test_get_config_file_path_poodle_config_err(self, poodle_config, mock_path):
+        self.setup_mock_path(mock_path, False, False, False)
+        poodle_config.config_file = "config.toml"
+        mock_path.config_file_path.__repr__ = lambda _: "config.toml"
+        with pytest.raises(PoodleInputError, match="^config_file not found: 'config.toml'$"):
+            config.get_config_file_path(None)
 
     @mock.patch("poodle.config.Path")
     def test_get_config_file_path_poodle(self, mock_path):
@@ -474,9 +503,8 @@ class TestGetBoolFromConfig:
             config.get_bool_from_config(
                 option_name="test_option",
                 config_data={"test_option": True},
-                default=True,
             )
-            is True
+            is None
         )
 
         get_option_from_config.assert_called_with(

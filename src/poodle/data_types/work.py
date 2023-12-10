@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, Callable
+from dataclasses import dataclass
+from typing import IO, TYPE_CHECKING, Any, AnyStr, Callable
 
 import click
 
@@ -28,7 +29,8 @@ class PoodleWork:
         self.runner: Callable = lambda *_, **__: None
         self.reporters: list[Callable] = []
 
-        self.echo = click.echo if config.echo_enabled else lambda *_, **__: None
+        self._echo_wrapper = EchoWrapper(config.echo_enabled, config.echo_no_color)
+        self.echo = self._echo_wrapper.echo
 
         def number_generator() -> Generator[int, Any, None]:
             i = 1
@@ -41,3 +43,26 @@ class PoodleWork:
     def next_num(self) -> str:
         """Return the next value from Sequence as a string."""
         return str(next(self._num_gen))
+
+
+@dataclass
+class EchoWrapper:
+    """Contains config options related to echo function."""
+
+    echo_enabled: bool | None
+    echo_no_color: bool | None
+
+    def echo(  # noqa: PLR0913
+        self,
+        message: Any | None = None,  # noqa: ANN401
+        file: IO[AnyStr] | None = None,
+        nl: bool = True,
+        err: bool = False,
+        color: bool | None = None,
+        **styles: dict,
+    ) -> None:
+        """Calls 'click.secho' with settings from config."""  # noqa: D401
+        if self.echo_no_color:
+            color = False
+        if self.echo_enabled:
+            click.secho(message, file, nl, err, color, **styles)

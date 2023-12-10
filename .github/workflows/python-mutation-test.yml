@@ -37,18 +37,13 @@ jobs:
         run: |
           python3 -m mutmut html
           python3 -m mutmut junitxml > mutation-testing-report.xml
+          head mutation-testing-report.xml -n 3
       - name: save-xml-report
         if: ${{ github.ref_name == 'main' }}
         uses: EndBug/add-and-commit@v9
         with:
           add: "mutation-testing-report.xml"
           pull: "--rebase=true --autostash"
-      - name: save-reports
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: mutation-testing-report.xml
-          path: mutation-testing-report.xml
       - name: save-reports
         if: ${{ always() }}
         uses: actions/upload-artifact@v3

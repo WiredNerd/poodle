@@ -11,38 +11,30 @@ from . import PoodleInputError, core
 from .config import build_config
 
 CONTEXT_SETTINGS = {
-    "max_content_width": 200,
+    "max_content_width": 120,
 }
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)
-@click.argument("source", type=click.Path(exists=True, path_type=Path), nargs=-1)
-@click.option("-C", "--config_file", help="Configuration File.", type=click.Path(exists=True, path_type=Path))
-@click.option("-q", "verbosity", help="Quiet mode: disabled normal output, and loglevel=ERROR", flag_value="q")
-@click.option("-v", "verbosity", help="Verbose mode: loglevel=INFO", flag_value="v")
-@click.option("-vv", "verbosity", help="Very Verbose mode: loglevel=DEBUG", flag_value="vv")
-@click.option("-P", "--max_workers", type=int, help="Maximum number of parallel workers.")
-@click.option(
-    "--exclude", "excludes", multiple=True, help="Add a regex filter for which files NOT to mutate.  Multiple allowed."
-)
-@click.option(
-    "--only",
-    "only_files",
-    multiple=True,
-    help="Glob pattern for files to mutate.  If specified, no other files will be mutated.  Multiple allowed.",
-)
-# @click.option("-R", "--runner", help="Runner Name or Module Name for runner to use")
+@click.argument("sources", type=click.Path(exists=True, path_type=Path), nargs=-1)
+@click.option("-c", "config_file", help="Configuration File.", type=click.Path(exists=True, path_type=Path))
+@click.option("-q", "quiet", help="Quiet mode: q, qq, or qq", count=True)
+@click.option("-v", "verbose", help="Verbose mode: v, vv, or vvv", count=True)
+@click.option("-w", "workers", help="Maximum number of parallel workers.", type=int)
+@click.option("--exclude", help="Add a regex exclude file filter. Multiple allowed.", multiple=True)
+@click.option("--only", help="Glob pattern for files to mutate. Multiple allowed.", multiple=True)
 def main(
-    source: tuple[Path],
+    sources: tuple[Path],
     config_file: Path | None,
-    verbosity: str | None,
-    max_workers: int | None,
-    excludes: tuple[str],
-    only_files: tuple[str],
+    quiet: int,
+    verbose: int,
+    workers: int | None,
+    exclude: tuple[str],
+    only: tuple[str],
 ) -> None:
     """Poodle Mutation Test Tool."""
     try:
-        config = build_config(source, config_file, verbosity, max_workers, excludes, only_files)
+        config = build_config(sources, config_file, quiet, verbose, workers, exclude, only)
     except PoodleInputError as err:
         click.echo(err.args)
         sys.exit(4)

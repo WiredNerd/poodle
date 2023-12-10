@@ -123,7 +123,7 @@ class TestReportNotFound:
         end_lineno=1,
         end_col_offset=15,
         text="None",
-        passed=False,  # noqa: FBT002
+        passed=False,
         reason_code=MutantTrialResult.RC_NOT_FOUND,
         reason_desc=None,
         duration=1.0,

@@ -32,6 +32,8 @@
         "Mult",
         "PYTHONDONTWRITEBYTECODE",
         "redef",
+        "secho",
+        "supress",
         "tofile",
         "wirednerd"
     ],
