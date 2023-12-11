@@ -3,44 +3,48 @@
 from __future__ import annotations
 
 import logging
-import re
 from io import StringIO
 from pprint import pprint
 from typing import TYPE_CHECKING, Any
 from zipfile import ZipFile
 
+from wcmatch.pathlib import Path
+
 if TYPE_CHECKING:
-    from pathlib import Path
+    import pathlib
 
     from .data_types import PoodleWork
 
 logger = logging.getLogger(__name__)
 
 
-def files_list_for_folder(glob: str, filter_regex: list[str], folder: Path) -> list[Path]:
-    """Retrieve list of all files in specified folder.
+def files_list_for_folder(
+    folder: pathlib.Path,
+    match_glob: str,
+    flags: int | None,
+    filter_globs: list[str],
+) -> list[pathlib.Path]:
+    """Retrieve list of files in specified folder.
 
-    Search recursively for files matching glob.
-    Remove files matching any of the filter_regex values.
+    Search recursively for files matching match_glob.
+    Remove files matching any of the filter_globs values.
     """
-    logger.debug("files_list_for_folder glob=%s filter_regex=%s folder=%s", glob, filter_regex, folder)
+    logger.debug("files_list_for_folder folder=%s, match_glob=%s filter_globs=%s", folder, match_glob, filter_globs)
 
-    files = list(folder.rglob(glob))
-
-    for regex in filter_regex:
-        files = [file for file in files if not any(re.search(regex, part) for part in file.parts)]
+    files: list[pathlib.Path] = list(Path(folder).rglob(match_glob, flags=flags, exclude=filter_globs))  # type: ignore [arg-type]
 
     logger.debug("files_list_for_folder results: folder=%s files=%s", folder, files)
     return files
 
 
-def files_list_for_source_folders(work: PoodleWork) -> dict[Path, list[Path]]:
+def files_list_for_source_folders(work: PoodleWork) -> dict[pathlib.Path, list[pathlib.Path]]:
     """Build map of Folder to all files in folder to include in zips."""
     return {
         folder: files_list_for_folder(
-            "*",
-            work.config.file_copy_filters,
-            folder,
+            folder=folder,
+            match_glob="*",
+            flags=work.config.file_copy_flags,
+            filter_globs=work.config.file_copy_filters,
         )
         for folder in work.config.source_folders
     }
@@ -55,6 +59,7 @@ def create_temp_zips(work: PoodleWork) -> None:
         work.folder_zips[folder] = zip_file
         with ZipFile(zip_file, "w") as target_zip:
             for file in files:
+                logger.info("Adding file: %s", file)
                 target_zip.write(file)
 
 

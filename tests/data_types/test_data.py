@@ -19,8 +19,12 @@ from poodle.data_types.data import (
 class PoodleConfigStub(PoodleConfig):
     config_file: Path | None = None
     source_folders: list[Path] = None  # type: ignore [assignment]
+
     only_files: list[str] = None  # type: ignore [assignment]
+    file_flags: int = None  # type: ignore [assignment]
     file_filters: list[str] = None  # type: ignore [assignment]
+
+    file_copy_flags: int = None  # type: ignore [assignment]
     file_copy_filters: list[str] = None  # type: ignore [assignment]
     work_folder: Path = None  # type: ignore [assignment]
 
@@ -51,7 +55,9 @@ class TestPoodleConfig:
             config_file=Path("filename.toml"),
             source_folders=[Path("src")],
             only_files=["example.py"],
+            file_flags=4,
             file_filters=["test_"],
+            file_copy_flags=5,
             file_copy_filters=["skip"],
             work_folder=Path(".poodle"),
             max_workers=3,
@@ -75,8 +81,12 @@ class TestPoodleConfig:
 
         assert config.config_file == Path("filename.toml")
         assert config.source_folders == [Path("src")]
+
         assert config.only_files == ["example.py"]
+        assert config.file_flags == 4
         assert config.file_filters == ["test_"]
+
+        assert config.file_copy_flags == 5
         assert config.file_copy_filters == ["skip"]
         assert config.work_folder == Path(".poodle")
 

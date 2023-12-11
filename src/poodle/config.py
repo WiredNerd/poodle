@@ -8,15 +8,20 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
+from wcmatch import glob
+
 from . import PoodleInputError, poodle_config, tomllib
 from .data_types import PoodleConfig
+
+default_source_folders = [Path("src"), Path("lib")]
 
 default_log_format = "%(levelname)s [%(process)d] %(name)s.%(funcName)s:%(lineno)d - %(message)s"
 default_log_level = logging.WARN
 
-default_source_folders = [Path("src"), Path("lib")]
-default_file_filters = [r"^test_.*\.py", r"_test\.py$"]
-default_file_copy_filters = [r"^test_.*\.py", r"_test\.py$", r"^\.", r"^__pycache__$", r".*\.egg-info$"]
+default_file_flags = glob.GLOBSTAR | glob.NODIR
+default_file_filters = ["test_*.py", "*_test.py"]
+default_file_copy_flags = glob.GLOBSTAR | glob.NODIR
+default_file_copy_filters = ["test_*.py", "*_test.py", "__pycache__/**"]
 default_work_folder = Path(".poodle-temp")
 
 default_mutator_opts: dict[str, Any] = {}
@@ -63,14 +68,17 @@ def build_config(  # noqa: PLR0913
     logging.basicConfig(format=log_format, level=log_level)
 
     file_filters = get_str_list_from_config("file_filters", config_file_data, default=default_file_filters)
-    file_filters += get_str_list_from_config("exclude", config_file_data, default=[])
+    # TODO: append file excludes and append py excludes
+    # file_filters += get_str_list_from_config("exclude", config_file_data, default=[]) # noqa: ERA001
     file_filters += cmd_excludes
 
     return PoodleConfig(
         config_file=config_file_path,
         source_folders=get_source_folders(cmd_sources, config_file_data),
         only_files=get_str_list_from_config("only_files", config_file_data, default=[], command_line=cmd_only_files),
+        file_flags=get_int_from_config("file_flags", config_file_data, default=default_file_flags),
         file_filters=file_filters,
+        file_copy_flags=get_int_from_config("file_copy_flags", config_file_data, default=default_file_copy_flags),
         file_copy_filters=get_str_list_from_config(
             "file_copy_filters",
             config_file_data,

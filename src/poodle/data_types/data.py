@@ -17,8 +17,12 @@ class PoodleConfig:
 
     config_file: Path | None
     source_folders: list[Path]
+
     only_files: list[str]
+    file_flags: int | None
     file_filters: list[str]
+
+    file_copy_flags: int | None
     file_copy_filters: list[str]
     work_folder: Path
 

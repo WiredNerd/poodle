@@ -19,79 +19,82 @@ def test_logger():
 
 
 class TestFilesList:
-    def test_files_list_for_folder(self, mock_logger):
-        mock_folder = mock.MagicMock()
-        mock_folder.rglob.return_value = (
-            Path("src/project/file_1.py"),
-            Path("src/project/file_test_2.py"),
-            Path("src/project/__pycache__/file_1.pyc"),
-            Path("src/project/__pycache__/file_test_2.pyc"),
-        )
-        files = util.files_list_for_folder("*.py", [r"^test_.*\.py$", r"_test\.py$", r"^__pycache__$"], mock_folder)
-        assert files == [
+    @mock.patch("poodle.util.Path")
+    def test_files_list_for_folder(self, mock_path, mock_logger):
+        files = [
             Path("src/project/file_1.py"),
             Path("src/project/file_test_2.py"),
         ]
-        mock_folder.rglob.assert_called_with("*.py")
+        mock_folder = mock.MagicMock()
+        mock_folder.rglob.return_value = iter(files)
+        mock_path.return_value = mock_folder
+        in_folder = mock.MagicMock()
+
+        assert (
+            util.files_list_for_folder(
+                folder=in_folder,
+                match_glob="*.py",
+                flags=4,
+                filter_globs=["test_*.py"],
+            )
+            == files
+        )
+
+        mock_folder.rglob.assert_called_with("*.py", flags=4, exclude=["test_*.py"])
         mock_logger.debug.assert_any_call(
-            "files_list_for_folder glob=%s filter_regex=%s folder=%s",
+            "files_list_for_folder folder=%s, match_glob=%s filter_globs=%s",
+            in_folder,
             "*.py",
-            [r"^test_.*\.py$", r"_test\.py$", r"^__pycache__$"],
-            mock_folder,
+            ["test_*.py"],
         )
         mock_logger.debug.assert_any_call(
             "files_list_for_folder results: folder=%s files=%s",
-            mock_folder,
+            in_folder,
             files,
         )
 
-    def test_files_list_for_source_folders(self, mock_logger):
-        mock_folder_1 = mock.MagicMock()
-        mock_folder_1.rglob.return_value = (
+    @mock.patch("poodle.util.Path")
+    def test_files_list_for_source_folders(self, mock_path):
+        files_1 = [
             Path("file_1.py"),
             Path("test_file_1.py"),
-        )
-        mock_folder_2 = mock.MagicMock()
-        mock_folder_2.rglob.return_value = (
+        ]
+        files_2 = [
             Path("file_test_2.py"),
             Path("file_2_test.py"),
-        )
+        ]
+        mock_folder = mock.MagicMock()
+        mock_folder.rglob.side_effect = [iter(files_1), iter(files_2)]
+        mock_path.return_value = mock_folder
+
+        mock_folder_1 = mock.MagicMock()
+        mock_folder_2 = mock.MagicMock()
+
         work = PoodleWork(
             config=PoodleConfigStub(
                 source_folders=[mock_folder_1, mock_folder_2],
-                file_copy_filters=[r"^test_.*\.py$", r"_test\.py$"],
+                file_copy_flags=0,
+                file_copy_filters=["test_*.py", "*_test.py"],
             )
         )
+
         assert util.files_list_for_source_folders(work) == {
-            mock_folder_1: [Path("file_1.py")],
-            mock_folder_2: [Path("file_test_2.py")],
+            mock_folder_1: files_1,
+            mock_folder_2: files_2,
         }
-        mock_folder_1.rglob.assert_called_with("*")
-        mock_folder_2.rglob.assert_called_with("*")
-        mock_logger.debug.assert_has_calls(
+
+        mock_path.assert_has_calls(
             [
-                mock.call(
-                    "files_list_for_folder glob=%s filter_regex=%s folder=%s",
-                    "*",
-                    [r"^test_.*\.py$", r"_test\.py$"],
-                    mock_folder_1,
-                ),
-                mock.call(
-                    "files_list_for_folder results: folder=%s files=%s",
-                    mock_folder_1,
-                    [Path("file_1.py")],
-                ),
-                mock.call(
-                    "files_list_for_folder glob=%s filter_regex=%s folder=%s",
-                    "*",
-                    [r"^test_.*\.py$", r"_test\.py$"],
-                    mock_folder_2,
-                ),
-                mock.call(
-                    "files_list_for_folder results: folder=%s files=%s",
-                    mock_folder_2,
-                    [Path("file_test_2.py")],
-                ),
+                mock.call(mock_folder_1),
+                mock.call().rglob("*", flags=0, exclude=["test_*.py", "*_test.py"]),
+                mock.call(mock_folder_2),
+                mock.call().rglob("*", flags=0, exclude=["test_*.py", "*_test.py"]),
+            ]
+        )
+        mock_folder.rglob.assert_has_calls(
+            [
+                mock.call("*", flags=0, exclude=["test_*.py", "*_test.py"]),
+                mock.call("*", flags=0, exclude=["test_*.py", "*_test.py"]),
             ]
         )
 
@@ -115,7 +118,9 @@ class TestFilesList:
         mock_logger.info.assert_has_calls(
             [
                 mock.call("Creating zip file: %s", Path("src-1.zip")),
+                mock.call("Adding file: %s", Path("file_1.py")),
                 mock.call("Creating zip file: %s", Path("src-2.zip")),
+                mock.call("Adding file: %s", Path("file_2.py")),
             ]
         )
         assert work.folder_zips == {

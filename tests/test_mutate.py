@@ -142,13 +142,23 @@ class TestCreateMutants:
             ("example_2", "file_4.py"),
         ]
 
-    def test_get_target_files_only(self):
-        folder1 = mock.MagicMock()
-        folder1.rglob.return_value = iter(["example1.py", "example2.py"])
-        folder2 = mock.MagicMock()
-        folder2.rglob.return_value = iter([])
+    @mock.patch("poodle.mutate.files_list_for_folder")
+    def test_get_target_files_only(self, files_list_for_folder):
+        files_list_for_folder.side_effect = [
+            ["example1.py"],
+            ["example2.py"],
+            [],
+            [],
+        ]
 
-        config = PoodleConfigStub(only_files=["example1.py", "example2.py"], source_folders=[folder1, folder2])
+        folder1 = mock.MagicMock()
+        folder2 = mock.MagicMock()
+
+        config = PoodleConfigStub(
+            only_files=["example1.py", "example2.py"],
+            file_flags=0,
+            source_folders=[folder1, folder2],
+        )
         work = PoodleWork(config)
 
         assert mutate.get_target_files(work) == {
@@ -156,9 +166,18 @@ class TestCreateMutants:
             folder2: [],
         }
 
+        files_list_for_folder.assert_has_calls(
+            [
+                mock.call(folder=folder1, match_glob="example1.py", flags=0, filter_globs=[]),
+                mock.call(folder=folder1, match_glob="example2.py", flags=0, filter_globs=[]),
+                mock.call(folder=folder2, match_glob="example1.py", flags=0, filter_globs=[]),
+                mock.call(folder=folder2, match_glob="example2.py", flags=0, filter_globs=[]),
+            ]
+        )
+
     @mock.patch("poodle.mutate.files_list_for_folder")
     def test_get_target_files(self, files_list_for_folder):
-        config = PoodleConfigStub(file_filters=["test.*.py"], source_folders=["example_1", "example_2"])
+        config = PoodleConfigStub(file_filters=["test.*.py"], file_flags=0, source_folders=["example_1", "example_2"])
         work = PoodleWork(config)
 
         files_list_for_folder.side_effect = [
@@ -173,8 +192,8 @@ class TestCreateMutants:
 
         files_list_for_folder.assert_has_calls(
             [
-                mock.call("*.py", ["test.*.py"], "example_1"),
-                mock.call("*.py", ["test.*.py"], "example_2"),
+                mock.call(folder="example_1", match_glob="*.py", flags=0, filter_globs=["test.*.py"]),
+                mock.call(folder="example_2", match_glob="*.py", flags=0, filter_globs=["test.*.py"]),
             ]
         )
 

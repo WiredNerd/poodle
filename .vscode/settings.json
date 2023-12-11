@@ -35,6 +35,7 @@
         "secho",
         "supress",
         "tofile",
+        "wcmatch",
         "wirednerd"
     ],
 }
