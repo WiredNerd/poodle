@@ -28,7 +28,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-dependencies = ["click>=8", "tomli>=2; python_version<'3.11'"]
+dependencies = ["click>=8", "wcmatch>=8.5", "tomli>=2; python_version<'3.11'"]
 
 [project.urls]
 "Documentation" = "https://poodle.readthedocs.io/"
@@ -52,8 +52,7 @@ filterwarnings = [
 ]
 
 [tool.poodle]
-source_folders = ["src"]
-exclude = ['cli\.py', 'run\.py', '__init__\.py']
+file_filters = ["test_*.py", "*_test.py", 'cli.py', 'run.py', '__init__.py']
 
 [tool.poodle.runner_opts]
 

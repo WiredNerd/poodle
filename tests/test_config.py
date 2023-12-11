@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
+from wcmatch import glob
 
 from poodle import PoodleInputError, config
 
@@ -31,19 +32,17 @@ def get_option_from_config():
 
 def test_defaults():
     importlib.reload(config)
-    assert config.default_log_format == "%(levelname)s [%(process)d] %(name)s.%(funcName)s:%(lineno)d - %(message)s"
-    assert config.default_log_level == logging.WARN
 
     assert config.default_source_folders == [Path("src"), Path("lib")]
 
-    assert config.default_file_filters == [r"^test_.*\.py", r"_test\.py$"]
-    assert config.default_file_copy_filters == [
-        r"^test_.*\.py",
-        r"_test\.py$",
-        r"^\.",
-        r"^__pycache__$",
-        r".*\.egg-info$",
-    ]
+    assert config.default_log_format == "%(levelname)s [%(process)d] %(name)s.%(funcName)s:%(lineno)d - %(message)s"
+    assert config.default_log_level == logging.WARN
+
+    assert config.default_file_flags == glob.GLOBSTAR | glob.NODIR
+    assert config.default_file_filters == ["test_*.py", "*_test.py"]
+
+    assert config.default_file_copy_flags == glob.GLOBSTAR | glob.NODIR
+    assert config.default_file_copy_filters == ["test_*.py", "*_test.py", "__pycache__/**"]
     assert config.default_work_folder == Path(".poodle-temp")
 
     assert config.default_mutator_opts == {}
@@ -147,7 +146,9 @@ class TestBuildConfig:
             config_file=config_file_path,
             source_folders=get_source_folders.return_value,
             only_files=get_str_list_from_config.return_value,
-            file_filters=get_str_list_from_config.return_value.__iadd__.return_value.__iadd__.return_value,
+            file_flags=get_int_from_config.return_value,
+            file_filters=get_str_list_from_config.return_value.__iadd__.return_value,
+            file_copy_flags=get_int_from_config.return_value,
             file_copy_filters=get_str_list_from_config.return_value,
             work_folder=get_path_from_config.return_value,
             max_workers=get_int_from_config.return_value,
@@ -169,6 +170,7 @@ class TestBuildConfig:
         # return PoodleConfig
         # source_folders
         get_source_folders.assert_called_once_with(cmd_sources, config_file_data)
+
         # only_files
         get_str_list_from_config.assert_any_call(
             "only_files",
@@ -176,11 +178,14 @@ class TestBuildConfig:
             default=[],
             command_line=("example.py",),
         )
+        # file_flags
+        get_int_from_config.assert_any_call("file_flags", config_file_data, default=config.default_file_flags)
         # file_filters
         get_str_list_from_config.assert_any_call("file_filters", config_file_data, default=config.default_file_filters)
-        get_str_list_from_config.assert_any_call("exclude", config_file_data, default=[])
-        get_str_list_from_config.return_value.__iadd__.assert_any_call(get_str_list_from_config.return_value)
-        get_str_list_from_config.return_value.__iadd__.return_value.__iadd__.assert_any_call(("notcov.py",))
+        get_str_list_from_config.return_value.__iadd__.assert_any_call(("notcov.py",))
+
+        # file_copy_flags
+        get_int_from_config.assert_any_call("file_copy_flags", config_file_data, default=config.default_file_copy_flags)
         # file_copy_filters
         get_str_list_from_config.assert_any_call(
             "file_copy_filters",
@@ -263,7 +268,9 @@ class TestBuildConfig:
             config_file=Path("pyproject.toml"),
             source_folders=[Path("src")],
             only_files=[],
+            file_flags=config.default_file_flags,
             file_filters=config.default_file_filters,
+            file_copy_flags=config.default_file_copy_flags,
             file_copy_filters=config.default_file_copy_filters,
             work_folder=Path(".poodle-temp"),
             max_workers=config.default_max_workers(),

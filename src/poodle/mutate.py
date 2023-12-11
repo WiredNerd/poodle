@@ -106,18 +106,25 @@ def get_target_files(work: PoodleWork) -> dict[Path, list[Path]]:
         work.config.only_files,
         work.config.source_folders,
     )
+
     if work.config.only_files:
         out: dict[Path, list[Path]] = {}
         for folder in work.config.source_folders:
             out[folder] = []
             for glob in work.config.only_files:
-                out[folder] += list(folder.rglob(glob))
+                out[folder] += files_list_for_folder(
+                    folder=folder,
+                    match_glob=glob,
+                    flags=work.config.file_flags,
+                    filter_globs=[],
+                )
         return out
     return {
         folder: files_list_for_folder(
-            "*.py",
-            work.config.file_filters,
-            folder,
+            folder=folder,
+            match_glob="*.py",
+            flags=work.config.file_flags,
+            filter_globs=work.config.file_filters,
         )
         for folder in work.config.source_folders
     }

@@ -56,13 +56,13 @@ Options:
 
 ### Command Line Options
 
-* SOURCES [Source Folders](#source_folders)
-* -c [Configuration File](#config_file)
+* SOURCES [source_folders](#source_folders)
+* -c [config_file](#config_file)
 * -q [Quiet Mode]()
 * -v [Verbose Mode]()
 * -w [Max Workers]()
 * --exclude []()
-* --only []()
+* --only [only_files](#only_files)
 
 
 ### Quiet Mode
@@ -191,7 +191,122 @@ source_folders = ["myapp", "myotherapp"]
 
 ### only_files
 
+Only run mutation on files that match specified [GLOB](https://facelessuser.github.io/wcmatch/glob/) patterns.
+
+When not specified, all python files that are in a [source_folder](#source_folders), and don't match a [file_filter](#file_filters) are mutated.
+
+**Default:** `None`
+
+::::{tab-set}
+
+:::{tab-item} Command Line
+```bash
+poodle --only cli.py --only model_*.py
+```
+:::
+
+:::{tab-item} poodle_config.py
+```python3
+only_files = ["cli.py", "model_*.py"]
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+only_files = ["cli.py", "model_*.py"]
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+only_files = ["cli.py", "model_*.py"]
+```
+:::
+
+::::
+
+### file_flags
+
+Poodle uses glob matching from the [wcmatch](https://facelessuser.github.io/wcmatch/glob/) package for matching and filtering files.
+
+This option is to set the flags used when searching source folders for files to mutate, and applying exclude filters.  These flags are used either for searching with [only_files](#only_files) or with [file_filters](#file_filters).
+
+**Default:** `wcmatch.glob.GLOBSTAR | wcmatch.glob.NODIR`
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+from wcmatch import glob
+file_flags = glob.GLOBSTAR | glob.NODIR | glob.DOTGLOB
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+file_flags = 16704
+```
+
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+file_flags = 16704
+```
+:::
+
+::::
+
+:::{tip}
+Recommend setting this value in poodle_config.py only.  It must resolve to an `int` value. 
+
+Setting this in toml has to be resolved int value of combining the flags.
+:::
+
+
 ### file_filters
+
+Apply these [regex](https://docs.python.org/3/library/re.html#regular-expression-syntax) filters to the list of files to be mutated.
+
+Files that match these regex filters will NOT be mutated.
+
+**Default:** `[r"^test_.*\.py", r"_test\.py$"]`
+
+::::{tab-set}
+
+:::{tab-item} Command Line
+```bash
+poodle --exclude sql_.*\.py --only text_.*\.py
+```
+:::
+
+:::{tab-item} poodle_config.py
+```python3
+only_files = ["cli.py", "model_*.py"]
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+only_files = ["cli.py", "model_*.py"]
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+only_files = ["cli.py", "model_*.py"]
+```
+:::
+
+::::
+
+### file_copy_flags
 
 ### file_copy_filters
 
