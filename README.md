@@ -1,8 +1,8 @@
 [![Homepage](https://img.shields.io/badge/Homepage-github-white)](https://github.com/WiredNerd/poodle)
-[![python>=3.9](https://img.shields.io/badge/python->=3.8-orange)](https://pypi.org/project/poodle-test)
-[![PyPI - Version](https://img.shields.io/pypi/v/poodle-test)](https://pypi.org/project/poodle-test)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/poodle-test)](https://pypi.org/project/poodle-test)
-[![PyPI - License](https://img.shields.io/pypi/l/poodle-test)](https://github.com/WiredNerd/poodle/blob/main/LICENSE)
+[![python>=3.9](https://img.shields.io/badge/python->=3.8-orange)](https://pypi.org/project/poodle)
+[![PyPI - Version](https://img.shields.io/pypi/v/poodle)](https://pypi.org/project/poodle)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/poodle)](https://pypi.org/project/poodle)
+[![PyPI - License](https://img.shields.io/pypi/l/poodle)](https://github.com/WiredNerd/poodle/blob/main/LICENSE)
 
 
 [![Code Coverage](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FWiredNerd%2Fpoodle%2Fmain%2Fcode-coverage.json&query=%24.totals.percent_covered_display&suffix=%25&label=Code%20Coverage&color=teal)](https://pytest-cov.readthedocs.io)
@@ -33,7 +33,7 @@ The goal of Poodle is to be highly efficient, configurable, and extendable.
 Installation:
 
 ```
-pip install poodle-test --upgrade
+pip install poodle --upgrade
 ```
 
 ```
