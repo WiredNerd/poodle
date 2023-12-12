@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "poodle-test"
+name = "poodle"
 description = "Mutation Testing Tool"
-version = "0.0.1.a6"
+version = "1.0.0"
 license = { file = "LICENSE" }
 keywords = [
     "test",

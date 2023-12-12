@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/poodle-test/
+      url: https://pypi.org/project/poodle/
     permissions:
       id-token: write
     steps:

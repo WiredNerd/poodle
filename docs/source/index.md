@@ -10,7 +10,7 @@ Poodle Mutation Tester                  "--'"--'
 
 "A breed so perfect, so elegant, and so intelligent, that people decided to breed them with, well, everything." - [Girl With The Dogs](https://www.youtube.com/@GirlWithTheDogs)
 
-[![PyPI - Version](https://img.shields.io/pypi/v/pytest-sort)](https://pypi.org/project/poodle-test)
+[![PyPI - Version](https://img.shields.io/pypi/v/pytest-sort)](https://pypi.org/project/poodle)
 [![Homepage](https://img.shields.io/badge/Homepage-github-white)](https://github.com/WiredNerd/poodle)
 
 Poodle is an tool for Mutation Testing your Python projects.
@@ -30,7 +30,7 @@ The goal of Poodle is to be highly efficient, configurable, and extendable.
 Installation:
 
 ```
-pip install poodle-test --upgrade
+pip install poodle --upgrade
 ```
 
 ```
