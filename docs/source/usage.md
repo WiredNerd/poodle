@@ -22,6 +22,9 @@ Mutation
 Trial
 : A run of the entire test suite.  Usually to validate if the Test Suite can find the Mutation.
 
+Passed
+: When a Test Suite or Test Case ends without an error.
+
 Failure
 : When a Test Suite or Test Case ends with an error or non-successful return code.
 
@@ -58,34 +61,46 @@ Options:
 
 * SOURCES [source_folders](#source_folders)
 * -c [config_file](#config_file)
-* -q [Quiet Mode]()
-* -v [Verbose Mode]()
-* -w [Max Workers]()
-* --exclude []()
+* -q [Quiet](#quiet-or-verbose)
+* -v [Verbose](#quiet-or-verbose)
+* -w [max_workers](#max_workers)
+* --exclude [file_filters](#file_filters)
 * --only [only_files](#only_files)
 
 
-### Quiet Mode
+### Quiet or Verbose
 
-This option suppresses normal output, and set's log level to ERROR
+The -q and -v flags control how quiet or verbose poodle will be.  These flags influence the values of [echo_enabled](#echo_enabled) and [log_level](#log_level).
 
-### Verbose Mode
+:::{list-table}
+:header-rows: 1
+:align: left
 
-This set's log level to INFO
-
-### max_workers
-
-By default, poodle sets the number of workers to be one less than the available CPUs from `os.sched_getaffinity` or `os.cpu_count`.  Use this option to manually set the number of workers.  With too few workers, available CPU is underutilized.  With too many workers, additional overhead of process switching slows execution.
-
-### exclude
-
-This option excludes files that match the specified regex from the mutation processes.
-
-Multiple allowed.
-
-### only
-
-This option restricts mutation to only the specified file
+* - Command Line
+  - echo_enabled
+  - log_level
+* - `poodle -qqq`
+  - `False`
+  - `logging.CRITICAL`
+* - `poodle -qq`
+  - `False`
+  - `logging.ERROR`
+* - `poodle -q`
+  - `False`
+  - `logging.WARN`
+* - `poodle` (default)
+  - `True`
+  - `logging.WARN`
+* - `poodle -v`
+  - `True`
+  - `logging.INFO`
+* - `poodle -vv`
+  - `True`
+  - `logging.DEBUG`
+* - `poodle -vvv`
+  - `True`
+  - `logging.NOTSET`
+:::
 
 ## Configuration Module
 
@@ -103,7 +118,7 @@ Poodle will search for available configuration files, and use the first availabl
 Unless otherwise stated, options are chosen in this priority order:
 1. Command Line options
 2. Module poodle_config.py
-3. Chosen [Configuration File](#config_file)
+3. Chosen Configuration File
 
 ### config_file
 
@@ -227,11 +242,49 @@ only_files = ["cli.py", "model_*.py"]
 
 ::::
 
-### file_flags
+### file_filters
+
+Files that match these filters will NOT be mutated.
 
 Poodle uses glob matching from the [wcmatch](https://facelessuser.github.io/wcmatch/glob/) package for matching and filtering files.
 
+**Default:** `["test_*.py", "*_test.py"]`
+
+::::{tab-set}
+
+:::{tab-item} Command Line
+```bash
+poodle --exclude sql_*.py --only text_*.py
+```
+:::
+
+:::{tab-item} poodle_config.py
+```python3
+file_filters = ["sql_*.py", "text_*.py"]
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+file_filters = ["sql_*.py", "text_*.py"]
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+file_filters = ["sql_*.py", "text_*.py"]
+```
+:::
+
+::::
+
+### file_flags
+
 This option is to set the flags used when searching source folders for files to mutate, and applying exclude filters.  These flags are used either for searching with [only_files](#only_files) or with [file_filters](#file_filters).
+
+Poodle uses glob matching from the [wcmatch](https://facelessuser.github.io/wcmatch/glob/) package for matching and filtering files.
 
 **Default:** `wcmatch.glob.GLOBSTAR | wcmatch.glob.NODIR`
 
@@ -267,40 +320,33 @@ Recommend setting this value in poodle_config.py only.  It must resolve to an `i
 Setting this in toml has to be resolved int value of combining the flags.
 :::
 
+### file_copy_filters
 
-### file_filters
+Files that match these filters will NOT be copied to the temporary location.
 
-Apply these [regex](https://docs.python.org/3/library/re.html#regular-expression-syntax) filters to the list of files to be mutated.
+Poodle uses glob matching from the [wcmatch](https://facelessuser.github.io/wcmatch/glob/) package for matching and filtering files.
 
-Files that match these regex filters will NOT be mutated.
-
-**Default:** `[r"^test_.*\.py", r"_test\.py$"]`
+**Default:** `["test_*.py", "*_test.py", "__pycache__/**"]`
 
 ::::{tab-set}
 
-:::{tab-item} Command Line
-```bash
-poodle --exclude sql_.*\.py --only text_.*\.py
-```
-:::
-
 :::{tab-item} poodle_config.py
 ```python3
-only_files = ["cli.py", "model_*.py"]
+file_copy_filters = ["log.txt", "*.mdb"]
 ```
 :::
 
 :::{tab-item} poodle.toml
 ```toml
 [poodle]
-only_files = ["cli.py", "model_*.py"]
+file_copy_filters = ["log.txt", "*.mdb"]
 ```
 :::
 
 :::{tab-item} pyproject.toml
 ```toml
 [tool.poodle]
-only_files = ["cli.py", "model_*.py"]
+file_copy_filters = ["log.txt", "*.mdb"]
 ```
 :::
 
@@ -308,17 +354,197 @@ only_files = ["cli.py", "model_*.py"]
 
 ### file_copy_flags
 
-### file_copy_filters
+This option is to set the flags used when searching source folders for files copy to the temporary location.  These flags are used for searching with [file_copy_filters](#file_copy_filters).
+
+Poodle uses glob matching from the [wcmatch](https://facelessuser.github.io/wcmatch/glob/) package for matching and filtering files.
+
+**Default:** `wcmatch.glob.GLOBSTAR | wcmatch.glob.NODIR`
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+from wcmatch import glob
+file_copy_flags = glob.GLOBSTAR | glob.NODIR | glob.DOTGLOB
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+file_copy_flags = 16704
+```
+
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+file_copy_flags = 16704
+```
+:::
+
+::::
+
+:::{tip}
+Recommend setting this value in poodle_config.py only.  It must resolve to an `int` value. 
+
+Setting this in toml has to be resolved int value of combining the flags.
+:::
 
 ### work_folder
 
+Folder where temporary files will be stored.  Folder is deleted before and after execution.
+
+**Default:** .poodle-temp
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+work_folder = "temp-files"
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+work_folder = "temp-files"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+work_folder = "temp-files"
+```
+:::
+
+::::
+
 ### max_workers
+
+By default, poodle sets the number of workers to be one less than the available CPUs from `os.sched_getaffinity` or `os.cpu_count`.  Use this option to manually set the number of workers.  With too few workers, available CPU is underutilized.  With too many workers, additional overhead of process switching slows execution.
+
+::::{tab-set}
+
+:::{tab-item} Command Line
+```bash
+poodle -w 4
+```
+:::
+
+:::{tab-item} poodle_config.py
+```python3
+max_workers = 4
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+max_workers = 4
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+max_workers = 4
+```
+:::
+
+::::
 
 ### log_format
 
+Logging Format for python's logging package.
+
+**Default:** `"%(levelname)s [%(process)d] %(name)s.%(funcName)s:%(lineno)d - %(message)s"`
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+log_format = "%(levelname)s - %(message)s"
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+log_format = "%(levelname)s - %(message)s"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+log_format = "%(levelname)s - %(message)s"
+```
+:::
+
+::::
+
 ### log_level
 
+Logging Level for python's logging package.
+
+**Default:** logging.WARN
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+log_level = logging.INFO
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+log_level = "INFO"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+log_level = "INFO"
+```
+:::
+
+::::
+
 ### echo_enabled
+
+This determines if Poodle's normal output should be enabled or not.
+
+**Default:** `True`
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+echo_enabled = False
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+echo_enabled = "False"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+echo_enabled = "False"
+```
+:::
+
+::::
 
 ### mutator_opts
 

@@ -24,9 +24,9 @@
 
 * - Tool
   - Description
-* - [Mutmut](https://mutmut.readthedocs.io) by [boxed](https://github.com/boxed)
+* - [Mutmut](https://mutmut.readthedocs.io)
   - Mutmut is a mutation testing system for Python, with a strong focus on ease of use. 
-* - [Mutatest](https://mutatest.readthedocs.io/) by [EvanKepner](https://github.com/EvanKepner)
+* - [Mutatest](https://mutatest.readthedocs.io/)
   - Python mutation testing
 :::
 
