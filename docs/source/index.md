@@ -10,7 +10,7 @@ Poodle Mutation Tester                  "--'"--'
 
 "A breed so perfect, so elegant, and so intelligent, that people decided to breed them with, well, everything." - [Girl With The Dogs](https://www.youtube.com/@GirlWithTheDogs)
 
-[![PyPI - Version](https://img.shields.io/pypi/v/pytest-sort)](https://pypi.org/project/poodle)
+[![PyPI - Version](https://img.shields.io/pypi/v/poodle)](https://pypi.org/project/poodle)
 [![Homepage](https://img.shields.io/badge/Homepage-github-white)](https://github.com/WiredNerd/poodle)
 
 Poodle is an tool for Mutation Testing your Python projects.
@@ -53,6 +53,7 @@ Options:
 :maxdepth: 2
 usage.md
 mutation.md
+credits.md
 ```
 
 ## Contribute
