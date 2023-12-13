@@ -495,6 +495,9 @@ Logging Level for python's logging package.
 ::::{tab-set}
 
 :::{tab-item} Command Line
+```bash
+python -v
+```
 See: [Quiet or Verbose](#quiet-or-verbose)
 :::
 
@@ -529,6 +532,9 @@ This determines if Poodle's normal output should be enabled or not.
 ::::{tab-set}
 
 :::{tab-item} Command Line
+```bash
+python -q
+```
 See: [Quiet or Verbose](#quiet-or-verbose)
 :::
 
@@ -556,18 +562,357 @@ echo_enabled = "False"
 
 ### add_mutators
 
+Additional mutators to be used when creating mutations.  This list can contain any of the following:
+* Reference to the Mutator Class type
+* Reference to the Mutator Function
+* String fully qualified name of the Mutator Class
+* String fully qualified name of the Mutator Function
+
+**Default:** `[]`
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+from poodle import Mutator
+
+class CustomMutator(Mutator):
+  ...
+
+def other_mutator(config, echo, parsed_ast, *_, *__,):
+  ...
+
+add_mutators = [
+    CustomMutator,
+    other_mutator,
+    "poodle-ext.mutators.SpecialObjectMutator",
+    "poodle-ext.mutators.my_object_mutator",
+]
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+add_mutators = [
+    "poodle-ext.mutators.SpecialObjectMutator",
+    "poodle-ext.mutators.my_object_mutator",
+]
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+add_mutators = [
+    "poodle-ext.mutators.SpecialObjectMutator",
+    "poodle-ext.mutators.my_object_mutator",
+]
+```
+:::
+
+::::
+
 ### skip_mutators
+
+Disables selected builtin mutators.  Specify the name of the mutator.  See [Poodle's Mutators](mutators.md)
+
+**Default:** `[]`
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+skip_mutators = ["FuncCall","DictArray"]
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+skip_mutators = ["FuncCall","DictArray"]
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+skip_mutators = ["FuncCall","DictArray"]
+```
+:::
+
+::::
 
 ### mutator_opts
 
+This dict contains options that are used by various mutators.  Options for builtin mutators are listed below, and detailed on the Mutator page.
+
+**Default:** `{}`
+
+operator_level min
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+mutator_opts = {"operator_level":"min"}
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle.mutator_opts]
+operator_level = "min"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle.mutator_opts]
+operator_level = "min"
+```
+:::
+
+::::
+
+#### Builtin mutator_opts
+
+* compare_filters: [ComparisonMutator](mutators.md#comparisonmutator)
+* operator_level: [OperationMutator](mutators.md#operationmutator)
+
 ### runner
+
+Indicates which trial runner to use.  Can be any of the following:
+* Name of a builtin Runner Function
+* Reference to the Runner Function
+* String fully qualified name of the Runner Function
+
+**Default:** "command_line"
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+def my_runner(config, echo, run_folder, mutant, timeout, *_, *__,):
+  ...
+
+runner = my_runner
+```
+:::
+
+:::{tab-item} poodle_config.py
+```python3
+runner = "poodle-ext.runners.cool_runner"
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+runner = "poodle-ext.runners.cool_runner"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+runner = "poodle-ext.runners.cool_runner"
+```
+:::
+
+::::
 
 ### runner_opts
 
+This dict contains options that are used by various runners.  Options for builtin runners are listed below, and detailed on the Runner page.
+
+**Default:** `{"command_line": "pytest -x --assert=plain -o pythonpath="}`
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+runner_opts = {
+  "command_line":"pytest -x --assert=plain -o pythonpath= --sort-mode=fastest",
+  "command_line_env":{"RUN_MODE":"MUTATION"},
+}
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle.runner_opts]
+command_line = "pytest -x --assert=plain -o pythonpath= --sort-mode=fastest"
+
+[poodle.runner_opts.command_line_env]
+RUN_MODE = "MUTATION"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle.runner_opts]
+command_line = "pytest -x --assert=plain -o pythonpath= --sort-mode=fastest"
+
+[tool.poodle.runner_opts.command_line_env]
+RUN_MODE = "MUTATION"
+```
+:::
+
+::::
+
+#### Builtin mutator_opts
+
+* command_line: [Command Line Runner](runners.md#commandline)
+* command_line_env: [Command Line Runner](runners.md#commandline)
+
 ### min_timeout
+
+**Default:** 10 (seconds)
+
+Shortest timeout value, in seconds, that can be used in the runner.
+
+Timeout value is calculated as longest run from clean run tests, multiplied by timeout_multiplier.
+
+If this calculated value is smaller than min_timeout, min_timeout is used instead.
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+min_timeout = 15
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+min_timeout = 15
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+min_timeout = 15
+```
+:::
+
+::::
 
 ### timeout_multiplier
 
+Used to calculate timeout value to use in runner.  Timeout value is calculated as longest run from clean run tests, multiplied by timeout_multiplier.
+
+**Default:** 10
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+timeout_multiplier = 2
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+timeout_multiplier = 2
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+timeout_multiplier = 2
+```
+:::
+
+::::
+
 ### reporters
 
+List of all mutators to be used after all trials are completed.  This list can contain any of the following:
+* Name of a [Builtin Reporter](reporters.md)
+* Reference to the Mutator Class type
+* Reference to the Mutator Function
+* String fully qualified name of the Mutator Class
+* String fully qualified name of the Mutator Function
+
+**Default:** `["summary", "not_found"]`
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+def my_reporter(config, echo, testing_results, *_, **__):
+   ...
+
+reporters = [
+    "summary",
+    my_reporter,
+    "poodle-ext.reporters.UploadToResultsServer",
+    "poodle-ext.reporters.text_errors_file",
+]
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+add_mutators = [
+    "summary",
+    "poodle-ext.reporters.UploadToResultsServer",
+    "poodle-ext.reporters.text_errors_file",
+]
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+add_mutators = [
+    "summary",
+    "poodle-ext.reporters.UploadToResultsServer",
+    "poodle-ext.reporters.text_errors_file",
+]
+```
+:::
+
+::::
+
 ### reporter_opts
+
+This dict contains options that are used by various reporters.  Options for builtin reporters are listed below, and detailed on the Reporter page.
+
+**Default:** `{}`
+
+operator_level min
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+reporter_opts = {"not_found_file":"mutants-not-found.txt"}
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle.reporter_opts]
+not_found_file = "mutants-not-found.txt"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle.reporter_opts]
+not_found_file = "mutants-not-found.txt"
+```
+:::
+
+::::
+
+#### Builtin reporter_opts
+
+* not_found_file: [Not Found Reporter](reporters.md#not-found)

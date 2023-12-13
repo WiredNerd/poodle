@@ -51,8 +51,11 @@ Options:
 ## Table of Contents
 ```{toctree}
 :maxdepth: 2
-usage.md
 mutation.md
+usage.md
+mutators.md
+runners.md
+reporters.md
 credits.md
 ```
 
