@@ -51,6 +51,7 @@ Options:
 ## Table of Contents
 ```{toctree}
 :maxdepth: 2
+
 mutation.md
 usage.md
 mutators.md

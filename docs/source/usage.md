@@ -763,8 +763,8 @@ RUN_MODE = "MUTATION"
 
 #### Builtin mutator_opts
 
-* command_line: [Command Line Runner](runners.md#commandline)
-* command_line_env: [Command Line Runner](runners.md#commandline)
+* command_line: [Command Line Runner](runners.md#command_line)
+* command_line_env: [Command Line Runner](runners.md#command_line_env)
 
 ### min_timeout
 
