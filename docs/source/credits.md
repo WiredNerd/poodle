@@ -18,17 +18,7 @@
 
 ## Inspiration
 
-:::{list-table}
-:header-rows: 1
-:align: left
-
-* - Tool
-  - Description
-* - [Mutmut](https://mutmut.readthedocs.io)
-  - Mutmut is a mutation testing system for Python, with a strong focus on ease of use. 
-* - [Mutatest](https://mutatest.readthedocs.io/)
-  - Python mutation testing
-:::
+When I was looking for a Python Mutation Testing tool, the top candidates I found were [Mutmut](https://mutmut.readthedocs.io) and [Mutatest](https://mutatest.readthedocs.io/).  Both are good tools with pros and cons of each.  I decided to create my own tool because I wanted a more configurable tool, that is able to run multiple trials in parallel.  I considered submitting updates to one or the other, but found that what I wanted would be nearly a rewrite.  By starting over new, I was able to utilize new tools, some that weren't part of python's base till version 3.9.
 
 ## Tools
 

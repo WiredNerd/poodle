@@ -494,6 +494,10 @@ Logging Level for python's logging package.
 
 ::::{tab-set}
 
+:::{tab-item} Command Line
+See: [Quiet or Verbose](#quiet-or-verbose)
+:::
+
 :::{tab-item} poodle_config.py
 ```python3
 log_level = logging.INFO
@@ -524,6 +528,10 @@ This determines if Poodle's normal output should be enabled or not.
 
 ::::{tab-set}
 
+:::{tab-item} Command Line
+See: [Quiet or Verbose](#quiet-or-verbose)
+:::
+
 :::{tab-item} poodle_config.py
 ```python3
 echo_enabled = False
@@ -546,19 +554,19 @@ echo_enabled = "False"
 
 ::::
 
-### mutator_opts
+### add_mutators
 
 ### skip_mutators
 
-### add_mutators
-
-### min_timeout
-
-### timeout_multiplier
+### mutator_opts
 
 ### runner
 
 ### runner_opts
+
+### min_timeout
+
+### timeout_multiplier
 
 ### reporters
 
