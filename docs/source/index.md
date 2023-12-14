@@ -50,9 +50,8 @@ Options:
 
 ## Table of Contents
 ```{toctree}
-:maxdepth: 2
+:maxdepth: 1
 
-mutation.md
 usage.md
 mutators.md
 runners.md
