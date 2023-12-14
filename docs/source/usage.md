@@ -649,8 +649,6 @@ This dict contains options that are used by various mutators.  Options for built
 
 **Default:** `{}`
 
-operator_level min
-
 ::::{tab-set}
 
 :::{tab-item} poodle_config.py
@@ -677,8 +675,8 @@ operator_level = "min"
 
 #### Builtin mutator_opts
 
-* compare_filters: [ComparisonMutator](mutators.md#comparisonmutator)
-* operator_level: [OperationMutator](mutators.md#operationmutator)
+* compare_filters: [ComparisonMutator](mutators.md#comparison-mutator)
+* operator_level: [OperationMutator](mutators.md#operator_level)
 
 ### runner
 
@@ -886,8 +884,6 @@ add_mutators = [
 This dict contains options that are used by various reporters.  Options for builtin reporters are listed below, and detailed on the Reporter page.
 
 **Default:** `{}`
-
-operator_level min
 
 ::::{tab-set}
 
