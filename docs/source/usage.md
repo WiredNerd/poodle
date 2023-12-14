@@ -761,7 +761,7 @@ RUN_MODE = "MUTATION"
 
 ::::
 
-#### Builtin mutator_opts
+#### Builtin runner_opts
 
 * command_line: [Command Line Runner](runners.md#command_line)
 * command_line_env: [Command Line Runner](runners.md#command_line_env)
@@ -915,4 +915,4 @@ not_found_file = "mutants-not-found.txt"
 
 #### Builtin reporter_opts
 
-* not_found_file: [Not Found Reporter](reporters.md#not-found)
+* not_found_file: [Not Found Reporter](reporters.md#not_found_file)

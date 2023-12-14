@@ -8,6 +8,10 @@
  (_/'~~      ''''(;        |b      |b              \\   \\  /___\
  ```
 
+## Builtin Runner Names
+
+* "command_line": [Command Line Runner](#command-line-runner)
+
 ## Command Line Runner
 
 The command line runner runs the test suite by running the provided command in `subprocess.run`.
