@@ -10,7 +10,7 @@
    \_\_   \_\_   ARF!     ARF!       <_|      <_|
 ```
 
-## Builtin Runner Names
+## Builtin Reporter Names
 
 * "summary": [Summary Reporter](#summary-reporter)
 * "not_found": [Not Found Reporter](#not-found-reporter)
