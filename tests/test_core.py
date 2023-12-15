@@ -58,7 +58,7 @@ class TestMain:
 
         clean_run_each_source_folder.return_value = {"folder": MutantTrial(mutant=None, result=None, duration=1.0)}  # type: ignore [arg-type]
 
-        core.main(config)
+        core.main_process(config)
 
         poodle_work_class.assert_called_with(config)
         work = poodle_work_class.return_value
@@ -139,7 +139,7 @@ class TestMain:
 
         clean_run_each_source_folder.return_value = {"folder": MutantTrial(mutant=None, result=None, duration=1.0)}  # type: ignore [arg-type]
 
-        core.main(config)
+        core.main_process(config)
 
         logger_mock.info.assert_has_calls(
             [
@@ -180,7 +180,7 @@ class TestMain:
     ):
         poodle_work_class.side_effect = [PoodleInputError("Input Error", "Bad Input")]
 
-        core.main(PoodleConfigStub())
+        core.main_process(PoodleConfigStub())
 
         core_click.echo.assert_any_call("Input Error")
         core_click.echo.assert_any_call("Bad Input")
@@ -213,37 +213,8 @@ class TestMain:
     ):
         poodle_work_class.side_effect = [PoodleTrialRunError("Trial Error", "Execution Failed")]
 
-        core.main(PoodleConfigStub())
+        core.main_process(PoodleConfigStub())
 
         core_click.echo.assert_any_call("Trial Error")
         core_click.echo.assert_any_call("Execution Failed")
 
-
-class TestTimeout:
-    def test_calc_timeout(self):
-        config = PoodleConfigStub(min_timeout=10, timeout_multiplier=10)
-        clean_run_results = {
-            "folder": MutantTrial(mutant=None, result=None, duration=2.01),
-        }
-        assert round(core.calc_timeout(config, clean_run_results), 1) == 20.1
-
-    def test_calc_timeout_mult(self):
-        config = PoodleConfigStub(min_timeout=10, timeout_multiplier=5)
-        clean_run_results = {
-            "folder": MutantTrial(mutant=None, result=None, duration=2.01),
-        }
-        assert round(core.calc_timeout(config, clean_run_results), 2) == round(10.05, 2)
-
-    def test_calc_timeout_min(self):
-        config = PoodleConfigStub(min_timeout=10, timeout_multiplier=10)
-        clean_run_results = {
-            "folder": MutantTrial(mutant=None, result=None, duration=0.1),
-        }
-        assert round(core.calc_timeout(config, clean_run_results), 1) == 10.0
-
-    def test_calc_timeout_min_20(self):
-        config = PoodleConfigStub(min_timeout=20, timeout_multiplier=10)
-        clean_run_results = {
-            "folder": MutantTrial(mutant=None, result=None, duration=0.1),
-        }
-        assert round(core.calc_timeout(config, clean_run_results), 1) == 20.0

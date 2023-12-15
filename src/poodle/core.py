@@ -4,24 +4,20 @@ from __future__ import annotations
 
 import logging
 import shutil
-from typing import TYPE_CHECKING
 
 import click
 
 from . import PoodleInputError, PoodleTrialRunError
-from .data_types import MutantTrial, PoodleConfig, PoodleWork
+from .data_types import PoodleConfig, PoodleWork
 from .mutate import create_mutants_for_all_mutators, initialize_mutators
 from .report import generate_reporters
 from .run import clean_run_each_source_folder, get_runner, run_mutant_trails
-from .util import create_temp_zips, pprint_str
-
-if TYPE_CHECKING:
-    from pathlib import Path
+from .util import calc_timeout, create_temp_zips, pprint_str
 
 logger = logging.getLogger(__name__)
 
 
-def main(config: PoodleConfig) -> None:
+def main_process(config: PoodleConfig) -> None:
     """Poodle core run process."""
     try:
         work = PoodleWork(config)  # sets logging defaults
@@ -55,9 +51,3 @@ def main(config: PoodleConfig) -> None:
     except PoodleTrialRunError as err:
         for arg in err.args:
             click.echo(arg)
-
-
-def calc_timeout(config: PoodleConfig, clean_run_results: dict[Path, MutantTrial]) -> float:
-    """Determine timeout value to use in runner."""
-    max_clean_run = max([trial.duration for trial in clean_run_results.values()])
-    return max(float(max_clean_run) * config.timeout_multiplier, config.min_timeout)
