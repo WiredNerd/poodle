@@ -296,6 +296,46 @@ class TestFilter:
             9: {"example1", "example2", "all"},
         }
 
+    def test_parse_filters_start_end(self):
+        file_lines = [
+            "1",
+            "2 # nomut: start",
+            "3",
+            "4 # nomut: end",
+            "5",
+            "6",
+            "7",
+            "8 # nomut: start",
+            "9 # nomut: Example1, Example2",
+        ]
+        assert mutate.parse_filters(file_lines) == {
+            2: {"all"},
+            3: {"all"},
+            4: {"all"},
+            8: {"all"},
+            9: {"all"},
+        }
+
+    def test_parse_filters_on_off(self):
+        file_lines = [
+            "1",
+            "2 # nomut: on",
+            "3",
+            "4 # nomut: off",
+            "5",
+            "6",
+            "7",
+            "8 # nomut: on",
+            "9 # nomut: Example1, Example2",
+        ]
+        assert mutate.parse_filters(file_lines) == {
+            2: {"all"},
+            3: {"all"},
+            4: {"all"},
+            8: {"all"},
+            9: {"all"},
+        }
+
     def test_add_filter(self):
         line_filters = {}
         mutate.add_line_filter(line_filters, 3, "all")
