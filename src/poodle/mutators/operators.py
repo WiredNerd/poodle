@@ -53,9 +53,9 @@ class OperationMutator(ast.NodeVisitor, Mutator):
             ast.Pow: [ast.Mult, ast.Div],
             ast.LShift: [ast.RShift],
             ast.RShift: [ast.LShift],
-            ast.BitOr: [ast.BitAnd, ast.BitXor],
+            ast.BitOr: [ast.BitAnd],
             ast.BitXor: [ast.BitOr, ast.BitAnd],
-            ast.BitAnd: [ast.BitXor, ast.BitOr],
+            ast.BitAnd: [ast.BitOr],
         },
         "max": {
             ast.Add: [ast.Sub, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow],
