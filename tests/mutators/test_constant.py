@@ -22,6 +22,8 @@ class TestNumberMutator:
             ("3j", ["4j", "2j"]),
             ("0.0", ["1.0"]),
             ("1.2", ["2.4", "0.6"]),
+            ("True", []),
+            ("False", []),
         ],
     )
     def test_create_mutations(self, source, mutants, mock_echo):

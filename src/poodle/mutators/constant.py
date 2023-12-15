@@ -26,6 +26,8 @@ class NumberMutator(ast.NodeVisitor, Mutator):
 
     def visit_Constant(self, node: ast.Constant) -> None:
         """Increase and Decrease values."""
+        if isinstance(node.value, bool):
+            return
         if isinstance(node.value, int):
             self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
