@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "poodle"
 description = "Mutation Testing Tool"
-version = "1.0.0"
+version = "1.1.0"
 license = { file = "LICENSE" }
 keywords = [
     "test",
@@ -43,7 +43,7 @@ poodle = "poodle.cli:main"
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-addopts = "-vv --cov-reset --cov-report=html:reports/coverage --cov-report=term --cov-report=json:code-coverage.json"
+addopts = "-vv --cov-reset --cov-report=html:cov-html --cov-report=term --cov-report=json:code-coverage.json"
 sort_mode = "random"
 sort_bucket = "session"
 filterwarnings = [
@@ -114,6 +114,7 @@ exclude = [
     "dist",
     "venv",
 ]
+task-tags = ["nomut","TODO", "FIXME", "XXX"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["poodle"]

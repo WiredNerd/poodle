@@ -13,7 +13,7 @@ from wcmatch.pathlib import Path
 if TYPE_CHECKING:
     import pathlib
 
-    from .data_types import PoodleWork
+    from .data_types import MutantTrial, PoodleConfig, PoodleWork
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ def dynamic_import(object_to_import: str) -> Any:  # noqa: ANN401
     logger.debug("Import object: %s", object_to_import)
     parts = object_to_import.split(".")
     module_str = ".".join(parts[:-1])
-    obj_def = parts[-1:][0]
+    obj_def = parts[-1]
     module = __import__(module_str, fromlist=[obj_def])
     return getattr(module, obj_def)
 
@@ -78,3 +78,9 @@ def pprint_str(obj: Any) -> str:  # noqa: ANN401
     out = StringIO()
     pprint(obj, stream=out, width=150)  # noqa: T203
     return out.getvalue()
+
+
+def calc_timeout(config: PoodleConfig, clean_run_results: dict[pathlib.Path, MutantTrial]) -> float:
+    """Determine timeout value to use in runner."""
+    max_clean_run = max([trial.duration for trial in clean_run_results.values()])
+    return max(float(max_clean_run) * config.timeout_multiplier, config.min_timeout)

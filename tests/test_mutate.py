@@ -143,7 +143,7 @@ class TestCreateMutants:
         ]
 
     @mock.patch("poodle.mutate.files_list_for_folder")
-    def test_get_target_files_only(self, files_list_for_folder):
+    def test_get_target_files_only(self, files_list_for_folder, logger_mock):
         files_list_for_folder.side_effect = [
             ["example1.py"],
             ["example2.py"],
@@ -165,6 +165,13 @@ class TestCreateMutants:
             folder1: ["example1.py", "example2.py"],
             folder2: [],
         }
+
+        logger_mock.debug.assert_called_with(
+            "get_target_files source_folders=%s only_files=%s file_filters=%s",
+            work.config.source_folders,
+            work.config.only_files,
+            work.config.source_folders,
+        )
 
         files_list_for_folder.assert_has_calls(
             [
@@ -235,6 +242,8 @@ class TestCreateMutants:
         out_mutants = mutate.create_mutants_for_file(work, folder, file)
 
         logger_mock.debug.assert_called_with("Create Mutants for file %s", file)
+        file.read_bytes.assert_called_once_with()
+        file.read_text.assert_called_once_with("utf-8")
         ast.parse.assert_called_with(file.read_bytes.return_value, file)
         mutator_1.assert_called_with(config=config, parsed_ast=deepcopy.parsed_ast, file_lines=deepcopy.file_lines)
         mutator_2.create_mutations.assert_called_with(parsed_ast=deepcopy.parsed_ast, file_lines=deepcopy.file_lines)
@@ -287,6 +296,46 @@ class TestFilter:
             9: {"example1", "example2", "all"},
         }
 
+    def test_parse_filters_start_end(self):
+        file_lines = [
+            "1",
+            "2 # nomut: start",
+            "3",
+            "4 # nomut: end",
+            "5",
+            "6",
+            "7",
+            "8 # nomut: start",
+            "9 # nomut: Example1, Example2",
+        ]
+        assert mutate.parse_filters(file_lines) == {
+            2: {"all"},
+            3: {"all"},
+            4: {"all"},
+            8: {"all"},
+            9: {"all"},
+        }
+
+    def test_parse_filters_on_off(self):
+        file_lines = [
+            "1",
+            "2 # nomut: on",
+            "3",
+            "4 # nomut: off",
+            "5",
+            "6",
+            "7",
+            "8 # nomut: on",
+            "9 # nomut: Example1, Example2",
+        ]
+        assert mutate.parse_filters(file_lines) == {
+            2: {"all"},
+            3: {"all"},
+            4: {"all"},
+            8: {"all"},
+            9: {"all"},
+        }
+
     def test_add_filter(self):
         line_filters = {}
         mutate.add_line_filter(line_filters, 3, "all")
@@ -329,3 +378,49 @@ class TestFilter:
         line_filters = {3: mutators}
 
         assert mutate.is_filtered(line_filters, file_mutant) is expected
+
+
+class TestMutateLines:
+    def test_mutate_lines(self):
+        mutant = Mutant(
+            mutator_name="Example",
+            lineno=2,
+            col_offset=2,
+            end_lineno=2,
+            end_col_offset=13,
+            text="Goodbye",
+            source_folder=mock.MagicMock(),
+            source_file=mock.MagicMock(),
+        )
+        file_lines = [
+            "1 The quick brown fox jumps over the lazy dog",
+            "2 Hello World!",
+            "3 Poodles are the best",
+        ]
+        assert mutate.mutate_lines(mutant, file_lines) == [
+            "1 The quick brown fox jumps over the lazy dog",
+            "2 Goodbye!",
+            "3 Poodles are the best",
+        ]
+
+    def test_mutate_lines_multi(self):
+        mutant = Mutant(
+            mutator_name="Example",
+            lineno=2,
+            col_offset=2,
+            end_lineno=4,
+            end_col_offset=3,
+            text="Goodbye, T",
+            source_folder=mock.MagicMock(),
+            source_file=mock.MagicMock(),
+        )
+        file_lines = [
+            "1 The quick brown fox jumps over the lazy dog",
+            "2 Hello World!",
+            "3 Poodles are the best",
+            "4 Two are better than one",
+        ]
+        assert mutate.mutate_lines(mutant, file_lines) == [
+            "1 The quick brown fox jumps over the lazy dog",
+            "2 Goodbye, Two are better than one",
+        ]

@@ -121,19 +121,21 @@ def get_cmd_line_log_level(cmd_quiet: int, cmd_verbose: int) -> int | None:
     if cmd_quiet == 1:
         return logging.WARN
 
-    if cmd_verbose == 1:
-        return logging.INFO
-    if cmd_verbose == 2:
-        return logging.DEBUG
     if cmd_verbose >= 3:
         return logging.NOTSET
+    if cmd_verbose == 2:
+        return logging.DEBUG
+    if cmd_verbose == 1:
+        return logging.INFO
 
     return None
 
 
 def get_cmd_line_echo_enabled(cmd_quiet: int) -> bool | None:
     """Map verbosity input to enable/disable echo statements."""
-    return cmd_quiet < 1
+    if cmd_quiet == 0:
+        return None
+    return False
 
 
 def get_config_file_path(config_file: Path | None) -> Path | None:

@@ -166,19 +166,35 @@ def parse_filters(file_lines: list[str]) -> dict[int, set[str]]:
 
     \# nomut
 
+    \# nomut: start
+
+    \# nomut: end
+
     Block only specific mutations:
 
     \# nomut: mutator,mutator
     """
     line_filters: dict[int, set[str]] = {}
 
+    no_mut_on = False
+
     for lineno, line in enumerate(file_lines, start=1):
         if re.search(r"#\s*pragma:\s*no mutate[\s#$]*", line):
             add_line_filter(line_filters, lineno, "all")
         no_mut_filter: list[str] = re.findall(r"#\s*nomut:?\s*([A-Za-z0-9,\s]*)[#$]*", line)
-        for mutators in no_mut_filter:
-            for mutator in mutators.split(","):
-                add_line_filter(line_filters, lineno, mutator.strip())
+
+        if no_mut_filter and no_mut_filter[0].strip().lower() in ("start", "on"):
+            no_mut_on = True
+
+        if no_mut_on:
+            add_line_filter(line_filters, lineno, "all")
+        else:
+            for mutators in no_mut_filter:
+                for mutator in mutators.split(","):
+                    add_line_filter(line_filters, lineno, mutator.strip())
+
+        if no_mut_filter and no_mut_filter[0].strip().lower() in ("end", "off"):
+            no_mut_on = False
 
     return line_filters
 

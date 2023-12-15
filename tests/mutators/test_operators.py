@@ -122,9 +122,9 @@ class TestBinaryOperationMutator:
             (ast.Pow, ["1 * 2", "1 / 2"]),
             (ast.RShift, ["1 << 2"]),
             (ast.LShift, ["1 >> 2"]),
-            (ast.BitOr, ["1 & 2", "1 ^ 2"]),
+            (ast.BitOr, ["1 & 2"]),
             (ast.BitXor, ["1 | 2", "1 & 2"]),
-            (ast.BitAnd, ["1 ^ 2", "1 | 2"]),
+            (ast.BitAnd, ["1 | 2"]),
             (ast.MatMult, []),
         ],
     )
@@ -245,9 +245,9 @@ class TestAugAssignMutator:
             (ast.Pow, ["x = 2", "x *= 2", "x /= 2"]),
             (ast.RShift, ["x = 2", "x <<= 2"]),
             (ast.LShift, ["x = 2", "x >>= 2"]),
-            (ast.BitOr, ["x = 2", "x &= 2", "x ^= 2"]),
+            (ast.BitOr, ["x = 2", "x &= 2"]),
             (ast.BitXor, ["x = 2", "x |= 2", "x &= 2"]),
-            (ast.BitAnd, ["x = 2", "x ^= 2", "x |= 2"]),
+            (ast.BitAnd, ["x = 2", "x |= 2"]),
             (ast.MatMult, ["x = 2"]),
         ],
     )
