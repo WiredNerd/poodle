@@ -39,10 +39,10 @@ def test_defaults():
     assert config.default_log_level == logging.WARN
 
     assert config.default_file_flags == glob.GLOBSTAR | glob.NODIR
-    assert config.default_file_filters == ["test_*.py", "*_test.py"]
+    assert config.default_file_filters == ["test_*.py", "*_test.py", "poodle_config.py", "setup.py"]
 
     assert config.default_file_copy_flags == glob.GLOBSTAR | glob.NODIR
-    assert config.default_file_copy_filters == ["test_*.py", "*_test.py", "__pycache__/**"]
+    assert config.default_file_copy_filters == ["__pycache__/**"]
     assert config.default_work_folder == Path(".poodle-temp")
 
     assert config.default_mutator_opts == {}
@@ -50,7 +50,7 @@ def test_defaults():
     assert config.default_min_timeout == 10
     assert config.default_timeout_multiplier == 10
     assert config.default_runner == "command_line"
-    assert config.default_runner_opts == {"command_line": "pytest -x --assert=plain -o pythonpath="}
+    assert config.default_runner_opts == {}
 
     assert config.default_reporters == ["summary", "not_found"]
     assert config.default_reporter_opts == {}
@@ -284,7 +284,7 @@ class TestBuildConfig:
             min_timeout=10,
             timeout_multiplier=10,
             runner="command_line",
-            runner_opts={"command_line": "pytest -x --assert=plain -o pythonpath="},
+            runner_opts={},
             reporters=["summary", "not_found"],
             reporter_opts={},
         )
@@ -667,6 +667,15 @@ class TestGetPathListFromConfig:
             default=[Path("default_value")],
         ) == [Path("return_value")]
 
+    def test_string_empty(self, get_option_from_config):
+        get_option_from_config.return_value = ("", "Source Name")
+        assert config.get_path_list_from_config(
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=[Path("default_value")],
+        ) == [Path()]
+
     def test_path_list(self, get_option_from_config):
         get_option_from_config.return_value = ((Path("return_value"), Path("other_value")), "Source Name")
         assert config.get_path_list_from_config(
@@ -684,6 +693,18 @@ class TestGetPathListFromConfig:
             command_line=[],
             default=[Path("default_value")],
         ) == [Path("return_value"), Path("other_value")]
+
+    def test_empty_list(self, get_option_from_config):
+        get_option_from_config.return_value = ([], "Source Name")
+        assert (
+            config.get_path_list_from_config(
+                option_name="test_option",
+                config_data={},
+                command_line=[],
+                default=[Path("default_value")],
+            )
+            == []
+        )
 
     def test_not_iterable(self, get_option_from_config):
         get_option_from_config.return_value = (123, "Source Name")
@@ -1012,6 +1033,15 @@ class TestGetStrListFromConfig:
             default=["default_value"],
         ) == ["return_value"]
 
+    def test_string_empty(self, get_option_from_config):
+        get_option_from_config.return_value = ("", "Source Name")
+        assert config.get_str_list_from_config(
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=["default_value"],
+        ) == [""]
+
     def test_string_list(self, get_option_from_config):
         get_option_from_config.return_value = (("return_value", "other_value"), "Source Name")
         assert config.get_str_list_from_config(
@@ -1029,6 +1059,18 @@ class TestGetStrListFromConfig:
             command_line=[],
             default=["default_value"],
         ) == ["output.txt"]
+
+    def test_string_list_empty(self, get_option_from_config):
+        get_option_from_config.return_value = ([], "Source Name")
+        assert (
+            config.get_str_list_from_config(
+                option_name="test_option",
+                config_data={},
+                command_line=[],
+                default=["default_value"],
+            )
+            == []
+        )
 
     def test_type_error(self, get_option_from_config):
         get_option_from_config.return_value = (123, "Source Name")

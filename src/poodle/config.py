@@ -19,9 +19,9 @@ default_log_format = "%(levelname)s [%(process)d] %(name)s.%(funcName)s:%(lineno
 default_log_level = logging.WARN
 
 default_file_flags = glob.GLOBSTAR | glob.NODIR
-default_file_filters = ["test_*.py", "*_test.py"]
+default_file_filters = ["test_*.py", "*_test.py", "poodle_config.py", "setup.py"]
 default_file_copy_flags = glob.GLOBSTAR | glob.NODIR
-default_file_copy_filters = ["test_*.py", "*_test.py", "__pycache__/**"]
+default_file_copy_filters = ["__pycache__/**"]
 default_work_folder = Path(".poodle-temp")
 
 default_mutator_opts: dict[str, Any] = {}
@@ -29,7 +29,7 @@ default_mutator_opts: dict[str, Any] = {}
 default_min_timeout = 10
 default_timeout_multiplier = 10
 default_runner = "command_line"
-default_runner_opts: dict[str, Any] = {"command_line": "pytest -x --assert=plain -o pythonpath="}
+default_runner_opts: dict[str, Any] = {}
 
 default_reporters = ["summary", "not_found"]
 default_reporter_opts: dict[str, Any] = {}
@@ -280,7 +280,7 @@ def get_path_list_from_config(
         command_line=command_line_fix,
     )
 
-    if not values:
+    if values is None:
         return default_fix
 
     try:
@@ -406,7 +406,7 @@ def get_str_list_from_config(
         command_line=command_line_fix,
     )
 
-    if not values:
+    if values is None:
         return default_fix
 
     if isinstance(values, str):

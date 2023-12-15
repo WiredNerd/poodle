@@ -165,7 +165,7 @@ def run_mutant_trial(  # noqa: PLR0913
         file_lines = mutate_lines(mutant, file_lines)
         target_file.write_text(data="".join(file_lines), encoding="utf-8")
 
-    logger.debug("START: run_id=%s", run_id)
+    logger.debug("START: run_id=%s run_folder=%s", run_id, run_folder)
 
     result: MutantTrialResult = runner(
         config=config,
