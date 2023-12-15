@@ -152,7 +152,7 @@ Poodle accepts several types of configuration files.
 
 First is you can create `poodle_config.py` module. This is the most flexible option especially if you are adding custom code.
 
-Second is a key/value config file like `pyproject.toml` or `poodle.toml`.  All options are listed in the [Options](options.md#configuration_file) page.
+Second is a key/value config file like `pyproject.toml` or `poodle.toml`.  All options are listed in the [Options](options.md#configuration-file) page.
 
 if you need to specify folders for your project, recommend putting that setting in your chosen config file with option [source_folders](options.md#source_folders)
 
