@@ -80,7 +80,7 @@ def pprint_str(obj: Any) -> str:  # noqa: ANN401
     return out.getvalue()
 
 
-def calc_timeout(config: PoodleConfig, clean_run_results: dict[Path, MutantTrial]) -> float:
+def calc_timeout(config: PoodleConfig, clean_run_results: dict[pathlib.Path, MutantTrial]) -> float:
     """Determine timeout value to use in runner."""
     max_clean_run = max([trial.duration for trial in clean_run_results.values()])
     return max(float(max_clean_run) * config.timeout_multiplier, config.min_timeout)

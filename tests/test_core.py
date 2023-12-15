@@ -217,4 +217,3 @@ class TestMain:
 
         core_click.echo.assert_any_call("Trial Error")
         core_click.echo.assert_any_call("Execution Failed")
-

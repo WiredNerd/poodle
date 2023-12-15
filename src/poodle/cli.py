@@ -54,5 +54,5 @@ def main(
 # Exit code 4: pytest command line usage error
 # Exit code 5: No tests were collected
 
-if __name__ == "__main__": # nomut
+if __name__ == "__main__":  # nomut
     main()  # nomut
