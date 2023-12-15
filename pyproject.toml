@@ -114,6 +114,7 @@ exclude = [
     "dist",
     "venv",
 ]
+task-tags = ["nomut","TODO", "FIXME", "XXX"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["poodle"]
