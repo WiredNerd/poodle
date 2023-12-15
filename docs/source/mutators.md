@@ -118,8 +118,8 @@ There are two mutators that share the same operator mutation settings.  Both the
 * - Bitwise OR 
   - `|`
   - `&`
-  - `&`, `^`
-  - `<<`, `>>`, `|`, `^`, `&`
+  - `&`
+  - `<<`, `>>`, `^`, `&`
 * - Bitwise XOR 
   - `^`
   - `|`
@@ -128,7 +128,7 @@ There are two mutators that share the same operator mutation settings.  Both the
 * - Bitwise AND 
   - `&`
   - `^`
-  - `^`, `|`
+  - `|`
   - `<<`, `>>`, `|`, `^`
 * - Matrix Mult. 
   - `@`
