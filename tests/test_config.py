@@ -312,13 +312,13 @@ class TestGetCommandLineLoggingOptions:
     @pytest.mark.parametrize(
         ("cmd_quiet", "expected"),
         [
-            (0, True),
+            (0, None),
             (1, False),
             (2, False),
         ],
     )
     def test_get_cmd_line_echo_enabled(self, cmd_quiet, expected):
-        assert config.get_cmd_line_echo_enabled(cmd_quiet) == expected
+        assert config.get_cmd_line_echo_enabled(cmd_quiet) is expected
 
 
 class TestGetConfigFilePath:
