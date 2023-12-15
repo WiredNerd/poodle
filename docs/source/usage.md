@@ -1,43 +1,15 @@
 # Using Poodle
 
 ```text
-            __                    __                     __ 
-(\,--------'()'--o    (\,--------'()'--o     (\,--------'()'--o
- (_    ___    /~"      (_    ___    /~"       (_    ___    /~"
-  (_)_)  (_)_)          (_)_)  (_)_)           (_)_)  (_)_)
+ _   _
+/(. .)\    )
+  (*)____/|
+  /       |
+ /   |--\ |
+(_)(_)  (_)
 ```
 
 
-
-## Terminology
-
-Mutation Testing can introduce some confusing language.  For example, we run the test suite and a test case failed.  In mutation testing, we want to testing to fail, so the test suite passed.  passed == failed?
-
-So, in this application, I use the following terms whenever possible to help make things clearer
-
-Mutation
-: An intentional bug added to the code.  For example, changing `x + y` to `x - y`.
-
-Trial
-: A run of the entire test suite.  Usually to validate if the Test Suite can find the Mutation.
-
-Passed
-: When a Test Suite or Test Case ends without an error.
-
-Failure
-: When a Test Suite or Test Case ends with an error or non-successful return code.
-
-Found
-: If a Trial of a Mutation results in a Failure, then the Mutation was Found.
-
-Not Found
-: If a Trial of a Mutation results in a successful completion, then the Mutation was Not Found.
-
-Timeout
-: If the time to run a Trial exceeds a reasonable limit, the Trial is reported as Timeout instead of Found or Not Found.
-
-Errors
-: If a Trial results in an exception that is not normally expected from the Test Suite.
 
 ## Getting Started
 
@@ -163,6 +135,36 @@ If you have a lot of modules to scan, it can be helpful to start by scanning one
 ```bash
 poodle --only main.py --only database.py
 ```
+
+## Terminology
+
+Mutation Testing can introduce some confusing language.  For example, we run the test suite and a test case failed.  In mutation testing, we want to testing to fail, so the test suite passed.  passed == failed?
+
+So, in this application, I use the following terms whenever possible to help make things clearer
+
+Mutation
+: An intentional bug added to the code.  For example, changing `x + y` to `x - y`.
+
+Trial
+: A run of the entire test suite.  Usually to validate if the Test Suite can find the Mutation.
+
+Passed
+: When a Test Suite or Test Case ends without an error.
+
+Failure
+: When a Test Suite or Test Case ends with an error or non-successful return code.
+
+Found
+: If a Trial of a Mutation results in a Failure, then the Mutation was Found.
+
+Not Found
+: If a Trial of a Mutation results in a successful completion, then the Mutation was Not Found.
+
+Timeout
+: If the time to run a Trial exceeds a reasonable limit, the Trial is reported as Timeout instead of Found or Not Found.
+
+Errors
+: If a Trial results in an exception that is not normally expected from the Test Suite.
 
 ## Whitelisting
 
