@@ -18,10 +18,10 @@ CONTEXT_SETTINGS = {
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.argument("sources", type=click.Path(exists=True, path_type=Path), nargs=-1)
 @click.option("-c", "config_file", help="Configuration File.", type=click.Path(exists=True, path_type=Path))
-@click.option("-q", "quiet", help="Quiet mode: q, qq, or qq", count=True)
+@click.option("-q", "quiet", help="Quiet mode: q, qq, or qqq", count=True)
 @click.option("-v", "verbose", help="Verbose mode: v, vv, or vvv", count=True)
 @click.option("-w", "workers", help="Maximum number of parallel workers.", type=int)
-@click.option("--exclude", help="Add a regex exclude file filter. Multiple allowed.", multiple=True)
+@click.option("--exclude", help="Add a glob exclude file filter. Multiple allowed.", multiple=True)
 @click.option("--only", help="Glob pattern for files to mutate. Multiple allowed.", multiple=True)
 def main(
     sources: tuple[Path],
@@ -40,7 +40,7 @@ def main(
         sys.exit(4)
 
     try:
-        core.main(config)
+        core.main_process(config)
     except KeyboardInterrupt:
         click.echo("Aborted due to Keyboard Interrupt!")
         sys.exit(2)
@@ -54,5 +54,5 @@ def main(
 # Exit code 4: pytest command line usage error
 # Exit code 5: No tests were collected
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__": # nomut
+    main()  # nomut
