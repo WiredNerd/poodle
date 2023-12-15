@@ -68,7 +68,7 @@ def dynamic_import(object_to_import: str) -> Any:  # noqa: ANN401
     logger.debug("Import object: %s", object_to_import)
     parts = object_to_import.split(".")
     module_str = ".".join(parts[:-1])
-    obj_def = parts[-1:][0]
+    obj_def = parts[-1]
     module = __import__(module_str, fromlist=[obj_def])
     return getattr(module, obj_def)
 
