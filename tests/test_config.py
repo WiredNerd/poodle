@@ -371,17 +371,23 @@ class TestGetConfigFilePath:
             config.get_config_file_path(None)
 
     @mock.patch("poodle.config.Path")
-    def test_get_config_file_path_poodle(self, mock_path):
+    @mock.patch("poodle.config.poodle_config")
+    def test_get_config_file_path_poodle(self, poodle_config, mock_path):
+        del poodle_config.config_file
         self.setup_mock_path(mock_path, False, True, True)
         assert config.get_config_file_path(None) == mock_path.poodle_toml_path
 
     @mock.patch("poodle.config.Path")
-    def test_get_config_file_path_pyproject(self, mock_path):
+    @mock.patch("poodle.config.poodle_config")
+    def test_get_config_file_path_pyproject(self, poodle_config, mock_path):
+        del poodle_config.config_file
         self.setup_mock_path(mock_path, False, False, True)
         assert config.get_config_file_path(None) == mock_path.pyproject_toml_path
 
     @mock.patch("poodle.config.Path")
-    def test_get_config_file_path_none(self, mock_path):
+    @mock.patch("poodle.config.poodle_config")
+    def test_get_config_file_path_none(self, poodle_config, mock_path):
+        del poodle_config.config_file
         self.setup_mock_path(mock_path, False, False, False)
         assert config.get_config_file_path(None) is None
 
