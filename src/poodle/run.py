@@ -6,8 +6,7 @@ import concurrent.futures
 import logging
 import shutil
 import time
-from pathlib import Path
-from typing import Callable
+from typing import TYPE_CHECKING, Callable
 from zipfile import ZipFile
 
 from click import style
@@ -17,6 +16,9 @@ from .data_types import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, Po
 from .mutate import mutate_lines
 from .runners import command_line
 from .util import dynamic_import
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -45,10 +47,10 @@ def clean_run_trial(work: PoodleWork, folder: Path) -> MutantTrial:
     start = time.time()
     work.echo(f"Testing clean run of folder '{folder}'...", nl=False)
     mutant_trial = run_mutant_trial(
-        work.config,
-        work.echo,
-        work.folder_zips[folder],
-        Mutant(
+        config=work.config,
+        echo=work.echo,
+        folder_zip=work.folder_zips[folder],
+        mutant=Mutant(
             mutator_name="",
             source_folder=folder,
             source_file=None,
@@ -58,8 +60,8 @@ def clean_run_trial(work: PoodleWork, folder: Path) -> MutantTrial:
             end_col_offset=0,
             text="",
         ),
-        work.next_num(),
-        work.runner,
+        run_id=work.next_num(),
+        runner=work.runner,
         timeout=None,
     )
     if mutant_trial.result.passed:  # not expected
@@ -103,13 +105,13 @@ def run_mutant_trails(work: PoodleWork, mutants: list[Mutant], timeout: float) -
                 else:
                     mutant_trial: MutantTrial = future.result()
                     summary += mutant_trial.result
-                work.echo(
-                    f"COMPLETED {summary.tested:>4}/{summary.trials:<4}"
-                    f"\tFOUND {summary.found:>4}"
-                    f"\tNOT FOUND {summary.not_found:>4}"
-                    f"\tTIMEOUT {summary.timeout:>4}"
-                    f"\tERRORS {summary.errors:>4}",
-                )
+                    work.echo(
+                        f"COMPLETED {summary.tested:>4}/{summary.trials:<4}"
+                        f"\tFOUND {summary.found:>4}"
+                        f"\tNOT FOUND {summary.not_found:>4}"
+                        f"\tTIMEOUT {summary.timeout:>4}"
+                        f"\tERRORS {summary.errors:>4}",
+                    )
         except KeyboardInterrupt:
             work.echo("Received Keyboard Interrupt.  Cancelling Remaining Trials.")
             executor.shutdown(wait=True, cancel_futures=True)
@@ -160,7 +162,7 @@ def run_mutant_trial(  # noqa: PLR0913
         zip_file.extractall(run_folder)
 
     if mutant.source_file:
-        target_file = Path(run_folder / mutant.source_file)
+        target_file = run_folder / mutant.source_file
         file_lines = target_file.read_text("utf-8").splitlines(keepends=True)
         file_lines = mutate_lines(mutant, file_lines)
         target_file.write_text(data="".join(file_lines), encoding="utf-8")
