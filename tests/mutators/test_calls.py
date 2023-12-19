@@ -199,3 +199,30 @@ class TestDecoratorMutator:
             assert mut.end_lineno == 5
             assert mut.col_offset == 1
             assert mut.end_col_offset == 12
+
+        assert file_mutants[0].text == "\n".join(  # noqa: FLY002
+            [
+                "@dec2",
+                "@dec1",
+                "def example(y):",
+                "    return y",
+            ]
+        )
+
+        assert file_mutants[1].text == "\n".join(  # noqa: FLY002
+            [
+                "@dec1",
+                "@dec1",
+                "def example(y):",
+                "    return y",
+            ]
+        )
+
+        assert file_mutants[2].text == "\n".join(  # noqa: FLY002
+            [
+                "@dec1",
+                "@dec2",
+                "def example(y):",
+                "    return y",
+            ]
+        )

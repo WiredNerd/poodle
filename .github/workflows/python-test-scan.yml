@@ -29,7 +29,7 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
-      - run: pytest --cov=src
+      - run: pytest --cov=src --cov-report=json:code-coverage.json
       - name: commit-json-report
         if: ${{ github.ref_name == 'main' }}
         uses: EndBug/add-and-commit@v9

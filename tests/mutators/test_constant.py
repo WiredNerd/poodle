@@ -12,6 +12,9 @@ def mock_echo():
 
 
 class TestNumberMutator:
+    def test_name(self):
+        assert NumberMutator.mutator_name == "Number"
+
     @pytest.mark.parametrize(
         ("source", "mutants"),
         [
@@ -42,6 +45,9 @@ class TestNumberMutator:
 
 
 class TestStringMutator:
+    def test_name(self):
+        assert StringMutator.mutator_name == "String"
+
     def test_create_mutations_double_quote(self, mock_echo):
         mutator = StringMutator(config=mock.MagicMock(mutator_opts={}), echo=mock_echo)
 
@@ -75,6 +81,9 @@ class TestStringMutator:
 
 
 class TestKeywordMutator:
+    def test_name(self):
+        assert KeywordMutator.mutator_name == "Keyword"
+
     @pytest.mark.parametrize(
         ("source", "mutants"),
         [

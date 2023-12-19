@@ -38,3 +38,9 @@ jobs:
           pip install --editable .
           cd example
           poodle
+      - name: Poodle example flat project
+        run : |
+          pip install --editable .
+          cd example2
+          poodle
+            

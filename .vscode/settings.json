@@ -18,11 +18,13 @@
         "tests",
         "example/src",
         "example/tests",
+        "example2",
     ],
     "python.autoComplete.extraPaths": [
         "src",
         "example/src",
         "example/tests",
+        "example2",
     ],
     "python.testing.pytestPath": "src",
     "cSpell.words": [
