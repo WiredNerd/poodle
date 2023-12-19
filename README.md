@@ -43,7 +43,7 @@ Usage: poodle [OPTIONS] [SOURCES]...
 
 Options:
   -c PATH         Configuration File.
-  -q              Quiet mode: q, qq, or qq
+  -q              Quiet mode: q, qq, or qqq
   -v              Verbose mode: v, vv, or vvv
   -w INTEGER      Maximum number of parallel workers.
   --exclude TEXT  Add a regex exclude file filter. Multiple allowed.
