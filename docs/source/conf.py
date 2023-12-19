@@ -22,7 +22,7 @@ source_suffix = {
     ".md": "markdown",
 }
 
-suppress_warnings = ["myst.xref_missing"]
+# suppress_warnings = ["myst.xref_missing"]
 
 # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
 myst_enable_extensions = [
