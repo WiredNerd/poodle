@@ -65,7 +65,7 @@ class TestComparisonMutator:
             assert file_mutants[i].text == mutants[i]
 
     def test_filter_compare(self, mock_echo):
-        mutator_opts = {"compare_filters": ["special.* < 4", "special.* in .*"]}
+        mutator_opts = {"compare_filters": ["special.* < 4", "special.* in .*", "x or y"]}
         mutator = ComparisonMutator(config=mock.MagicMock(mutator_opts=mutator_opts), echo=mock_echo)
 
         if_main = "if __name__ == '__main__':\n   pass"
@@ -75,6 +75,9 @@ class TestComparisonMutator:
         assert mutator.create_mutations(ast.parse(if_obj_lt)) == []
 
         if_or = "if special_obj2 in obj_list:\n   pass"
+        assert mutator.create_mutations(ast.parse(if_or)) == []
+
+        if_or = "if x or y:\n   pass"
         assert mutator.create_mutations(ast.parse(if_or)) == []
 
     def test_is_annotation(self, mock_echo):

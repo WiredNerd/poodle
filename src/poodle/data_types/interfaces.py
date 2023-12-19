@@ -95,7 +95,7 @@ class Mutator(ABC):
                 child.parent = node  # type: ignore [attr-defined]
 
     @classmethod
-    def is_annotation(cls, node: ast.AST, child_node: ast.AST | None = None) -> bool:
+    def is_annotation(cls, node: ast.AST, child_node: ast.AST | None = None) -> bool:  # nomut: Keyword
         """Recursively search parent nodes to see if the starting node is part of an annotation.
 
         Returns true if a parent node points to this node in an annotation or returns attribute.

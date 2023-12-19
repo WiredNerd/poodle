@@ -1,7 +1,11 @@
 from unittest import mock
 
-from poodle.data_types.work import EchoWrapper, PoodleWork
+from poodle.data_types.work import EchoWrapper, PoodleWork, logger
 from tests.data_types.test_data import PoodleConfigStub
+
+
+def test_logger():
+    assert logger.name == "poodle.data_types.work"
 
 
 class TestPoodleWork:
@@ -42,3 +46,9 @@ class TestEchoWrapper:
         wrap = EchoWrapper(False, True)
         wrap.echo("test")
         click.secho.assert_not_called()
+
+    @mock.patch("poodle.data_types.work.click")
+    def test_echo_defaults(self, click):
+        wrap = EchoWrapper(True, False)
+        wrap.echo()
+        click.secho.assert_called_with(None, None, True, False, None)

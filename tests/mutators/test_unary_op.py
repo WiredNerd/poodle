@@ -12,6 +12,9 @@ def mock_echo():
 
 
 class TestUnaryOperationMutator:
+    def test_name(self):
+        assert UnaryOperationMutator.mutator_name == "UnaryOp"
+
     @pytest.mark.parametrize(
         ("source", "mutant_text"),
         [

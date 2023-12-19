@@ -229,6 +229,17 @@ class TestTestingSummary:
         assert testing_summary.errors == 6
         assert testing_summary.success_rate == 7.8
 
+    def test_testing_summary_defaults(self):
+        testing_summary = TestingSummary()
+
+        assert testing_summary.trials == 0
+        assert testing_summary.tested == 0
+        assert testing_summary.found == 0
+        assert testing_summary.not_found == 0
+        assert testing_summary.timeout == 0
+        assert testing_summary.errors == 0
+        assert testing_summary.success_rate == 0
+
     def test_iadd(self):
         summary = TestingSummary(trials=10)
         expected = TestingSummary(trials=10)
@@ -276,6 +287,28 @@ class TestTestingSummary:
         summary += MutantTrialResult(False, MutantTrialResult.RC_OTHER)
         expected.tested += 1
         expected.errors += 1
+        assert summary == expected
+
+    def test_iadd_one_trial(self):
+        summary = TestingSummary()
+        summary = TestingSummary(trials=1)
+        expected = TestingSummary(tested=1, found=1, trials=1, success_rate=1.0)
+
+        summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
+        assert summary == expected
+
+    def test_iadd_zero_trials(self):
+        summary = TestingSummary()
+        expected = TestingSummary(tested=1, found=1)
+
+        summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
+        assert summary == expected
+
+    def test_iadd_neg_trials(self):
+        summary = TestingSummary(trials=-1)
+        expected = TestingSummary(tested=1, found=1, trials=-1)
+
+        summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
         assert summary == expected
 
 
