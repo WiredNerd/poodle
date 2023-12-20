@@ -408,7 +408,7 @@ class TestTestingSummary:
             not_found=7,
             timeout=6,
             errors=5,
-            success_rate=4.3,
+            success_rate=0.43,
         )
 
     def summary_dict(self):
@@ -419,7 +419,8 @@ class TestTestingSummary:
             "not_found": 7,
             "timeout": 6,
             "errors": 5,
-            "success_rate": 4.3,
+            "success_rate": 0.43,
+            "coverage_display": "43.00%",
         }
 
     def test_serialize(self):

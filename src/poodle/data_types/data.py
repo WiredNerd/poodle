@@ -149,6 +149,11 @@ class TestingSummary(PoodleSerialize):
     errors: int = 0
     success_rate: float = 0.0
 
+    @property
+    def coverage_display(self) -> str:
+        """Return a formatted string for the coverage percentage."""
+        return f"{self.success_rate * 100:.2f}%"
+
     def __iadd__(self, result: MutantTrialResult) -> Self:
         """Update Testing Summary with data from MutantTrialResult."""
         if isinstance(result, MutantTrialResult):
@@ -167,6 +172,18 @@ class TestingSummary(PoodleSerialize):
 
         return self
 
+    @staticmethod
+    def from_dict(d: dict[str, Any]) -> dict[str, Any]:
+        """Correct fields in Dictionary for JSON deserialization."""
+        d.pop("coverage_display", None)
+        return d
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to Dictionary for JSON serialization."""
+        d = asdict(self)
+        d["coverage_display"] = self.coverage_display
+        return d
+
 
 @dataclass
 class TestingResults(PoodleSerialize):
@@ -181,7 +198,7 @@ class TestingResults(PoodleSerialize):
         if "mutant_trials" in d:
             d["mutant_trials"] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d["mutant_trials"]]
         if "summary" in d:
-            d["summary"] = TestingSummary(**d["summary"])
+            d["summary"] = TestingSummary(**TestingSummary.from_dict(d["summary"]))
         return d
 
     def to_dict(self) -> dict[str, Any]:
