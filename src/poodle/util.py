@@ -123,6 +123,6 @@ def to_json(obj: PoodleSerialize, indent: int | str | None = None) -> str:
     return json.dumps(obj, indent=indent, default=lambda x: x.to_dict())
 
 
-def from_json(data: str, datatype: type[PoodleSerialize]) -> Any:
+def from_json(data: str, datatype: type[PoodleSerialize]) -> PoodleSerialize:
     """Convert json string to dataclass."""
     return datatype(**json.loads(data, object_hook=datatype.from_dict))

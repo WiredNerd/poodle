@@ -378,5 +378,3 @@ class TestFilter:
         line_filters = {3: mutators}
 
         assert mutate.is_filtered(line_filters, file_mutant) is expected
-
-

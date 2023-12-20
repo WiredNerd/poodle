@@ -10,13 +10,16 @@ if TYPE_CHECKING:
     from typing_extensions import Self
 
 
+@dataclass
 class PoodleSerialize:
+    """Base Class for Data Classes that need to be serialized to JSON."""
+
     @staticmethod
     def from_dict(d: dict[str, Any]) -> dict[str, Any]:
         """Correct fields in Dictionary for JSON deserialization."""
         return d
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         """Convert to Dictionary for JSON serialization."""
         return asdict(self)
 
@@ -85,7 +88,7 @@ class Mutant(FileMutation, PoodleSerialize):
             d["source_file"] = Path(d["source_file"])
         return d
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         """Convert to Dictionary for JSON serialization."""
         d = asdict(self)
         d["source_folder"] = str(self.source_folder)
@@ -126,7 +129,7 @@ class MutantTrial(PoodleSerialize):
             d["result"] = MutantTrialResult(**d["result"])
         return d
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         """Convert to Dictionary for JSON serialization."""
         d = asdict(self)
         d["mutant"] = self.mutant.to_dict()
@@ -181,7 +184,7 @@ class TestingResults(PoodleSerialize):
             d["summary"] = TestingSummary(**d["summary"])
         return d
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         """Convert to Dictionary for JSON serialization."""
         d = asdict(self)
         d["mutant_trials"] = [trial.to_dict() for trial in self.mutant_trials]

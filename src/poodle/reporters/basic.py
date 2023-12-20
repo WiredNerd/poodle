@@ -3,13 +3,10 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable
+from typing import Callable
 
-from poodle.data_types import MutantTrialResult, PoodleConfig
+from poodle.data_types import MutantTrialResult, PoodleConfig, TestingResults
 from poodle.util import to_json
-
-if TYPE_CHECKING:
-    from poodle.data_types import TestingResults
 
 display_reason_code = {
     MutantTrialResult.RC_FOUND: "FOUND",
@@ -21,13 +18,12 @@ display_reason_code = {
 
 def get_include_statuses(config: PoodleConfig, prefix: str) -> set[bool]:
     """Get set of statuses to include in report."""
-
     include_statuses = set()
     if config.reporter_opts.get(f"{prefix}_include_trials", True):
         if not config.reporter_opts.get(f"{prefix}_report_found", False):
-            include_statuses.add(True)
+            include_statuses.add(True)  # noqa: FBT003
         if config.reporter_opts.get(f"{prefix}_report_not_found", True):
-            include_statuses.add(False)
+            include_statuses.add(False)  # noqa: FBT003
     return include_statuses
 
 
@@ -99,7 +95,9 @@ def report_json(config: PoodleConfig, echo: Callable, testing_results: TestingRe
     mutant_trials = [trial for trial in testing_results.mutant_trials if trial.result.passed in include_statuses]
 
     out_results = TestingResults(
-        summary=testing_results.summary if config.reporter_opts.get("json_include_summary", True) else None,
+        summary=testing_results.summary  # type: ignore [arg-type]
+        if config.reporter_opts.get("json_include_summary", True)
+        else None,
         mutant_trials=mutant_trials,
     )
 

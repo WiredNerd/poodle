@@ -257,7 +257,7 @@ class TestUnifiedDiff:
         mutant.source_file.read_text.return_value.splitlines.return_value = file_lines
         mutant.source_file.resolve.return_value = Path("example.py")
         diff_str = (
-            f"--- example.py\n"
+            "--- example.py\n"
             "+++ [Mutant] example.py:2\n"
             "@@ -1,3 +1,3 @@\n"
             " 1 The quick brown fox jumps over the lazy dog\n"

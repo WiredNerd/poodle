@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 from unittest import mock
 
-import click
 import pytest
 
 from poodle.data_types import Mutant, MutantTrial, MutantTrialResult, TestingResults, TestingSummary

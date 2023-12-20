@@ -12,7 +12,7 @@ from .data_types import PoodleConfig, PoodleWork
 from .mutate import create_mutants_for_all_mutators, initialize_mutators
 from .report import generate_reporters
 from .run import clean_run_each_source_folder, get_runner, run_mutant_trails
-from .util import calc_timeout, create_temp_zips, pprint_str, create_unified_diff
+from .util import calc_timeout, create_temp_zips, create_unified_diff, pprint_str
 
 logger = logging.getLogger(__name__)
 
