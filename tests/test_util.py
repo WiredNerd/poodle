@@ -4,7 +4,7 @@ from unittest import mock
 import pytest
 
 from poodle import util
-from poodle.data_types import MutantTrial, PoodleWork
+from poodle.data_types import Mutant, MutantTrial, PoodleWork
 from tests.data_types.test_data import PoodleConfigStub
 
 
@@ -189,3 +189,93 @@ class TestCalcTimeout:
             "folder": MutantTrial(mutant=None, result=None, duration=0.1),
         }
         assert round(util.calc_timeout(config, clean_run_results), 1) == 20.0
+
+
+class TestMutateLines:
+    def test_mutate_lines(self):
+        mutant = Mutant(
+            mutator_name="Example",
+            lineno=2,
+            col_offset=2,
+            end_lineno=2,
+            end_col_offset=13,
+            text="Goodbye",
+            source_folder=mock.MagicMock(),
+            source_file=mock.MagicMock(),
+        )
+        file_lines = [
+            "1 The quick brown fox jumps over the lazy dog",
+            "2 Hello World!",
+            "3 Poodles are the best",
+        ]
+        assert util.mutate_lines(mutant, file_lines) == [
+            "1 The quick brown fox jumps over the lazy dog",
+            "2 Goodbye!",
+            "3 Poodles are the best",
+        ]
+
+    def test_mutate_lines_multi(self):
+        mutant = Mutant(
+            mutator_name="Example",
+            lineno=2,
+            col_offset=2,
+            end_lineno=4,
+            end_col_offset=3,
+            text="Goodbye, T",
+            source_folder=mock.MagicMock(),
+            source_file=mock.MagicMock(),
+        )
+        file_lines = [
+            "1 The quick brown fox jumps over the lazy dog",
+            "2 Hello World!",
+            "3 Poodles are the best",
+            "4 Two are better than one",
+        ]
+        assert util.mutate_lines(mutant, file_lines) == [
+            "1 The quick brown fox jumps over the lazy dog",
+            "2 Goodbye, Two are better than one",
+        ]
+
+
+class TestUnifiedDiff:
+    def test_create_unified_diff(self):
+        mutant = Mutant(
+            mutator_name="Example",
+            lineno=2,
+            col_offset=2,
+            end_lineno=2,
+            end_col_offset=13,
+            text="Goodbye",
+            source_folder=mock.MagicMock(),
+            source_file=mock.MagicMock(),
+        )
+        file_lines = [
+            "1 The quick brown fox jumps over the lazy dog\n",
+            "2 Hello World!\n",
+            "3 Poodles are the best\n",
+        ]
+        mutant.source_file.read_text.return_value.splitlines.return_value = file_lines
+        mutant.source_file.resolve.return_value = Path("example.py")
+        diff_str = (
+            "--- example.py\n"
+            "+++ [Mutant] example.py:2\n"
+            "@@ -1,3 +1,3 @@\n"
+            " 1 The quick brown fox jumps over the lazy dog\n"
+            "-2 Hello World!\n"
+            "+2 Goodbye!\n"
+            " 3 Poodles are the best\n"
+        )
+        assert util.create_unified_diff(mutant) == diff_str
+
+    def test_create_unified_diff_no_file(self):
+        mutant = Mutant(
+            mutator_name="Example",
+            lineno=2,
+            col_offset=2,
+            end_lineno=2,
+            end_col_offset=13,
+            text="Goodbye",
+            source_folder=mock.MagicMock(),
+            source_file=None,
+        )
+        assert util.create_unified_diff(mutant) is None

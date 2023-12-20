@@ -2,36 +2,11 @@
 
 from __future__ import annotations
 
-import difflib
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable
+from typing import Callable
 
-import click
-
-from poodle.data_types import MutantTrialResult, PoodleConfig
-from poodle.mutate import mutate_lines
-
-if TYPE_CHECKING:
-    from poodle.data_types import TestingResults
-
-
-def report_summary(echo: Callable, testing_results: TestingResults, *_, **__) -> None:
-    """Echo quick summary to console."""
-    echo("")
-    summary = testing_results.summary
-    if summary.trials < 1:
-        echo(click.style("!!! No mutants found to test !!!", fg="yellow"))
-        return
-
-    echo(click.style("*** Results Summary ***", fg="green"))
-    echo(f"Testing found {summary.success_rate:.1%} of Mutants.")
-    if summary.not_found:
-        echo(f" - {summary.not_found} mutant(s) were not found.")
-    if summary.timeout:
-        echo(f" - {summary.timeout} mutant(s) caused trial to timeout.")
-    if summary.errors:
-        echo(f" - {summary.errors} mutant(s) could not be tested due to an error.")
-
+from poodle.data_types import MutantTrialResult, PoodleConfig, TestingResults
+from poodle.util import to_json
 
 display_reason_code = {
     MutantTrialResult.RC_FOUND: "FOUND",
@@ -41,10 +16,37 @@ display_reason_code = {
 }
 
 
+def get_include_statuses(config: PoodleConfig, prefix: str) -> set[bool]:
+    """Get set of statuses to include in report."""
+    include_statuses = set()
+    if config.reporter_opts.get(f"{prefix}_include_trials", True):
+        if not config.reporter_opts.get(f"{prefix}_report_found", False):
+            include_statuses.add(True)  # noqa: FBT003
+        if config.reporter_opts.get(f"{prefix}_report_not_found", True):
+            include_statuses.add(False)  # noqa: FBT003
+    return include_statuses
+
+
+def report_summary(echo: Callable, testing_results: TestingResults, *_, **__) -> None:
+    """Echo quick summary to console."""
+    echo("")
+    summary = testing_results.summary
+    if summary.trials < 1:
+        echo("!!! No mutants found to test !!!", fg="yellow")
+        return
+
+    echo("*** Results Summary ***", fg="green")
+    echo(f"Testing found {summary.success_rate:.1%} of Mutants.")
+    if summary.not_found:
+        echo(f" - {summary.not_found} mutant(s) were not found.")
+    if summary.timeout:
+        echo(f" - {summary.timeout} mutant(s) caused trial to timeout.")
+    if summary.errors:
+        echo(f" - {summary.errors} mutant(s) could not be tested due to an error.")
+
+
 def report_not_found(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -> None:
     """Echo information about Trials that did not pass."""
-    out_lines = []
-
     failed_trials = [trial for trial in testing_results.mutant_trials if not trial.result.passed]
     if not failed_trials:
         return
@@ -58,42 +60,49 @@ def report_not_found(config: PoodleConfig, echo: Callable, testing_results: Test
         )
     )
 
-    out_lines.append("")
-    out_lines.append(click.style("*** Mutants Not Found ***", fg="yellow"))
+    not_found_file = config.reporter_opts.get("not_found_file")
+
+    echo("", file=not_found_file)
+    echo("*** Mutants Not Found ***", fg="yellow", file=not_found_file)
     for trial in failed_trials:
         mutant = trial.mutant
         result = trial.result
 
-        out_lines.append("")
-        out_lines.append(f"Mutant Trial Result: {display_reason_code.get(result.reason_code, result.reason_code)}")
-        out_lines.append(f"Mutator: {mutant.mutator_name}")
+        echo("", file=not_found_file)
+        echo(
+            f"Mutant Trial Result: {display_reason_code.get(result.reason_code, result.reason_code)}",
+            file=not_found_file,
+        )
+        echo(f"Mutator: {mutant.mutator_name}", file=not_found_file)
         if result.reason_desc:
-            out_lines.append(result.reason_desc)
+            echo(result.reason_desc, file=not_found_file)
 
-        if mutant.source_file:
-            file_lines = mutant.source_file.read_text("utf-8").splitlines(keepends=True)
-            file_name = str(mutant.source_file.resolve())
-            diff = list(
-                difflib.unified_diff(
-                    a=file_lines,
-                    b=mutate_lines(mutant, file_lines),
-                    fromfile=file_name,
-                    tofile=f"[Mutant] {file_name}:{mutant.lineno}",
-                )
-            )
-
-            out_lines.append("".join(diff))
+        if mutant.unified_diff:
+            echo(mutant.unified_diff, file=not_found_file)
         else:
-            out_lines.append(
+            echo(
                 f"source_file={mutant.source_file} lineno={mutant.lineno} col_offset={mutant.col_offset} "
-                f"end_lineno={mutant.end_lineno} end_col_offset={mutant.end_col_offset}"
+                f"end_lineno={mutant.end_lineno} end_col_offset={mutant.end_col_offset}",
+                file=not_found_file,
             )
-            out_lines.append("text:")
-            out_lines.append(mutant.text)
+            echo("text:", file=not_found_file)
+            echo(mutant.text, file=not_found_file)
 
-    not_found_file = config.reporter_opts.get("not_found_file")
-    if not_found_file:
-        Path(not_found_file).write_text("\n".join(out_lines))
+
+def report_json(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -> None:
+    """Create JSON file with test results."""
+    include_statuses = get_include_statuses(config, "json")
+    mutant_trials = [trial for trial in testing_results.mutant_trials if trial.result.passed in include_statuses]
+
+    out_results = TestingResults(
+        summary=testing_results.summary  # type: ignore [arg-type]
+        if config.reporter_opts.get("json_include_summary", True)
+        else None,
+        mutant_trials=mutant_trials,
+    )
+
+    json_file = config.reporter_opts.get("json_report_file", "mutation-testing-report.json")
+    if json_file == "sysout":
+        echo(to_json(out_results, indent=4))
     else:
-        for line in out_lines:
-            echo(line)
+        Path(json_file).write_text(to_json(out_results))

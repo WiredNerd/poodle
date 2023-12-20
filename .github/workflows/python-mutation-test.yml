@@ -65,3 +65,9 @@ jobs:
           pip install --editable .
       - name: Poodle
         run: poodle || true
+      - name: save-json-report
+        if: ${{ github.ref_name == 'main' }}
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "mutation-testing-report.json"
+          pull: "--rebase=true --autostash"

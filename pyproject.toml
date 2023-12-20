@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "poodle"
 description = "Mutation Testing Tool"
-version = "1.1.1"
+version = "1.1.2"
 license = { file = "LICENSE" }
 keywords = [
     "test",
@@ -53,8 +53,11 @@ filterwarnings = [
 
 [tool.poodle]
 file_filters = ["test_*.py", "*_test.py", 'cli.py', 'run.py', '__init__.py']
+reporters = ["summary", "not_found", "json"]
 
 [tool.poodle.runner_opts]
+
+[tool.poodle.reporter_opts]
 
 [tool.coverage.run]
 branch = true
@@ -114,7 +117,7 @@ exclude = [
     "dist",
     "venv",
 ]
-task-tags = ["nomut","TODO", "FIXME", "XXX"]
+task-tags = ["nomut", "TODO", "FIXME", "XXX"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["poodle"]

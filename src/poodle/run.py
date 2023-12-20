@@ -13,9 +13,8 @@ from click import style
 
 from . import PoodleTrialRunError
 from .data_types import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork, TestingResults, TestingSummary
-from .mutate import mutate_lines
 from .runners import command_line
-from .util import dynamic_import
+from .util import dynamic_import, mutate_lines
 
 if TYPE_CHECKING:
     from pathlib import Path

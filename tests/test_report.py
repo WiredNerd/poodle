@@ -22,6 +22,7 @@ class TestReporters:
         assert report.builtin_reporters == {
             "summary": report_summary,
             "not_found": report_not_found,
+            "json": report.report_json,
         }
 
     def test_generate_reporters(self, mock_logger: mock.MagicMock):
