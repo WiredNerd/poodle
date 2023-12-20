@@ -103,7 +103,7 @@ def report_json(config: PoodleConfig, echo: Callable, testing_results: TestingRe
         mutant_trials=mutant_trials,
     )
 
-    json_file = config.reporter_opts.get("json_report_file", "mutation_testing_report.json")
+    json_file = config.reporter_opts.get("json_report_file", "mutation-testing-report.json")
     if json_file == "sysout":
         echo(to_json(out_results, indent=4))
     else:
