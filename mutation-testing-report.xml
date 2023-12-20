@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
-<testsuites disabled="0" errors="0" failures="61" tests="829" time="0.0">
-	<testsuite disabled="0" errors="0" failures="61" name="mutmut" skipped="0" tests="829" time="0">
+<testsuites disabled="0" errors="0" failures="62" tests="838" time="0.0">
+	<testsuite disabled="0" errors="0" failures="62" name="mutmut" skipped="0" tests="838" time="0">
 		<testcase name="Mutant #1" file="src/poodle/core.py" line="17">
 			<system-out>logger = logging.getLogger(__name__)</system-out>
 		</testcase>
@@ -3102,76 +3102,114 @@
 		<testcase name="Mutant #791" file="src/poodle/data_types/data.py" line="150">
 			<system-out>    success_rate: float = 0.0</system-out>
 		</testcase>
-		<testcase name="Mutant #792" file="src/poodle/data_types/data.py" line="155">
-			<system-out>            self.tested += 1</system-out>
+		<testcase name="Mutant #792" file="src/poodle/data_types/data.py" line="152">
+			<system-out>    @property</system-out>
 		</testcase>
 		<testcase name="Mutant #793" file="src/poodle/data_types/data.py" line="155">
-			<system-out>            self.tested += 1</system-out>
+			<system-out>        return f&quot;{self.success_rate * 100:.2f}%&quot;</system-out>
 		</testcase>
 		<testcase name="Mutant #794" file="src/poodle/data_types/data.py" line="155">
+			<system-out>        return f&quot;{self.success_rate * 100:.2f}%&quot;</system-out>
+		</testcase>
+		<testcase name="Mutant #795" file="src/poodle/data_types/data.py" line="155">
+			<system-out>        return f&quot;{self.success_rate * 100:.2f}%&quot;</system-out>
+		</testcase>
+		<testcase name="Mutant #796" file="src/poodle/data_types/data.py" line="160">
 			<system-out>            self.tested += 1</system-out>
 		</testcase>
-		<testcase name="Mutant #795" file="src/poodle/data_types/data.py" line="157">
+		<testcase name="Mutant #797" file="src/poodle/data_types/data.py" line="160">
+			<system-out>            self.tested += 1</system-out>
+		</testcase>
+		<testcase name="Mutant #798" file="src/poodle/data_types/data.py" line="160">
+			<system-out>            self.tested += 1</system-out>
+		</testcase>
+		<testcase name="Mutant #799" file="src/poodle/data_types/data.py" line="162">
 			<system-out>                self.found += 1</system-out>
 		</testcase>
-		<testcase name="Mutant #796" file="src/poodle/data_types/data.py" line="157">
+		<testcase name="Mutant #800" file="src/poodle/data_types/data.py" line="162">
 			<system-out>                self.found += 1</system-out>
 		</testcase>
-		<testcase name="Mutant #797" file="src/poodle/data_types/data.py" line="157">
+		<testcase name="Mutant #801" file="src/poodle/data_types/data.py" line="162">
 			<system-out>                self.found += 1</system-out>
 		</testcase>
-		<testcase name="Mutant #798" file="src/poodle/data_types/data.py" line="158">
+		<testcase name="Mutant #802" file="src/poodle/data_types/data.py" line="163">
 			<system-out>            elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:</system-out>
 		</testcase>
-		<testcase name="Mutant #799" file="src/poodle/data_types/data.py" line="159">
+		<testcase name="Mutant #803" file="src/poodle/data_types/data.py" line="164">
 			<system-out>                self.not_found += 1</system-out>
 		</testcase>
-		<testcase name="Mutant #800" file="src/poodle/data_types/data.py" line="159">
+		<testcase name="Mutant #804" file="src/poodle/data_types/data.py" line="164">
 			<system-out>                self.not_found += 1</system-out>
 		</testcase>
-		<testcase name="Mutant #801" file="src/poodle/data_types/data.py" line="159">
+		<testcase name="Mutant #805" file="src/poodle/data_types/data.py" line="164">
 			<system-out>                self.not_found += 1</system-out>
 		</testcase>
-		<testcase name="Mutant #802" file="src/poodle/data_types/data.py" line="160">
+		<testcase name="Mutant #806" file="src/poodle/data_types/data.py" line="165">
 			<system-out>            elif result.reason_code == MutantTrialResult.RC_TIMEOUT:</system-out>
 		</testcase>
-		<testcase name="Mutant #803" file="src/poodle/data_types/data.py" line="161">
+		<testcase name="Mutant #807" file="src/poodle/data_types/data.py" line="166">
 			<system-out>                self.timeout += 1</system-out>
 		</testcase>
-		<testcase name="Mutant #804" file="src/poodle/data_types/data.py" line="161">
+		<testcase name="Mutant #808" file="src/poodle/data_types/data.py" line="166">
 			<system-out>                self.timeout += 1</system-out>
 		</testcase>
-		<testcase name="Mutant #805" file="src/poodle/data_types/data.py" line="161">
+		<testcase name="Mutant #809" file="src/poodle/data_types/data.py" line="166">
 			<system-out>                self.timeout += 1</system-out>
 		</testcase>
-		<testcase name="Mutant #806" file="src/poodle/data_types/data.py" line="163">
+		<testcase name="Mutant #810" file="src/poodle/data_types/data.py" line="168">
 			<system-out>                self.errors += 1</system-out>
 		</testcase>
-		<testcase name="Mutant #807" file="src/poodle/data_types/data.py" line="163">
+		<testcase name="Mutant #811" file="src/poodle/data_types/data.py" line="168">
 			<system-out>                self.errors += 1</system-out>
 		</testcase>
-		<testcase name="Mutant #808" file="src/poodle/data_types/data.py" line="163">
+		<testcase name="Mutant #812" file="src/poodle/data_types/data.py" line="168">
 			<system-out>                self.errors += 1</system-out>
 		</testcase>
-		<testcase name="Mutant #809" file="src/poodle/data_types/data.py" line="165">
+		<testcase name="Mutant #813" file="src/poodle/data_types/data.py" line="170">
 			<system-out>        if self.trials &gt; 0:</system-out>
 		</testcase>
-		<testcase name="Mutant #810" file="src/poodle/data_types/data.py" line="165">
+		<testcase name="Mutant #814" file="src/poodle/data_types/data.py" line="170">
 			<system-out>        if self.trials &gt; 0:</system-out>
 		</testcase>
-		<testcase name="Mutant #811" file="src/poodle/data_types/data.py" line="166">
+		<testcase name="Mutant #815" file="src/poodle/data_types/data.py" line="171">
 			<system-out>            self.success_rate = self.found / self.trials</system-out>
 		</testcase>
-		<testcase name="Mutant #812" file="src/poodle/data_types/data.py" line="166">
+		<testcase name="Mutant #816" file="src/poodle/data_types/data.py" line="171">
 			<system-out>            self.success_rate = self.found / self.trials</system-out>
 		</testcase>
-		<testcase name="Mutant #813" file="src/poodle/data_types/data.py" line="171">
-			<system-out>@dataclass</system-out>
-		</testcase>
-		<testcase name="Mutant #814" file="src/poodle/data_types/data.py" line="178">
+		<testcase name="Mutant #817" file="src/poodle/data_types/data.py" line="175">
 			<failure type="failure" message="bad_survived">--- src/poodle/data_types/data.py
 +++ src/poodle/data_types/data.py
-@@ -175,7 +175,6 @@
+@@ -172,7 +172,6 @@
+ 
+         return self
+ 
+-    @staticmethod
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &quot;&quot;&quot;Correct fields in Dictionary for JSON deserialization.&quot;&quot;&quot;
+         d.pop(&quot;coverage_display&quot;, None)
+</failure>
+			<system-out>    @staticmethod</system-out>
+		</testcase>
+		<testcase name="Mutant #818" file="src/poodle/data_types/data.py" line="178">
+			<system-out>        d.pop(&quot;coverage_display&quot;, None)</system-out>
+		</testcase>
+		<testcase name="Mutant #819" file="src/poodle/data_types/data.py" line="183">
+			<system-out>        d = asdict(self)</system-out>
+		</testcase>
+		<testcase name="Mutant #820" file="src/poodle/data_types/data.py" line="184">
+			<system-out>        d[&quot;coverage_display&quot;] = self.coverage_display</system-out>
+		</testcase>
+		<testcase name="Mutant #821" file="src/poodle/data_types/data.py" line="184">
+			<system-out>        d[&quot;coverage_display&quot;] = self.coverage_display</system-out>
+		</testcase>
+		<testcase name="Mutant #822" file="src/poodle/data_types/data.py" line="188">
+			<system-out>@dataclass</system-out>
+		</testcase>
+		<testcase name="Mutant #823" file="src/poodle/data_types/data.py" line="195">
+			<failure type="failure" message="bad_survived">--- src/poodle/data_types/data.py
++++ src/poodle/data_types/data.py
+@@ -192,7 +192,6 @@
      mutant_trials: list[MutantTrial]
      summary: TestingSummary
  
@@ -3182,49 +3220,49 @@
 </failure>
 			<system-out>    @staticmethod</system-out>
 		</testcase>
-		<testcase name="Mutant #815" file="src/poodle/data_types/data.py" line="181">
+		<testcase name="Mutant #824" file="src/poodle/data_types/data.py" line="198">
 			<system-out>        if &quot;mutant_trials&quot; in d:</system-out>
 		</testcase>
-		<testcase name="Mutant #816" file="src/poodle/data_types/data.py" line="181">
+		<testcase name="Mutant #825" file="src/poodle/data_types/data.py" line="198">
 			<system-out>        if &quot;mutant_trials&quot; in d:</system-out>
 		</testcase>
-		<testcase name="Mutant #817" file="src/poodle/data_types/data.py" line="182">
+		<testcase name="Mutant #826" file="src/poodle/data_types/data.py" line="199">
 			<system-out>            d[&quot;mutant_trials&quot;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&quot;mutant_trials&quot;]]</system-out>
 		</testcase>
-		<testcase name="Mutant #818" file="src/poodle/data_types/data.py" line="182">
+		<testcase name="Mutant #827" file="src/poodle/data_types/data.py" line="199">
 			<system-out>            d[&quot;mutant_trials&quot;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&quot;mutant_trials&quot;]]</system-out>
 		</testcase>
-		<testcase name="Mutant #819" file="src/poodle/data_types/data.py" line="182">
+		<testcase name="Mutant #828" file="src/poodle/data_types/data.py" line="199">
 			<system-out>            d[&quot;mutant_trials&quot;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&quot;mutant_trials&quot;]]</system-out>
 		</testcase>
-		<testcase name="Mutant #820" file="src/poodle/data_types/data.py" line="183">
+		<testcase name="Mutant #829" file="src/poodle/data_types/data.py" line="200">
 			<system-out>        if &quot;summary&quot; in d:</system-out>
 		</testcase>
-		<testcase name="Mutant #821" file="src/poodle/data_types/data.py" line="183">
+		<testcase name="Mutant #830" file="src/poodle/data_types/data.py" line="200">
 			<system-out>        if &quot;summary&quot; in d:</system-out>
 		</testcase>
-		<testcase name="Mutant #822" file="src/poodle/data_types/data.py" line="184">
-			<system-out>            d[&quot;summary&quot;] = TestingSummary(**d[&quot;summary&quot;])</system-out>
+		<testcase name="Mutant #831" file="src/poodle/data_types/data.py" line="201">
+			<system-out>            d[&quot;summary&quot;] = TestingSummary(**TestingSummary.from_dict(d[&quot;summary&quot;]))</system-out>
 		</testcase>
-		<testcase name="Mutant #823" file="src/poodle/data_types/data.py" line="184">
-			<system-out>            d[&quot;summary&quot;] = TestingSummary(**d[&quot;summary&quot;])</system-out>
+		<testcase name="Mutant #832" file="src/poodle/data_types/data.py" line="201">
+			<system-out>            d[&quot;summary&quot;] = TestingSummary(**TestingSummary.from_dict(d[&quot;summary&quot;]))</system-out>
 		</testcase>
-		<testcase name="Mutant #824" file="src/poodle/data_types/data.py" line="184">
-			<system-out>            d[&quot;summary&quot;] = TestingSummary(**d[&quot;summary&quot;])</system-out>
+		<testcase name="Mutant #833" file="src/poodle/data_types/data.py" line="201">
+			<system-out>            d[&quot;summary&quot;] = TestingSummary(**TestingSummary.from_dict(d[&quot;summary&quot;]))</system-out>
 		</testcase>
-		<testcase name="Mutant #825" file="src/poodle/data_types/data.py" line="189">
+		<testcase name="Mutant #834" file="src/poodle/data_types/data.py" line="206">
 			<system-out>        d = asdict(self)</system-out>
 		</testcase>
-		<testcase name="Mutant #826" file="src/poodle/data_types/data.py" line="190">
+		<testcase name="Mutant #835" file="src/poodle/data_types/data.py" line="207">
 			<system-out>        d[&quot;mutant_trials&quot;] = [trial.to_dict() for trial in self.mutant_trials]</system-out>
 		</testcase>
-		<testcase name="Mutant #827" file="src/poodle/data_types/data.py" line="190">
+		<testcase name="Mutant #836" file="src/poodle/data_types/data.py" line="207">
 			<system-out>        d[&quot;mutant_trials&quot;] = [trial.to_dict() for trial in self.mutant_trials]</system-out>
 		</testcase>
-		<testcase name="Mutant #828" file="src/poodle/data_types/data.py" line="191">
+		<testcase name="Mutant #837" file="src/poodle/data_types/data.py" line="208">
 			<system-out>        d[&quot;summary&quot;] = self.summary.to_dict()</system-out>
 		</testcase>
-		<testcase name="Mutant #829" file="src/poodle/data_types/data.py" line="191">
+		<testcase name="Mutant #838" file="src/poodle/data_types/data.py" line="208">
 			<system-out>        d[&quot;summary&quot;] = self.summary.to_dict()</system-out>
 		</testcase>
 	</testsuite>
