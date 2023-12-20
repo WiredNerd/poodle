@@ -1,5 +1,5 @@
 [![Homepage](https://img.shields.io/badge/Homepage-github-white)](https://github.com/WiredNerd/poodle)
-[![python>=3.9](https://img.shields.io/badge/python->=3.8-orange)](https://pypi.org/project/poodle)
+[![python>=3.9](https://img.shields.io/badge/python->=3.9-orange)](https://pypi.org/project/poodle)
 [![PyPI - Version](https://img.shields.io/pypi/v/poodle)](https://pypi.org/project/poodle)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/poodle)](https://pypi.org/project/poodle)
 [![PyPI - License](https://img.shields.io/pypi/l/poodle)](https://github.com/WiredNerd/poodle/blob/main/LICENSE)
@@ -12,7 +12,7 @@
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 [![Code Style: black](https://img.shields.io/badge/Code_Style-Black-black)](https://black.readthedocs.io)
 [![Linter: ruff](https://img.shields.io/badge/Linter-ruff-purple)](https://beta.ruff.rs/docs/)
-<!-- [![Snyk Security](https://img.shields.io/badge/Snyk%20Security-monitored-FF66FF)](https://snyk.io/) -->
+[![Snyk Security](https://img.shields.io/badge/Snyk%20Security-monitored-FF66FF)](https://snyk.io/)
 
 # Poodle
 
@@ -43,7 +43,7 @@ Usage: poodle [OPTIONS] [SOURCES]...
 
 Options:
   -c PATH         Configuration File.
-  -q              Quiet mode: q, qq, or qq
+  -q              Quiet mode: q, qq, or qqq
   -v              Verbose mode: v, vv, or vvv
   -w INTEGER      Maximum number of parallel workers.
   --exclude TEXT  Add a regex exclude file filter. Multiple allowed.

@@ -1,14 +1,140 @@
-# Usage & Configuration
+# Using Poodle
 
 ```text
-              /\___/\              ,'.-.'.           .-"-.
-              `)9 9('              '\~ o/`          /|6 6|\
-              {_:Y:.}_              { @ }          {/(_0_)\}
---------------( )U-'( )----------oOo-----oOo------oOo--U--oO--------------------
-____|_______|_______|_______|_______|_______|_______|_______|_______|_______|___
+ _   _
+/(. .)\    )
+  (*)____/|
+  /       |
+ /   |--\ |
+(_)(_)  (_)
 ```
 
 
+
+## Getting Started
+
+The most important thing is to tell poodle where your source code is.  By default, it will look for a folder named "src" or "lib".  But if the parent folder for your project is something else, you'll need to tell poodle where to look.
+
+:::{tip}
+In some systems it's necessary to prefix poodle command like: `python3 -m poodle`
+:::
+
+:::{dropdown} Project with "src" folder:
+:open:
+
+Example:
+* src
+  * main.py
+  * util.py
+  * query
+    * \_\_init\_\_.py
+    * database.py
+* test
+  * \_\_init\_\_.py
+  * test_main.py
+  * test_util.py
+* pyproject.toml
+* requirements.txt
+
+Running with just `poodle` will find the folder.
+:::
+
+:::{dropdown} Project with "sources" folder:
+Example:
+* sources
+  * main.py
+  * util.py
+  * query
+    * \_\_init\_\_.py
+    * database.py
+* tests
+  * \_\_init\_\_.py
+  * test_main.py
+  * test_util.py
+* pyproject.toml
+* requirements.txt
+
+In this case, need to specify source folder like: `poodle sources`
+
+DO NOT specify the package folders like "sources/query" as a source. Poodle needs the folder that contains the package folder.
+:::
+
+:::{dropdown} Project with multiple sources to mutate:
+Example:
+* application
+  * main.py
+  * query
+    * \_\_init\_\_.py
+    * database.py
+* layer
+  * util.py
+* tests
+  * \_\_init\_\_.py
+  * test_main.py
+  * test_util.py
+* pyproject.toml
+* requirements.txt
+
+You can specify multiple folders to mutate like: `poodle application layer`
+
+DO NOT specify the package folders like "application/query" as a source. Poodle needs the folder that contains the package folder.
+:::
+
+:::{dropdown} Flat project:
+Example:
+* query
+  * \_\_init\_\_.py
+  * database.py
+* main.py
+* pyproject.toml
+* requirements.txt
+* test_main.py
+* test_util.py
+* util.py
+
+In this case, specify the source as the current folder: `poodle .`
+
+DO NOT specify the package folders like "query" as a source
+:::
+
+:::{dropdown} Flat Package project:
+Example:
+* app
+  * \_\_init\_\_.py
+  * main.py
+  * util.py
+  * query
+    * \_\_init\_\_.py
+    * database.py
+* test
+  * \_\_init\_\_.py
+  * test_main.py
+  * test_util.py
+* pyproject.toml
+* requirements.txt
+
+In this case, specify the source as the current folder: `poodle .`
+
+DO NOT specify the package folders like "app" or "app/query" as a source. Poodle needs the folder that contains the package folder.
+:::
+
+### Configuration File
+
+Poodle accepts several types of configuration files.
+
+First is you can create `poodle_config.py` module. This is the most flexible option especially if you are adding custom code.
+
+Second is a key/value config file like `pyproject.toml` or `poodle.toml`.  All options are listed in the [Options](options.md#configuration-file) page.
+
+if you need to specify folders for your project, recommend putting that setting in your chosen config file with option [source_folders](options.md#source_folders)
+
+### Start Small
+
+If you have a lot of modules to scan, it can be helpful to start by scanning one or two at a time.  This can be accomplished with the `--only` flag.
+
+```bash
+poodle --only main.py --only database.py
+```
 
 ## Terminology
 
@@ -21,6 +147,9 @@ Mutation
 
 Trial
 : A run of the entire test suite.  Usually to validate if the Test Suite can find the Mutation.
+
+Passed
+: When a Test Suite or Test Case ends without an error.
 
 Failure
 : When a Test Suite or Test Case ends with an error or non-successful return code.
@@ -37,303 +166,66 @@ Timeout
 Errors
 : If a Trial results in an exception that is not normally expected from the Test Suite.
 
-## Command Line
+## Whitelisting
 
-```
-Usage: poodle [OPTIONS] [SOURCES]...
+Whitelisting is used to prevent mutations from being tested. This can be helpful in cases where mutation can't reasonably be tested. There are several methods to whitelist code in poodle.
 
-  Poodle Mutation Test Tool.
+### Line Comments
 
-Options:
-  -c PATH         Configuration File.
-  -q              Quiet mode: q, qq, or qq
-  -v              Verbose mode: v, vv, or vvv
-  -w INTEGER      Maximum number of parallel workers.
-  --exclude TEXT  Add a regex exclude file filter. Multiple allowed.
-  --only TEXT     Glob pattern for files to mutate. Multiple allowed.
-  --help          Show this message and exit.
-```
+The best way to block a mutation on a specific line is to add a comment to the line.
 
-### Command Line Options
-
-* SOURCES [source_folders](#source_folders)
-* -c [config_file](#config_file)
-* -q [Quiet Mode]()
-* -v [Verbose Mode]()
-* -w [Max Workers]()
-* --exclude []()
-* --only [only_files](#only_files)
-
-
-### Quiet Mode
-
-This option suppresses normal output, and set's log level to ERROR
-
-### Verbose Mode
-
-This set's log level to INFO
-
-### max_workers
-
-By default, poodle sets the number of workers to be one less than the available CPUs from `os.sched_getaffinity` or `os.cpu_count`.  Use this option to manually set the number of workers.  With too few workers, available CPU is underutilized.  With too many workers, additional overhead of process switching slows execution.
-
-### exclude
-
-This option excludes files that match the specified regex from the mutation processes.
-
-Multiple allowed.
-
-### only
-
-This option restricts mutation to only the specified file
-
-## Configuration Module
-
-Poodle imports module `poodle_config.py`, if available, to set configuration options.
-
-## Configuration File
-
-Poodle will search for available configuration files, and use the first available file from this list:
-
-1. poodle.toml
-2. pyproject.toml
-
-## OPTIONS
-
-Unless otherwise stated, options are chosen in this priority order:
-1. Command Line options
-2. Module poodle_config.py
-3. Chosen [Configuration File](#config_file)
-
-### config_file
-
-By default, Poodle will search for available configuration files, and use the first available file from this list:
-
-1. poodle.toml
-2. pyproject.toml
-
-the config_file option is used to specify an alternate config file.
-
-Do not use config_file for specifying location of poodle_config.py
-
-Accepted formats: toml
-
-::::{tab-set}
-
-:::{tab-item} Command Line
-poodle -c=config.toml
-:::
-
-:::{tab-item} poodle_config.py
+:::{card}
 ```python3
-config_file = "config.toml"
+x = y + 3  # nomut: Number
 ```
++++
+This prevents only the "Number" mutator from mutating the statement.
 :::
 
-
-::::
-
-### source_folders
-
-Folder(s) that contain your modules and/or packages.
-
-**Default:** ["src", "lib"]
-
-Running each Trial consists of 3 steps:
-
-1. Copy contents of a source folder to a temporary location.
-2. Apply a single mutation to the copy of the source file.
-3. Run test suite with the temporary folder added to the python path.
-
-The list of source folders is a root folder that should be copied to a temporary location.
-
-Typically, this is a folder like 'src' or 'lib'.  But could be almost anything depending on your project structure.  
-
-It should be the folder that contains your top level modules and/or packages.  It should not be the package folder itself.
-
-If the python files are in the working folder, specify this as '.'
-
-More than one can be specified.
-
-:::{note}
-Any folders specified in command line or in config files must exist.  If none is specified, it will use 'src' and/or 'lib' only if they exist.
-:::
-
-::::{tab-set}
-
-:::{tab-item} Command Line
-```bash
-poodle myapp myotherapp
-```
-:::
-
-:::{tab-item} poodle_config.py
+:::{card}
 ```python3
-source_folders = ["myapp", "myotherapp"]
+x = y + 3  # nomut: Number, BinOp
 ```
++++
+This prevents only the "Number" and "BinOp" mutators from mutating the statement.
 :::
 
-:::{tab-item} poodle.toml
-```toml
-[poodle]
-source_folders = ["myapp", "myotherapp"]
-```
-:::
-
-:::{tab-item} pyproject.toml
-```toml
-[tool.poodle]
-source_folders = ["myapp", "myotherapp"]
-```
-:::
-
-::::
-
-### only_files
-
-Only run mutation on files that match specified [GLOB](https://facelessuser.github.io/wcmatch/glob/) patterns.
-
-When not specified, all python files that are in a [source_folder](#source_folders), and don't match a [file_filter](#file_filters) are mutated.
-
-**Default:** `None`
-
-::::{tab-set}
-
-:::{tab-item} Command Line
-```bash
-poodle --only cli.py --only model_*.py
-```
-:::
-
-:::{tab-item} poodle_config.py
+:::{card}
 ```python3
-only_files = ["cli.py", "model_*.py"]
+x = y + 3  # nomut
 ```
-:::
-
-:::{tab-item} poodle.toml
-```toml
-[poodle]
-only_files = ["cli.py", "model_*.py"]
-```
-:::
-
-:::{tab-item} pyproject.toml
-```toml
-[tool.poodle]
-only_files = ["cli.py", "model_*.py"]
-```
-:::
-
-::::
-
-### file_flags
-
-Poodle uses glob matching from the [wcmatch](https://facelessuser.github.io/wcmatch/glob/) package for matching and filtering files.
-
-This option is to set the flags used when searching source folders for files to mutate, and applying exclude filters.  These flags are used either for searching with [only_files](#only_files) or with [file_filters](#file_filters).
-
-**Default:** `wcmatch.glob.GLOBSTAR | wcmatch.glob.NODIR`
-
-::::{tab-set}
-
-:::{tab-item} poodle_config.py
+or
 ```python3
-from wcmatch import glob
-file_flags = glob.GLOBSTAR | glob.NODIR | glob.DOTGLOB
+x = y + 3  # nomut: all
 ```
-:::
-
-:::{tab-item} poodle.toml
-```toml
-[poodle]
-file_flags = 16704
-```
-
-:::
-
-:::{tab-item} pyproject.toml
-```toml
-[tool.poodle]
-file_flags = 16704
-```
-:::
-
-::::
-
-:::{tip}
-Recommend setting this value in poodle_config.py only.  It must resolve to an `int` value. 
-
-Setting this in toml has to be resolved int value of combining the flags.
-:::
-
-
-### file_filters
-
-Apply these [regex](https://docs.python.org/3/library/re.html#regular-expression-syntax) filters to the list of files to be mutated.
-
-Files that match these regex filters will NOT be mutated.
-
-**Default:** `[r"^test_.*\.py", r"_test\.py$"]`
-
-::::{tab-set}
-
-:::{tab-item} Command Line
-```bash
-poodle --exclude sql_.*\.py --only text_.*\.py
-```
-:::
-
-:::{tab-item} poodle_config.py
+or
 ```python3
-only_files = ["cli.py", "model_*.py"]
+x = y + 3  # pragma: no mutate
 ```
++++
+This prevents all mutators from mutating the statement.
 :::
 
-:::{tab-item} poodle.toml
-```toml
-[poodle]
-only_files = ["cli.py", "model_*.py"]
+:::{card}
+```python3
+x = y + 3  # nomut: start
+x += 4
+y *= 6  # nomut: end
 ```
+or
+```python3
+x = y + 3  # nomut: on
+x += 4
+y *= 6  # nomut: off
+```
++++
+This prevents all mutators from mutating all three of these statements.
 :::
 
-:::{tab-item} pyproject.toml
-```toml
-[tool.poodle]
-only_files = ["cli.py", "model_*.py"]
-```
-:::
+### Whitelisting Entire Files
 
-::::
+The best way to prevent mutation on an entire file is to add it to the [file_filters](options.md#file_filters) option in your configuration file.
 
-### file_copy_flags
+### Disabling a Mutator
 
-### file_copy_filters
-
-### work_folder
-
-### max_workers
-
-### log_format
-
-### log_level
-
-### echo_enabled
-
-### mutator_opts
-
-### skip_mutators
-
-### add_mutators
-
-### min_timeout
-
-### timeout_multiplier
-
-### runner
-
-### runner_opts
-
-### reporters
-
-### reporter_opts
+You can also disable a mutator completely using the [skip_mutators](options.md#skip_mutators) option in your configuration file.

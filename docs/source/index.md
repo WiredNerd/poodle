@@ -10,7 +10,7 @@ Poodle Mutation Tester                  "--'"--'
 
 "A breed so perfect, so elegant, and so intelligent, that people decided to breed them with, well, everything." - [Girl With The Dogs](https://www.youtube.com/@GirlWithTheDogs)
 
-[![PyPI - Version](https://img.shields.io/pypi/v/pytest-sort)](https://pypi.org/project/poodle)
+[![PyPI - Version](https://img.shields.io/pypi/v/poodle)](https://pypi.org/project/poodle)
 [![Homepage](https://img.shields.io/badge/Homepage-github-white)](https://github.com/WiredNerd/poodle)
 
 Poodle is an tool for Mutation Testing your Python projects.
@@ -40,7 +40,7 @@ Usage: poodle [OPTIONS] [SOURCES]...
 
 Options:
   -c PATH         Configuration File.
-  -q              Quiet mode: q, qq, or qq
+  -q              Quiet mode: q, qq, or qqq
   -v              Verbose mode: v, vv, or vvv
   -w INTEGER      Maximum number of parallel workers.
   --exclude TEXT  Add a regex exclude file filter. Multiple allowed.
@@ -50,9 +50,15 @@ Options:
 
 ## Table of Contents
 ```{toctree}
-:maxdepth: 2
-usage.md
+:maxdepth: 1
+
 mutation.md
+usage.md
+options.md
+mutators.md
+runners.md
+reporters.md
+credits.md
 ```
 
 ## Contribute
