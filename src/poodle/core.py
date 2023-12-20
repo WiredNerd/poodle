@@ -12,7 +12,7 @@ from .data_types import PoodleConfig, PoodleWork
 from .mutate import create_mutants_for_all_mutators, initialize_mutators
 from .report import generate_reporters
 from .run import clean_run_each_source_folder, get_runner, run_mutant_trails
-from .util import calc_timeout, create_temp_zips, pprint_str
+from .util import calc_timeout, create_temp_zips, pprint_str, create_unified_diff
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +39,9 @@ def main_process(config: PoodleConfig) -> None:
         clean_run_results = clean_run_each_source_folder(work)
         timeout = calc_timeout(config, clean_run_results)
         results = run_mutant_trails(work, mutants, timeout)
+
+        for trial in results.mutant_trials:
+            trial.mutant.unified_diff = create_unified_diff(trial.mutant)
 
         for reporter in work.reporters:
             reporter(config=config, echo=work.echo, testing_results=results)

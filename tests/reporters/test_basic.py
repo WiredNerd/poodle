@@ -27,7 +27,7 @@ class TestReportSummary:
         mock_echo.assert_has_calls(
             [
                 mock.call(""),
-                mock.call(click.style("!!! No mutants found to test !!!", fg="yellow")),
+                mock.call("!!! No mutants found to test !!!", fg="yellow"),
             ]
         )
 
@@ -41,7 +41,7 @@ class TestReportSummary:
         mock_echo.assert_has_calls(
             [
                 mock.call(""),
-                mock.call(click.style("*** Results Summary ***", fg="green")),
+                mock.call("*** Results Summary ***", fg="green"),
                 mock.call("Testing found 100.0% of Mutants."),
             ]
         )
@@ -56,7 +56,7 @@ class TestReportSummary:
         mock_echo.assert_has_calls(
             [
                 mock.call(""),
-                mock.call(click.style("*** Results Summary ***", fg="green")),
+                mock.call("*** Results Summary ***", fg="green"),
                 mock.call("Testing found 88.9% of Mutants."),
                 mock.call(" - 2 mutant(s) were not found."),
             ]
@@ -72,7 +72,7 @@ class TestReportSummary:
         mock_echo.assert_has_calls(
             [
                 mock.call(""),
-                mock.call(click.style("*** Results Summary ***", fg="green")),
+                mock.call("*** Results Summary ***", fg="green"),
                 mock.call("Testing found 44.4% of Mutants."),
                 mock.call(" - 2 mutant(s) caused trial to timeout."),
             ]
@@ -88,7 +88,7 @@ class TestReportSummary:
         mock_echo.assert_has_calls(
             [
                 mock.call(""),
-                mock.call(click.style("*** Results Summary ***", fg="green")),
+                mock.call("*** Results Summary ***", fg="green"),
                 mock.call("Testing found 80.0% of Mutants."),
                 mock.call(" - 2 mutant(s) could not be tested due to an error."),
             ]
@@ -104,7 +104,7 @@ class TestReportSummary:
         mock_echo.assert_has_calls(
             [
                 mock.call(""),
-                mock.call(click.style("*** Results Summary ***", fg="green")),
+                mock.call("*** Results Summary ***", fg="green"),
                 mock.call("Testing found 40.0% of Mutants."),
                 mock.call(" - 2 mutant(s) were not found."),
                 mock.call(" - 2 mutant(s) caused trial to timeout."),
@@ -127,6 +127,7 @@ class TestReportNotFound:
         reason_code=MutantTrialResult.RC_NOT_FOUND,
         reason_desc=None,
         duration=1.0,
+        unified_diff=None,
     ):
         source_file = None
         if isinstance(source, str):
@@ -143,6 +144,7 @@ class TestReportNotFound:
                 text=text,
                 source_folder=Path(),
                 source_file=source_file,
+                unified_diff=unified_diff,
             ),
             result=MutantTrialResult(
                 passed=passed,
@@ -164,23 +166,40 @@ class TestReportNotFound:
         report_not_found(config=PoodleConfigStub(), echo=mock_echo, testing_results=results)
         mock_echo.assert_not_called()
 
-    def test_failed(self, mock_echo: mock.MagicMock):
+    @pytest.mark.parametrize(
+        ("reporter_opts", "file"),
+        [
+            ({}, None),
+            ({"not_found_file": "outfile.txt"}, "outfile.txt"),
+        ],
+    )
+    def test_failed(self, reporter_opts, file, mock_echo: mock.MagicMock):
         source_file = mock.MagicMock()
         source_file.read_text.return_value.splitlines.return_value = ["lambda x: x + 1\n"]
         source_file.resolve.return_value = "src/example.py"
         source_file.__str__.return_value = "example.py"  # type: ignore [attr-defined]
+
+        diff_str = (
+            "--- src/example.py\n"
+            "+++ [Mutant] src/example.py:1\n"
+            "@@ -1 +1 @@\n"
+            "-lambda x: x + 1\n"
+            "+lambda x: None\n"
+        )
 
         results = TestingResults(
             mutant_trials=[
                 self.create_trial(
                     mutator_name="NotFound",
                     source=source_file,
+                    unified_diff=diff_str,
                 ),
                 self.create_trial(
                     mutator_name="ReasonDesc",
                     source=source_file,
                     reason_code=MutantTrialResult.RC_OTHER,
                     reason_desc="error message",
+                    unified_diff=diff_str,
                 ),
                 self.create_trial(
                     mutator_name="Passed",
@@ -194,38 +213,29 @@ class TestReportNotFound:
             summary=TestingSummary(),
         )
         report_not_found(
-            config=PoodleConfigStub(reporter_opts={}),
+            config=PoodleConfigStub(reporter_opts=reporter_opts),
             echo=mock_echo,
             testing_results=results,
         )
-        diff_str = (
-            "--- src/example.py\n"
-            "+++ [Mutant] src/example.py:1\n"
-            "@@ -1 +1 @@\n"
-            "-lambda x: x + 1\n"
-            "+lambda x: None\n"
-        )
-        expected_report = [
-            "",
-            click.style("*** Mutants Not Found ***", fg="yellow"),
-            "",
-            "Mutant Trial Result: Mutant Not Found",
-            "Mutator: NoSource",
-            "source_file=None lineno=1 col_offset=10 end_lineno=1 end_col_offset=15",
-            "text:",
-            "None",
-            "",
-            "Mutant Trial Result: Mutant Not Found",
-            "Mutator: NotFound",
-            diff_str,
-            "",
-            "Mutant Trial Result: other",
-            "Mutator: ReasonDesc",
-            "error message",
-            diff_str,
-        ]
-        actual_report = [args[0][0] for args in mock_echo.call_args_list]
-        assert actual_report == expected_report
 
-        source_file.read_text.assert_called_with("utf-8")
-        source_file.read_text.return_value.splitlines.assert_called_with(keepends=True)
+        mock_echo.assert_has_calls(
+            [
+                mock.call("", file=file),
+                mock.call("*** Mutants Not Found ***", fg="yellow", file=file),
+                mock.call("", file=file),
+                mock.call("Mutant Trial Result: Mutant Not Found", file=file),
+                mock.call("Mutator: NoSource", file=file),
+                mock.call("source_file=None lineno=1 col_offset=10 end_lineno=1 end_col_offset=15", file=file),
+                mock.call("text:", file=file),
+                mock.call("None", file=file),
+                mock.call("", file=file),
+                mock.call("Mutant Trial Result: Mutant Not Found", file=file),
+                mock.call("Mutator: NotFound", file=file),
+                mock.call(diff_str, file=file),
+                mock.call("", file=file),
+                mock.call("Mutant Trial Result: other", file=file),
+                mock.call("Mutator: ReasonDesc", file=file),
+                mock.call("error message", file=file),
+                mock.call(diff_str, file=file),
+            ]
+        )
