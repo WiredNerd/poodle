@@ -95,7 +95,7 @@ class TestCommandLineRunner:
 
             logger_mock.debug.assert_any_call("command: %s", f"pytest -x --assert=plain -o pythonpath='{python_path}'")
 
-            assert out.passed is True
+            assert out.found is True
             assert out.reason_code == out.RC_FOUND
             assert out.reason_desc == "output\nerror"
 
@@ -167,7 +167,7 @@ class TestCommandLineRunner:
 
             logger_mock.debug.assert_any_call("command: %s", f"pytest -x --assert=plain -o pythonpath='{python_path}'")
 
-            assert out.passed is True
+            assert out.found is True
             assert out.reason_code == out.RC_FOUND
             assert out.reason_desc == "output\nerror"
 
@@ -227,7 +227,7 @@ class TestCommandLineRunner:
                 timeout=1,
             )
 
-            assert out.passed is True
+            assert out.found is True
             assert out.reason_code == out.RC_FOUND
             assert out.reason_desc == "output\nerror"
 
@@ -287,7 +287,7 @@ class TestCommandLineRunner:
                 timeout=1,
             )
 
-            assert out.passed is False
+            assert out.found is False
             assert out.reason_code == out.RC_NOT_FOUND
             assert out.reason_desc is None
 
@@ -347,7 +347,7 @@ class TestCommandLineRunner:
                 timeout=1,
             )
 
-            assert out.passed is True
+            assert out.found is True
             assert out.reason_code == out.RC_OTHER
             assert out.reason_desc == "output\nerror"
 
@@ -376,6 +376,6 @@ class TestCommandLineRunner:
                 timeout=10.0,
             )
 
-            assert out.passed is False
+            assert out.found is False
             assert out.reason_code == MutantTrialResult.RC_TIMEOUT
             assert out.reason_desc == "TimeoutExpired Command 'pytest tests' timed out after 10.0 seconds"

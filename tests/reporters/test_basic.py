@@ -146,7 +146,7 @@ class TestReportNotFound:
                 unified_diff=unified_diff,
             ),
             result=MutantTrialResult(
-                passed=passed,
+                found=passed,
                 reason_code=reason_code,
                 reason_desc=reason_desc,
             ),

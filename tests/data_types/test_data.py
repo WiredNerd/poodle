@@ -211,9 +211,9 @@ class TestMutant:
 
 class TestMutantTrialResult:
     def test_mutant_trial_result(self):
-        result = MutantTrialResult(passed=True, reason_code="test", reason_desc="it worked")
+        result = MutantTrialResult(found=True, reason_code="test", reason_desc="it worked")
 
-        assert result.passed is True
+        assert result.found is True
         assert result.reason_code == "test"
         assert result.reason_desc == "it worked"
         assert result.RC_FOUND == "mutant_found"
@@ -224,11 +224,11 @@ class TestMutantTrialResult:
 
     def test_mutant_trial_result_min(self):
         result = MutantTrialResult(
-            passed=True,
+            found=True,
             reason_code="test",
         )
 
-        assert result.passed is True
+        assert result.found is True
         assert result.reason_code == "test"
         assert result.reason_desc is None
         assert result.RC_FOUND == "mutant_found"
@@ -239,14 +239,14 @@ class TestMutantTrialResult:
 
     def mutant_trial_result_object(self):
         return MutantTrialResult(
-            passed=True,
+            found=True,
             reason_code=MutantTrialResult.RC_FOUND,
             reason_desc="it worked",
         )
 
     def mutant_trial_result_dict(self):
         return {
-            "passed": True,
+            "found": True,
             "reason_code": MutantTrialResult.RC_FOUND,
             "reason_desc": "it worked",
         }
@@ -266,7 +266,7 @@ class TestMutantTrialResult:
 class TestMutantTrial:
     def test_mutant_trial(self):
         mutant = Mutant(source_folder=Path(), source_file=None, **vars(TestFileMutation.create_file_mutation()))
-        result = MutantTrialResult(passed=True, reason_code="test")
+        result = MutantTrialResult(found=True, reason_code="test")
         trial = MutantTrial(mutant=mutant, result=result, duration=1.2)
         assert trial.mutant == mutant
         assert trial.result == result
@@ -438,7 +438,7 @@ class TestTestingSummary:
 class TestTestingResults:
     def test_testing_results(self):
         mutant = Mutant(source_folder=Path(), source_file=None, **vars(TestFileMutation.create_file_mutation()))
-        result = MutantTrialResult(passed=True, reason_code="test")
+        result = MutantTrialResult(found=True, reason_code="test")
         trial = MutantTrial(mutant=mutant, result=result, duration=1.2)
         testing_summary = TestingSummary(trials=4)
         results = TestingResults(

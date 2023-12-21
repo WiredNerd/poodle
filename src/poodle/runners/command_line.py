@@ -64,14 +64,14 @@ def runner(
         )
     except TimeoutExpired as te:
         return MutantTrialResult(
-            passed=False,
+            found=False,
             reason_code=MutantTrialResult.RC_TIMEOUT,
             reason_desc=f"TimeoutExpired {te}",
         )
 
     if result.returncode == 1:
         return MutantTrialResult(
-            passed=True,
+            found=True,
             reason_code=MutantTrialResult.RC_FOUND,
             reason_desc=result.stdout.decode("utf-8", errors="replace")  # nomut: String
             + "\n"
@@ -79,11 +79,11 @@ def runner(
         )
     if result.returncode == 0:
         return MutantTrialResult(
-            passed=False,
+            found=False,
             reason_code=MutantTrialResult.RC_NOT_FOUND,
         )
     return MutantTrialResult(
-        passed=True,
+        found=True,
         reason_code=MutantTrialResult.RC_OTHER,
         reason_desc=result.stdout.decode("utf-8", errors="replace")  # nomut: String
         + "\n"
