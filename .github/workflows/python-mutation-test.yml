@@ -1,14 +1,6 @@
 name: Python Mutation Test
 
 on: 
-  push:
-    paths:
-      - .github/workflows/python-mutation-test.yml
-  pull_request:
-    paths:
-      - requirements.txt
-      - src/**
-      - tests/**
   workflow_dispatch:
 
 concurrency: updates-project
