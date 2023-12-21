@@ -101,7 +101,7 @@ class Mutant(FileMutation, PoodleSerialize):
 class MutantTrialResult(PoodleSerialize):
     """Mutation Trial Result for a Mutant."""
 
-    passed: bool
+    found: bool
     reason_code: str
     reason_desc: str | None = None
 
@@ -158,7 +158,7 @@ class TestingSummary(PoodleSerialize):
         """Update Testing Summary with data from MutantTrialResult."""
         if isinstance(result, MutantTrialResult):
             self.tested += 1
-            if result.passed:
+            if result.found:
                 self.found += 1
             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
                 self.not_found += 1

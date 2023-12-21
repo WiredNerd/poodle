@@ -19,11 +19,10 @@ display_reason_code = {
 def get_include_statuses(config: PoodleConfig, prefix: str) -> set[bool]:
     """Get set of statuses to include in report."""
     include_statuses = set()
-    if config.reporter_opts.get(f"{prefix}_include_trials", True):
-        if not config.reporter_opts.get(f"{prefix}_report_found", False):
-            include_statuses.add(True)  # noqa: FBT003
-        if config.reporter_opts.get(f"{prefix}_report_not_found", True):
-            include_statuses.add(False)  # noqa: FBT003
+    if not config.reporter_opts.get(f"{prefix}_report_found", False):
+        include_statuses.add(True)  # noqa: FBT003
+    if config.reporter_opts.get(f"{prefix}_report_not_found", True):
+        include_statuses.add(False)  # noqa: FBT003
     return include_statuses
 
 
@@ -47,7 +46,7 @@ def report_summary(echo: Callable, testing_results: TestingResults, *_, **__) ->
 
 def report_not_found(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -> None:
     """Echo information about Trials that did not pass."""
-    failed_trials = [trial for trial in testing_results.mutant_trials if not trial.result.passed]
+    failed_trials = [trial for trial in testing_results.mutant_trials if not trial.result.found]
     if not failed_trials:
         return
 
@@ -92,7 +91,7 @@ def report_not_found(config: PoodleConfig, echo: Callable, testing_results: Test
 def report_json(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -> None:
     """Create JSON file with test results."""
     include_statuses = get_include_statuses(config, "json")
-    mutant_trials = [trial for trial in testing_results.mutant_trials if trial.result.passed in include_statuses]
+    mutant_trials = [trial for trial in testing_results.mutant_trials if trial.result.found in include_statuses]
 
     out_results = TestingResults(
         summary=testing_results.summary  # type: ignore [arg-type]

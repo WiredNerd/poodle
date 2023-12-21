@@ -63,7 +63,7 @@ def clean_run_trial(work: PoodleWork, folder: Path) -> MutantTrial:
         runner=work.runner,
         timeout=None,
     )
-    if mutant_trial.result.passed:  # not expected
+    if mutant_trial.result.found:  # not expected
         work.echo(style("FAILED", fg="red"))
         raise PoodleTrialRunError("Clean Run Failed", mutant_trial.result.reason_desc)
 
