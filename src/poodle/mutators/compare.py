@@ -29,6 +29,7 @@ class ComparisonMutator(ast.NodeVisitor, Mutator):
 
     type_map: ClassVar[dict[type, list[type]]] = {
         ast.Eq: [ast.NotEq],
+        ast.NotEq: [ast.Eq],
         ast.Lt: [ast.GtE, ast.LtE],
         ast.LtE: [ast.Gt, ast.Lt],
         ast.Gt: [ast.LtE, ast.GtE],
@@ -76,7 +77,7 @@ class ComparisonMutator(ast.NodeVisitor, Mutator):
 
     def visit_BoolOp(self, node: ast.BoolOp) -> None:
         """Identify replacement Operations and create Mutants."""
-        if self.is_annotation(node):
+        if self.is_annotation(node) or type(node.op) not in self.type_map:
             return
 
         text = ast.unparse(node)
