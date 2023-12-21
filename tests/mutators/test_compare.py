@@ -38,6 +38,7 @@ class TestComparisonMutator:
         ("source", "mutants"),
         [
             ("a == b", ["a != b"]),
+            ("a != b", ["a == b"]),
             ("a < b", ["a >= b", "a <= b"]),
             ("a <= b", ["a > b", "a < b"]),
             ("a > b", ["a <= b", "a >= b"]),
@@ -91,5 +92,15 @@ class TestComparisonMutator:
             ],
         )
         file_mutants = mutator.create_mutations(ast.parse(module))
+
+        assert file_mutants == []
+
+    def test_unrecognized_op(self, mock_echo):
+        mutator = ComparisonMutator(config=mock.MagicMock(mutator_opts={}), echo=mock_echo)
+
+        bool_op = ast.BoolOp()
+        bool_op.op = ast.Constant()
+
+        file_mutants = mutator.create_mutations(bool_op)
 
         assert file_mutants == []
