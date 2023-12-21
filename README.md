@@ -25,7 +25,7 @@ Mutation Testing proves the quality of your test suite by introducing bugs in yo
 The goal of Poodle is to be highly efficient, configurable, and extendable.
 
 * Multi-Threaded execution
-* Highly Configurable (toml and py)
+* Highly Configurable 
 * Plug in custom code
 
 ## Quick Start

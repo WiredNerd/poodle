@@ -1,6 +1,7 @@
 # Poodle's Mutators
 
-```text
+```{code-block} text
+:class: .no-copybutton
     /''\,,,,,
    |    |    \           ___
     \   /  ^ |        __/_  `.  .-"""-.

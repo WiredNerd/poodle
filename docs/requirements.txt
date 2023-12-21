@@ -1,3 +1,4 @@
 furo
 myst_parser[linkify]
 sphinx_design
+sphinx-copybutton

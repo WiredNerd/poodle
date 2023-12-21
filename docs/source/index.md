@@ -1,5 +1,6 @@
 # Poodle
-```text
+```{code-block} text
+:class: .no-copybutton
     ____                  ____         ''',
    / __ \____  ____  ____/ / /__    o_)O \)____)"
   / /_/ / __ \/ __ \/ __  / / _ \    \_        )
@@ -29,11 +30,13 @@ The goal of Poodle is to be highly efficient, configurable, and extendable.
 
 Installation:
 
-```
+```bash
 pip install poodle --upgrade
 ```
 
-```
+```{code-block} text
+:class: .no-copybutton
+
 Usage: poodle [OPTIONS] [SOURCES]...
 
   Poodle Mutation Test Tool.

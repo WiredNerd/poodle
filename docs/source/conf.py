@@ -14,7 +14,11 @@ release = ""
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["myst_parser", "sphinx_design"]
+extensions = [
+    "myst_parser",
+    "sphinx_design",
+    "sphinx_copybutton",
+]
 
 source_suffix = {
     ".rst": "restructuredtext",
@@ -55,3 +59,5 @@ html_theme = "furo"
 html_static_path = ["_static"]
 html_logo = "_static/poodle-logo.gif"
 html_favicon = "_static/poodle.ico"
+
+copybutton_selector = "div:not(.no-copybutton) > div.highlight > pre"

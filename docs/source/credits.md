@@ -1,6 +1,7 @@
 # Credits
 
-```text
+```{code-block} text
+:class: .no-copybutton
                                             _=,_
                                          o_/6 /#\
                     "You're not a Dog!"	 \__ |##/

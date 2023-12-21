@@ -1,6 +1,7 @@
 # Configuration Options
 
-```text
+```{code-block} text
+:class: .no-copybutton
               /\___/\              ,'.-.'.           .-"-.
               `)9 9('              '\~ o/`          /|6 6|\
               {_:Y:.}_              { @ }          {/(_0_)\}
@@ -21,7 +22,8 @@ Poodle will search for available configuration files, and use the first availabl
 
 ## Command Line
 
-```
+```{code-block} text
+:class: .no-copybutton
 Usage: poodle [OPTIONS] [SOURCES]...
 
   Poodle Mutation Test Tool.
@@ -643,8 +645,11 @@ operator_level = "min"
 
 #### Builtin mutator_opts
 
-* compare_filters: [ComparisonMutator](mutators.md#comparison-mutator)
-* operator_level: [OperationMutator](mutators.md#operator_level)
+Comparison Mutator:
+* [compare_filters](mutators.md#comparison-mutator)
+
+Operation Mutator:
+* [operator_level](mutators.md#operator_level)
 
 ### runner
 
@@ -692,7 +697,7 @@ runner = "poodle-ext.runners.cool_runner"
 
 This dict contains options that are used by various runners.  Options for builtin runners are listed below, and detailed on the Runner page.
 
-**Default:** `{"command_line": "pytest -x --assert=plain -o pythonpath="}`
+**Default:** `{}`
 
 ::::{tab-set}
 
@@ -729,8 +734,9 @@ RUN_MODE = "MUTATION"
 
 #### Builtin runner_opts
 
-* command_line: [Command Line Runner](runners.md#command_line)
-* command_line_env: [Command Line Runner](runners.md#command_line_env)
+Command Line Runner:
+* [command_line](runners.md#command_line)
+* [command_line_env](runners.md#command_line_env)
 
 ### min_timeout
 
@@ -879,4 +885,11 @@ not_found_file = "mutants-not-found.txt"
 
 #### Builtin reporter_opts
 
-* not_found_file: [Not Found Reporter](reporters.md#not_found_file)
+Not Found Reporter:
+* [not_found_file](reporters.md#not_found_file)
+
+JSON Reporter:
+* [json_include_summary](reporters.md#json_include_summary)
+* [json_report_file](reporters.md#json_report_file)
+* [json_report_found](reporters.md#json_report_found)
+* [json_report_not_found](reporters.md#json_report_not_found)
