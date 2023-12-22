@@ -5,14 +5,82 @@ from unittest import mock
 
 import pytest
 
+from poodle import util
 from poodle.data_types import Mutant, MutantTrial, MutantTrialResult, TestingResults, TestingSummary
-from poodle.reporters import report_not_found, report_summary
+from poodle.reporters import basic, report_not_found, report_summary
 from tests.data_types.test_data import PoodleConfigStub
 
 
 @pytest.fixture()
 def mock_echo():
     return mock.MagicMock()
+
+
+def create_trial(
+    mutator_name="TestMutator",
+    source="example.py",
+    lineno=1,
+    col_offset=10,
+    end_lineno=1,
+    end_col_offset=15,
+    text="None",
+    passed=False,
+    reason_code=MutantTrialResult.RC_NOT_FOUND,
+    reason_desc=None,
+    duration=1.0,
+    unified_diff=None,
+):
+    source_file = None
+    if isinstance(source, str):
+        source_file = Path(source)
+    elif source:
+        source_file = source
+    return MutantTrial(
+        mutant=Mutant(
+            mutator_name=mutator_name,
+            lineno=lineno,
+            col_offset=col_offset,
+            end_lineno=end_lineno,
+            end_col_offset=end_col_offset,
+            text=text,
+            source_folder=Path(),
+            source_file=source_file,
+            unified_diff=unified_diff,
+        ),
+        result=MutantTrialResult(
+            found=passed,
+            reason_code=reason_code,
+            reason_desc=reason_desc,
+        ),
+        duration=duration,
+    )
+
+
+class TestGetIncludeStatuses:
+    @pytest.mark.parametrize(
+        ("report_found", "report_not_found", "expected"),
+        [
+            (None, None, {False}),
+            (False, None, {False}),
+            (True, None, {True, False}),
+            (None, False, set()),
+            (None, True, {False}),
+            (True, True, {True, False}),
+            (True, False, {True}),
+            (False, False, set()),
+            (False, True, {False}),
+        ],
+    )
+    def test_get_include_statuses(self, report_found, report_not_found, expected):
+        prefix = "example"
+        reporter_opts = {}
+        if report_found is not None:
+            reporter_opts[f"{prefix}_report_found"] = report_found
+        if report_not_found is not None:
+            reporter_opts[f"{prefix}_report_not_found"] = report_not_found
+
+        config = PoodleConfigStub(reporter_opts=reporter_opts)
+        assert basic.get_include_statuses(config, prefix) == expected
 
 
 class TestReportSummary:
@@ -113,52 +181,12 @@ class TestReportSummary:
 
 
 class TestReportNotFound:
-    def create_trial(
-        self,
-        mutator_name="TestMutator",
-        source="example.py",
-        lineno=1,
-        col_offset=10,
-        end_lineno=1,
-        end_col_offset=15,
-        text="None",
-        passed=False,
-        reason_code=MutantTrialResult.RC_NOT_FOUND,
-        reason_desc=None,
-        duration=1.0,
-        unified_diff=None,
-    ):
-        source_file = None
-        if isinstance(source, str):
-            source_file = Path(source)
-        elif source:
-            source_file = source
-        return MutantTrial(
-            mutant=Mutant(
-                mutator_name=mutator_name,
-                lineno=lineno,
-                col_offset=col_offset,
-                end_lineno=end_lineno,
-                end_col_offset=end_col_offset,
-                text=text,
-                source_folder=Path(),
-                source_file=source_file,
-                unified_diff=unified_diff,
-            ),
-            result=MutantTrialResult(
-                found=passed,
-                reason_code=reason_code,
-                reason_desc=reason_desc,
-            ),
-            duration=duration,
-        )
-
     def test_all_passed(self, mock_echo: mock.MagicMock):
         results = TestingResults(
             mutant_trials=[
-                self.create_trial(passed=True),
-                self.create_trial(passed=True),
-                self.create_trial(passed=True),
+                create_trial(passed=True),
+                create_trial(passed=True),
+                create_trial(passed=True),
             ],
             summary=TestingSummary(),
         )
@@ -188,23 +216,23 @@ class TestReportNotFound:
 
         results = TestingResults(
             mutant_trials=[
-                self.create_trial(
+                create_trial(
                     mutator_name="NotFound",
                     source=source_file,
                     unified_diff=diff_str,
                 ),
-                self.create_trial(
+                create_trial(
                     mutator_name="ReasonDesc",
                     source=source_file,
                     reason_code=MutantTrialResult.RC_OTHER,
                     reason_desc="error message",
                     unified_diff=diff_str,
                 ),
-                self.create_trial(
+                create_trial(
                     mutator_name="Passed",
                     passed=True,
                 ),
-                self.create_trial(
+                create_trial(
                     mutator_name="NoSource",
                     source=None,
                 ),
@@ -236,5 +264,169 @@ class TestReportNotFound:
                 mock.call("Mutator: ReasonDesc", file=file),
                 mock.call("error message", file=file),
                 mock.call(diff_str, file=file),
+            ]
+        )
+
+
+class TestReportJson:
+    @pytest.fixture()
+    def mock_path(self):
+        with mock.patch("poodle.reporters.basic.Path") as mock_path:
+            yield mock_path
+
+    def test_all_passed(self, mock_echo, mock_path):
+        results = TestingResults(
+            mutant_trials=[
+                create_trial(passed=True),
+                create_trial(passed=True),
+                create_trial(passed=True),
+            ],
+            summary=TestingSummary(),
+        )
+        basic.report_json(
+            config=PoodleConfigStub(reporter_opts={}),
+            echo=mock_echo,
+            testing_results=results,
+        )
+
+        expected = util.to_json(
+            TestingResults(
+                mutant_trials=[],
+                summary=results.summary,
+            )
+        )
+        mock_path.assert_called_once_with("mutation-testing-report.json")
+        mock_path.return_value.write_text.assert_called_once_with(expected)
+        mock_echo.assert_called_once_with("JSON report written to mutation-testing-report.json", fg="green")
+
+    def test_failed(self, mock_echo, mock_path):
+        results = TestingResults(
+            mutant_trials=[
+                create_trial(lineno=1, passed=True),
+                create_trial(lineno=2, passed=False),
+                create_trial(lineno=3, passed=True),
+            ],
+            summary=TestingSummary(),
+        )
+        basic.report_json(
+            config=PoodleConfigStub(reporter_opts={}),
+            echo=mock_echo,
+            testing_results=results,
+        )
+
+        expected = util.to_json(
+            TestingResults(
+                mutant_trials=[
+                    create_trial(lineno=2, passed=False),
+                ],
+                summary=results.summary,
+            )
+        )
+        mock_path.return_value.write_text.assert_called_once_with(expected)
+
+    def test_include_all(self, mock_echo, mock_path):
+        results = TestingResults(
+            mutant_trials=[
+                create_trial(lineno=1, passed=True),
+                create_trial(lineno=2, passed=False),
+                create_trial(lineno=3, passed=True),
+            ],
+            summary=TestingSummary(),
+        )
+        basic.report_json(
+            config=PoodleConfigStub(reporter_opts={"json_report_found": True}),
+            echo=mock_echo,
+            testing_results=results,
+        )
+
+        expected = util.to_json(
+            TestingResults(
+                mutant_trials=results.mutant_trials,
+                summary=results.summary,
+            )
+        )
+        mock_path.return_value.write_text.assert_called_once_with(expected)
+
+    def test_no_summary(self, mock_echo, mock_path):
+        results = TestingResults(
+            mutant_trials=[
+                create_trial(lineno=1, passed=True),
+                create_trial(lineno=2, passed=False),
+                create_trial(lineno=3, passed=True),
+            ],
+            summary=TestingSummary(),
+        )
+        basic.report_json(
+            config=PoodleConfigStub(reporter_opts={"json_include_summary": False}),
+            echo=mock_echo,
+            testing_results=results,
+        )
+
+        expected = util.to_json(
+            TestingResults(
+                mutant_trials=[
+                    create_trial(lineno=2, passed=False),
+                ],
+                summary=None,
+            )
+        )
+        mock_path.return_value.write_text.assert_called_once_with(expected)
+
+    def test_file_name(self, mock_echo, mock_path):
+        results = TestingResults(
+            mutant_trials=[
+                create_trial(lineno=1, passed=True),
+                create_trial(lineno=2, passed=False),
+                create_trial(lineno=3, passed=True),
+            ],
+            summary=TestingSummary(),
+        )
+        basic.report_json(
+            config=PoodleConfigStub(reporter_opts={"json_report_file": Path("outfile.json")}),
+            echo=mock_echo,
+            testing_results=results,
+        )
+
+        expected = util.to_json(
+            TestingResults(
+                mutant_trials=[
+                    create_trial(lineno=2, passed=False),
+                ],
+                summary=results.summary,
+            )
+        )
+        mock_path.assert_called_once_with(Path("outfile.json"))
+        mock_path.return_value.write_text.assert_called_once_with(expected)
+        mock_echo.assert_called_once_with("JSON report written to outfile.json", fg="green")
+
+    def test_sysout(self, mock_echo, mock_path):
+        results = TestingResults(
+            mutant_trials=[
+                create_trial(lineno=1, passed=True),
+                create_trial(lineno=2, passed=False),
+                create_trial(lineno=3, passed=True),
+            ],
+            summary=TestingSummary(),
+        )
+        basic.report_json(
+            config=PoodleConfigStub(reporter_opts={"json_report_file": "sysout"}),
+            echo=mock_echo,
+            testing_results=results,
+        )
+
+        expected = util.to_json(
+            TestingResults(
+                mutant_trials=[
+                    create_trial(lineno=2, passed=False),
+                ],
+                summary=results.summary,
+            ),
+            indent=4,
+        )
+        mock_path.assert_not_called()
+        mock_echo.assert_has_calls(
+            [
+                mock.call(expected),
+                mock.call("JSON report written to sysout", fg="green"),
             ]
         )

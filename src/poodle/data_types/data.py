@@ -205,5 +205,5 @@ class TestingResults(PoodleSerialize):
         """Convert to Dictionary for JSON serialization."""
         d = asdict(self)
         d["mutant_trials"] = [trial.to_dict() for trial in self.mutant_trials]
-        d["summary"] = self.summary.to_dict()
+        d["summary"] = self.summary.to_dict() if self.summary is not None else None
         return d

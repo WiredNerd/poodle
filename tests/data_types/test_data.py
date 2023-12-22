@@ -471,3 +471,19 @@ class TestTestingResults:
         results = json.dumps(self.results_dict())
         expected = self.results_object()
         assert from_json(results, TestingResults) == expected
+
+    def test_serialize_no_summary(self):
+        results = self.results_object()
+        results.summary = None
+        expected = self.results_dict()
+        expected["summary"] = None
+        assert results.to_dict() == expected
+        assert to_json(results) == json.dumps(expected)
+
+    def test_deserialize_no_summary(self):
+        results_dict = self.results_dict()
+        results_dict["summary"] = None
+        results = json.dumps(results_dict)
+        expected = self.results_object()
+        expected.summary = None
+        assert from_json(results, TestingResults) == expected
