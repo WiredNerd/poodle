@@ -73,7 +73,7 @@ def build_config(  # noqa: PLR0913
     # file_filters += get_str_list_from_config("exclude", config_file_data, default=[]) # noqa: ERA001
     file_filters += cmd_excludes
 
-    reporters=get_str_list_from_config("reporters", config_file_data, default=default_reporters)
+    reporters = get_str_list_from_config("reporters", config_file_data, default=default_reporters)
     reporters += [reporter for reporter in cmd_report if reporter not in reporters]
 
     return PoodleConfig(

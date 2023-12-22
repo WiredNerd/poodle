@@ -106,4 +106,4 @@ def report_json(config: PoodleConfig, echo: Callable, testing_results: TestingRe
     else:
         Path(json_file).write_text(to_json(out_results))
 
-    echo(f"JSON report written to {str(json_file)}", fg="green")
+    echo(f"JSON report written to {json_file!s}", fg="green")

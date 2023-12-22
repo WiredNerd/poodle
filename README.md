@@ -45,8 +45,9 @@ Options:
   -q              Quiet mode: q, qq, or qqq
   -v              Verbose mode: v, vv, or vvv
   -w INTEGER      Maximum number of parallel workers.
-  --exclude TEXT  Add a regex exclude file filter. Multiple allowed.
+  --exclude TEXT  Add a glob exclude file filter. Multiple allowed.
   --only TEXT     Glob pattern for files to mutate. Multiple allowed.
+  --report TEXT   Enable reporter by name. Multiple allowed.
   --help          Show this message and exit.
 ```
 

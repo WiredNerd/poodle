@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import importlib
 import re
 from pathlib import Path
@@ -113,14 +115,14 @@ class TestCli:
     def assert_build_config_called_with(
         self,
         build_config: mock.MagicMock,
-        sources: tuple[Path] = (),
+        sources: tuple[Path] = (),  # type: ignore [assignment]
         config_file: Path | None = None,
         quiet: int = 0,
         verbose: int = 0,
         workers: int | None = None,
-        exclude: tuple[str] = (),
-        only: tuple[str] = (),
-        report: tuple[str] = (),
+        exclude: tuple[str] = (),  # type: ignore [assignment]
+        only: tuple[str] = (),  # type: ignore [assignment]
+        report: tuple[str] = (),  # type: ignore [assignment]
     ):
         build_config.assert_called_with(
             sources,
@@ -142,7 +144,7 @@ class TestCli:
     def test_main_sources(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
         result = runner.invoke(cli.main, ["src", "tests"])
         assert result.exit_code == 0
-        self.assert_build_config_called_with(build_config, sources=(Path("src"), Path("tests")))
+        self.assert_build_config_called_with(build_config, sources=(Path("src"), Path("tests")))  # type: ignore [arg-type]
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_sources_not_exist(
