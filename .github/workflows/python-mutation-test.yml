@@ -8,7 +8,7 @@ concurrency: updates-project
 jobs:
   poodle:
     name: Mutation Test with Poodle
-    runs-on: [ubuntu-latest]
+    runs-on: [macos-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
