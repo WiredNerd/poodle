@@ -16,6 +16,8 @@ on:
 permissions:
   contents: read
 
+concurrency: updates-project
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -29,13 +31,28 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
-        python-version: '3.9'
+        python-version: '3.12'
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt --upgrade
         pip install build setuptools twine --upgrade
+    - name: Read Version
+      uses: SebRollen/toml-action@v1.0.2
+      id: read_vesion
+      with:
+        file: 'pyproject.toml'
+        field: 'version'
+    - name: Set version in code
+      run: |
+        sed -i 's/__version__ = "[0-9]\+\.[0-9]\+\.[0-9]\+"/__version__ = "${{ steps.read_vesion.outputs.value }}"/g' src/poodle/__init__.py
+    - name: commit-version
+      uses: EndBug/add-and-commit@v9
+      with:
+        add: "src/poodle/__init__.py"
+        pull: "--rebase=true --autostash"
     - name: Build package
       run: python -m build
     - name: Publish package
+      if: ${{ github.ref_name == 'main' }}
       uses: pypa/gh-action-pypi-publish@release/v1

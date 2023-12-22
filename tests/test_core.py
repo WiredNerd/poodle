@@ -237,8 +237,7 @@ Mutation Tester Version 1.2.3           "--'"--'
 
 
 class TestPrintHeader:
-    @mock.patch("poodle.core.pkg_resources")
-    def test_print_header(self, pkg_resources: mock.MagicMock):
+    def test_print_header(self):
         work = PoodleWork(
             config=PoodleConfigStub(
                 source_folders=["src"],
@@ -249,9 +248,10 @@ class TestPrintHeader:
             )
         )
         work.echo = mock.MagicMock()
-        pkg_resources.get_distribution.return_value.version = "1.2.3"
 
-        core.print_header(work)
+        with mock.patch("poodle.core.__version__", "1.2.3"):
+            core.print_header(work)
+
         work.echo.assert_has_calls(
             [
                 mock.call(poodle_header_str, fg="blue"),

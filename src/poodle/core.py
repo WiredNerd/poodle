@@ -6,9 +6,8 @@ import logging
 import shutil
 
 import click
-import pkg_resources
 
-from . import PoodleInputError, PoodleTrialRunError
+from . import PoodleInputError, PoodleTrialRunError, __version__
 from .data_types import PoodleConfig, PoodleWork
 from .mutate import create_mutants_for_all_mutators, initialize_mutators
 from .report import generate_reporters
@@ -72,8 +71,7 @@ Mutation Tester Version {version:<15} "--'"--'
 
 
 def print_header(work: PoodleWork):
-    version = pkg_resources.get_distribution("poodle").version
-    work.echo(poodle_header_str.format(version=version), fg="blue")
+    work.echo(poodle_header_str.format(version=__version__), fg="blue")
     work.echo("Running with the following configuration:")
     work.echo(f" - Source Folders: {[str(folder) for folder in work.config.source_folders]}")
     work.echo(f" - Config File:    {work.config.config_file}")
