@@ -20,7 +20,7 @@ jobs:
           pip install -r requirements.txt --upgrade
           pip install --editable .
       - name: Poodle
-        run: poodle -w 4 --report json || true
+        run: poodle --report json || true
       - name: save-json-report
         if: ${{ github.ref_name == 'main' }}
         uses: EndBug/add-and-commit@v9
