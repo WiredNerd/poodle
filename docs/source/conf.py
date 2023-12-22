@@ -7,8 +7,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "Poodle"
-copyright = "2023, WiredNerd"
-author = "WiredNerd"
+copyright = "2023, Peter Busch (WiredNerd)"
+author = "Peter Busch (WiredNerd)"
 release = ""
 
 # -- General configuration ---------------------------------------------------

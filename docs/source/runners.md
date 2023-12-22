@@ -59,7 +59,7 @@ Default includes options `-x` to stop execution at first failure, `--assert=plai
 :::{tab-item} poodle_config.py
 ```python3
 runner_opts = {
-  "command_line":"pytest -x --assert=plain -o pythonpath= --sort-mode=fastest",
+  "command_line":"pytest -x --assert=plain -o pythonpath='{PYTHONPATH}' --sort-mode=fastest",
 }
 ```
 :::
@@ -67,14 +67,14 @@ runner_opts = {
 :::{tab-item} poodle.toml
 ```toml
 [poodle.runner_opts]
-command_line = "pytest -x --assert=plain -o pythonpath= --sort-mode=fastest"
+command_line = "pytest -x --assert=plain -o pythonpath='{PYTHONPATH}' --sort-mode=fastest"
 ```
 :::
 
 :::{tab-item} pyproject.toml
 ```toml
 [tool.poodle.runner_opts]
-command_line = "pytest -x --assert=plain -o pythonpath= --sort-mode=fastest"
+command_line = "pytest -x --assert=plain -o pythonpath='{PYTHONPATH}' --sort-mode=fastest"
 ```
 :::
 
