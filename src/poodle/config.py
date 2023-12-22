@@ -53,6 +53,7 @@ def build_config(  # noqa: PLR0913
     cmd_max_workers: int | None,
     cmd_excludes: tuple[str],
     cmd_only_files: tuple[str],
+    cmd_report: tuple[str],
 ) -> PoodleConfig:
     """Build PoodleConfig object."""
     config_file_path = get_config_file_path(cmd_config_file)
@@ -71,6 +72,9 @@ def build_config(  # noqa: PLR0913
     # TODO: append file excludes and append py excludes
     # file_filters += get_str_list_from_config("exclude", config_file_data, default=[]) # noqa: ERA001
     file_filters += cmd_excludes
+
+    reporters=get_str_list_from_config("reporters", config_file_data, default=default_reporters)
+    reporters += [reporter for reporter in cmd_report if reporter not in reporters]
 
     return PoodleConfig(
         config_file=config_file_path,
@@ -107,7 +111,7 @@ def build_config(  # noqa: PLR0913
         timeout_multiplier=get_int_from_config("timeout_multiplier", config_file_data) or default_timeout_multiplier,
         runner=get_str_from_config("runner", config_file_data, default=default_runner),
         runner_opts=get_dict_from_config("runner_opts", config_file_data, default=default_runner_opts),
-        reporters=get_str_list_from_config("reporters", config_file_data, default=default_reporters),
+        reporters=reporters,
         reporter_opts=get_dict_from_config("reporter_opts", config_file_data, default=default_reporter_opts),
     )
 

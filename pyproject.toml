@@ -53,7 +53,7 @@ filterwarnings = [
 
 [tool.poodle]
 file_filters = ["test_*.py", "*_test.py", 'cli.py', 'run.py', '__init__.py']
-reporters = ["summary", "not_found", "json"]
+# reporters = ["summary", "not_found", "json"]
 
 [tool.poodle.runner_opts]
 command_line = "pytest -x --assert=plain -o pythonpath='{PYTHONPATH}' --sort-mode=mutcov"

@@ -23,6 +23,7 @@ CONTEXT_SETTINGS = {
 @click.option("-w", "workers", help="Maximum number of parallel workers.", type=int)
 @click.option("--exclude", help="Add a glob exclude file filter. Multiple allowed.", multiple=True)
 @click.option("--only", help="Glob pattern for files to mutate. Multiple allowed.", multiple=True)
+@click.option("--report", help="Enable reporter by name. Multiple allowed.", multiple=True)
 def main(
     sources: tuple[Path],
     config_file: Path | None,
@@ -31,10 +32,11 @@ def main(
     workers: int | None,
     exclude: tuple[str],
     only: tuple[str],
+    report: tuple[str],
 ) -> None:
     """Poodle Mutation Test Tool."""
     try:
-        config = build_config(sources, config_file, quiet, verbose, workers, exclude, only)
+        config = build_config(sources, config_file, quiet, verbose, workers, exclude, only, report)
     except PoodleInputError as err:
         click.echo(err.args)
         sys.exit(4)

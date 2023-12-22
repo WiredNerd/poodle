@@ -98,16 +98,51 @@ class TestCli:
             is not None
         )
 
+    def test_cli_help_report(self, runner: CliRunner):
+        result = runner.invoke(cli.main, ["--help"])
+        assert result.exit_code == 0
+        assert (
+            re.match(
+                r".*--report TEXT\s+Enable reporter by name. Multiple allowed\..*",
+                result.output,
+                flags=re.DOTALL,
+            )
+            is not None
+        )
+
+    def assert_build_config_called_with(
+        self,
+        build_config: mock.MagicMock,
+        sources: tuple[Path] = (),
+        config_file: Path | None = None,
+        quiet: int = 0,
+        verbose: int = 0,
+        workers: int | None = None,
+        exclude: tuple[str] = (),
+        only: tuple[str] = (),
+        report: tuple[str] = (),
+    ):
+        build_config.assert_called_with(
+            sources,
+            config_file,
+            quiet,
+            verbose,
+            workers,
+            exclude,
+            only,
+            report,
+        )
+
     def test_cli(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
         result = runner.invoke(cli.main, [])
         assert result.exit_code == 0
-        build_config.assert_called_with((), None, 0, 0, None, (), ())
+        self.assert_build_config_called_with(build_config)
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_sources(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
         result = runner.invoke(cli.main, ["src", "tests"])
         assert result.exit_code == 0
-        build_config.assert_called_with((Path("src"), Path("tests")), None, 0, 0, None, (), ())
+        self.assert_build_config_called_with(build_config, sources=(Path("src"), Path("tests")))
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_sources_not_exist(
@@ -124,7 +159,7 @@ class TestCli:
     def test_main_config_file(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
         result = runner.invoke(cli.main, ["-c", "pyproject.toml"])
         assert result.exit_code == 0
-        build_config.assert_called_with((), Path("pyproject.toml"), 0, 0, None, (), ())
+        self.assert_build_config_called_with(build_config, config_file=Path("pyproject.toml"))
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_config_file_not_exists(
@@ -141,43 +176,49 @@ class TestCli:
     def test_main_quiet(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
         result = runner.invoke(cli.main, ["-q"])
         assert result.exit_code == 0
-        build_config.assert_called_with((), None, 1, 0, None, (), ())
+        self.assert_build_config_called_with(build_config, quiet=1)
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_quiet2(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
         result = runner.invoke(cli.main, ["-qq"])
         assert result.exit_code == 0
-        build_config.assert_called_with((), None, 2, 0, None, (), ())
+        self.assert_build_config_called_with(build_config, quiet=2)
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_verbose(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
         result = runner.invoke(cli.main, ["-v"])
         assert result.exit_code == 0
-        build_config.assert_called_with((), None, 0, 1, None, (), ())
+        self.assert_build_config_called_with(build_config, verbose=1)
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_verbose2(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
         result = runner.invoke(cli.main, ["-vv"])
         assert result.exit_code == 0
-        build_config.assert_called_with((), None, 0, 2, None, (), ())
+        self.assert_build_config_called_with(build_config, verbose=2)
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_workers(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
         result = runner.invoke(cli.main, ["-w", "4"])
         assert result.exit_code == 0
-        build_config.assert_called_with((), None, 0, 0, 4, (), ())
+        self.assert_build_config_called_with(build_config, workers=4)
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_exclude(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
         result = runner.invoke(cli.main, ["--exclude", "test_.*"])
         assert result.exit_code == 0
-        build_config.assert_called_with((), None, 0, 0, None, ("test_.*",), ())
+        self.assert_build_config_called_with(build_config, exclude=("test_.*",))
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_only(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
         result = runner.invoke(cli.main, ["--only", "test_.*"])
         assert result.exit_code == 0
-        build_config.assert_called_with((), None, 0, 0, None, (), ("test_.*",))
+        self.assert_build_config_called_with(build_config, only=("test_.*",))
+        main_process.assert_called_with(build_config.return_value)
+
+    def test_main_report(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
+        result = runner.invoke(cli.main, ["--report", "json"])
+        assert result.exit_code == 0
+        self.assert_build_config_called_with(build_config, report=("json",))
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_input_error(
