@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 def is_none(a) -> None | bool:
     return a is None
 
