@@ -3,9 +3,6 @@ name: Python Platform Tests
 on: 
   push:
     paths:
-      - requirements.txt
-      - src/**
-      - tests/**
       - .github/workflows/python-test-matrix.yml
   pull_request:
     paths:

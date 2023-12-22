@@ -3,9 +3,6 @@ name: Python Tests and Scans
 on: 
   push:
     paths:
-      - requirements.txt
-      - src/**
-      - tests/**
       - .github/workflows/python-test-scan.yml
   pull_request:
     paths:
