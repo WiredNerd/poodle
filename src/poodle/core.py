@@ -70,7 +70,8 @@ Mutation Tester Version {version:<15} "--'"--'
 """
 
 
-def print_header(work: PoodleWork):
+def print_header(work: PoodleWork) -> None:
+    """Print a header to the console."""
     work.echo(poodle_header_str.format(version=__version__), fg="blue")
     work.echo("Running with the following configuration:")
     work.echo(f" - Source Folders: {[str(folder) for folder in work.config.source_folders]}")

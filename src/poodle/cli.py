@@ -47,7 +47,7 @@ def main(
     except KeyboardInterrupt:
         click.echo("Aborted due to Keyboard Interrupt!")
         sys.exit(2)
-    except:
+    except:  # noqa: E722
         click.echo("Aborted due to Internal Error!")
         click.echo(traceback.format_exc())
         sys.exit(3)
