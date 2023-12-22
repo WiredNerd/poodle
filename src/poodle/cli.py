@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+import traceback
 from pathlib import Path
 
 import click
@@ -46,6 +47,11 @@ def main(
     except KeyboardInterrupt:
         click.echo("Aborted due to Keyboard Interrupt!")
         sys.exit(2)
+    except:
+        click.echo("Aborted due to Internal Error!")
+        click.echo(traceback.format_exc())
+        sys.exit(3)
+    sys.exit(0)
 
 
 # pytest return codes
@@ -55,6 +61,7 @@ def main(
 # Exit code 3: Internal error happened while executing tests
 # Exit code 4: pytest command line usage error
 # Exit code 5: No tests were collected
+
 
 # nomut: start
 if __name__ == "__main__":

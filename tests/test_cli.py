@@ -250,3 +250,20 @@ class TestCli:
         build_config.assert_called()
         echo.assert_called_with("Aborted due to Keyboard Interrupt!")
         main_process.assert_called_with(build_config.return_value)
+
+    @mock.patch("poodle.cli.traceback")
+    def test_main_other_error(
+        self,
+        traceback: mock.MagicMock,
+        main_process: mock.MagicMock,
+        echo: mock.MagicMock,
+        build_config: mock.MagicMock,
+        runner: CliRunner,
+    ):
+        main_process.side_effect = Exception()
+        result = runner.invoke(cli.main, [])
+        assert result.exit_code == 3
+        build_config.assert_called()
+        echo.assert_any_call("Aborted due to Internal Error!")
+        echo.assert_any_call(traceback.format_exc.return_value)
+        main_process.assert_called_with(build_config.return_value)
