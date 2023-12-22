@@ -192,6 +192,9 @@ However changing some comparisons can cause problems for testing tools, the muta
 * - Equality 
   - `==`
   - `!=`
+* - Not Equal 
+  - `!=`
+  - `==`
 * - Less Than 
   - `<`
   - `>=`, `<=`
