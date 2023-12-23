@@ -9,32 +9,8 @@ on:
 concurrency: updates-project
 
 jobs:
-  pytest-coverage:
-    name: Pytest Coverage
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
-      - name: Install Dependencies and Tools
-        run: |
-          python3 -m pip install --upgrade pip
-          pip install -r requirements.txt --upgrade
-      - run: pytest --cov=src --cov-report=json:code-coverage.json
-      - name: commit-json-report
-        if: ${{ github.ref_name == 'main' }}
-        uses: EndBug/add-and-commit@v9
-        with:
-          add: "code-coverage.json"
-          pull: "--rebase=true --autostash"
-      - name: artifact-html-report
-        uses: actions/upload-artifact@v3
-        with:
-          name: Coverage Report
-          path: cov-html
-  poodle:
-    name: Mutation Coverage
+  coverage:
+    name: Coverage Reports
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,6 +22,20 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
           pip install --editable .
+      - name: pytest
+        run: pytest --cov=src --cov-context=test --cov-report=json:code-coverage.json || true
+      - name: commit-json-report
+        if: ${{ github.ref_name == 'main' }}
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "code-coverage.json"
+          pull: "--rebase=true --autostash"
+          message: ':robot: Update Coverage Report'
+      - name: artifact-html-report
+        uses: actions/upload-artifact@v3
+        with:
+          name: Coverage Report
+          path: cov-html
       - name: Poodle
         run: poodle --report json || true
       - name: save-json-report
@@ -54,3 +44,4 @@ jobs:
         with:
           add: "mutation-testing-report.json"
           pull: "--rebase=true --autostash"
+          message: ':robot: Update Coverage Report'

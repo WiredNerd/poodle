@@ -30,4 +30,5 @@ jobs:
       with:
         add: "src/poodle/__init__.py"
         pull: "--rebase=true --autostash"
+        message: ':robot: Update version to ${{ steps.read_vesion.outputs.value }}'
 
