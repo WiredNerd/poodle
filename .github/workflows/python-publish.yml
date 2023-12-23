@@ -15,6 +15,9 @@ on:
 
 concurrency: updates-project
 
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
