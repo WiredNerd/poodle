@@ -17,5 +17,5 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
           pip install --editable .
-      - run: poodle
+      - run: poodle -w 8
 
