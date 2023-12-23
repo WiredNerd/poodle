@@ -6,45 +6,9 @@ on:
 concurrency: updates-project
 
 jobs:
-  mutmut:
-    name: Mutation Test with Mutmut
-    runs-on: [ubuntu-latest]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      - name: Install Dependencies and Tools
-        run: |
-          python3 -m pip install --upgrade pip
-          pip install -r requirements.txt --upgrade
-          pip install mutmut --upgrade
-          pip install --editable .
-      - name: Mutmut
-        run: python3 -m mutmut run --no-progress --rerun-all --paths-to-mutate src || true
-      - run: python3 -m mutmut results
-        if: ${{ always() }}
-      - name: Mutmut Report
-        if: ${{ always() }}
-        run: |
-          python3 -m mutmut html
-          python3 -m mutmut junitxml > mutation-testing-report.xml
-          head mutation-testing-report.xml -n 3
-      - name: save-xml-report
-        if: ${{ github.ref_name == 'main' }}
-        uses: EndBug/add-and-commit@v9
-        with:
-          add: "mutation-testing-report.xml"
-          pull: "--rebase=true --autostash"
-      - name: save-reports
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: Mutation testing report
-          path: html
   poodle:
     name: Mutation Test with Poodle
-    runs-on: [ubuntu-latest]
+    runs-on: [macos-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
@@ -56,7 +20,7 @@ jobs:
           pip install -r requirements.txt --upgrade
           pip install --editable .
       - name: Poodle
-        run: poodle || true
+        run: poodle --report json || true
       - name: save-json-report
         if: ${{ github.ref_name == 'main' }}
         uses: EndBug/add-and-commit@v9

@@ -8,6 +8,8 @@ from contextlib import suppress
 from pathlib import Path
 from typing import Any
 
+__version__ = "0.0.1"
+
 
 class PoodleInputError(ValueError):
     """An input value from Command Line, poodle_config.py, or a config file was invalid."""

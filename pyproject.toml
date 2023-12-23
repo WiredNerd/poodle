@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "poodle"
 description = "Mutation Testing Tool"
-version = "1.1.4"
+version = "1.1.5"
 license = { file = "LICENSE" }
 keywords = [
     "test",
@@ -53,10 +53,10 @@ filterwarnings = [
 
 [tool.poodle]
 file_filters = ["test_*.py", "*_test.py", 'cli.py', 'run.py', '__init__.py']
-reporters = ["summary", "not_found", "json"]
+# reporters = ["summary", "not_found", "json"]
 
 [tool.poodle.runner_opts]
-# command_line = "pytest -x --assert=plain -o pythonpath='{PYTHONPATH}' --sort-mode=mutcov"
+command_line = "pytest -x --assert=plain -o pythonpath='{PYTHONPATH}' --sort-mode=mutcov"
 
 [tool.poodle.reporter_opts]
 

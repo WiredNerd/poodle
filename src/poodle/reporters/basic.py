@@ -19,7 +19,7 @@ display_reason_code = {
 def get_include_statuses(config: PoodleConfig, prefix: str) -> set[bool]:
     """Get set of statuses to include in report."""
     include_statuses = set()
-    if not config.reporter_opts.get(f"{prefix}_report_found", False):
+    if config.reporter_opts.get(f"{prefix}_report_found", False):
         include_statuses.add(True)  # noqa: FBT003
     if config.reporter_opts.get(f"{prefix}_report_not_found", True):
         include_statuses.add(False)  # noqa: FBT003
@@ -105,3 +105,5 @@ def report_json(config: PoodleConfig, echo: Callable, testing_results: TestingRe
         echo(to_json(out_results, indent=4))
     else:
         Path(json_file).write_text(to_json(out_results))
+
+    echo(f"JSON report written to {json_file!s}", fg="green")

@@ -7,7 +7,7 @@ import shutil
 
 import click
 
-from . import PoodleInputError, PoodleTrialRunError
+from . import PoodleInputError, PoodleTrialRunError, __version__
 from .data_types import PoodleConfig, PoodleWork
 from .mutate import create_mutants_for_all_mutators, initialize_mutators
 from .report import generate_reporters
@@ -21,6 +21,7 @@ def main_process(config: PoodleConfig) -> None:
     """Poodle core run process."""
     try:
         work = PoodleWork(config)  # sets logging defaults
+        print_header(work)
         logger.info("\n%s", pprint_str(config))
 
         if config.work_folder.exists():
@@ -54,3 +55,28 @@ def main_process(config: PoodleConfig) -> None:
     except PoodleTrialRunError as err:
         for arg in err.args:
             click.echo(arg)
+
+
+poodle_header_str = r"""
+|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|
+    ____                  ____         ''',
+   / __ \____  ____  ____/ / /__    o_)O \)____)"
+  / /_/ / __ \/ __ \/ __  / / _ \    \_        )
+ / ____/ /_/ / /_/ / /_/ / /  __/      '',,,,,,
+/_/    \____/\____/\__,_/_/\___/         ||  ||
+Mutation Tester Version {version:<15} "--'"--'
+|/\|/\|/\|/\|/\|/\|/\|/\|/\|/\|/\|/\|/\|/\|/\|/\|
+
+"""
+
+
+def print_header(work: PoodleWork) -> None:
+    """Print a header to the console."""
+    work.echo(poodle_header_str.format(version=__version__), fg="blue")
+    work.echo("Running with the following configuration:")
+    work.echo(f" - Source Folders: {[str(folder) for folder in work.config.source_folders]}")
+    work.echo(f" - Config File:    {work.config.config_file}")
+    work.echo(f" - Max Workers:    {work.config.max_workers}")
+    work.echo(f" - Runner:         {work.config.runner}")
+    work.echo(f" - Reporters:      {work.config.reporters}")
+    work.echo()

@@ -3,7 +3,7 @@ from unittest import mock
 import pytest
 
 from poodle import PoodleInputError, PoodleTrialRunError, core
-from poodle.data_types import MutantTrial
+from poodle.data_types import MutantTrial, PoodleWork
 from tests.data_types.test_data import PoodleConfigStub
 
 
@@ -29,8 +29,10 @@ class TestMain:
     @mock.patch("poodle.core.clean_run_each_source_folder")
     @mock.patch("poodle.core.run_mutant_trails")
     @mock.patch("poodle.core.click")
+    @mock.patch("poodle.core.print_header")
     def test_main(
         self,
+        print_header: mock.MagicMock,
         core_click: mock.MagicMock,
         run_mutant_trails: mock.MagicMock,
         clean_run_each_source_folder: mock.MagicMock,
@@ -62,6 +64,8 @@ class TestMain:
 
         poodle_work_class.assert_called_with(config)
         work = poodle_work_class.return_value
+
+        print_header.assert_called_with(work)
 
         pprint_str.assert_called_with(config)
         logger_mock.info.assert_has_calls(
@@ -217,3 +221,46 @@ class TestMain:
 
         core_click.echo.assert_any_call("Trial Error")
         core_click.echo.assert_any_call("Execution Failed")
+
+
+poodle_header_str = r"""
+|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|\/|
+    ____                  ____         ''',
+   / __ \____  ____  ____/ / /__    o_)O \)____)"
+  / /_/ / __ \/ __ \/ __  / / _ \    \_        )
+ / ____/ /_/ / /_/ / /_/ / /  __/      '',,,,,,
+/_/    \____/\____/\__,_/_/\___/         ||  ||
+Mutation Tester Version 1.2.3           "--'"--'
+|/\|/\|/\|/\|/\|/\|/\|/\|/\|/\|/\|/\|/\|/\|/\|/\|
+
+"""
+
+
+class TestPrintHeader:
+    def test_print_header(self):
+        work = PoodleWork(
+            config=PoodleConfigStub(
+                source_folders=["src"],
+                config_file="config_file.toml",
+                max_workers=10,
+                runner="pytest",
+                reporters=["summary", "json"],
+            )
+        )
+        work.echo = mock.MagicMock()
+
+        with mock.patch("poodle.core.__version__", "1.2.3"):
+            core.print_header(work)
+
+        work.echo.assert_has_calls(
+            [
+                mock.call(poodle_header_str, fg="blue"),
+                mock.call("Running with the following configuration:"),
+                mock.call(" - Source Folders: ['src']"),
+                mock.call(" - Config File:    config_file.toml"),
+                mock.call(" - Max Workers:    10"),
+                mock.call(" - Runner:         pytest"),
+                mock.call(" - Reporters:      ['summary', 'json']"),
+                mock.call(),
+            ]
+        )

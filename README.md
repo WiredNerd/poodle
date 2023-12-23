@@ -1,7 +1,7 @@
 [![Homepage](https://img.shields.io/badge/Homepage-github-white?logo=github)](https://github.com/WiredNerd/poodle)
 [![python>=3.9](https://img.shields.io/badge/python->=3.9-orange?logo=python&logoColor=green)](https://pypi.org/project/poodle)
 [![PyPI - Version](https://img.shields.io/pypi/v/poodle?logo=pypi&logoColor=white)](https://pypi.org/project/poodle)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/poodle)](https://pypi.org/project/poodle)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/poodle)](https://pypistats.org/packages/poodle)
 [![PyPI - License](https://img.shields.io/pypi/l/poodle)](https://github.com/WiredNerd/poodle/blob/main/LICENSE)
 
 [![Code Coverage](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FWiredNerd%2Fpoodle%2Fmain%2Fcode-coverage.json&query=%24.totals.percent_covered_display&suffix=%25&label=Code%20Coverage&color=teal&logo=pytest&logoColor=green)](https://pytest-cov.readthedocs.io)
@@ -45,8 +45,9 @@ Options:
   -q              Quiet mode: q, qq, or qqq
   -v              Verbose mode: v, vv, or vvv
   -w INTEGER      Maximum number of parallel workers.
-  --exclude TEXT  Add a regex exclude file filter. Multiple allowed.
+  --exclude TEXT  Add a glob exclude file filter. Multiple allowed.
   --only TEXT     Glob pattern for files to mutate. Multiple allowed.
+  --report TEXT   Enable reporter by name. Multiple allowed.
   --help          Show this message and exit.
 ```
 

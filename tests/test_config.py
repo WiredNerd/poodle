@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import importlib
 import logging
 from io import BytesIO
@@ -142,6 +144,7 @@ class TestBuildConfig:
             cmd_max_workers=3,
             cmd_excludes=("notcov.py",),
             cmd_only_files=("example.py",),
+            cmd_report=("myreporter",),
         ) == config.PoodleConfig(
             config_file=config_file_path,
             source_folders=get_source_folders.return_value,
@@ -163,7 +166,7 @@ class TestBuildConfig:
             timeout_multiplier=get_int_from_config.return_value,
             runner=get_str_from_config.return_value,
             runner_opts={"runner": "value"},
-            reporters=get_str_list_from_config.return_value,
+            reporters=get_str_list_from_config.return_value.__iadd__.return_value,
             reporter_opts={"reporter": "value"},
         )
 
@@ -248,6 +251,7 @@ class TestBuildConfig:
 
         # reporters
         get_str_list_from_config.assert_any_call("reporters", config_file_data, default=config.default_reporters)
+        get_str_list_from_config.return_value.__iadd__.assert_any_call(["myreporter"])
 
         # reporter_opts
         get_dict_from_config.assert_any_call("reporter_opts", config_file_data, default=config.default_reporter_opts)
@@ -264,6 +268,7 @@ class TestBuildConfig:
             cmd_max_workers=None,
             cmd_excludes=(),
             cmd_only_files=(),
+            cmd_report=(),
         ) == config.PoodleConfig(
             config_file=Path("pyproject.toml"),
             source_folders=[Path("src")],
@@ -286,6 +291,44 @@ class TestBuildConfig:
             runner="command_line",
             runner_opts={},
             reporters=["summary", "not_found"],
+            reporter_opts={},
+        )
+
+    @mock.patch("poodle.config.get_config_file_data")
+    def test_build_config_duplicate_reporters(self, get_config_file_data):
+        get_config_file_data.return_value = {}
+
+        assert config.build_config(
+            cmd_sources=(),
+            cmd_config_file=None,
+            cmd_quiet=0,
+            cmd_verbose=0,
+            cmd_max_workers=None,
+            cmd_excludes=(),
+            cmd_only_files=(),
+            cmd_report=("myreporter", "summary"),
+        ) == config.PoodleConfig(
+            config_file=Path("pyproject.toml"),
+            source_folders=[Path("src")],
+            only_files=[],
+            file_flags=config.default_file_flags,
+            file_filters=config.default_file_filters,
+            file_copy_flags=config.default_file_copy_flags,
+            file_copy_filters=config.default_file_copy_filters,
+            work_folder=Path(".poodle-temp"),
+            max_workers=config.default_max_workers(),
+            log_format=config.default_log_format,
+            log_level=logging.WARN,
+            echo_enabled=True,
+            echo_no_color=None,
+            mutator_opts={},
+            skip_mutators=[],
+            add_mutators=[],
+            min_timeout=10,
+            timeout_multiplier=10,
+            runner="command_line",
+            runner_opts={},
+            reporters=["summary", "not_found", "myreporter"],
             reporter_opts={},
         )
 

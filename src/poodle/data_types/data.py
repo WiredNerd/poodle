@@ -197,7 +197,7 @@ class TestingResults(PoodleSerialize):
         """Correct fields in Dictionary for JSON deserialization."""
         if "mutant_trials" in d:
             d["mutant_trials"] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d["mutant_trials"]]
-        if "summary" in d:
+        if "summary" in d and d["summary"] is not None:
             d["summary"] = TestingSummary(**TestingSummary.from_dict(d["summary"]))
         return d
 
@@ -205,5 +205,5 @@ class TestingResults(PoodleSerialize):
         """Convert to Dictionary for JSON serialization."""
         d = asdict(self)
         d["mutant_trials"] = [trial.to_dict() for trial in self.mutant_trials]
-        d["summary"] = self.summary.to_dict()
+        d["summary"] = self.summary.to_dict() if self.summary is not None else None
         return d
