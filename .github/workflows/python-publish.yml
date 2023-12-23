@@ -24,9 +24,9 @@ jobs:
     permissions:
       id-token: write
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.12'
     - name: Install dependencies
@@ -39,7 +39,7 @@ jobs:
       id: read_vesion
       with:
         file: 'pyproject.toml'
-        field: 'version'
+        field: 'project.version'
     - name: Set version in code
       run: |
         echo "Setting version to ${{ steps.read_vesion.outputs.value }}"
