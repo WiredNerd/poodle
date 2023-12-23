@@ -17,5 +17,7 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
           pip install --editable .
-      - run: poodle -w 8
-
+      - name: poodle
+        run: |
+          pytest --cov=src --cov-context=test
+          poodle -w 8
