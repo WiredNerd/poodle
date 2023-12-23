@@ -4,11 +4,12 @@ on:
   push:
     paths:
       - .github/workflows/python-test-matrix.yml
-  pull_request:
-    paths:
       - requirements.txt
       - src/**
       - tests/**
+  pull_request:
+    branches-ignore:
+      - docs
   workflow_dispatch:
 
 jobs:

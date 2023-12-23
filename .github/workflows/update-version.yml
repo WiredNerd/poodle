@@ -1,0 +1,33 @@
+name: Update Version from pyproject.toml
+
+on: 
+  push:
+    paths:
+      - 'pyproject.toml'
+    branches-ignore:
+      - docs
+  workflow_dispatch:
+
+concurrency: updates-project
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Read Version
+      uses: SebRollen/toml-action@v1.0.2
+      id: read_vesion
+      with:
+        file: 'pyproject.toml'
+        field: 'project.version'
+    - name: Set version in code
+      run: |
+        echo "Setting version to ${{ steps.read_vesion.outputs.value }}"
+        sed -i 's/__version__ = "[0-9]\+\.[0-9]\+\.[0-9]\+"/__version__ = "${{ steps.read_vesion.outputs.value }}"/g' src/poodle/__init__.py
+    - name: commit-version
+      uses: EndBug/add-and-commit@v9
+      with:
+        add: "src/poodle/__init__.py"
+        pull: "--rebase=true --autostash"
+

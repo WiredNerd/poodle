@@ -1,14 +1,12 @@
-name: Python Mutation Test
+name: Poodle Mutation Test
 
 on: 
   workflow_dispatch:
 
-concurrency: updates-project
-
 jobs:
   poodle:
     name: Mutation Test with Poodle
-    runs-on: [macos-latest]
+    runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
@@ -19,11 +17,5 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
           pip install --editable .
-      - name: Poodle
-        run: poodle --report json || true
-      - name: save-json-report
-        if: ${{ github.ref_name == 'main' }}
-        uses: EndBug/add-and-commit@v9
-        with:
-          add: "mutation-testing-report.json"
-          pull: "--rebase=true --autostash"
+      - run: poodle
+

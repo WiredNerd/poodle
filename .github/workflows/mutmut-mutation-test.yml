@@ -1,4 +1,4 @@
-name: Python Mutation Test
+name: Mutmut
 
 on: 
   workflow_dispatch:
@@ -17,20 +17,26 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
           pip install mutmut --upgrade
-          pip install --editable .
-      - name: Mutmut
-        run: python3 -m mutmut run --no-progress --rerun-all --paths-to-mutate src --runner "pytest --exitfirst --assert=plain --sort-mode=diffcov" || true
-      - run: python3 -m mutmut results
+      - name: Mutmut Run
+        run: python3 -m mutmut run --no-progress --rerun-all --paths-to-mutate src
+      - name: Mutmut Results
         if: ${{ always() }}
+        run: python3 -m mutmut results
       - name: Mutmut Report
         if: ${{ always() }}
         run: |
           python3 -m mutmut html
           python3 -m mutmut junitxml > mutation-testing-report.xml
           head mutation-testing-report.xml -n 3
-      - name: save-reports
+      - name: Upload Report HTML
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
-          name: Mutation testing report
+          name: Mutation testing report HTML
           path: html
+      - name: Upload Report XML
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Mutation testing report XML
+          path: mutation-testing-report.xml
