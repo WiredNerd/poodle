@@ -106,7 +106,7 @@ def create_unified_diff(mutant: Mutant) -> str | None:
     """Add unified diff to mutant."""
     if mutant.source_file:
         file_lines = mutant.source_file.read_text("utf-8").splitlines(keepends=True)
-        file_name = str(mutant.source_file.resolve())
+        file_name = str(mutant.source_file)
         return "".join(
             difflib.unified_diff(
                 a=file_lines,

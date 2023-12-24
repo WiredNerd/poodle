@@ -101,7 +101,7 @@ class TestReportSummary:
     def test_all_found(self, mock_echo: mock.MagicMock):
         results = TestingResults(
             mutant_trials=[],
-            summary=TestingSummary(trials=10, found=10, success_rate=1.0),
+            summary=TestingSummary(trials=10, found=10),
         )
         report_summary(mock_echo, results)
 
@@ -116,7 +116,7 @@ class TestReportSummary:
     def test_not_found(self, mock_echo: mock.MagicMock):
         results = TestingResults(
             mutant_trials=[],
-            summary=TestingSummary(trials=10, found=8, not_found=2, success_rate=0.8888),
+            summary=TestingSummary(trials=9, found=6, not_found=2),
         )
         report_summary(mock_echo, results)
 
@@ -124,7 +124,7 @@ class TestReportSummary:
             [
                 mock.call(""),
                 mock.call("*** Results Summary ***", fg="green"),
-                mock.call("Testing found 88.9% of Mutants."),
+                mock.call("Testing found 66.7% of Mutants."),
                 mock.call(" - 2 mutant(s) were not found."),
             ]
         )
@@ -132,7 +132,7 @@ class TestReportSummary:
     def test_timeout(self, mock_echo: mock.MagicMock):
         results = TestingResults(
             mutant_trials=[],
-            summary=TestingSummary(trials=10, found=8, timeout=2, success_rate=0.4444),
+            summary=TestingSummary(trials=9, found=3, timeout=2),
         )
         report_summary(mock_echo, results)
 
@@ -140,7 +140,7 @@ class TestReportSummary:
             [
                 mock.call(""),
                 mock.call("*** Results Summary ***", fg="green"),
-                mock.call("Testing found 44.4% of Mutants."),
+                mock.call("Testing found 33.3% of Mutants."),
                 mock.call(" - 2 mutant(s) caused trial to timeout."),
             ]
         )
@@ -148,7 +148,7 @@ class TestReportSummary:
     def test_errors(self, mock_echo: mock.MagicMock):
         results = TestingResults(
             mutant_trials=[],
-            summary=TestingSummary(trials=10, found=8, errors=2, success_rate=0.8),
+            summary=TestingSummary(trials=10, found=8, errors=2),
         )
         report_summary(mock_echo, results)
 
@@ -164,7 +164,7 @@ class TestReportSummary:
     def test_all(self, mock_echo: mock.MagicMock):
         results = TestingResults(
             mutant_trials=[],
-            summary=TestingSummary(trials=10, found=4, not_found=2, timeout=2, errors=2, success_rate=0.4),
+            summary=TestingSummary(trials=10, found=4, not_found=2, timeout=2, errors=2),
         )
         report_summary(mock_echo, results)
 
@@ -260,7 +260,7 @@ class TestReportNotFound:
                 mock.call("Mutator: NotFound", file=file),
                 mock.call(diff_str, file=file),
                 mock.call("", file=file),
-                mock.call("Mutant Trial Result: other", file=file),
+                mock.call("Mutant Trial Result: Other, See Description", file=file),
                 mock.call("Mutator: ReasonDesc", file=file),
                 mock.call("error message", file=file),
                 mock.call(diff_str, file=file),

@@ -216,11 +216,11 @@ class TestMutantTrialResult:
         assert result.found is True
         assert result.reason_code == "test"
         assert result.reason_desc == "it worked"
-        assert result.RC_FOUND == "mutant_found"
-        assert result.RC_NOT_FOUND == "mutant_not_found"
-        assert result.RC_TIMEOUT == "timeout"
-        assert result.RC_INCOMPLETE == "incomplete"
-        assert result.RC_OTHER == "other"
+        assert result.RC_FOUND == "Mutant Found"
+        assert result.RC_NOT_FOUND == "Mutant Not Found"
+        assert result.RC_TIMEOUT == "Trial Exceeded Timeout"
+        assert result.RC_INCOMPLETE == "Testing Incomplete"
+        assert result.RC_OTHER == "Other, See Description"
 
     def test_mutant_trial_result_min(self):
         result = MutantTrialResult(
@@ -231,11 +231,6 @@ class TestMutantTrialResult:
         assert result.found is True
         assert result.reason_code == "test"
         assert result.reason_desc is None
-        assert result.RC_FOUND == "mutant_found"
-        assert result.RC_NOT_FOUND == "mutant_not_found"
-        assert result.RC_TIMEOUT == "timeout"
-        assert result.RC_INCOMPLETE == "incomplete"
-        assert result.RC_OTHER == "other"
 
     def mutant_trial_result_object(self):
         return MutantTrialResult(
@@ -307,7 +302,6 @@ class TestTestingSummary:
             not_found=4,
             timeout=5,
             errors=6,
-            success_rate=7.8,
         )
 
         assert testing_summary.trials == 1
@@ -316,7 +310,6 @@ class TestTestingSummary:
         assert testing_summary.not_found == 4
         assert testing_summary.timeout == 5
         assert testing_summary.errors == 6
-        assert testing_summary.success_rate == 7.8
 
     def test_testing_summary_defaults(self):
         testing_summary = TestingSummary()
@@ -327,7 +320,22 @@ class TestTestingSummary:
         assert testing_summary.not_found == 0
         assert testing_summary.timeout == 0
         assert testing_summary.errors == 0
-        assert testing_summary.success_rate == 0
+
+    def test_success_rate_trials(self):
+        summary = TestingSummary(trials=9, found=6)
+        assert summary.success_rate == 6 / 9
+
+    def test_success_rate_tested(self):
+        summary = TestingSummary(tested=9, found=6)
+        assert summary.success_rate == 6 / 9
+
+    def test_success_rate_zero(self):
+        summary = TestingSummary(found=6)
+        assert summary.success_rate == 0.0
+
+    def test_coverage_display(self):
+        summary = TestingSummary(trials=9, found=6)
+        assert summary.coverage_display == "66.67%"
 
     def test_iadd(self):
         summary = TestingSummary(trials=10)
@@ -339,7 +347,6 @@ class TestTestingSummary:
         summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
         expected.tested += 1
         expected.found += 1
-        expected.success_rate = 0.1
         assert summary == expected
 
         summary += MutantTrialResult(False, MutantTrialResult.RC_NOT_FOUND)
@@ -360,7 +367,6 @@ class TestTestingSummary:
         summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
         expected.tested += 1
         expected.found += 1
-        expected.success_rate = 0.2
         assert summary == expected
 
         summary += MutantTrialResult(False, MutantTrialResult.RC_NOT_FOUND)
@@ -381,7 +387,7 @@ class TestTestingSummary:
     def test_iadd_one_trial(self):
         summary = TestingSummary()
         summary = TestingSummary(trials=1)
-        expected = TestingSummary(tested=1, found=1, trials=1, success_rate=1.0)
+        expected = TestingSummary(tested=1, found=1, trials=1)
 
         summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
         assert summary == expected
@@ -408,7 +414,6 @@ class TestTestingSummary:
             not_found=7,
             timeout=6,
             errors=5,
-            success_rate=0.43,
         )
 
     def summary_dict(self):
@@ -419,8 +424,8 @@ class TestTestingSummary:
             "not_found": 7,
             "timeout": 6,
             "errors": 5,
-            "success_rate": 0.43,
-            "coverage_display": "43.00%",
+            "success_rate": 0.8,
+            "coverage_display": "80.00%",
         }
 
     def test_serialize(self):

@@ -8,13 +8,6 @@ from typing import Callable
 from poodle.data_types import MutantTrialResult, PoodleConfig, TestingResults
 from poodle.util import to_json
 
-display_reason_code = {
-    MutantTrialResult.RC_FOUND: "FOUND",
-    MutantTrialResult.RC_INCOMPLETE: "Testing Incomplete",
-    MutantTrialResult.RC_NOT_FOUND: "Mutant Not Found",
-    MutantTrialResult.RC_TIMEOUT: "Trial Exceeded Timeout",
-}
-
 
 def get_include_statuses(config: PoodleConfig, prefix: str) -> set[bool]:
     """Get set of statuses to include in report."""
@@ -69,7 +62,7 @@ def report_not_found(config: PoodleConfig, echo: Callable, testing_results: Test
 
         echo("", file=not_found_file)
         echo(
-            f"Mutant Trial Result: {display_reason_code.get(result.reason_code, result.reason_code)}",
+            f"Mutant Trial Result: {result.reason_code}",
             file=not_found_file,
         )
         echo(f"Mutator: {mutant.mutator_name}", file=not_found_file)
