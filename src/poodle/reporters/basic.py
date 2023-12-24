@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Callable
 
-from poodle.data_types import MutantTrialResult, PoodleConfig, TestingResults
+from poodle.data_types import PoodleConfig, TestingResults
 from poodle.util import to_json
 
 
