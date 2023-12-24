@@ -57,7 +57,7 @@ exclude_patterns = []
 
 html_theme = "furo"
 html_static_path = ["_static"]
-html_logo = "_static/poodle-logo.gif"
+html_logo = "_static/poodle.gif"
 html_favicon = "_static/poodle.ico"
 
 copybutton_selector = "div:not(.no-copybutton) > div.highlight > pre"
