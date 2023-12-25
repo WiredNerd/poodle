@@ -72,10 +72,7 @@ def runner(
     if result.returncode == 1:
         return MutantTrialResult(
             found=True,
-            reason_code=MutantTrialResult.RC_FOUND,
-            reason_desc=result.stdout.decode("utf-8", errors="replace")  # nomut: String
-            + "\n"
-            + result.stderr.decode("utf-8", errors="replace"),  # nomut: String
+            reason_code=MutantTrialResult.RC_FOUND
         )
     if result.returncode == 0:
         return MutantTrialResult(
