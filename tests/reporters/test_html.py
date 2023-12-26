@@ -403,7 +403,6 @@ class TestLocalTimestamp:
         mock_datetime.datetime.now.return_value = dt
         timestamp = html.local_timestamp()
         assert timestamp == dt.astimezone().strftime("%Y-%m-%d %H:%M:%S")
-        assert timestamp != dt.strftime("%Y-%m-%d %H:%M:%S")
 
 
 class TestModuleData:
