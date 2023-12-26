@@ -54,6 +54,7 @@ cover/
 .ruff*
 .poodle*
 cov-html/
+mutation_reports/
 
 # Translations
 *.mo

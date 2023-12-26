@@ -1,0 +1,45 @@
+{% set title = "Module Mutation Details: {}".format(source_file) %}
+{% extends "html-report.html.jinja" %}
+
+{% block header %}
+{{ super() }}
+<p class="module_summary">
+<div class="module_trials">Mutants: {{ module.summary.trials }}</div>
+<div class="module_found">Found: {{ module.summary.found }}</div>
+<div class="module_not_found">Not Found: {{ module.summary.not_found }}</div>
+<div class="module_timeout">Timeout: {{ module.summary.timeout }}</div>
+<div class="module_error">Error: {{ module.summary.errors }}</div>
+<div class="module_score">Score: {{ module.summary.coverage_display }}</div>
+</p>
+{% endblock %}
+
+
+{% block main %}
+<table>
+    {% for line in module.lines %}
+    <tr class="{% if line.trials %} show_hide_row {% endif %} {{ line.row_class }}">
+        <td class="line_toggle">{% if line.trials %} &#x25B8; {% endif %}</td>
+        <td class="line_number">{{ line.lineno }}</td>
+        <td class="line_text">
+            <pre>{{ line.text }}</pre>
+        </td>
+    </tr>
+    {% if line.trials %}
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            {% for trial in line.trials %}
+            {{ trial_details(trial) }}
+            {% endfor %}
+        </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+</table>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>addShowHideEventListeners();</script>
+{% endblock %}

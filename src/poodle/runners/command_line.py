@@ -70,10 +70,7 @@ def runner(
         )
 
     if result.returncode == 1:
-        return MutantTrialResult(
-            found=True,
-            reason_code=MutantTrialResult.RC_FOUND
-        )
+        return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
     if result.returncode == 0:
         return MutantTrialResult(
             found=False,

@@ -1,0 +1,43 @@
+{% set title = "Mutation Coverage Report" %}
+{% extends "html-report.html.jinja" %}
+
+
+{% block main %}
+<table class="index">
+    <thead>
+        <tr>
+            <th class="name">Module</th>
+            <th class="stat">Mutants</th>
+            <th class="stat">Found</th>
+            <th class="stat">Not Found</th>
+            <th class="stat">Timeout</th>
+            <th class="stat">Error</th>
+            <th class="score">Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for source_file, module in modules.items() %}
+        <tr>
+            <td class="name"><a href="{{ module.report_file }}">{{ source_file }}</a></td>
+            <td class="stat">{{ module.summary.trials }}</td>
+            <td class="stat">{{ module.summary.found }}</td>
+            <td class="stat">{{ module.summary.not_found }}</td>
+            <td class="stat">{{ module.summary.timeout }}</td>
+            <td class="stat">{{ module.summary.errors }}</td>
+            <td class="score">{{ module.summary.coverage_display }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <th class="name">Total</th>
+            <td class="stat">{{ total.tested }}</td>
+            <td class="stat">{{ total.found }}</td>
+            <td class="stat">{{ total.not_found }}</td>
+            <td class="stat">{{ total.timeout }}</td>
+            <td class="stat">{{ total.errors }}</td>
+            <td class="score">{{ total.coverage_display }}</td>
+        </tr>
+    </tfoot>
+</table>
+{% endblock %}
