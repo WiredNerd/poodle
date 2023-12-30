@@ -1,23 +1,26 @@
-{% set title = "Module Mutation Details: {}".format(source_file) %}
+{% set title = "Module Source: {}".format(source_file) %}
 {% extends "html-report.html.jinja" %}
 
 {% block header %}
 {{ super() }}
-<p class="module_summary">
-<div class="module_trials">Mutants: {{ module.summary.trials }}</div>
-<div class="module_found">Found: {{ module.summary.found }}</div>
-<div class="module_not_found">Not Found: {{ module.summary.not_found }}</div>
-<div class="module_timeout">Timeout: {{ module.summary.timeout }}</div>
-<div class="module_error">Error: {{ module.summary.errors }}</div>
-<div class="module_score">Score: {{ module.summary.coverage_display }}</div>
-</p>
+&nbsp;&nbsp;<a href="index.html" class="subtitle">&lt;Index</a>
+<div class="subtitle">
+<span class="label">Mutants:</span> {{ module.summary.trials }},
+<span class="label">Found:</span> {{ module.summary.found }},
+<span class="label">Not Found:</span> {{ module.summary.not_found }},
+<span class="label">Timeout:</span> {{ module.summary.timeout }},
+<span class="label">Error:</span> {{ module.summary.errors }}
+</div>
+<div class="subtitle">
+<span class="label">Module Score:</span> {{ module.summary.coverage_display }}
+</div>
 {% endblock %}
 
 
 {% block main %}
-<table>
+<table class="source">
     {% for line in module.lines %}
-    <tr class="{% if line.trials %} show_hide_row {% endif %} {{ line.row_class }}">
+    <tr class="source_row {% if line.trials %} show_hide_row {% endif %} {{ line.row_class }}">
         <td class="line_toggle">{% if line.trials %} &#x25B8; {% endif %}</td>
         <td class="line_number">{{ line.lineno }}</td>
         <td class="line_text">

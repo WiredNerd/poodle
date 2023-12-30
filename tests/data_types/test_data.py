@@ -19,6 +19,9 @@ from poodle.util import from_json, to_json
 
 @dataclass
 class PoodleConfigStub(PoodleConfig):
+    project_name: str | None = None
+    project_version: str | None = None
+
     config_file: Path | None = None
     source_folders: list[Path] = None  # type: ignore [assignment]
 
@@ -54,6 +57,8 @@ class TestPoodleConfig:
     @staticmethod
     def create_poodle_config():
         return PoodleConfig(
+            project_name="example",
+            project_version="1.2.3",
             config_file=Path("filename.toml"),
             source_folders=[Path("src")],
             only_files=["example.py"],
@@ -80,6 +85,9 @@ class TestPoodleConfig:
 
     def test_poodle_config(self):
         config = self.create_poodle_config()
+
+        assert config.project_name == "example"
+        assert config.project_version == "1.2.3"
 
         assert config.config_file == Path("filename.toml")
         assert config.source_folders == [Path("src")]

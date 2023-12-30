@@ -1,12 +1,18 @@
 {% set title = "Mutation Coverage Report" %}
 {% extends "html-report.html.jinja" %}
 
+{% block header %}
+{{ super() }}
+<div class="subtitle"><span class="label">Project Score:</span> {{ total.coverage_display }}</div>
+{% endblock %}
 
 {% block main %}
 <table class="index">
     <thead>
         <tr>
             <th class="name">Module</th>
+            <th></th>
+            <th></th>
             <th class="stat">Mutants</th>
             <th class="stat">Found</th>
             <th class="stat">Not Found</th>
@@ -18,7 +24,13 @@
     <tbody>
         {% for source_file, module in modules.items() %}
         <tr>
-            <td class="name"><a href="{{ module.report_file }}">{{ source_file }}</a></td>
+            <td class="name">{{ source_file }}</td>
+            <td class="link"><a href="{{ module.report_file }}">Source</a></td>
+            <td class="link">
+                {% if module.trials %}
+                <a href="#{{ module.file_id }}">Mutants</a>
+                {% endif %}
+            </td>
             <td class="stat">{{ module.summary.trials }}</td>
             <td class="stat">{{ module.summary.found }}</td>
             <td class="stat">{{ module.summary.not_found }}</td>
@@ -30,7 +42,9 @@
     </tbody>
     <tfoot>
         <tr>
-            <th class="name">Total</th>
+            <td></td>
+            <td class="name">Total</td>
+            <td></td>
             <td class="stat">{{ total.tested }}</td>
             <td class="stat">{{ total.found }}</td>
             <td class="stat">{{ total.not_found }}</td>
@@ -40,4 +54,16 @@
         </tr>
     </tfoot>
 </table>
+<div class="detail">
+    <hr />
+    <h1>Mutants</h1>
+    {% for source_file, module in modules.items() %}
+    {% if module.trials %}
+    <h2 id="{{ module.file_id }}">{{ source_file }}</h2>
+    {% for trial in module.trials %}
+    {{ trial_details(trial) }}
+    {% endfor %}
+    {% endif %}
+    {% endfor %}
+</div>
 {% endblock %}

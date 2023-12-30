@@ -58,6 +58,7 @@ def build_config(  # noqa: PLR0913
     """Build PoodleConfig object."""
     config_file_path = get_config_file_path(cmd_config_file)
     config_file_data = get_config_file_data(config_file_path)
+    project_name, project_version = get_project_info(config_file_path)
 
     log_format = get_str_from_config("log_format", config_file_data, default=default_log_format)
     log_level: int | str = get_any_from_config(
@@ -77,6 +78,8 @@ def build_config(  # noqa: PLR0913
     reporters += [reporter for reporter in cmd_report if reporter not in reporters]
 
     return PoodleConfig(
+        project_name=get_str_from_config("project_name", config_file_data, default=project_name),
+        project_version=get_str_from_config("project_version", config_file_data, default=project_version),
         config_file=config_file_path,
         source_folders=get_source_folders(cmd_sources, config_file_data),
         only_files=get_str_list_from_config("only_files", config_file_data, default=[], command_line=cmd_only_files),
@@ -190,11 +193,33 @@ def get_config_file_data(config_file: Path | None) -> dict:
     raise PoodleInputError(msg)
 
 
+def get_project_info(config_file: Path | None) -> tuple[str, str]:
+    """Retrieve Poodle configuration from specified Config File."""
+    if not config_file:
+        return ("", "")
+
+    if config_file.suffix == ".toml":
+        return get_project_info_toml(config_file)
+
+    # TODO: tox.ini and setup.cfg
+    # https://tox.wiki/en/3.24.5/config.html
+
+    msg = f"Config file type not supported: --config_file='{config_file}'"
+    raise PoodleInputError(msg)
+
+
 def get_config_file_data_toml(config_file: Path) -> dict:
     """Retrieve Poodle configuration from a 'toml' Config File."""
     config_data = tomllib.load(config_file.open(mode="rb"))
-    config_data = config_data.get("tool", config_data)
+    config_data: dict = config_data.get("tool", config_data)  # type: ignore[no-redef]
     return config_data.get("poodle", {})
+
+
+def get_project_info_toml(config_file: Path) -> tuple[str, str]:
+    """Retrieve Project Name and Version from a 'toml' Config File."""
+    config_data = tomllib.load(config_file.open(mode="rb"))
+    config_data: dict = config_data.get("project", config_data)  # type: ignore[no-redef]
+    return config_data.get("name", ""), config_data.get("version", "")
 
 
 def get_source_folders(command_line_sources: tuple[Path], config_data: dict) -> list[Path]:

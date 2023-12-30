@@ -28,6 +28,9 @@ class PoodleSerialize:
 class PoodleConfig:
     """Configuration options resolved from command line and config files."""
 
+    project_name: str | None
+    project_version: str | None
+
     config_file: Path | None
     source_folders: list[Path]
 
