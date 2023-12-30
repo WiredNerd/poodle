@@ -1,0 +1,3225 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Module Source: src\poodle\reporters\basic.py</title>
+    <link rel="stylesheet" type="text/css" href="html-report.css" />
+    <link rel="icon" href="poodle.ico" type="image/x-icon" />
+    
+</head>
+
+<body>
+    <header>
+        
+
+        <h1>Module Source: src\poodle\reporters\basic.py</h1>
+        
+        <span class="subtitle"><span class="label">Project:</span> poodle
+             version 1.2.0 </span>
+        
+        
+&nbsp;&nbsp;<a href="index.html" class="subtitle">&lt;Index</a>
+<div class="subtitle">
+<span class="label">Mutants:</span> 86,
+<span class="label">Found:</span> 82,
+<span class="label">Not Found:</span> 4,
+<span class="label">Timeout:</span> 0,
+<span class="label">Error:</span> 0
+</div>
+<div class="subtitle">
+<span class="label">Module Score:</span> 95.35%
+</div>
+
+    </header>
+    <main>
+        
+<table class="source">
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">1</td>
+        <td class="line_text">
+            <pre>&#34;&#34;&#34;Basic Mutation Test Result Reporters.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">2</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">3</td>
+        <td class="line_text">
+            <pre>from __future__ import annotations</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">4</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">5</td>
+        <td class="line_text">
+            <pre>from pathlib import Path</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">6</td>
+        <td class="line_text">
+            <pre>from typing import Callable</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">7</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">8</td>
+        <td class="line_text">
+            <pre>from poodle.data_types import PoodleConfig, TestingResults</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">9</td>
+        <td class="line_text">
+            <pre>from poodle.util import to_json</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">10</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">11</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">12</td>
+        <td class="line_text">
+            <pre>def get_include_statuses(config: PoodleConfig, prefix: str) -&gt; set[bool]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">13</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Get set of statuses to include in report.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">14</td>
+        <td class="line_text">
+            <pre>    include_statuses = set()</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:14
+@@ -11,7 +11,7 @@
+ 
+ def get_include_statuses(config: PoodleConfig, prefix: str) -&gt; set[bool]:
+     &#34;&#34;&#34;Get set of statuses to include in report.&#34;&#34;&#34;
+-    include_statuses = set()
++    include_statuses = None
+     if config.reporter_opts.get(f&#34;{prefix}_report_found&#34;, False):
+         include_statuses.add(True)  # noqa: FBT003
+     if config.reporter_opts.get(f&#34;{prefix}_report_not_found&#34;, True):
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">15</td>
+        <td class="line_text">
+            <pre>    if config.reporter_opts.get(f&#34;{prefix}_report_found&#34;, False):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:15
+@@ -12,7 +12,7 @@
+ def get_include_statuses(config: PoodleConfig, prefix: str) -&gt; set[bool]:
+     &#34;&#34;&#34;Get set of statuses to include in report.&#34;&#34;&#34;
+     include_statuses = set()
+-    if config.reporter_opts.get(f&#34;{prefix}_report_found&#34;, False):
++    if config.reporter_opts.get(f&#34;{prefix}_report_found&#34;, True):
+         include_statuses.add(True)  # noqa: FBT003
+     if config.reporter_opts.get(f&#34;{prefix}_report_not_found&#34;, True):
+         include_statuses.add(False)  # noqa: FBT003
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:15
+@@ -12,7 +12,7 @@
+ def get_include_statuses(config: PoodleConfig, prefix: str) -&gt; set[bool]:
+     &#34;&#34;&#34;Get set of statuses to include in report.&#34;&#34;&#34;
+     include_statuses = set()
+-    if config.reporter_opts.get(f&#34;{prefix}_report_found&#34;, False):
++    if config.reporter_opts.get(f&#34;{prefix}&#39;XX_report_foundXX&#39;&#34;, False):
+         include_statuses.add(True)  # noqa: FBT003
+     if config.reporter_opts.get(f&#34;{prefix}_report_not_found&#34;, True):
+         include_statuses.add(False)  # noqa: FBT003
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:15
+@@ -12,7 +12,7 @@
+ def get_include_statuses(config: PoodleConfig, prefix: str) -&gt; set[bool]:
+     &#34;&#34;&#34;Get set of statuses to include in report.&#34;&#34;&#34;
+     include_statuses = set()
+-    if config.reporter_opts.get(f&#34;{prefix}_report_found&#34;, False):
++    if None:
+         include_statuses.add(True)  # noqa: FBT003
+     if config.reporter_opts.get(f&#34;{prefix}_report_not_found&#34;, True):
+         include_statuses.add(False)  # noqa: FBT003
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">16</td>
+        <td class="line_text">
+            <pre>        include_statuses.add(True)  # noqa: FBT003</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:16
+@@ -13,7 +13,7 @@
+     &#34;&#34;&#34;Get set of statuses to include in report.&#34;&#34;&#34;
+     include_statuses = set()
+     if config.reporter_opts.get(f&#34;{prefix}_report_found&#34;, False):
+-        include_statuses.add(True)  # noqa: FBT003
++        include_statuses.add(False)  # noqa: FBT003
+     if config.reporter_opts.get(f&#34;{prefix}_report_not_found&#34;, True):
+         include_statuses.add(False)  # noqa: FBT003
+     return include_statuses
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:16
+@@ -13,7 +13,7 @@
+     &#34;&#34;&#34;Get set of statuses to include in report.&#34;&#34;&#34;
+     include_statuses = set()
+     if config.reporter_opts.get(f&#34;{prefix}_report_found&#34;, False):
+-        include_statuses.add(True)  # noqa: FBT003
++        None  # noqa: FBT003
+     if config.reporter_opts.get(f&#34;{prefix}_report_not_found&#34;, True):
+         include_statuses.add(False)  # noqa: FBT003
+     return include_statuses
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">17</td>
+        <td class="line_text">
+            <pre>    if config.reporter_opts.get(f&#34;{prefix}_report_not_found&#34;, True):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:17
+@@ -14,7 +14,7 @@
+     include_statuses = set()
+     if config.reporter_opts.get(f&#34;{prefix}_report_found&#34;, False):
+         include_statuses.add(True)  # noqa: FBT003
+-    if config.reporter_opts.get(f&#34;{prefix}_report_not_found&#34;, True):
++    if config.reporter_opts.get(f&#34;{prefix}_report_not_found&#34;, False):
+         include_statuses.add(False)  # noqa: FBT003
+     return include_statuses
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:17
+@@ -14,7 +14,7 @@
+     include_statuses = set()
+     if config.reporter_opts.get(f&#34;{prefix}_report_found&#34;, False):
+         include_statuses.add(True)  # noqa: FBT003
+-    if config.reporter_opts.get(f&#34;{prefix}_report_not_found&#34;, True):
++    if config.reporter_opts.get(f&#34;{prefix}&#39;XX_report_not_foundXX&#39;&#34;, True):
+         include_statuses.add(False)  # noqa: FBT003
+     return include_statuses
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:17
+@@ -14,7 +14,7 @@
+     include_statuses = set()
+     if config.reporter_opts.get(f&#34;{prefix}_report_found&#34;, False):
+         include_statuses.add(True)  # noqa: FBT003
+-    if config.reporter_opts.get(f&#34;{prefix}_report_not_found&#34;, True):
++    if None:
+         include_statuses.add(False)  # noqa: FBT003
+     return include_statuses
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">18</td>
+        <td class="line_text">
+            <pre>        include_statuses.add(False)  # noqa: FBT003</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:18
+@@ -15,7 +15,7 @@
+     if config.reporter_opts.get(f&#34;{prefix}_report_found&#34;, False):
+         include_statuses.add(True)  # noqa: FBT003
+     if config.reporter_opts.get(f&#34;{prefix}_report_not_found&#34;, True):
+-        include_statuses.add(False)  # noqa: FBT003
++        include_statuses.add(True)  # noqa: FBT003
+     return include_statuses
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:18
+@@ -15,7 +15,7 @@
+     if config.reporter_opts.get(f&#34;{prefix}_report_found&#34;, False):
+         include_statuses.add(True)  # noqa: FBT003
+     if config.reporter_opts.get(f&#34;{prefix}_report_not_found&#34;, True):
+-        include_statuses.add(False)  # noqa: FBT003
++        None  # noqa: FBT003
+     return include_statuses
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">19</td>
+        <td class="line_text">
+            <pre>    return include_statuses</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:19
+@@ -16,7 +16,7 @@
+         include_statuses.add(True)  # noqa: FBT003
+     if config.reporter_opts.get(f&#34;{prefix}_report_not_found&#34;, True):
+         include_statuses.add(False)  # noqa: FBT003
+-    return include_statuses
++    return None
+ 
+ 
+ def report_summary(echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">20</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">21</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">22</td>
+        <td class="line_text">
+            <pre>def report_summary(echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">23</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Echo quick summary to console.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">24</td>
+        <td class="line_text">
+            <pre>    echo(&#34;&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:24
+@@ -21,7 +21,7 @@
+ 
+ def report_summary(echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+     &#34;&#34;&#34;Echo quick summary to console.&#34;&#34;&#34;
+-    echo(&#34;&#34;)
++    echo(&#39;XXXX&#39;)
+     summary = testing_results.summary
+     if summary.trials &lt; 1:
+         echo(&#34;!!! No mutants found to test !!!&#34;, fg=&#34;yellow&#34;)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:24
+@@ -21,7 +21,7 @@
+ 
+ def report_summary(echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+     &#34;&#34;&#34;Echo quick summary to console.&#34;&#34;&#34;
+-    echo(&#34;&#34;)
++    None
+     summary = testing_results.summary
+     if summary.trials &lt; 1:
+         echo(&#34;!!! No mutants found to test !!!&#34;, fg=&#34;yellow&#34;)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">25</td>
+        <td class="line_text">
+            <pre>    summary = testing_results.summary</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  partial_found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">26</td>
+        <td class="line_text">
+            <pre>    if summary.trials &lt; 1:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:26
+@@ -23,7 +23,7 @@
+     &#34;&#34;&#34;Echo quick summary to console.&#34;&#34;&#34;
+     echo(&#34;&#34;)
+     summary = testing_results.summary
+-    if summary.trials &lt; 1:
++    if summary.trials &gt;= 1:
+         echo(&#34;!!! No mutants found to test !!!&#34;, fg=&#34;yellow&#34;)
+         return
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  not_found ">
+    <p><span class="label">Status:</span> Mutant Not Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:26
+@@ -23,7 +23,7 @@
+     &#34;&#34;&#34;Echo quick summary to console.&#34;&#34;&#34;
+     echo(&#34;&#34;)
+     summary = testing_results.summary
+-    if summary.trials &lt; 1:
++    if summary.trials &lt;= 1:
+         echo(&#34;!!! No mutants found to test !!!&#34;, fg=&#34;yellow&#34;)
+         return
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  not_found ">
+    <p><span class="label">Status:</span> Mutant Not Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:26
+@@ -23,7 +23,7 @@
+     &#34;&#34;&#34;Echo quick summary to console.&#34;&#34;&#34;
+     echo(&#34;&#34;)
+     summary = testing_results.summary
+-    if summary.trials &lt; 1:
++    if summary.trials &lt; 2:
+         echo(&#34;!!! No mutants found to test !!!&#34;, fg=&#34;yellow&#34;)
+         return
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:26
+@@ -23,7 +23,7 @@
+     &#34;&#34;&#34;Echo quick summary to console.&#34;&#34;&#34;
+     echo(&#34;&#34;)
+     summary = testing_results.summary
+-    if summary.trials &lt; 1:
++    if summary.trials &lt; 0:
+         echo(&#34;!!! No mutants found to test !!!&#34;, fg=&#34;yellow&#34;)
+         return
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">27</td>
+        <td class="line_text">
+            <pre>        echo(&#34;!!! No mutants found to test !!!&#34;, fg=&#34;yellow&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:27
+@@ -24,7 +24,7 @@
+     echo(&#34;&#34;)
+     summary = testing_results.summary
+     if summary.trials &lt; 1:
+-        echo(&#34;!!! No mutants found to test !!!&#34;, fg=&#34;yellow&#34;)
++        echo(&#39;XX!!! No mutants found to test !!!XX&#39;, fg=&#34;yellow&#34;)
+         return
+ 
+     echo(&#34;*** Results Summary ***&#34;, fg=&#34;green&#34;)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:27
+@@ -24,7 +24,7 @@
+     echo(&#34;&#34;)
+     summary = testing_results.summary
+     if summary.trials &lt; 1:
+-        echo(&#34;!!! No mutants found to test !!!&#34;, fg=&#34;yellow&#34;)
++        echo(&#34;!!! No mutants found to test !!!&#34;, fg=&#39;XXyellowXX&#39;)
+         return
+ 
+     echo(&#34;*** Results Summary ***&#34;, fg=&#34;green&#34;)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:27
+@@ -24,7 +24,7 @@
+     echo(&#34;&#34;)
+     summary = testing_results.summary
+     if summary.trials &lt; 1:
+-        echo(&#34;!!! No mutants found to test !!!&#34;, fg=&#34;yellow&#34;)
++        None
+         return
+ 
+     echo(&#34;*** Results Summary ***&#34;, fg=&#34;green&#34;)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">28</td>
+        <td class="line_text">
+            <pre>        return</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">29</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">30</td>
+        <td class="line_text">
+            <pre>    echo(&#34;*** Results Summary ***&#34;, fg=&#34;green&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:30
+@@ -27,7 +27,7 @@
+         echo(&#34;!!! No mutants found to test !!!&#34;, fg=&#34;yellow&#34;)
+         return
+ 
+-    echo(&#34;*** Results Summary ***&#34;, fg=&#34;green&#34;)
++    echo(&#39;XX*** Results Summary ***XX&#39;, fg=&#34;green&#34;)
+     echo(f&#34;Testing found {summary.success_rate:.1%} of Mutants.&#34;)
+     if summary.not_found:
+         echo(f&#34; - {summary.not_found} mutant(s) were not found.&#34;)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:30
+@@ -27,7 +27,7 @@
+         echo(&#34;!!! No mutants found to test !!!&#34;, fg=&#34;yellow&#34;)
+         return
+ 
+-    echo(&#34;*** Results Summary ***&#34;, fg=&#34;green&#34;)
++    echo(&#34;*** Results Summary ***&#34;, fg=&#39;XXgreenXX&#39;)
+     echo(f&#34;Testing found {summary.success_rate:.1%} of Mutants.&#34;)
+     if summary.not_found:
+         echo(f&#34; - {summary.not_found} mutant(s) were not found.&#34;)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:30
+@@ -27,7 +27,7 @@
+         echo(&#34;!!! No mutants found to test !!!&#34;, fg=&#34;yellow&#34;)
+         return
+ 
+-    echo(&#34;*** Results Summary ***&#34;, fg=&#34;green&#34;)
++    None
+     echo(f&#34;Testing found {summary.success_rate:.1%} of Mutants.&#34;)
+     if summary.not_found:
+         echo(f&#34; - {summary.not_found} mutant(s) were not found.&#34;)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">31</td>
+        <td class="line_text">
+            <pre>    echo(f&#34;Testing found {summary.success_rate:.1%} of Mutants.&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:31
+@@ -28,7 +28,7 @@
+         return
+ 
+     echo(&#34;*** Results Summary ***&#34;, fg=&#34;green&#34;)
+-    echo(f&#34;Testing found {summary.success_rate:.1%} of Mutants.&#34;)
++    echo(f&#34;&#39;XXTesting found XX&#39;{summary.success_rate:.1%} of Mutants.&#34;)
+     if summary.not_found:
+         echo(f&#34; - {summary.not_found} mutant(s) were not found.&#34;)
+     if summary.timeout:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:31
+@@ -28,7 +28,7 @@
+         return
+ 
+     echo(&#34;*** Results Summary ***&#34;, fg=&#34;green&#34;)
+-    echo(f&#34;Testing found {summary.success_rate:.1%} of Mutants.&#34;)
++    echo(f&#34;Testing found {summary.success_rate:&#39;XX.1%XX&#39;} of Mutants.&#34;)
+     if summary.not_found:
+         echo(f&#34; - {summary.not_found} mutant(s) were not found.&#34;)
+     if summary.timeout:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:31
+@@ -28,7 +28,7 @@
+         return
+ 
+     echo(&#34;*** Results Summary ***&#34;, fg=&#34;green&#34;)
+-    echo(f&#34;Testing found {summary.success_rate:.1%} of Mutants.&#34;)
++    echo(f&#34;Testing found {summary.success_rate:.1%}&#39;XX of Mutants.XX&#39;&#34;)
+     if summary.not_found:
+         echo(f&#34; - {summary.not_found} mutant(s) were not found.&#34;)
+     if summary.timeout:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:31
+@@ -28,7 +28,7 @@
+         return
+ 
+     echo(&#34;*** Results Summary ***&#34;, fg=&#34;green&#34;)
+-    echo(f&#34;Testing found {summary.success_rate:.1%} of Mutants.&#34;)
++    None
+     if summary.not_found:
+         echo(f&#34; - {summary.not_found} mutant(s) were not found.&#34;)
+     if summary.timeout:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">32</td>
+        <td class="line_text">
+            <pre>    if summary.not_found:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">33</td>
+        <td class="line_text">
+            <pre>        echo(f&#34; - {summary.not_found} mutant(s) were not found.&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:33
+@@ -30,7 +30,7 @@
+     echo(&#34;*** Results Summary ***&#34;, fg=&#34;green&#34;)
+     echo(f&#34;Testing found {summary.success_rate:.1%} of Mutants.&#34;)
+     if summary.not_found:
+-        echo(f&#34; - {summary.not_found} mutant(s) were not found.&#34;)
++        echo(f&#34;&#39;XX - XX&#39;{summary.not_found} mutant(s) were not found.&#34;)
+     if summary.timeout:
+         echo(f&#34; - {summary.timeout} mutant(s) caused trial to timeout.&#34;)
+     if summary.errors:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:33
+@@ -30,7 +30,7 @@
+     echo(&#34;*** Results Summary ***&#34;, fg=&#34;green&#34;)
+     echo(f&#34;Testing found {summary.success_rate:.1%} of Mutants.&#34;)
+     if summary.not_found:
+-        echo(f&#34; - {summary.not_found} mutant(s) were not found.&#34;)
++        echo(f&#34; - {summary.not_found}&#39;XX mutant(s) were not found.XX&#39;&#34;)
+     if summary.timeout:
+         echo(f&#34; - {summary.timeout} mutant(s) caused trial to timeout.&#34;)
+     if summary.errors:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:33
+@@ -30,7 +30,7 @@
+     echo(&#34;*** Results Summary ***&#34;, fg=&#34;green&#34;)
+     echo(f&#34;Testing found {summary.success_rate:.1%} of Mutants.&#34;)
+     if summary.not_found:
+-        echo(f&#34; - {summary.not_found} mutant(s) were not found.&#34;)
++        None
+     if summary.timeout:
+         echo(f&#34; - {summary.timeout} mutant(s) caused trial to timeout.&#34;)
+     if summary.errors:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">34</td>
+        <td class="line_text">
+            <pre>    if summary.timeout:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">35</td>
+        <td class="line_text">
+            <pre>        echo(f&#34; - {summary.timeout} mutant(s) caused trial to timeout.&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:35
+@@ -32,7 +32,7 @@
+     if summary.not_found:
+         echo(f&#34; - {summary.not_found} mutant(s) were not found.&#34;)
+     if summary.timeout:
+-        echo(f&#34; - {summary.timeout} mutant(s) caused trial to timeout.&#34;)
++        echo(f&#34;&#39;XX - XX&#39;{summary.timeout} mutant(s) caused trial to timeout.&#34;)
+     if summary.errors:
+         echo(f&#34; - {summary.errors} mutant(s) could not be tested due to an error.&#34;)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:35
+@@ -32,7 +32,7 @@
+     if summary.not_found:
+         echo(f&#34; - {summary.not_found} mutant(s) were not found.&#34;)
+     if summary.timeout:
+-        echo(f&#34; - {summary.timeout} mutant(s) caused trial to timeout.&#34;)
++        echo(f&#34; - {summary.timeout}&#39;XX mutant(s) caused trial to timeout.XX&#39;&#34;)
+     if summary.errors:
+         echo(f&#34; - {summary.errors} mutant(s) could not be tested due to an error.&#34;)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:35
+@@ -32,7 +32,7 @@
+     if summary.not_found:
+         echo(f&#34; - {summary.not_found} mutant(s) were not found.&#34;)
+     if summary.timeout:
+-        echo(f&#34; - {summary.timeout} mutant(s) caused trial to timeout.&#34;)
++        None
+     if summary.errors:
+         echo(f&#34; - {summary.errors} mutant(s) could not be tested due to an error.&#34;)
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">36</td>
+        <td class="line_text">
+            <pre>    if summary.errors:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">37</td>
+        <td class="line_text">
+            <pre>        echo(f&#34; - {summary.errors} mutant(s) could not be tested due to an error.&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:37
+@@ -34,7 +34,7 @@
+     if summary.timeout:
+         echo(f&#34; - {summary.timeout} mutant(s) caused trial to timeout.&#34;)
+     if summary.errors:
+-        echo(f&#34; - {summary.errors} mutant(s) could not be tested due to an error.&#34;)
++        echo(f&#34;&#39;XX - XX&#39;{summary.errors} mutant(s) could not be tested due to an error.&#34;)
+ 
+ 
+ def report_not_found(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:37
+@@ -34,7 +34,7 @@
+     if summary.timeout:
+         echo(f&#34; - {summary.timeout} mutant(s) caused trial to timeout.&#34;)
+     if summary.errors:
+-        echo(f&#34; - {summary.errors} mutant(s) could not be tested due to an error.&#34;)
++        echo(f&#34; - {summary.errors}&#39;XX mutant(s) could not be tested due to an error.XX&#39;&#34;)
+ 
+ 
+ def report_not_found(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:37
+@@ -34,7 +34,7 @@
+     if summary.timeout:
+         echo(f&#34; - {summary.timeout} mutant(s) caused trial to timeout.&#34;)
+     if summary.errors:
+-        echo(f&#34; - {summary.errors} mutant(s) could not be tested due to an error.&#34;)
++        None
+ 
+ 
+ def report_not_found(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">38</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">39</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">40</td>
+        <td class="line_text">
+            <pre>def report_not_found(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">41</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Echo information about Trials that did not pass.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">42</td>
+        <td class="line_text">
+            <pre>    failed_trials = [trial for trial in testing_results.mutant_trials if not trial.result.found]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> UnaryOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:42
+@@ -39,7 +39,7 @@
+ 
+ def report_not_found(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+     &#34;&#34;&#34;Echo information about Trials that did not pass.&#34;&#34;&#34;
+-    failed_trials = [trial for trial in testing_results.mutant_trials if not trial.result.found]
++    failed_trials = [trial for trial in testing_results.mutant_trials if trial.result.found]
+     if not failed_trials:
+         return
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">43</td>
+        <td class="line_text">
+            <pre>    if not failed_trials:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> UnaryOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:43
+@@ -40,7 +40,7 @@
+ def report_not_found(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+     &#34;&#34;&#34;Echo information about Trials that did not pass.&#34;&#34;&#34;
+     failed_trials = [trial for trial in testing_results.mutant_trials if not trial.result.found]
+-    if not failed_trials:
++    if failed_trials:
+         return
+ 
+     failed_trials.sort(
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">44</td>
+        <td class="line_text">
+            <pre>        return</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">45</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">46</td>
+        <td class="line_text">
+            <pre>    failed_trials.sort(</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:46
+@@ -43,14 +43,7 @@
+     if not failed_trials:
+         return
+ 
+-    failed_trials.sort(
+-        key=lambda trial: (
+-            trial.mutant.source_folder,
+-            str(trial.mutant.source_file) or &#34;&#34;,
+-            trial.mutant.lineno,
+-            trial.mutant.mutator_name,
+-        )
+-    )
++    None
+ 
+     not_found_file = config.reporter_opts.get(&#34;not_found_file&#34;)
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">47</td>
+        <td class="line_text">
+            <pre>        key=lambda trial: (</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Lambda</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:47
+@@ -44,12 +44,7 @@
+         return
+ 
+     failed_trials.sort(
+-        key=lambda trial: (
+-            trial.mutant.source_folder,
+-            str(trial.mutant.source_file) or &#34;&#34;,
+-            trial.mutant.lineno,
+-            trial.mutant.mutator_name,
+-        )
++        key=lambda trial: None
+     )
+ 
+     not_found_file = config.reporter_opts.get(&#34;not_found_file&#34;)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">48</td>
+        <td class="line_text">
+            <pre>            trial.mutant.source_folder,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  not_found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">49</td>
+        <td class="line_text">
+            <pre>            str(trial.mutant.source_file) or &#34;&#34;,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  not_found ">
+    <p><span class="label">Status:</span> Mutant Not Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:49
+@@ -46,7 +46,7 @@
+     failed_trials.sort(
+         key=lambda trial: (
+             trial.mutant.source_folder,
+-            str(trial.mutant.source_file) or &#34;&#34;,
++            str(trial.mutant.source_file) and &#39;&#39;,
+             trial.mutant.lineno,
+             trial.mutant.mutator_name,
+         )
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  not_found ">
+    <p><span class="label">Status:</span> Mutant Not Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:49
+@@ -46,7 +46,7 @@
+     failed_trials.sort(
+         key=lambda trial: (
+             trial.mutant.source_folder,
+-            str(trial.mutant.source_file) or &#34;&#34;,
++            str(trial.mutant.source_file) or &#39;XXXX&#39;,
+             trial.mutant.lineno,
+             trial.mutant.mutator_name,
+         )
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">50</td>
+        <td class="line_text">
+            <pre>            trial.mutant.lineno,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">51</td>
+        <td class="line_text">
+            <pre>            trial.mutant.mutator_name,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">52</td>
+        <td class="line_text">
+            <pre>        )</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">53</td>
+        <td class="line_text">
+            <pre>    )</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">54</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">55</td>
+        <td class="line_text">
+            <pre>    not_found_file = config.reporter_opts.get(&#34;not_found_file&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:55
+@@ -52,7 +52,7 @@
+         )
+     )
+ 
+-    not_found_file = config.reporter_opts.get(&#34;not_found_file&#34;)
++    not_found_file = config.reporter_opts.get(&#39;XXnot_found_fileXX&#39;)
+ 
+     echo(&#34;&#34;, file=not_found_file)
+     echo(&#34;*** Mutants Not Found ***&#34;, fg=&#34;yellow&#34;, file=not_found_file)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:55
+@@ -52,7 +52,7 @@
+         )
+     )
+ 
+-    not_found_file = config.reporter_opts.get(&#34;not_found_file&#34;)
++    not_found_file = None
+ 
+     echo(&#34;&#34;, file=not_found_file)
+     echo(&#34;*** Mutants Not Found ***&#34;, fg=&#34;yellow&#34;, file=not_found_file)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">56</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">57</td>
+        <td class="line_text">
+            <pre>    echo(&#34;&#34;, file=not_found_file)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:57
+@@ -54,7 +54,7 @@
+ 
+     not_found_file = config.reporter_opts.get(&#34;not_found_file&#34;)
+ 
+-    echo(&#34;&#34;, file=not_found_file)
++    echo(&#39;XXXX&#39;, file=not_found_file)
+     echo(&#34;*** Mutants Not Found ***&#34;, fg=&#34;yellow&#34;, file=not_found_file)
+     for trial in failed_trials:
+         mutant = trial.mutant
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:57
+@@ -54,7 +54,7 @@
+ 
+     not_found_file = config.reporter_opts.get(&#34;not_found_file&#34;)
+ 
+-    echo(&#34;&#34;, file=not_found_file)
++    None
+     echo(&#34;*** Mutants Not Found ***&#34;, fg=&#34;yellow&#34;, file=not_found_file)
+     for trial in failed_trials:
+         mutant = trial.mutant
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">58</td>
+        <td class="line_text">
+            <pre>    echo(&#34;*** Mutants Not Found ***&#34;, fg=&#34;yellow&#34;, file=not_found_file)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:58
+@@ -55,7 +55,7 @@
+     not_found_file = config.reporter_opts.get(&#34;not_found_file&#34;)
+ 
+     echo(&#34;&#34;, file=not_found_file)
+-    echo(&#34;*** Mutants Not Found ***&#34;, fg=&#34;yellow&#34;, file=not_found_file)
++    echo(&#39;XX*** Mutants Not Found ***XX&#39;, fg=&#34;yellow&#34;, file=not_found_file)
+     for trial in failed_trials:
+         mutant = trial.mutant
+         result = trial.result
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:58
+@@ -55,7 +55,7 @@
+     not_found_file = config.reporter_opts.get(&#34;not_found_file&#34;)
+ 
+     echo(&#34;&#34;, file=not_found_file)
+-    echo(&#34;*** Mutants Not Found ***&#34;, fg=&#34;yellow&#34;, file=not_found_file)
++    echo(&#34;*** Mutants Not Found ***&#34;, fg=&#39;XXyellowXX&#39;, file=not_found_file)
+     for trial in failed_trials:
+         mutant = trial.mutant
+         result = trial.result
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:58
+@@ -55,7 +55,7 @@
+     not_found_file = config.reporter_opts.get(&#34;not_found_file&#34;)
+ 
+     echo(&#34;&#34;, file=not_found_file)
+-    echo(&#34;*** Mutants Not Found ***&#34;, fg=&#34;yellow&#34;, file=not_found_file)
++    None
+     for trial in failed_trials:
+         mutant = trial.mutant
+         result = trial.result
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">59</td>
+        <td class="line_text">
+            <pre>    for trial in failed_trials:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">60</td>
+        <td class="line_text">
+            <pre>        mutant = trial.mutant</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">61</td>
+        <td class="line_text">
+            <pre>        result = trial.result</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">62</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">63</td>
+        <td class="line_text">
+            <pre>        echo(&#34;&#34;, file=not_found_file)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:63
+@@ -60,7 +60,7 @@
+         mutant = trial.mutant
+         result = trial.result
+ 
+-        echo(&#34;&#34;, file=not_found_file)
++        echo(&#39;XXXX&#39;, file=not_found_file)
+         echo(
+             f&#34;Mutant Trial Result: {result.reason_code}&#34;,
+             file=not_found_file,
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:63
+@@ -60,7 +60,7 @@
+         mutant = trial.mutant
+         result = trial.result
+ 
+-        echo(&#34;&#34;, file=not_found_file)
++        None
+         echo(
+             f&#34;Mutant Trial Result: {result.reason_code}&#34;,
+             file=not_found_file,
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">64</td>
+        <td class="line_text">
+            <pre>        echo(</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:64
+@@ -61,10 +61,7 @@
+         result = trial.result
+ 
+         echo(&#34;&#34;, file=not_found_file)
+-        echo(
+-            f&#34;Mutant Trial Result: {result.reason_code}&#34;,
+-            file=not_found_file,
+-        )
++        None
+         echo(f&#34;Mutator: {mutant.mutator_name}&#34;, file=not_found_file)
+         if result.reason_desc:
+             echo(result.reason_desc, file=not_found_file)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">65</td>
+        <td class="line_text">
+            <pre>            f&#34;Mutant Trial Result: {result.reason_code}&#34;,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:65
+@@ -62,7 +62,7 @@
+ 
+         echo(&#34;&#34;, file=not_found_file)
+         echo(
+-            f&#34;Mutant Trial Result: {result.reason_code}&#34;,
++            f&#34;&#39;XXMutant Trial Result: XX&#39;{result.reason_code}&#34;,
+             file=not_found_file,
+         )
+         echo(f&#34;Mutator: {mutant.mutator_name}&#34;, file=not_found_file)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">66</td>
+        <td class="line_text">
+            <pre>            file=not_found_file,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">67</td>
+        <td class="line_text">
+            <pre>        )</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">68</td>
+        <td class="line_text">
+            <pre>        echo(f&#34;Mutator: {mutant.mutator_name}&#34;, file=not_found_file)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:68
+@@ -65,7 +65,7 @@
+             f&#34;Mutant Trial Result: {result.reason_code}&#34;,
+             file=not_found_file,
+         )
+-        echo(f&#34;Mutator: {mutant.mutator_name}&#34;, file=not_found_file)
++        echo(f&#34;&#39;XXMutator: XX&#39;{mutant.mutator_name}&#34;, file=not_found_file)
+         if result.reason_desc:
+             echo(result.reason_desc, file=not_found_file)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:68
+@@ -65,7 +65,7 @@
+             f&#34;Mutant Trial Result: {result.reason_code}&#34;,
+             file=not_found_file,
+         )
+-        echo(f&#34;Mutator: {mutant.mutator_name}&#34;, file=not_found_file)
++        None
+         if result.reason_desc:
+             echo(result.reason_desc, file=not_found_file)
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">69</td>
+        <td class="line_text">
+            <pre>        if result.reason_desc:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">70</td>
+        <td class="line_text">
+            <pre>            echo(result.reason_desc, file=not_found_file)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:70
+@@ -67,7 +67,7 @@
+         )
+         echo(f&#34;Mutator: {mutant.mutator_name}&#34;, file=not_found_file)
+         if result.reason_desc:
+-            echo(result.reason_desc, file=not_found_file)
++            None
+ 
+         if mutant.unified_diff:
+             echo(mutant.unified_diff, file=not_found_file)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">71</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">72</td>
+        <td class="line_text">
+            <pre>        if mutant.unified_diff:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">73</td>
+        <td class="line_text">
+            <pre>            echo(mutant.unified_diff, file=not_found_file)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:73
+@@ -70,7 +70,7 @@
+             echo(result.reason_desc, file=not_found_file)
+ 
+         if mutant.unified_diff:
+-            echo(mutant.unified_diff, file=not_found_file)
++            None
+         else:
+             echo(
+                 f&#34;source_file={mutant.source_file} lineno={mutant.lineno} col_offset={mutant.col_offset} &#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">74</td>
+        <td class="line_text">
+            <pre>        else:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">75</td>
+        <td class="line_text">
+            <pre>            echo(</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:75
+@@ -72,11 +72,7 @@
+         if mutant.unified_diff:
+             echo(mutant.unified_diff, file=not_found_file)
+         else:
+-            echo(
+-                f&#34;source_file={mutant.source_file} lineno={mutant.lineno} col_offset={mutant.col_offset} &#34;
+-                f&#34;end_lineno={mutant.end_lineno} end_col_offset={mutant.end_col_offset}&#34;,
+-                file=not_found_file,
+-            )
++            None
+             echo(&#34;text:&#34;, file=not_found_file)
+             echo(mutant.text, file=not_found_file)
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">76</td>
+        <td class="line_text">
+            <pre>                f&#34;source_file={mutant.source_file} lineno={mutant.lineno} col_offset={mutant.col_offset} &#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:76
+@@ -73,7 +73,7 @@
+             echo(mutant.unified_diff, file=not_found_file)
+         else:
+             echo(
+-                f&#34;source_file={mutant.source_file} lineno={mutant.lineno} col_offset={mutant.col_offset} &#34;
++                f&#34;&#39;XXsource_file=XX&#39;{mutant.source_file} lineno={mutant.lineno} col_offset={mutant.col_offset} &#34;
+                 f&#34;end_lineno={mutant.end_lineno} end_col_offset={mutant.end_col_offset}&#34;,
+                 file=not_found_file,
+             )
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:76
+@@ -73,7 +73,7 @@
+             echo(mutant.unified_diff, file=not_found_file)
+         else:
+             echo(
+-                f&#34;source_file={mutant.source_file} lineno={mutant.lineno} col_offset={mutant.col_offset} &#34;
++                f&#34;source_file={mutant.source_file}&#39;XX lineno=XX&#39;{mutant.lineno} col_offset={mutant.col_offset} &#34;
+                 f&#34;end_lineno={mutant.end_lineno} end_col_offset={mutant.end_col_offset}&#34;,
+                 file=not_found_file,
+             )
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:76
+@@ -73,7 +73,7 @@
+             echo(mutant.unified_diff, file=not_found_file)
+         else:
+             echo(
+-                f&#34;source_file={mutant.source_file} lineno={mutant.lineno} col_offset={mutant.col_offset} &#34;
++                f&#34;source_file={mutant.source_file} lineno={mutant.lineno}&#39;XX col_offset=XX&#39;{mutant.col_offset} &#34;
+                 f&#34;end_lineno={mutant.end_lineno} end_col_offset={mutant.end_col_offset}&#34;,
+                 file=not_found_file,
+             )
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:76
+@@ -73,8 +73,7 @@
+             echo(mutant.unified_diff, file=not_found_file)
+         else:
+             echo(
+-                f&#34;source_file={mutant.source_file} lineno={mutant.lineno} col_offset={mutant.col_offset} &#34;
+-                f&#34;end_lineno={mutant.end_lineno} end_col_offset={mutant.end_col_offset}&#34;,
++                f&#34;source_file={mutant.source_file} lineno={mutant.lineno} col_offset={mutant.col_offset}&#39;XX end_lineno=XX&#39;{mutant.end_lineno} end_col_offset={mutant.end_col_offset}&#34;,
+                 file=not_found_file,
+             )
+             echo(&#34;text:&#34;, file=not_found_file)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">77</td>
+        <td class="line_text">
+            <pre>                f&#34;end_lineno={mutant.end_lineno} end_col_offset={mutant.end_col_offset}&#34;,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:77
+@@ -74,7 +74,7 @@
+         else:
+             echo(
+                 f&#34;source_file={mutant.source_file} lineno={mutant.lineno} col_offset={mutant.col_offset} &#34;
+-                f&#34;end_lineno={mutant.end_lineno} end_col_offset={mutant.end_col_offset}&#34;,
++                f&#34;end_lineno={mutant.end_lineno}&#39;XX end_col_offset=XX&#39;{mutant.end_col_offset}&#34;,
+                 file=not_found_file,
+             )
+             echo(&#34;text:&#34;, file=not_found_file)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">78</td>
+        <td class="line_text">
+            <pre>                file=not_found_file,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">79</td>
+        <td class="line_text">
+            <pre>            )</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">80</td>
+        <td class="line_text">
+            <pre>            echo(&#34;text:&#34;, file=not_found_file)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:80
+@@ -77,7 +77,7 @@
+                 f&#34;end_lineno={mutant.end_lineno} end_col_offset={mutant.end_col_offset}&#34;,
+                 file=not_found_file,
+             )
+-            echo(&#34;text:&#34;, file=not_found_file)
++            echo(&#39;XXtext:XX&#39;, file=not_found_file)
+             echo(mutant.text, file=not_found_file)
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:80
+@@ -77,7 +77,7 @@
+                 f&#34;end_lineno={mutant.end_lineno} end_col_offset={mutant.end_col_offset}&#34;,
+                 file=not_found_file,
+             )
+-            echo(&#34;text:&#34;, file=not_found_file)
++            None
+             echo(mutant.text, file=not_found_file)
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">81</td>
+        <td class="line_text">
+            <pre>            echo(mutant.text, file=not_found_file)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:81
+@@ -78,7 +78,7 @@
+                 file=not_found_file,
+             )
+             echo(&#34;text:&#34;, file=not_found_file)
+-            echo(mutant.text, file=not_found_file)
++            None
+ 
+ 
+ def report_json(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">82</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">83</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">84</td>
+        <td class="line_text">
+            <pre>def report_json(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">85</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Create JSON file with test results.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">86</td>
+        <td class="line_text">
+            <pre>    include_statuses = get_include_statuses(config, &#34;json&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:86
+@@ -83,7 +83,7 @@
+ 
+ def report_json(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+     &#34;&#34;&#34;Create JSON file with test results.&#34;&#34;&#34;
+-    include_statuses = get_include_statuses(config, &#34;json&#34;)
++    include_statuses = get_include_statuses(config, &#39;XXjsonXX&#39;)
+     mutant_trials = [trial for trial in testing_results.mutant_trials if trial.result.found in include_statuses]
+ 
+     out_results = TestingResults(
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:86
+@@ -83,7 +83,7 @@
+ 
+ def report_json(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+     &#34;&#34;&#34;Create JSON file with test results.&#34;&#34;&#34;
+-    include_statuses = get_include_statuses(config, &#34;json&#34;)
++    include_statuses = None
+     mutant_trials = [trial for trial in testing_results.mutant_trials if trial.result.found in include_statuses]
+ 
+     out_results = TestingResults(
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">87</td>
+        <td class="line_text">
+            <pre>    mutant_trials = [trial for trial in testing_results.mutant_trials if trial.result.found in include_statuses]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:87
+@@ -84,7 +84,7 @@
+ def report_json(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+     &#34;&#34;&#34;Create JSON file with test results.&#34;&#34;&#34;
+     include_statuses = get_include_statuses(config, &#34;json&#34;)
+-    mutant_trials = [trial for trial in testing_results.mutant_trials if trial.result.found in include_statuses]
++    mutant_trials = [trial for trial in testing_results.mutant_trials if trial.result.found not in include_statuses]
+ 
+     out_results = TestingResults(
+         summary=testing_results.summary  # type: ignore [arg-type]
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">88</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">89</td>
+        <td class="line_text">
+            <pre>    out_results = TestingResults(</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:89
+@@ -86,12 +86,7 @@
+     include_statuses = get_include_statuses(config, &#34;json&#34;)
+     mutant_trials = [trial for trial in testing_results.mutant_trials if trial.result.found in include_statuses]
+ 
+-    out_results = TestingResults(
+-        summary=testing_results.summary  # type: ignore [arg-type]
+-        if config.reporter_opts.get(&#34;json_include_summary&#34;, True)
+-        else None,
+-        mutant_trials=mutant_trials,
+-    )
++    out_results = None
+ 
+     json_file = config.reporter_opts.get(&#34;json_report_file&#34;, &#34;mutation-testing-report.json&#34;)
+     if json_file == &#34;sysout&#34;:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">90</td>
+        <td class="line_text">
+            <pre>        summary=testing_results.summary  # type: ignore [arg-type]</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">91</td>
+        <td class="line_text">
+            <pre>        if config.reporter_opts.get(&#34;json_include_summary&#34;, True)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:91
+@@ -88,7 +88,7 @@
+ 
+     out_results = TestingResults(
+         summary=testing_results.summary  # type: ignore [arg-type]
+-        if config.reporter_opts.get(&#34;json_include_summary&#34;, True)
++        if config.reporter_opts.get(&#34;json_include_summary&#34;, False)
+         else None,
+         mutant_trials=mutant_trials,
+     )
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:91
+@@ -88,7 +88,7 @@
+ 
+     out_results = TestingResults(
+         summary=testing_results.summary  # type: ignore [arg-type]
+-        if config.reporter_opts.get(&#34;json_include_summary&#34;, True)
++        if config.reporter_opts.get(&#39;XXjson_include_summaryXX&#39;, True)
+         else None,
+         mutant_trials=mutant_trials,
+     )
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">92</td>
+        <td class="line_text">
+            <pre>        else None,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:92
+@@ -89,7 +89,7 @@
+     out_results = TestingResults(
+         summary=testing_results.summary  # type: ignore [arg-type]
+         if config.reporter_opts.get(&#34;json_include_summary&#34;, True)
+-        else None,
++        else &#39; &#39;,
+         mutant_trials=mutant_trials,
+     )
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">93</td>
+        <td class="line_text">
+            <pre>        mutant_trials=mutant_trials,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">94</td>
+        <td class="line_text">
+            <pre>    )</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">95</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">96</td>
+        <td class="line_text">
+            <pre>    json_file = config.reporter_opts.get(&#34;json_report_file&#34;, &#34;mutation-testing-report.json&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:96
+@@ -93,7 +93,7 @@
+         mutant_trials=mutant_trials,
+     )
+ 
+-    json_file = config.reporter_opts.get(&#34;json_report_file&#34;, &#34;mutation-testing-report.json&#34;)
++    json_file = config.reporter_opts.get(&#39;XXjson_report_fileXX&#39;, &#34;mutation-testing-report.json&#34;)
+     if json_file == &#34;sysout&#34;:
+         echo(to_json(out_results, indent=4))
+     else:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:96
+@@ -93,7 +93,7 @@
+         mutant_trials=mutant_trials,
+     )
+ 
+-    json_file = config.reporter_opts.get(&#34;json_report_file&#34;, &#34;mutation-testing-report.json&#34;)
++    json_file = config.reporter_opts.get(&#34;json_report_file&#34;, &#39;XXmutation-testing-report.jsonXX&#39;)
+     if json_file == &#34;sysout&#34;:
+         echo(to_json(out_results, indent=4))
+     else:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:96
+@@ -93,7 +93,7 @@
+         mutant_trials=mutant_trials,
+     )
+ 
+-    json_file = config.reporter_opts.get(&#34;json_report_file&#34;, &#34;mutation-testing-report.json&#34;)
++    json_file = None
+     if json_file == &#34;sysout&#34;:
+         echo(to_json(out_results, indent=4))
+     else:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">97</td>
+        <td class="line_text">
+            <pre>    if json_file == &#34;sysout&#34;:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:97
+@@ -94,7 +94,7 @@
+     )
+ 
+     json_file = config.reporter_opts.get(&#34;json_report_file&#34;, &#34;mutation-testing-report.json&#34;)
+-    if json_file == &#34;sysout&#34;:
++    if json_file != &#39;sysout&#39;:
+         echo(to_json(out_results, indent=4))
+     else:
+         Path(json_file).write_text(to_json(out_results))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:97
+@@ -94,7 +94,7 @@
+     )
+ 
+     json_file = config.reporter_opts.get(&#34;json_report_file&#34;, &#34;mutation-testing-report.json&#34;)
+-    if json_file == &#34;sysout&#34;:
++    if json_file == &#39;XXsysoutXX&#39;:
+         echo(to_json(out_results, indent=4))
+     else:
+         Path(json_file).write_text(to_json(out_results))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">98</td>
+        <td class="line_text">
+            <pre>        echo(to_json(out_results, indent=4))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:98
+@@ -95,7 +95,7 @@
+ 
+     json_file = config.reporter_opts.get(&#34;json_report_file&#34;, &#34;mutation-testing-report.json&#34;)
+     if json_file == &#34;sysout&#34;:
+-        echo(to_json(out_results, indent=4))
++        echo(to_json(out_results, indent=5))
+     else:
+         Path(json_file).write_text(to_json(out_results))
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:98
+@@ -95,7 +95,7 @@
+ 
+     json_file = config.reporter_opts.get(&#34;json_report_file&#34;, &#34;mutation-testing-report.json&#34;)
+     if json_file == &#34;sysout&#34;:
+-        echo(to_json(out_results, indent=4))
++        echo(to_json(out_results, indent=3))
+     else:
+         Path(json_file).write_text(to_json(out_results))
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:98
+@@ -95,7 +95,7 @@
+ 
+     json_file = config.reporter_opts.get(&#34;json_report_file&#34;, &#34;mutation-testing-report.json&#34;)
+     if json_file == &#34;sysout&#34;:
+-        echo(to_json(out_results, indent=4))
++        None
+     else:
+         Path(json_file).write_text(to_json(out_results))
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">99</td>
+        <td class="line_text">
+            <pre>    else:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">100</td>
+        <td class="line_text">
+            <pre>        Path(json_file).write_text(to_json(out_results))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:100
+@@ -97,6 +97,6 @@
+     if json_file == &#34;sysout&#34;:
+         echo(to_json(out_results, indent=4))
+     else:
+-        Path(json_file).write_text(to_json(out_results))
++        None
+ 
+     echo(f&#34;JSON report written to {json_file!s}&#34;, fg=&#34;green&#34;)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">101</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">102</td>
+        <td class="line_text">
+            <pre>    echo(f&#34;JSON report written to {json_file!s}&#34;, fg=&#34;green&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:102
+@@ -99,4 +99,4 @@
+     else:
+         Path(json_file).write_text(to_json(out_results))
+ 
+-    echo(f&#34;JSON report written to {json_file!s}&#34;, fg=&#34;green&#34;)
++    echo(f&#34;&#39;XXJSON report written to XX&#39;{json_file!s}&#34;, fg=&#34;green&#34;)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:102
+@@ -99,4 +99,4 @@
+     else:
+         Path(json_file).write_text(to_json(out_results))
+ 
+-    echo(f&#34;JSON report written to {json_file!s}&#34;, fg=&#34;green&#34;)
++    echo(f&#34;JSON report written to {json_file!s}&#34;, fg=&#39;XXgreenXX&#39;)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\basic.py
++++ [Mutant] src\poodle\reporters\basic.py:102
+@@ -99,4 +99,4 @@
+     else:
+         Path(json_file).write_text(to_json(out_results))
+ 
+-    echo(f&#34;JSON report written to {json_file!s}&#34;, fg=&#34;green&#34;)
++    None
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+</table>
+
+    </main>
+    <footer>
+        
+        <p>Generated by <a href="http://poodle.rtfd.io" class="nav">Poodle</a> version 1.2.0 at 2023-12-29 20:42:38-0600</p>
+        
+    </footer>
+    
+
+    <script type="text/javascript" src="html-report.js"></script>
+    
+<script>addShowHideEventListeners();</script>
+
+</body>
+
+</html>

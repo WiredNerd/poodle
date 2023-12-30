@@ -90,6 +90,80 @@ Unless otherwise stated, options are chosen in this priority order:
 2. Module poodle_config.py
 3. Chosen Configuration File
 
+### project_name
+
+Name of project being tested.  Used by reporters to include the project name in the report.
+
+If not specified, poodle will attempt to retrieve from project.name in pyproject.toml.
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+project_name = "myapp"
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+project_name = "myapp"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+project_name = "myapp"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[project]
+name = "myapp"
+```
+:::
+
+::::
+
+### project_version
+
+Version of project being tested.  Used by reporters to include the project version in the report.
+
+If not specified, poodle will attempt to retrieve from project.version in pyproject.toml.
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+project_version = "myapp"
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+project_version = "myapp"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+project_version = "myapp"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[project]
+version = "myapp"
+```
+:::
+
+::::
+
 ### config_file
 
 By default, Poodle will search for available configuration files, and use the first available file from this list:
@@ -832,7 +906,7 @@ reporters = [
 :::{tab-item} poodle.toml
 ```toml
 [poodle]
-add_mutators = [
+reporters = [
     "summary",
     "poodle-ext.reporters.UploadToResultsServer",
     "poodle-ext.reporters.text_errors_file",
@@ -843,7 +917,7 @@ add_mutators = [
 :::{tab-item} pyproject.toml
 ```toml
 [tool.poodle]
-add_mutators = [
+reporters = [
     "summary",
     "poodle-ext.reporters.UploadToResultsServer",
     "poodle-ext.reporters.text_errors_file",

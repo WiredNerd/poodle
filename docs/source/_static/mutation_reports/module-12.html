@@ -1,0 +1,5313 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Module Source: src\poodle\reporters\html.py</title>
+    <link rel="stylesheet" type="text/css" href="html-report.css" />
+    <link rel="icon" href="poodle.ico" type="image/x-icon" />
+    
+</head>
+
+<body>
+    <header>
+        
+
+        <h1>Module Source: src\poodle\reporters\html.py</h1>
+        
+        <span class="subtitle"><span class="label">Project:</span> poodle
+             version 1.2.0 </span>
+        
+        
+&nbsp;&nbsp;<a href="index.html" class="subtitle">&lt;Index</a>
+<div class="subtitle">
+<span class="label">Mutants:</span> 152,
+<span class="label">Found:</span> 151,
+<span class="label">Not Found:</span> 1,
+<span class="label">Timeout:</span> 0,
+<span class="label">Error:</span> 0
+</div>
+<div class="subtitle">
+<span class="label">Module Score:</span> 99.34%
+</div>
+
+    </header>
+    <main>
+        
+<table class="source">
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">1</td>
+        <td class="line_text">
+            <pre>&#34;&#34;&#34;Mutation Test Result HTML Reporter.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">2</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">3</td>
+        <td class="line_text">
+            <pre>from __future__ import annotations</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">4</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">5</td>
+        <td class="line_text">
+            <pre>import datetime</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">6</td>
+        <td class="line_text">
+            <pre>import re</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">7</td>
+        <td class="line_text">
+            <pre>import shutil</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">8</td>
+        <td class="line_text">
+            <pre>from pathlib import Path</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">9</td>
+        <td class="line_text">
+            <pre>from typing import TYPE_CHECKING, Any, Callable</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">10</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">11</td>
+        <td class="line_text">
+            <pre>from jinja2 import Environment, PackageLoader</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">12</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">13</td>
+        <td class="line_text">
+            <pre>from poodle import __version__ as poodle_version</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">14</td>
+        <td class="line_text">
+            <pre>from poodle.data_types import MutantTrial, PoodleConfig, TestingResults, TestingSummary</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">15</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">16</td>
+        <td class="line_text">
+            <pre>if TYPE_CHECKING:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">17</td>
+        <td class="line_text">
+            <pre>    from collections.abc import Generator</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">18</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">19</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">20</td>
+        <td class="line_text">
+            <pre>def template_path() -&gt; Path:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">21</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Return the path to the HTML Template folder.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  partial_found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">22</td>
+        <td class="line_text">
+            <pre>    return Path(__file__).parent.parent / &#34;templates&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:22
+@@ -19,7 +19,7 @@
+ 
+ def template_path() -&gt; Path:
+     &#34;&#34;&#34;Return the path to the HTML Template folder.&#34;&#34;&#34;
+-    return Path(__file__).parent.parent / &#34;templates&#34;
++    return Path(__file__).parent.parent * &#39;templates&#39;
+ 
+ 
+ STATIC_FILES = [
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:22
+@@ -19,7 +19,7 @@
+ 
+ def template_path() -&gt; Path:
+     &#34;&#34;&#34;Return the path to the HTML Template folder.&#34;&#34;&#34;
+-    return Path(__file__).parent.parent / &#34;templates&#34;
++    return Path(__file__).parent.parent - &#39;templates&#39;
+ 
+ 
+ STATIC_FILES = [
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  not_found ">
+    <p><span class="label">Status:</span> Mutant Not Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:22
+@@ -19,7 +19,7 @@
+ 
+ def template_path() -&gt; Path:
+     &#34;&#34;&#34;Return the path to the HTML Template folder.&#34;&#34;&#34;
+-    return Path(__file__).parent.parent / &#34;templates&#34;
++    return Path(__file__).parent.parent / &#39;XXtemplatesXX&#39;
+ 
+ 
+ STATIC_FILES = [
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:22
+@@ -19,7 +19,7 @@
+ 
+ def template_path() -&gt; Path:
+     &#34;&#34;&#34;Return the path to the HTML Template folder.&#34;&#34;&#34;
+-    return Path(__file__).parent.parent / &#34;templates&#34;
++    return None.parent.parent / &#34;templates&#34;
+ 
+ 
+ STATIC_FILES = [
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:22
+@@ -19,7 +19,7 @@
+ 
+ def template_path() -&gt; Path:
+     &#34;&#34;&#34;Return the path to the HTML Template folder.&#34;&#34;&#34;
+-    return Path(__file__).parent.parent / &#34;templates&#34;
++    return None
+ 
+ 
+ STATIC_FILES = [
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">23</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">24</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">25</td>
+        <td class="line_text">
+            <pre>STATIC_FILES = [</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">26</td>
+        <td class="line_text">
+            <pre>    &#34;html-report.js&#34;,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:26
+@@ -23,7 +23,7 @@
+ 
+ 
+ STATIC_FILES = [
+-    &#34;html-report.js&#34;,
++    &#39;XXhtml-report.jsXX&#39;,
+     &#34;html-report.css&#34;,
+     &#34;poodle.ico&#34;,
+ ]
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">27</td>
+        <td class="line_text">
+            <pre>    &#34;html-report.css&#34;,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:27
+@@ -24,7 +24,7 @@
+ 
+ STATIC_FILES = [
+     &#34;html-report.js&#34;,
+-    &#34;html-report.css&#34;,
++    &#39;XXhtml-report.cssXX&#39;,
+     &#34;poodle.ico&#34;,
+ ]
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">28</td>
+        <td class="line_text">
+            <pre>    &#34;poodle.ico&#34;,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:28
+@@ -25,7 +25,7 @@
+ STATIC_FILES = [
+     &#34;html-report.js&#34;,
+     &#34;html-report.css&#34;,
+-    &#34;poodle.ico&#34;,
++    &#39;XXpoodle.icoXX&#39;,
+ ]
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">29</td>
+        <td class="line_text">
+            <pre>]</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">30</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">31</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">32</td>
+        <td class="line_text">
+            <pre>def report_html(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">33</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Build HTML Report for Testing Results.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">34</td>
+        <td class="line_text">
+            <pre>    html_options = config.reporter_opts.get(&#34;html&#34;, {})</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:34
+@@ -31,7 +31,7 @@
+ 
+ def report_html(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+     &#34;&#34;&#34;Build HTML Report for Testing Results.&#34;&#34;&#34;
+-    html_options = config.reporter_opts.get(&#34;html&#34;, {})
++    html_options = config.reporter_opts.get(&#39;XXhtmlXX&#39;, {})
+     if not isinstance(html_options, dict):
+         raise TypeError(&#34;HTML Reporter Options (reporter_opts.html) must be a Dictionary.&#34;)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:34
+@@ -31,7 +31,7 @@
+ 
+ def report_html(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+     &#34;&#34;&#34;Build HTML Report for Testing Results.&#34;&#34;&#34;
+-    html_options = config.reporter_opts.get(&#34;html&#34;, {})
++    html_options = None
+     if not isinstance(html_options, dict):
+         raise TypeError(&#34;HTML Reporter Options (reporter_opts.html) must be a Dictionary.&#34;)
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">35</td>
+        <td class="line_text">
+            <pre>    if not isinstance(html_options, dict):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> UnaryOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:35
+@@ -32,7 +32,7 @@
+ def report_html(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+     &#34;&#34;&#34;Build HTML Report for Testing Results.&#34;&#34;&#34;
+     html_options = config.reporter_opts.get(&#34;html&#34;, {})
+-    if not isinstance(html_options, dict):
++    if isinstance(html_options, dict):
+         raise TypeError(&#34;HTML Reporter Options (reporter_opts.html) must be a Dictionary.&#34;)
+ 
+     report_folder = Path(html_options.get(&#34;report_folder&#34;, &#34;mutation_reports&#34;))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:35
+@@ -32,7 +32,7 @@
+ def report_html(config: PoodleConfig, echo: Callable, testing_results: TestingResults, *_, **__) -&gt; None:
+     &#34;&#34;&#34;Build HTML Report for Testing Results.&#34;&#34;&#34;
+     html_options = config.reporter_opts.get(&#34;html&#34;, {})
+-    if not isinstance(html_options, dict):
++    if not None:
+         raise TypeError(&#34;HTML Reporter Options (reporter_opts.html) must be a Dictionary.&#34;)
+ 
+     report_folder = Path(html_options.get(&#34;report_folder&#34;, &#34;mutation_reports&#34;))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">36</td>
+        <td class="line_text">
+            <pre>        raise TypeError(&#34;HTML Reporter Options (reporter_opts.html) must be a Dictionary.&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:36
+@@ -33,7 +33,7 @@
+     &#34;&#34;&#34;Build HTML Report for Testing Results.&#34;&#34;&#34;
+     html_options = config.reporter_opts.get(&#34;html&#34;, {})
+     if not isinstance(html_options, dict):
+-        raise TypeError(&#34;HTML Reporter Options (reporter_opts.html) must be a Dictionary.&#34;)
++        raise TypeError(&#39;XXHTML Reporter Options (reporter_opts.html) must be a Dictionary.XX&#39;)
+ 
+     report_folder = Path(html_options.get(&#34;report_folder&#34;, &#34;mutation_reports&#34;))
+     copy_static_files(report_folder)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:36
+@@ -33,7 +33,7 @@
+     &#34;&#34;&#34;Build HTML Report for Testing Results.&#34;&#34;&#34;
+     html_options = config.reporter_opts.get(&#34;html&#34;, {})
+     if not isinstance(html_options, dict):
+-        raise TypeError(&#34;HTML Reporter Options (reporter_opts.html) must be a Dictionary.&#34;)
++        raise None
+ 
+     report_folder = Path(html_options.get(&#34;report_folder&#34;, &#34;mutation_reports&#34;))
+     copy_static_files(report_folder)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">37</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">38</td>
+        <td class="line_text">
+            <pre>    report_folder = Path(html_options.get(&#34;report_folder&#34;, &#34;mutation_reports&#34;))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:38
+@@ -35,7 +35,7 @@
+     if not isinstance(html_options, dict):
+         raise TypeError(&#34;HTML Reporter Options (reporter_opts.html) must be a Dictionary.&#34;)
+ 
+-    report_folder = Path(html_options.get(&#34;report_folder&#34;, &#34;mutation_reports&#34;))
++    report_folder = Path(html_options.get(&#39;XXreport_folderXX&#39;, &#34;mutation_reports&#34;))
+     copy_static_files(report_folder)
+ 
+     env = Environment(loader=PackageLoader(&#34;poodle&#34;), autoescape=True)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:38
+@@ -35,7 +35,7 @@
+     if not isinstance(html_options, dict):
+         raise TypeError(&#34;HTML Reporter Options (reporter_opts.html) must be a Dictionary.&#34;)
+ 
+-    report_folder = Path(html_options.get(&#34;report_folder&#34;, &#34;mutation_reports&#34;))
++    report_folder = Path(html_options.get(&#34;report_folder&#34;, &#39;XXmutation_reportsXX&#39;))
+     copy_static_files(report_folder)
+ 
+     env = Environment(loader=PackageLoader(&#34;poodle&#34;), autoescape=True)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:38
+@@ -35,7 +35,7 @@
+     if not isinstance(html_options, dict):
+         raise TypeError(&#34;HTML Reporter Options (reporter_opts.html) must be a Dictionary.&#34;)
+ 
+-    report_folder = Path(html_options.get(&#34;report_folder&#34;, &#34;mutation_reports&#34;))
++    report_folder = None
+     copy_static_files(report_folder)
+ 
+     env = Environment(loader=PackageLoader(&#34;poodle&#34;), autoescape=True)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">39</td>
+        <td class="line_text">
+            <pre>    copy_static_files(report_folder)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:39
+@@ -36,7 +36,7 @@
+         raise TypeError(&#34;HTML Reporter Options (reporter_opts.html) must be a Dictionary.&#34;)
+ 
+     report_folder = Path(html_options.get(&#34;report_folder&#34;, &#34;mutation_reports&#34;))
+-    copy_static_files(report_folder)
++    None
+ 
+     env = Environment(loader=PackageLoader(&#34;poodle&#34;), autoescape=True)
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">40</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">41</td>
+        <td class="line_text">
+            <pre>    env = Environment(loader=PackageLoader(&#34;poodle&#34;), autoescape=True)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:41
+@@ -38,7 +38,7 @@
+     report_folder = Path(html_options.get(&#34;report_folder&#34;, &#34;mutation_reports&#34;))
+     copy_static_files(report_folder)
+ 
+-    env = Environment(loader=PackageLoader(&#34;poodle&#34;), autoescape=True)
++    env = Environment(loader=PackageLoader(&#34;poodle&#34;), autoescape=False)
+ 
+     common_vars = {
+         &#34;project&#34;: {
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:41
+@@ -38,7 +38,7 @@
+     report_folder = Path(html_options.get(&#34;report_folder&#34;, &#34;mutation_reports&#34;))
+     copy_static_files(report_folder)
+ 
+-    env = Environment(loader=PackageLoader(&#34;poodle&#34;), autoescape=True)
++    env = Environment(loader=PackageLoader(&#39;XXpoodleXX&#39;), autoescape=True)
+ 
+     common_vars = {
+         &#34;project&#34;: {
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:41
+@@ -38,7 +38,7 @@
+     report_folder = Path(html_options.get(&#34;report_folder&#34;, &#34;mutation_reports&#34;))
+     copy_static_files(report_folder)
+ 
+-    env = Environment(loader=PackageLoader(&#34;poodle&#34;), autoescape=True)
++    env = None
+ 
+     common_vars = {
+         &#34;project&#34;: {
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">42</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">43</td>
+        <td class="line_text">
+            <pre>    common_vars = {</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">44</td>
+        <td class="line_text">
+            <pre>        &#34;project&#34;: {</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:44
+@@ -41,7 +41,7 @@
+     env = Environment(loader=PackageLoader(&#34;poodle&#34;), autoescape=True)
+ 
+     common_vars = {
+-        &#34;project&#34;: {
++        &#39;XXprojectXX&#39;: {
+             &#34;name&#34;: config.project_name,
+             &#34;version&#34;: config.project_version,
+         },
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">45</td>
+        <td class="line_text">
+            <pre>            &#34;name&#34;: config.project_name,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:45
+@@ -42,7 +42,7 @@
+ 
+     common_vars = {
+         &#34;project&#34;: {
+-            &#34;name&#34;: config.project_name,
++            &#39;XXnameXX&#39;: config.project_name,
+             &#34;version&#34;: config.project_version,
+         },
+         &#34;poodle_version&#34;: poodle_version,
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">46</td>
+        <td class="line_text">
+            <pre>            &#34;version&#34;: config.project_version,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:46
+@@ -43,7 +43,7 @@
+     common_vars = {
+         &#34;project&#34;: {
+             &#34;name&#34;: config.project_name,
+-            &#34;version&#34;: config.project_version,
++            &#39;XXversionXX&#39;: config.project_version,
+         },
+         &#34;poodle_version&#34;: poodle_version,
+         &#34;timestamp&#34;: local_timestamp(),
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">47</td>
+        <td class="line_text">
+            <pre>        },</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">48</td>
+        <td class="line_text">
+            <pre>        &#34;poodle_version&#34;: poodle_version,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:48
+@@ -45,7 +45,7 @@
+             &#34;name&#34;: config.project_name,
+             &#34;version&#34;: config.project_version,
+         },
+-        &#34;poodle_version&#34;: poodle_version,
++        &#39;XXpoodle_versionXX&#39;: poodle_version,
+         &#34;timestamp&#34;: local_timestamp(),
+     }
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">49</td>
+        <td class="line_text">
+            <pre>        &#34;timestamp&#34;: local_timestamp(),</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:49
+@@ -46,7 +46,7 @@
+             &#34;version&#34;: config.project_version,
+         },
+         &#34;poodle_version&#34;: poodle_version,
+-        &#34;timestamp&#34;: local_timestamp(),
++        &#39;XXtimestampXX&#39;: local_timestamp(),
+     }
+ 
+     modules = module_data(testing_results, html_options)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:49
+@@ -46,7 +46,7 @@
+             &#34;version&#34;: config.project_version,
+         },
+         &#34;poodle_version&#34;: poodle_version,
+-        &#34;timestamp&#34;: local_timestamp(),
++        &#34;timestamp&#34;: None,
+     }
+ 
+     modules = module_data(testing_results, html_options)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">50</td>
+        <td class="line_text">
+            <pre>    }</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">51</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">52</td>
+        <td class="line_text">
+            <pre>    modules = module_data(testing_results, html_options)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:52
+@@ -49,7 +49,7 @@
+         &#34;timestamp&#34;: local_timestamp(),
+     }
+ 
+-    modules = module_data(testing_results, html_options)
++    modules = None
+ 
+     index_template = env.get_template(&#34;html-report-index.html.jinja&#34;)
+     index_page = index_template.render(total=testing_results.summary, modules=modules, **common_vars)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">53</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">54</td>
+        <td class="line_text">
+            <pre>    index_template = env.get_template(&#34;html-report-index.html.jinja&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:54
+@@ -51,7 +51,7 @@
+ 
+     modules = module_data(testing_results, html_options)
+ 
+-    index_template = env.get_template(&#34;html-report-index.html.jinja&#34;)
++    index_template = env.get_template(&#39;XXhtml-report-index.html.jinjaXX&#39;)
+     index_page = index_template.render(total=testing_results.summary, modules=modules, **common_vars)
+     index_file = report_folder / &#34;index.html&#34;
+     index_file.write_text(index_page.strip())
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:54
+@@ -51,7 +51,7 @@
+ 
+     modules = module_data(testing_results, html_options)
+ 
+-    index_template = env.get_template(&#34;html-report-index.html.jinja&#34;)
++    index_template = None
+     index_page = index_template.render(total=testing_results.summary, modules=modules, **common_vars)
+     index_file = report_folder / &#34;index.html&#34;
+     index_file.write_text(index_page.strip())
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">55</td>
+        <td class="line_text">
+            <pre>    index_page = index_template.render(total=testing_results.summary, modules=modules, **common_vars)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:55
+@@ -52,7 +52,7 @@
+     modules = module_data(testing_results, html_options)
+ 
+     index_template = env.get_template(&#34;html-report-index.html.jinja&#34;)
+-    index_page = index_template.render(total=testing_results.summary, modules=modules, **common_vars)
++    index_page = None
+     index_file = report_folder / &#34;index.html&#34;
+     index_file.write_text(index_page.strip())
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">56</td>
+        <td class="line_text">
+            <pre>    index_file = report_folder / &#34;index.html&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:56
+@@ -53,7 +53,7 @@
+ 
+     index_template = env.get_template(&#34;html-report-index.html.jinja&#34;)
+     index_page = index_template.render(total=testing_results.summary, modules=modules, **common_vars)
+-    index_file = report_folder / &#34;index.html&#34;
++    index_file = report_folder * &#39;index.html&#39;
+     index_file.write_text(index_page.strip())
+ 
+     module_template = env.get_template(&#34;html-report-module.html.jinja&#34;)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:56
+@@ -53,7 +53,7 @@
+ 
+     index_template = env.get_template(&#34;html-report-index.html.jinja&#34;)
+     index_page = index_template.render(total=testing_results.summary, modules=modules, **common_vars)
+-    index_file = report_folder / &#34;index.html&#34;
++    index_file = report_folder - &#39;index.html&#39;
+     index_file.write_text(index_page.strip())
+ 
+     module_template = env.get_template(&#34;html-report-module.html.jinja&#34;)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:56
+@@ -53,7 +53,7 @@
+ 
+     index_template = env.get_template(&#34;html-report-index.html.jinja&#34;)
+     index_page = index_template.render(total=testing_results.summary, modules=modules, **common_vars)
+-    index_file = report_folder / &#34;index.html&#34;
++    index_file = report_folder / &#39;XXindex.htmlXX&#39;
+     index_file.write_text(index_page.strip())
+ 
+     module_template = env.get_template(&#34;html-report-module.html.jinja&#34;)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">57</td>
+        <td class="line_text">
+            <pre>    index_file.write_text(index_page.strip())</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:57
+@@ -54,7 +54,7 @@
+     index_template = env.get_template(&#34;html-report-index.html.jinja&#34;)
+     index_page = index_template.render(total=testing_results.summary, modules=modules, **common_vars)
+     index_file = report_folder / &#34;index.html&#34;
+-    index_file.write_text(index_page.strip())
++    None
+ 
+     module_template = env.get_template(&#34;html-report-module.html.jinja&#34;)
+     for source_file, module in modules.items():
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">58</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">59</td>
+        <td class="line_text">
+            <pre>    module_template = env.get_template(&#34;html-report-module.html.jinja&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:59
+@@ -56,7 +56,7 @@
+     index_file = report_folder / &#34;index.html&#34;
+     index_file.write_text(index_page.strip())
+ 
+-    module_template = env.get_template(&#34;html-report-module.html.jinja&#34;)
++    module_template = env.get_template(&#39;XXhtml-report-module.html.jinjaXX&#39;)
+     for source_file, module in modules.items():
+         module_page = module_template.render(source_file=source_file, module=module, **common_vars)
+         (report_folder / module[&#34;report_file&#34;]).write_text(module_page.strip())
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:59
+@@ -56,7 +56,7 @@
+     index_file = report_folder / &#34;index.html&#34;
+     index_file.write_text(index_page.strip())
+ 
+-    module_template = env.get_template(&#34;html-report-module.html.jinja&#34;)
++    module_template = None
+     for source_file, module in modules.items():
+         module_page = module_template.render(source_file=source_file, module=module, **common_vars)
+         (report_folder / module[&#34;report_file&#34;]).write_text(module_page.strip())
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">60</td>
+        <td class="line_text">
+            <pre>    for source_file, module in modules.items():</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:60
+@@ -57,7 +57,7 @@
+     index_file.write_text(index_page.strip())
+ 
+     module_template = env.get_template(&#34;html-report-module.html.jinja&#34;)
+-    for source_file, module in modules.items():
++    for source_file, module in None:
+         module_page = module_template.render(source_file=source_file, module=module, **common_vars)
+         (report_folder / module[&#34;report_file&#34;]).write_text(module_page.strip())
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">61</td>
+        <td class="line_text">
+            <pre>        module_page = module_template.render(source_file=source_file, module=module, **common_vars)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:61
+@@ -58,7 +58,7 @@
+ 
+     module_template = env.get_template(&#34;html-report-module.html.jinja&#34;)
+     for source_file, module in modules.items():
+-        module_page = module_template.render(source_file=source_file, module=module, **common_vars)
++        module_page = None
+         (report_folder / module[&#34;report_file&#34;]).write_text(module_page.strip())
+ 
+     echo(f&#34;HTML Report Generated at {index_file.resolve()}&#34;)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">62</td>
+        <td class="line_text">
+            <pre>        (report_folder / module[&#34;report_file&#34;]).write_text(module_page.strip())</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:62
+@@ -59,7 +59,7 @@
+     module_template = env.get_template(&#34;html-report-module.html.jinja&#34;)
+     for source_file, module in modules.items():
+         module_page = module_template.render(source_file=source_file, module=module, **common_vars)
+-        (report_folder / module[&#34;report_file&#34;]).write_text(module_page.strip())
++        (report_folder * module[&#39;report_file&#39;]).write_text(module_page.strip())
+ 
+     echo(f&#34;HTML Report Generated at {index_file.resolve()}&#34;)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:62
+@@ -59,7 +59,7 @@
+     module_template = env.get_template(&#34;html-report-module.html.jinja&#34;)
+     for source_file, module in modules.items():
+         module_page = module_template.render(source_file=source_file, module=module, **common_vars)
+-        (report_folder / module[&#34;report_file&#34;]).write_text(module_page.strip())
++        (report_folder - module[&#39;report_file&#39;]).write_text(module_page.strip())
+ 
+     echo(f&#34;HTML Report Generated at {index_file.resolve()}&#34;)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:62
+@@ -59,7 +59,7 @@
+     module_template = env.get_template(&#34;html-report-module.html.jinja&#34;)
+     for source_file, module in modules.items():
+         module_page = module_template.render(source_file=source_file, module=module, **common_vars)
+-        (report_folder / module[&#34;report_file&#34;]).write_text(module_page.strip())
++        (report_folder / module[&#39;XXreport_fileXX&#39;]).write_text(module_page.strip())
+ 
+     echo(f&#34;HTML Report Generated at {index_file.resolve()}&#34;)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:62
+@@ -59,7 +59,7 @@
+     module_template = env.get_template(&#34;html-report-module.html.jinja&#34;)
+     for source_file, module in modules.items():
+         module_page = module_template.render(source_file=source_file, module=module, **common_vars)
+-        (report_folder / module[&#34;report_file&#34;]).write_text(module_page.strip())
++        None
+ 
+     echo(f&#34;HTML Report Generated at {index_file.resolve()}&#34;)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:62
+@@ -59,7 +59,7 @@
+     module_template = env.get_template(&#34;html-report-module.html.jinja&#34;)
+     for source_file, module in modules.items():
+         module_page = module_template.render(source_file=source_file, module=module, **common_vars)
+-        (report_folder / module[&#34;report_file&#34;]).write_text(module_page.strip())
++        (report_folder / None).write_text(module_page.strip())
+ 
+     echo(f&#34;HTML Report Generated at {index_file.resolve()}&#34;)
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">63</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">64</td>
+        <td class="line_text">
+            <pre>    echo(f&#34;HTML Report Generated at {index_file.resolve()}&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:64
+@@ -61,7 +61,7 @@
+         module_page = module_template.render(source_file=source_file, module=module, **common_vars)
+         (report_folder / module[&#34;report_file&#34;]).write_text(module_page.strip())
+ 
+-    echo(f&#34;HTML Report Generated at {index_file.resolve()}&#34;)
++    echo(f&#34;&#39;XXHTML Report Generated at XX&#39;{index_file.resolve()}&#34;)
+ 
+ 
+ def copy_static_files(report_folder: Path) -&gt; None:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:64
+@@ -61,7 +61,7 @@
+         module_page = module_template.render(source_file=source_file, module=module, **common_vars)
+         (report_folder / module[&#34;report_file&#34;]).write_text(module_page.strip())
+ 
+-    echo(f&#34;HTML Report Generated at {index_file.resolve()}&#34;)
++    None
+ 
+ 
+ def copy_static_files(report_folder: Path) -&gt; None:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">65</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">66</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">67</td>
+        <td class="line_text">
+            <pre>def copy_static_files(report_folder: Path) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">68</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Copy static files to report folder.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">69</td>
+        <td class="line_text">
+            <pre>    report_folder.mkdir(parents=True, exist_ok=True)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:69
+@@ -66,7 +66,7 @@
+ 
+ def copy_static_files(report_folder: Path) -&gt; None:
+     &#34;&#34;&#34;Copy static files to report folder.&#34;&#34;&#34;
+-    report_folder.mkdir(parents=True, exist_ok=True)
++    report_folder.mkdir(parents=False, exist_ok=True)
+     templates_folder = template_path()
+     for file in STATIC_FILES:
+         shutil.copy2(templates_folder / file, report_folder / file)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:69
+@@ -66,7 +66,7 @@
+ 
+ def copy_static_files(report_folder: Path) -&gt; None:
+     &#34;&#34;&#34;Copy static files to report folder.&#34;&#34;&#34;
+-    report_folder.mkdir(parents=True, exist_ok=True)
++    report_folder.mkdir(parents=True, exist_ok=False)
+     templates_folder = template_path()
+     for file in STATIC_FILES:
+         shutil.copy2(templates_folder / file, report_folder / file)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:69
+@@ -66,7 +66,7 @@
+ 
+ def copy_static_files(report_folder: Path) -&gt; None:
+     &#34;&#34;&#34;Copy static files to report folder.&#34;&#34;&#34;
+-    report_folder.mkdir(parents=True, exist_ok=True)
++    None
+     templates_folder = template_path()
+     for file in STATIC_FILES:
+         shutil.copy2(templates_folder / file, report_folder / file)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">70</td>
+        <td class="line_text">
+            <pre>    templates_folder = template_path()</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:70
+@@ -67,7 +67,7 @@
+ def copy_static_files(report_folder: Path) -&gt; None:
+     &#34;&#34;&#34;Copy static files to report folder.&#34;&#34;&#34;
+     report_folder.mkdir(parents=True, exist_ok=True)
+-    templates_folder = template_path()
++    templates_folder = None
+     for file in STATIC_FILES:
+         shutil.copy2(templates_folder / file, report_folder / file)
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">71</td>
+        <td class="line_text">
+            <pre>    for file in STATIC_FILES:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">72</td>
+        <td class="line_text">
+            <pre>        shutil.copy2(templates_folder / file, report_folder / file)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:72
+@@ -69,7 +69,7 @@
+     report_folder.mkdir(parents=True, exist_ok=True)
+     templates_folder = template_path()
+     for file in STATIC_FILES:
+-        shutil.copy2(templates_folder / file, report_folder / file)
++        shutil.copy2(templates_folder * file, report_folder / file)
+ 
+ 
+ def local_timestamp() -&gt; str:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:72
+@@ -69,7 +69,7 @@
+     report_folder.mkdir(parents=True, exist_ok=True)
+     templates_folder = template_path()
+     for file in STATIC_FILES:
+-        shutil.copy2(templates_folder / file, report_folder / file)
++        shutil.copy2(templates_folder - file, report_folder / file)
+ 
+ 
+ def local_timestamp() -&gt; str:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:72
+@@ -69,7 +69,7 @@
+     report_folder.mkdir(parents=True, exist_ok=True)
+     templates_folder = template_path()
+     for file in STATIC_FILES:
+-        shutil.copy2(templates_folder / file, report_folder / file)
++        shutil.copy2(templates_folder / file, report_folder * file)
+ 
+ 
+ def local_timestamp() -&gt; str:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:72
+@@ -69,7 +69,7 @@
+     report_folder.mkdir(parents=True, exist_ok=True)
+     templates_folder = template_path()
+     for file in STATIC_FILES:
+-        shutil.copy2(templates_folder / file, report_folder / file)
++        shutil.copy2(templates_folder / file, report_folder - file)
+ 
+ 
+ def local_timestamp() -&gt; str:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:72
+@@ -69,7 +69,7 @@
+     report_folder.mkdir(parents=True, exist_ok=True)
+     templates_folder = template_path()
+     for file in STATIC_FILES:
+-        shutil.copy2(templates_folder / file, report_folder / file)
++        None
+ 
+ 
+ def local_timestamp() -&gt; str:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">73</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">74</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">75</td>
+        <td class="line_text">
+            <pre>def local_timestamp() -&gt; str:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">76</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Return a local timestamp.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">77</td>
+        <td class="line_text">
+            <pre>    dt = datetime.datetime.now(datetime.timezone.utc)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:77
+@@ -74,7 +74,7 @@
+ 
+ def local_timestamp() -&gt; str:
+     &#34;&#34;&#34;Return a local timestamp.&#34;&#34;&#34;
+-    dt = datetime.datetime.now(datetime.timezone.utc)
++    dt = None
+     return dt.astimezone().strftime(&#34;%Y-%m-%d %H:%M:%S%z&#34;)
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">78</td>
+        <td class="line_text">
+            <pre>    return dt.astimezone().strftime(&#34;%Y-%m-%d %H:%M:%S%z&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:78
+@@ -75,7 +75,7 @@
+ def local_timestamp() -&gt; str:
+     &#34;&#34;&#34;Return a local timestamp.&#34;&#34;&#34;
+     dt = datetime.datetime.now(datetime.timezone.utc)
+-    return dt.astimezone().strftime(&#34;%Y-%m-%d %H:%M:%S%z&#34;)
++    return dt.astimezone().strftime(&#39;XX%Y-%m-%d %H:%M:%S%zXX&#39;)
+ 
+ 
+ def module_data(testing_results: TestingResults, html_options: dict) -&gt; dict[Path, dict[str, Any]]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:78
+@@ -75,7 +75,7 @@
+ def local_timestamp() -&gt; str:
+     &#34;&#34;&#34;Return a local timestamp.&#34;&#34;&#34;
+     dt = datetime.datetime.now(datetime.timezone.utc)
+-    return dt.astimezone().strftime(&#34;%Y-%m-%d %H:%M:%S%z&#34;)
++    return None
+ 
+ 
+ def module_data(testing_results: TestingResults, html_options: dict) -&gt; dict[Path, dict[str, Any]]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:78
+@@ -75,7 +75,7 @@
+ def local_timestamp() -&gt; str:
+     &#34;&#34;&#34;Return a local timestamp.&#34;&#34;&#34;
+     dt = datetime.datetime.now(datetime.timezone.utc)
+-    return dt.astimezone().strftime(&#34;%Y-%m-%d %H:%M:%S%z&#34;)
++    return None
+ 
+ 
+ def module_data(testing_results: TestingResults, html_options: dict) -&gt; dict[Path, dict[str, Any]]:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">79</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">80</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">81</td>
+        <td class="line_text">
+            <pre>def module_data(testing_results: TestingResults, html_options: dict) -&gt; dict[Path, dict[str, Any]]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">82</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Return data for report pages.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">83</td>
+        <td class="line_text">
+            <pre>    modules = {trial.mutant.source_file for trial in testing_results.mutant_trials if trial.mutant.source_file}</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">84</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">85</td>
+        <td class="line_text">
+            <pre>    module_dict: dict[Path, dict] = {m: dict() for m in modules}  # noqa: C408 - `dict()` call is needed here</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:85
+@@ -82,7 +82,7 @@
+     &#34;&#34;&#34;Return data for report pages.&#34;&#34;&#34;
+     modules = {trial.mutant.source_file for trial in testing_results.mutant_trials if trial.mutant.source_file}
+ 
+-    module_dict: dict[Path, dict] = {m: dict() for m in modules}  # noqa: C408 - `dict()` call is needed here
++    module_dict: dict[Path, dict] = {m: None for m in modules}  # noqa: C408 - `dict()` call is needed here
+     include_found_index = html_options.get(&#34;include_found_trials_on_index&#34;, False)
+     include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">86</td>
+        <td class="line_text">
+            <pre>    include_found_index = html_options.get(&#34;include_found_trials_on_index&#34;, False)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:86
+@@ -83,7 +83,7 @@
+     modules = {trial.mutant.source_file for trial in testing_results.mutant_trials if trial.mutant.source_file}
+ 
+     module_dict: dict[Path, dict] = {m: dict() for m in modules}  # noqa: C408 - `dict()` call is needed here
+-    include_found_index = html_options.get(&#34;include_found_trials_on_index&#34;, False)
++    include_found_index = html_options.get(&#34;include_found_trials_on_index&#34;, True)
+     include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)
+ 
+     for idx, module in enumerate(modules, start=1):
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:86
+@@ -83,7 +83,7 @@
+     modules = {trial.mutant.source_file for trial in testing_results.mutant_trials if trial.mutant.source_file}
+ 
+     module_dict: dict[Path, dict] = {m: dict() for m in modules}  # noqa: C408 - `dict()` call is needed here
+-    include_found_index = html_options.get(&#34;include_found_trials_on_index&#34;, False)
++    include_found_index = html_options.get(&#39;XXinclude_found_trials_on_indexXX&#39;, False)
+     include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)
+ 
+     for idx, module in enumerate(modules, start=1):
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:86
+@@ -83,7 +83,7 @@
+     modules = {trial.mutant.source_file for trial in testing_results.mutant_trials if trial.mutant.source_file}
+ 
+     module_dict: dict[Path, dict] = {m: dict() for m in modules}  # noqa: C408 - `dict()` call is needed here
+-    include_found_index = html_options.get(&#34;include_found_trials_on_index&#34;, False)
++    include_found_index = None
+     include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)
+ 
+     for idx, module in enumerate(modules, start=1):
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">87</td>
+        <td class="line_text">
+            <pre>    include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:87
+@@ -84,7 +84,7 @@
+ 
+     module_dict: dict[Path, dict] = {m: dict() for m in modules}  # noqa: C408 - `dict()` call is needed here
+     include_found_index = html_options.get(&#34;include_found_trials_on_index&#34;, False)
+-    include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)
++    include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, False)
+ 
+     for idx, module in enumerate(modules, start=1):
+         module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:87
+@@ -84,7 +84,7 @@
+ 
+     module_dict: dict[Path, dict] = {m: dict() for m in modules}  # noqa: C408 - `dict()` call is needed here
+     include_found_index = html_options.get(&#34;include_found_trials_on_index&#34;, False)
+-    include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)
++    include_found_source = html_options.get(&#39;XXinclude_found_trials_with_sourceXX&#39;, True)
+ 
+     for idx, module in enumerate(modules, start=1):
+         module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:87
+@@ -84,7 +84,7 @@
+ 
+     module_dict: dict[Path, dict] = {m: dict() for m in modules}  # noqa: C408 - `dict()` call is needed here
+     include_found_index = html_options.get(&#34;include_found_trials_on_index&#34;, False)
+-    include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)
++    include_found_source = None
+ 
+     for idx, module in enumerate(modules, start=1):
+         module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">88</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">89</td>
+        <td class="line_text">
+            <pre>    for idx, module in enumerate(modules, start=1):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:89
+@@ -86,7 +86,7 @@
+     include_found_index = html_options.get(&#34;include_found_trials_on_index&#34;, False)
+     include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)
+ 
+-    for idx, module in enumerate(modules, start=1):
++    for idx, module in enumerate(modules, start=2):
+         module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
+         module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:89
+@@ -86,7 +86,7 @@
+     include_found_index = html_options.get(&#34;include_found_trials_on_index&#34;, False)
+     include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)
+ 
+-    for idx, module in enumerate(modules, start=1):
++    for idx, module in enumerate(modules, start=0):
+         module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
+         module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:89
+@@ -86,7 +86,7 @@
+     include_found_index = html_options.get(&#34;include_found_trials_on_index&#34;, False)
+     include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)
+ 
+-    for idx, module in enumerate(modules, start=1):
++    for idx, module in None:
+         module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
+         module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">90</td>
+        <td class="line_text">
+            <pre>        module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:90
+@@ -87,7 +87,7 @@
+     include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)
+ 
+     for idx, module in enumerate(modules, start=1):
+-        module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
++        module_dict[module][&#39;XXreport_fileXX&#39;] = f&#34;module-{idx}.html&#34;
+         module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:90
+@@ -87,7 +87,7 @@
+     include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)
+ 
+     for idx, module in enumerate(modules, start=1):
+-        module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
++        module_dict[module][&#34;report_file&#34;] = f&#34;&#39;XXmodule-XX&#39;{idx}.html&#34;
+         module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:90
+@@ -87,7 +87,7 @@
+     include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)
+ 
+     for idx, module in enumerate(modules, start=1):
+-        module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
++        module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}&#39;XX.htmlXX&#39;&#34;
+         module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:90
+@@ -87,7 +87,7 @@
+     include_found_source = html_options.get(&#34;include_found_trials_with_source&#34;, True)
+ 
+     for idx, module in enumerate(modules, start=1):
+-        module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
++        None = f&#34;module-{idx}.html&#34;
+         module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">91</td>
+        <td class="line_text">
+            <pre>        module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:91
+@@ -88,7 +88,7 @@
+ 
+     for idx, module in enumerate(modules, start=1):
+         module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
+-        module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
++        module_dict[module][&#39;XXfile_idXX&#39;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:91
+@@ -88,7 +88,7 @@
+ 
+     for idx, module in enumerate(modules, start=1):
+         module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
+-        module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
++        module_dict[module][&#34;file_id&#34;] = re.sub(&#39;XX[^A-Za-z0-9\\-_:.]XX&#39;, &#34;_&#34;, str(module))
+ 
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:91
+@@ -88,7 +88,7 @@
+ 
+     for idx, module in enumerate(modules, start=1):
+         module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
+-        module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
++        module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#39;XX_XX&#39;, str(module))
+ 
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:91
+@@ -88,7 +88,7 @@
+ 
+     for idx, module in enumerate(modules, start=1):
+         module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
+-        module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
++        module_dict[module][&#34;file_id&#34;] = None
+ 
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:91
+@@ -88,7 +88,7 @@
+ 
+     for idx, module in enumerate(modules, start=1):
+         module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
+-        module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
++        None = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">92</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">93</td>
+        <td class="line_text">
+            <pre>        module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:93
+@@ -90,7 +90,7 @@
+         module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
+         module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+-        module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
++        module_dict[module][&#39;XXtrialsXX&#39;] = list(module_trials(module, testing_results.mutant_trials))
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+ 
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:93
+@@ -90,7 +90,7 @@
+         module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
+         module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+-        module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
++        module_dict[module][&#34;trials&#34;] = None
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+ 
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:93
+@@ -90,7 +90,7 @@
+         module_dict[module][&#34;report_file&#34;] = f&#34;module-{idx}.html&#34;
+         module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+-        module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
++        None = list(module_trials(module, testing_results.mutant_trials))
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+ 
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">94</td>
+        <td class="line_text">
+            <pre>        module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:94
+@@ -91,7 +91,7 @@
+         module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+-        module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
++        module_dict[module][&#39;XXtrialsXX&#39;].sort(key=lambda trial: trial.mutant.lineno)
+ 
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+         module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:94
+@@ -91,7 +91,7 @@
+         module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+-        module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
++        None
+ 
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+         module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:94
+@@ -91,7 +91,7 @@
+         module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+-        module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
++        None.sort(key=lambda trial: trial.mutant.lineno)
+ 
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+         module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Lambda</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:94
+@@ -91,7 +91,7 @@
+         module_dict[module][&#34;file_id&#34;] = re.sub(r&#34;[^A-Za-z0-9\-_:.]&#34;, &#34;_&#34;, str(module))
+ 
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+-        module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
++        module_dict[module][&#34;trials&#34;].sort(key=lambda trial: None)
+ 
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+         module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">95</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">96</td>
+        <td class="line_text">
+            <pre>        module_dict[module][&#34;lines&#34;] = list(module_lines(module))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:96
+@@ -93,7 +93,7 @@
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+ 
+-        module_dict[module][&#34;lines&#34;] = list(module_lines(module))
++        module_dict[module][&#39;XXlinesXX&#39;] = list(module_lines(module))
+         module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
+ 
+         module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:96
+@@ -93,7 +93,7 @@
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+ 
+-        module_dict[module][&#34;lines&#34;] = list(module_lines(module))
++        module_dict[module][&#34;lines&#34;] = None
+         module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
+ 
+         module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:96
+@@ -93,7 +93,7 @@
+         module_dict[module][&#34;trials&#34;] = list(module_trials(module, testing_results.mutant_trials))
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+ 
+-        module_dict[module][&#34;lines&#34;] = list(module_lines(module))
++        None = list(module_lines(module))
+         module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
+ 
+         module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">97</td>
+        <td class="line_text">
+            <pre>        module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:97
+@@ -94,7 +94,7 @@
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+ 
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+-        module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
++        module_add_trials_to_lines(module_dict[module][&#39;XXtrialsXX&#39;], module_dict[module][&#34;lines&#34;], include_found_source)
+ 
+         module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:97
+@@ -94,7 +94,7 @@
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+ 
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+-        module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
++        module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#39;XXlinesXX&#39;], include_found_source)
+ 
+         module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:97
+@@ -94,7 +94,7 @@
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+ 
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+-        module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
++        None
+ 
+         module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:97
+@@ -94,7 +94,7 @@
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+ 
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+-        module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
++        module_add_trials_to_lines(None, module_dict[module][&#34;lines&#34;], include_found_source)
+ 
+         module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:97
+@@ -94,7 +94,7 @@
+         module_dict[module][&#34;trials&#34;].sort(key=lambda trial: trial.mutant.lineno)
+ 
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+-        module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
++        module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], None, include_found_source)
+ 
+         module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">98</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">99</td>
+        <td class="line_text">
+            <pre>        module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:99
+@@ -96,7 +96,7 @@
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+         module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
+ 
+-        module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
++        module_dict[module][&#39;XXsummaryXX&#39;] = module_summary(module_dict[module][&#34;trials&#34;])
+ 
+         if not include_found_index:
+             module_dict[module][&#34;trials&#34;] = remove_found_trials(module_dict[module][&#34;trials&#34;])
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:99
+@@ -96,7 +96,7 @@
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+         module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
+ 
+-        module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
++        module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#39;XXtrialsXX&#39;])
+ 
+         if not include_found_index:
+             module_dict[module][&#34;trials&#34;] = remove_found_trials(module_dict[module][&#34;trials&#34;])
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:99
+@@ -96,7 +96,7 @@
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+         module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
+ 
+-        module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
++        module_dict[module][&#34;summary&#34;] = None
+ 
+         if not include_found_index:
+             module_dict[module][&#34;trials&#34;] = remove_found_trials(module_dict[module][&#34;trials&#34;])
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:99
+@@ -96,7 +96,7 @@
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+         module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
+ 
+-        module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
++        None = module_summary(module_dict[module][&#34;trials&#34;])
+ 
+         if not include_found_index:
+             module_dict[module][&#34;trials&#34;] = remove_found_trials(module_dict[module][&#34;trials&#34;])
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:99
+@@ -96,7 +96,7 @@
+         module_dict[module][&#34;lines&#34;] = list(module_lines(module))
+         module_add_trials_to_lines(module_dict[module][&#34;trials&#34;], module_dict[module][&#34;lines&#34;], include_found_source)
+ 
+-        module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
++        module_dict[module][&#34;summary&#34;] = module_summary(None)
+ 
+         if not include_found_index:
+             module_dict[module][&#34;trials&#34;] = remove_found_trials(module_dict[module][&#34;trials&#34;])
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">100</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">101</td>
+        <td class="line_text">
+            <pre>        if not include_found_index:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> UnaryOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:101
+@@ -98,7 +98,7 @@
+ 
+         module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
+ 
+-        if not include_found_index:
++        if include_found_index:
+             module_dict[module][&#34;trials&#34;] = remove_found_trials(module_dict[module][&#34;trials&#34;])
+ 
+     return module_dict
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">102</td>
+        <td class="line_text">
+            <pre>            module_dict[module][&#34;trials&#34;] = remove_found_trials(module_dict[module][&#34;trials&#34;])</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:102
+@@ -99,7 +99,7 @@
+         module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
+ 
+         if not include_found_index:
+-            module_dict[module][&#34;trials&#34;] = remove_found_trials(module_dict[module][&#34;trials&#34;])
++            module_dict[module][&#39;XXtrialsXX&#39;] = remove_found_trials(module_dict[module][&#34;trials&#34;])
+ 
+     return module_dict
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:102
+@@ -99,7 +99,7 @@
+         module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
+ 
+         if not include_found_index:
+-            module_dict[module][&#34;trials&#34;] = remove_found_trials(module_dict[module][&#34;trials&#34;])
++            module_dict[module][&#34;trials&#34;] = remove_found_trials(module_dict[module][&#39;XXtrialsXX&#39;])
+ 
+     return module_dict
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:102
+@@ -99,7 +99,7 @@
+         module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
+ 
+         if not include_found_index:
+-            module_dict[module][&#34;trials&#34;] = remove_found_trials(module_dict[module][&#34;trials&#34;])
++            module_dict[module][&#34;trials&#34;] = None
+ 
+     return module_dict
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:102
+@@ -99,7 +99,7 @@
+         module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
+ 
+         if not include_found_index:
+-            module_dict[module][&#34;trials&#34;] = remove_found_trials(module_dict[module][&#34;trials&#34;])
++            None = remove_found_trials(module_dict[module][&#34;trials&#34;])
+ 
+     return module_dict
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:102
+@@ -99,7 +99,7 @@
+         module_dict[module][&#34;summary&#34;] = module_summary(module_dict[module][&#34;trials&#34;])
+ 
+         if not include_found_index:
+-            module_dict[module][&#34;trials&#34;] = remove_found_trials(module_dict[module][&#34;trials&#34;])
++            module_dict[module][&#34;trials&#34;] = remove_found_trials(None)
+ 
+     return module_dict
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">103</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">104</td>
+        <td class="line_text">
+            <pre>    return module_dict</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:104
+@@ -101,7 +101,7 @@
+         if not include_found_index:
+             module_dict[module][&#34;trials&#34;] = remove_found_trials(module_dict[module][&#34;trials&#34;])
+ 
+-    return module_dict
++    return None
+ 
+ 
+ def module_trials(
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">105</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">106</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">107</td>
+        <td class="line_text">
+            <pre>def module_trials(</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">108</td>
+        <td class="line_text">
+            <pre>    module: Path,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">109</td>
+        <td class="line_text">
+            <pre>    mutant_trials: list[MutantTrial],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">110</td>
+        <td class="line_text">
+            <pre>) -&gt; Generator[MutantTrial, Any, None]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">111</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Return trials for a module.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">112</td>
+        <td class="line_text">
+            <pre>    for trial in mutant_trials:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">113</td>
+        <td class="line_text">
+            <pre>        if trial.mutant.source_file == module:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:113
+@@ -110,7 +110,7 @@
+ ) -&gt; Generator[MutantTrial, Any, None]:
+     &#34;&#34;&#34;Return trials for a module.&#34;&#34;&#34;
+     for trial in mutant_trials:
+-        if trial.mutant.source_file == module:
++        if trial.mutant.source_file != module:
+             yield trial
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">114</td>
+        <td class="line_text">
+            <pre>            yield trial</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">115</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">116</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">117</td>
+        <td class="line_text">
+            <pre>def module_lines(module: Path) -&gt; Generator[dict[str, Any], Any, None]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">118</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Return lines for a module.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">119</td>
+        <td class="line_text">
+            <pre>    for lineno, line in enumerate(module.read_text(&#34;utf-8&#34;).splitlines(), start=1):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:119
+@@ -116,7 +116,7 @@
+ 
+ def module_lines(module: Path) -&gt; Generator[dict[str, Any], Any, None]:
+     &#34;&#34;&#34;Return lines for a module.&#34;&#34;&#34;
+-    for lineno, line in enumerate(module.read_text(&#34;utf-8&#34;).splitlines(), start=1):
++    for lineno, line in enumerate(module.read_text(&#34;utf-8&#34;).splitlines(), start=2):
+         yield {
+             &#34;lineno&#34;: lineno,
+             &#34;text&#34;: line,
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:119
+@@ -116,7 +116,7 @@
+ 
+ def module_lines(module: Path) -&gt; Generator[dict[str, Any], Any, None]:
+     &#34;&#34;&#34;Return lines for a module.&#34;&#34;&#34;
+-    for lineno, line in enumerate(module.read_text(&#34;utf-8&#34;).splitlines(), start=1):
++    for lineno, line in enumerate(module.read_text(&#34;utf-8&#34;).splitlines(), start=0):
+         yield {
+             &#34;lineno&#34;: lineno,
+             &#34;text&#34;: line,
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:119
+@@ -116,7 +116,7 @@
+ 
+ def module_lines(module: Path) -&gt; Generator[dict[str, Any], Any, None]:
+     &#34;&#34;&#34;Return lines for a module.&#34;&#34;&#34;
+-    for lineno, line in enumerate(module.read_text(&#34;utf-8&#34;).splitlines(), start=1):
++    for lineno, line in enumerate(module.read_text(&#39;XXutf-8XX&#39;).splitlines(), start=1):
+         yield {
+             &#34;lineno&#34;: lineno,
+             &#34;text&#34;: line,
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:119
+@@ -116,7 +116,7 @@
+ 
+ def module_lines(module: Path) -&gt; Generator[dict[str, Any], Any, None]:
+     &#34;&#34;&#34;Return lines for a module.&#34;&#34;&#34;
+-    for lineno, line in enumerate(module.read_text(&#34;utf-8&#34;).splitlines(), start=1):
++    for lineno, line in None:
+         yield {
+             &#34;lineno&#34;: lineno,
+             &#34;text&#34;: line,
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">120</td>
+        <td class="line_text">
+            <pre>        yield {</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">121</td>
+        <td class="line_text">
+            <pre>            &#34;lineno&#34;: lineno,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:121
+@@ -118,7 +118,7 @@
+     &#34;&#34;&#34;Return lines for a module.&#34;&#34;&#34;
+     for lineno, line in enumerate(module.read_text(&#34;utf-8&#34;).splitlines(), start=1):
+         yield {
+-            &#34;lineno&#34;: lineno,
++            &#39;XXlinenoXX&#39;: lineno,
+             &#34;text&#34;: line,
+             &#34;trials&#34;: [],
+             &#34;row_class&#34;: &#34;plain&#34;,
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">122</td>
+        <td class="line_text">
+            <pre>            &#34;text&#34;: line,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:122
+@@ -119,7 +119,7 @@
+     for lineno, line in enumerate(module.read_text(&#34;utf-8&#34;).splitlines(), start=1):
+         yield {
+             &#34;lineno&#34;: lineno,
+-            &#34;text&#34;: line,
++            &#39;XXtextXX&#39;: line,
+             &#34;trials&#34;: [],
+             &#34;row_class&#34;: &#34;plain&#34;,
+         }
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">123</td>
+        <td class="line_text">
+            <pre>            &#34;trials&#34;: [],</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:123
+@@ -120,7 +120,7 @@
+         yield {
+             &#34;lineno&#34;: lineno,
+             &#34;text&#34;: line,
+-            &#34;trials&#34;: [],
++            &#39;XXtrialsXX&#39;: [],
+             &#34;row_class&#34;: &#34;plain&#34;,
+         }
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">124</td>
+        <td class="line_text">
+            <pre>            &#34;row_class&#34;: &#34;plain&#34;,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:124
+@@ -121,7 +121,7 @@
+             &#34;lineno&#34;: lineno,
+             &#34;text&#34;: line,
+             &#34;trials&#34;: [],
+-            &#34;row_class&#34;: &#34;plain&#34;,
++            &#39;XXrow_classXX&#39;: &#34;plain&#34;,
+         }
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:124
+@@ -121,7 +121,7 @@
+             &#34;lineno&#34;: lineno,
+             &#34;text&#34;: line,
+             &#34;trials&#34;: [],
+-            &#34;row_class&#34;: &#34;plain&#34;,
++            &#34;row_class&#34;: &#39;XXplainXX&#39;,
+         }
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">125</td>
+        <td class="line_text">
+            <pre>        }</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">126</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">127</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">128</td>
+        <td class="line_text">
+            <pre>def module_add_trials_to_lines(</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">129</td>
+        <td class="line_text">
+            <pre>    module_trials: list[MutantTrial],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">130</td>
+        <td class="line_text">
+            <pre>    module_lines: list[dict[str, Any]],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">131</td>
+        <td class="line_text">
+            <pre>    include_found: bool,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">132</td>
+        <td class="line_text">
+            <pre>) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">133</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Add trials to lines.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">134</td>
+        <td class="line_text">
+            <pre>    for trial in module_trials:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">135</td>
+        <td class="line_text">
+            <pre>        if include_found or not trial.result.found:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> UnaryOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:135
+@@ -132,7 +132,7 @@
+ ) -&gt; None:
+     &#34;&#34;&#34;Add trials to lines.&#34;&#34;&#34;
+     for trial in module_trials:
+-        if include_found or not trial.result.found:
++        if include_found or trial.result.found:
+             line = module_lines[trial.mutant.lineno - 1]
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:135
+@@ -132,7 +132,7 @@
+ ) -&gt; None:
+     &#34;&#34;&#34;Add trials to lines.&#34;&#34;&#34;
+     for trial in module_trials:
+-        if include_found or not trial.result.found:
++        if include_found and (not trial.result.found):
+             line = module_lines[trial.mutant.lineno - 1]
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">136</td>
+        <td class="line_text">
+            <pre>            line = module_lines[trial.mutant.lineno - 1]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:136
+@@ -133,7 +133,7 @@
+     &#34;&#34;&#34;Add trials to lines.&#34;&#34;&#34;
+     for trial in module_trials:
+         if include_found or not trial.result.found:
+-            line = module_lines[trial.mutant.lineno - 1]
++            line = module_lines[trial.mutant.lineno + 1]
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:136
+@@ -133,7 +133,7 @@
+     &#34;&#34;&#34;Add trials to lines.&#34;&#34;&#34;
+     for trial in module_trials:
+         if include_found or not trial.result.found:
+-            line = module_lines[trial.mutant.lineno - 1]
++            line = module_lines[trial.mutant.lineno / 1]
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:136
+@@ -133,7 +133,7 @@
+     &#34;&#34;&#34;Add trials to lines.&#34;&#34;&#34;
+     for trial in module_trials:
+         if include_found or not trial.result.found:
+-            line = module_lines[trial.mutant.lineno - 1]
++            line = module_lines[trial.mutant.lineno - 2]
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:136
+@@ -133,7 +133,7 @@
+     &#34;&#34;&#34;Add trials to lines.&#34;&#34;&#34;
+     for trial in module_trials:
+         if include_found or not trial.result.found:
+-            line = module_lines[trial.mutant.lineno - 1]
++            line = module_lines[trial.mutant.lineno - 0]
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:136
+@@ -133,7 +133,7 @@
+     &#34;&#34;&#34;Add trials to lines.&#34;&#34;&#34;
+     for trial in module_trials:
+         if include_found or not trial.result.found:
+-            line = module_lines[trial.mutant.lineno - 1]
++            line = None
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">137</td>
+        <td class="line_text">
+            <pre>            line[&#34;trials&#34;].append(trial)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:137
+@@ -134,7 +134,7 @@
+     for trial in module_trials:
+         if include_found or not trial.result.found:
+             line = module_lines[trial.mutant.lineno - 1]
+-            line[&#34;trials&#34;].append(trial)
++            line[&#39;XXtrialsXX&#39;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:137
+@@ -134,7 +134,7 @@
+     for trial in module_trials:
+         if include_found or not trial.result.found:
+             line = module_lines[trial.mutant.lineno - 1]
+-            line[&#34;trials&#34;].append(trial)
++            None
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:137
+@@ -134,7 +134,7 @@
+     for trial in module_trials:
+         if include_found or not trial.result.found:
+             line = module_lines[trial.mutant.lineno - 1]
+-            line[&#34;trials&#34;].append(trial)
++            None.append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">138</td>
+        <td class="line_text">
+            <pre>            if line[&#34;row_class&#34;] == &#34;plain&#34;:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:138
+@@ -135,7 +135,7 @@
+         if include_found or not trial.result.found:
+             line = module_lines[trial.mutant.lineno - 1]
+             line[&#34;trials&#34;].append(trial)
+-            if line[&#34;row_class&#34;] == &#34;plain&#34;:
++            if line[&#39;row_class&#39;] != &#39;plain&#39;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:138
+@@ -135,7 +135,7 @@
+         if include_found or not trial.result.found:
+             line = module_lines[trial.mutant.lineno - 1]
+             line[&#34;trials&#34;].append(trial)
+-            if line[&#34;row_class&#34;] == &#34;plain&#34;:
++            if line[&#39;XXrow_classXX&#39;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:138
+@@ -135,7 +135,7 @@
+         if include_found or not trial.result.found:
+             line = module_lines[trial.mutant.lineno - 1]
+             line[&#34;trials&#34;].append(trial)
+-            if line[&#34;row_class&#34;] == &#34;plain&#34;:
++            if line[&#34;row_class&#34;] == &#39;XXplainXX&#39;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:138
+@@ -135,7 +135,7 @@
+         if include_found or not trial.result.found:
+             line = module_lines[trial.mutant.lineno - 1]
+             line[&#34;trials&#34;].append(trial)
+-            if line[&#34;row_class&#34;] == &#34;plain&#34;:
++            if None == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">139</td>
+        <td class="line_text">
+            <pre>                line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:139
+@@ -136,7 +136,7 @@
+             line = module_lines[trial.mutant.lineno - 1]
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+-                line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
++                line[&#39;XXrow_classXX&#39;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+             ):
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:139
+@@ -136,7 +136,7 @@
+             line = module_lines[trial.mutant.lineno - 1]
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+-                line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
++                line[&#34;row_class&#34;] = &#39;XXfoundXX&#39; if trial.result.found else &#34;not_found&#34;
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+             ):
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:139
+@@ -136,7 +136,7 @@
+             line = module_lines[trial.mutant.lineno - 1]
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+-                line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
++                line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#39;XXnot_foundXX&#39;
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+             ):
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:139
+@@ -136,7 +136,7 @@
+             line = module_lines[trial.mutant.lineno - 1]
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+-                line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
++                None = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+             ):
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">140</td>
+        <td class="line_text">
+            <pre>            elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> UnaryOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:140
+@@ -137,7 +137,7 @@
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+-            elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
++            elif (line[&#34;row_class&#34;] == &#34;found&#34; and trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+             ):
+                 line[&#34;row_class&#34;] = &#34;partial_found&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:140
+@@ -137,9 +137,7 @@
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+-            elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+-                line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+-            ):
++            elif (line[&#39;row_class&#39;] == &#39;found&#39; and (not trial.result.found)) and (line[&#39;row_class&#39;] == &#39;not_found&#39; and trial.result.found):
+                 line[&#34;row_class&#34;] = &#34;partial_found&#34;
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:140
+@@ -137,7 +137,7 @@
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+-            elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
++            elif (line[&#39;XXrow_classXX&#39;] == &#34;found&#34; and not trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+             ):
+                 line[&#34;row_class&#34;] = &#34;partial_found&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:140
+@@ -137,7 +137,7 @@
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+-            elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
++            elif (line[&#34;row_class&#34;] == &#39;XXfoundXX&#39; and not trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+             ):
+                 line[&#34;row_class&#34;] = &#34;partial_found&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:140
+@@ -137,7 +137,7 @@
+             line[&#34;trials&#34;].append(trial)
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+-            elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
++            elif (None == &#34;found&#34; and not trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+             ):
+                 line[&#34;row_class&#34;] = &#34;partial_found&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">141</td>
+        <td class="line_text">
+            <pre>                line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:141
+@@ -138,7 +138,7 @@
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+-                line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
++                line[&#39;XXrow_classXX&#39;] == &#34;not_found&#34; and trial.result.found
+             ):
+                 line[&#34;row_class&#34;] = &#34;partial_found&#34;
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:141
+@@ -138,7 +138,7 @@
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+-                line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
++                line[&#34;row_class&#34;] == &#39;XXnot_foundXX&#39; and trial.result.found
+             ):
+                 line[&#34;row_class&#34;] = &#34;partial_found&#34;
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:141
+@@ -138,7 +138,7 @@
+             if line[&#34;row_class&#34;] == &#34;plain&#34;:
+                 line[&#34;row_class&#34;] = &#34;found&#34; if trial.result.found else &#34;not_found&#34;
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+-                line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
++                None == &#34;not_found&#34; and trial.result.found
+             ):
+                 line[&#34;row_class&#34;] = &#34;partial_found&#34;
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">142</td>
+        <td class="line_text">
+            <pre>            ):</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">143</td>
+        <td class="line_text">
+            <pre>                line[&#34;row_class&#34;] = &#34;partial_found&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:143
+@@ -140,7 +140,7 @@
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+             ):
+-                line[&#34;row_class&#34;] = &#34;partial_found&#34;
++                line[&#39;XXrow_classXX&#39;] = &#34;partial_found&#34;
+ 
+ 
+ def module_summary(module_trials: list[MutantTrial]) -&gt; TestingSummary:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:143
+@@ -140,7 +140,7 @@
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+             ):
+-                line[&#34;row_class&#34;] = &#34;partial_found&#34;
++                line[&#34;row_class&#34;] = &#39;XXpartial_foundXX&#39;
+ 
+ 
+ def module_summary(module_trials: list[MutantTrial]) -&gt; TestingSummary:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:143
+@@ -140,7 +140,7 @@
+             elif (line[&#34;row_class&#34;] == &#34;found&#34; and not trial.result.found) or (
+                 line[&#34;row_class&#34;] == &#34;not_found&#34; and trial.result.found
+             ):
+-                line[&#34;row_class&#34;] = &#34;partial_found&#34;
++                None = &#34;partial_found&#34;
+ 
+ 
+ def module_summary(module_trials: list[MutantTrial]) -&gt; TestingSummary:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">144</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">145</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">146</td>
+        <td class="line_text">
+            <pre>def module_summary(module_trials: list[MutantTrial]) -&gt; TestingSummary:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">147</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Return summary for a module.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">148</td>
+        <td class="line_text">
+            <pre>    summary = TestingSummary()</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:148
+@@ -145,7 +145,7 @@
+ 
+ def module_summary(module_trials: list[MutantTrial]) -&gt; TestingSummary:
+     &#34;&#34;&#34;Return summary for a module.&#34;&#34;&#34;
+-    summary = TestingSummary()
++    summary = None
+     for trial in module_trials:
+         summary += trial.result
+     summary.trials = len(module_trials)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">149</td>
+        <td class="line_text">
+            <pre>    for trial in module_trials:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">150</td>
+        <td class="line_text">
+            <pre>        summary += trial.result</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:150
+@@ -147,7 +147,7 @@
+     &#34;&#34;&#34;Return summary for a module.&#34;&#34;&#34;
+     summary = TestingSummary()
+     for trial in module_trials:
+-        summary += trial.result
++        summary = trial.result
+     summary.trials = len(module_trials)
+     return summary
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:150
+@@ -147,7 +147,7 @@
+     &#34;&#34;&#34;Return summary for a module.&#34;&#34;&#34;
+     summary = TestingSummary()
+     for trial in module_trials:
+-        summary += trial.result
++        summary -= trial.result
+     summary.trials = len(module_trials)
+     return summary
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:150
+@@ -147,7 +147,7 @@
+     &#34;&#34;&#34;Return summary for a module.&#34;&#34;&#34;
+     summary = TestingSummary()
+     for trial in module_trials:
+-        summary += trial.result
++        summary *= trial.result
+     summary.trials = len(module_trials)
+     return summary
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">151</td>
+        <td class="line_text">
+            <pre>    summary.trials = len(module_trials)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:151
+@@ -148,7 +148,7 @@
+     summary = TestingSummary()
+     for trial in module_trials:
+         summary += trial.result
+-    summary.trials = len(module_trials)
++    summary.trials = None
+     return summary
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">152</td>
+        <td class="line_text">
+            <pre>    return summary</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:152
+@@ -149,7 +149,7 @@
+     for trial in module_trials:
+         summary += trial.result
+     summary.trials = len(module_trials)
+-    return summary
++    return None
+ 
+ 
+ def remove_found_trials(trials: list[MutantTrial]) -&gt; list[MutantTrial]:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">153</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">154</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">155</td>
+        <td class="line_text">
+            <pre>def remove_found_trials(trials: list[MutantTrial]) -&gt; list[MutantTrial]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">156</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Remove not found trials from a list of trials.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">157</td>
+        <td class="line_text">
+            <pre>    return [trial for trial in trials if not trial.result.found]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> UnaryOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:157
+@@ -154,4 +154,4 @@
+ 
+ def remove_found_trials(trials: list[MutantTrial]) -&gt; list[MutantTrial]:
+     &#34;&#34;&#34;Remove not found trials from a list of trials.&#34;&#34;&#34;
+-    return [trial for trial in trials if not trial.result.found]
++    return [trial for trial in trials if trial.result.found]
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\reporters\html.py
++++ [Mutant] src\poodle\reporters\html.py:157
+@@ -154,4 +154,4 @@
+ 
+ def remove_found_trials(trials: list[MutantTrial]) -&gt; list[MutantTrial]:
+     &#34;&#34;&#34;Remove not found trials from a list of trials.&#34;&#34;&#34;
+-    return [trial for trial in trials if not trial.result.found]
++    return None
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+</table>
+
+    </main>
+    <footer>
+        
+        <p>Generated by <a href="http://poodle.rtfd.io" class="nav">Poodle</a> version 1.2.0 at 2023-12-29 20:42:38-0600</p>
+        
+    </footer>
+    
+
+    <script type="text/javascript" src="html-report.js"></script>
+    
+<script>addShowHideEventListeners();</script>
+
+</body>
+
+</html>

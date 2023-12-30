@@ -1,0 +1,2653 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Module Source: src\poodle\runners\command_line.py</title>
+    <link rel="stylesheet" type="text/css" href="html-report.css" />
+    <link rel="icon" href="poodle.ico" type="image/x-icon" />
+    
+</head>
+
+<body>
+    <header>
+        
+
+        <h1>Module Source: src\poodle\runners\command_line.py</h1>
+        
+        <span class="subtitle"><span class="label">Project:</span> poodle
+             version 1.2.0 </span>
+        
+        
+&nbsp;&nbsp;<a href="index.html" class="subtitle">&lt;Index</a>
+<div class="subtitle">
+<span class="label">Mutants:</span> 68,
+<span class="label">Found:</span> 68,
+<span class="label">Not Found:</span> 0,
+<span class="label">Timeout:</span> 0,
+<span class="label">Error:</span> 0
+</div>
+<div class="subtitle">
+<span class="label">Module Score:</span> 100.00%
+</div>
+
+    </header>
+    <main>
+        
+<table class="source">
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">1</td>
+        <td class="line_text">
+            <pre>&#34;&#34;&#34;Run mutation tests.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">2</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">3</td>
+        <td class="line_text">
+            <pre>from __future__ import annotations</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">4</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">5</td>
+        <td class="line_text">
+            <pre>import logging</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">6</td>
+        <td class="line_text">
+            <pre>import os</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">7</td>
+        <td class="line_text">
+            <pre>import shlex</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">8</td>
+        <td class="line_text">
+            <pre>import subprocess</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">9</td>
+        <td class="line_text">
+            <pre>from pathlib import Path</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">10</td>
+        <td class="line_text">
+            <pre>from subprocess import TimeoutExpired</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">11</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">12</td>
+        <td class="line_text">
+            <pre>from poodle.data_types import Mutant, MutantTrialResult, PoodleConfig</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">13</td>
+        <td class="line_text">
+            <pre>from poodle.util import pprint_str</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">14</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">15</td>
+        <td class="line_text">
+            <pre>logger = logging.getLogger(__name__)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:15
+@@ -12,7 +12,7 @@
+ from poodle.data_types import Mutant, MutantTrialResult, PoodleConfig
+ from poodle.util import pprint_str
+ 
+-logger = logging.getLogger(__name__)
++logger = None
+ 
+ 
+ def runner(
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">16</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">17</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">18</td>
+        <td class="line_text">
+            <pre>def runner(</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">19</td>
+        <td class="line_text">
+            <pre>    config: PoodleConfig, run_folder: Path, mutant: Mutant, timeout: float | None, *_, **__</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">20</td>
+        <td class="line_text">
+            <pre>) -&gt; MutantTrialResult:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">21</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Run test of mutant with command line command in subprocess.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">22</td>
+        <td class="line_text">
+            <pre>    logger.info(&#34;Running: run_folder=%s timeout=%s&#34;, run_folder, timeout)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:22
+@@ -19,7 +19,7 @@
+     config: PoodleConfig, run_folder: Path, mutant: Mutant, timeout: float | None, *_, **__
+ ) -&gt; MutantTrialResult:
+     &#34;&#34;&#34;Run test of mutant with command line command in subprocess.&#34;&#34;&#34;
+-    logger.info(&#34;Running: run_folder=%s timeout=%s&#34;, run_folder, timeout)
++    logger.info(&#39;XXRunning: run_folder=%s timeout=%sXX&#39;, run_folder, timeout)
+ 
+     cwd = Path.cwd().resolve()
+     run_cwd = run_folder.resolve() if mutant.source_folder.resolve() == cwd else cwd
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:22
+@@ -19,7 +19,7 @@
+     config: PoodleConfig, run_folder: Path, mutant: Mutant, timeout: float | None, *_, **__
+ ) -&gt; MutantTrialResult:
+     &#34;&#34;&#34;Run test of mutant with command line command in subprocess.&#34;&#34;&#34;
+-    logger.info(&#34;Running: run_folder=%s timeout=%s&#34;, run_folder, timeout)
++    None
+ 
+     cwd = Path.cwd().resolve()
+     run_cwd = run_folder.resolve() if mutant.source_folder.resolve() == cwd else cwd
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">23</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">24</td>
+        <td class="line_text">
+            <pre>    cwd = Path.cwd().resolve()</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:24
+@@ -21,7 +21,7 @@
+     &#34;&#34;&#34;Run test of mutant with command line command in subprocess.&#34;&#34;&#34;
+     logger.info(&#34;Running: run_folder=%s timeout=%s&#34;, run_folder, timeout)
+ 
+-    cwd = Path.cwd().resolve()
++    cwd = None
+     run_cwd = run_folder.resolve() if mutant.source_folder.resolve() == cwd else cwd
+     run_source_folder = run_folder.resolve() / mutant.source_folder
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">25</td>
+        <td class="line_text">
+            <pre>    run_cwd = run_folder.resolve() if mutant.source_folder.resolve() == cwd else cwd</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:25
+@@ -22,7 +22,7 @@
+     logger.info(&#34;Running: run_folder=%s timeout=%s&#34;, run_folder, timeout)
+ 
+     cwd = Path.cwd().resolve()
+-    run_cwd = run_folder.resolve() if mutant.source_folder.resolve() == cwd else cwd
++    run_cwd = run_folder.resolve() if mutant.source_folder.resolve() != cwd else cwd
+     run_source_folder = run_folder.resolve() / mutant.source_folder
+ 
+     run_env = os.environ.copy()
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:25
+@@ -22,7 +22,7 @@
+     logger.info(&#34;Running: run_folder=%s timeout=%s&#34;, run_folder, timeout)
+ 
+     cwd = Path.cwd().resolve()
+-    run_cwd = run_folder.resolve() if mutant.source_folder.resolve() == cwd else cwd
++    run_cwd = run_folder.resolve() if None == cwd else cwd
+     run_source_folder = run_folder.resolve() / mutant.source_folder
+ 
+     run_env = os.environ.copy()
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:25
+@@ -22,7 +22,7 @@
+     logger.info(&#34;Running: run_folder=%s timeout=%s&#34;, run_folder, timeout)
+ 
+     cwd = Path.cwd().resolve()
+-    run_cwd = run_folder.resolve() if mutant.source_folder.resolve() == cwd else cwd
++    run_cwd = None if mutant.source_folder.resolve() == cwd else cwd
+     run_source_folder = run_folder.resolve() / mutant.source_folder
+ 
+     run_env = os.environ.copy()
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">26</td>
+        <td class="line_text">
+            <pre>    run_source_folder = run_folder.resolve() / mutant.source_folder</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:26
+@@ -23,7 +23,7 @@
+ 
+     cwd = Path.cwd().resolve()
+     run_cwd = run_folder.resolve() if mutant.source_folder.resolve() == cwd else cwd
+-    run_source_folder = run_folder.resolve() / mutant.source_folder
++    run_source_folder = run_folder.resolve() * mutant.source_folder
+ 
+     run_env = os.environ.copy()
+     python_path = os.pathsep.join(
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:26
+@@ -23,7 +23,7 @@
+ 
+     cwd = Path.cwd().resolve()
+     run_cwd = run_folder.resolve() if mutant.source_folder.resolve() == cwd else cwd
+-    run_source_folder = run_folder.resolve() / mutant.source_folder
++    run_source_folder = run_folder.resolve() - mutant.source_folder
+ 
+     run_env = os.environ.copy()
+     python_path = os.pathsep.join(
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:26
+@@ -23,7 +23,7 @@
+ 
+     cwd = Path.cwd().resolve()
+     run_cwd = run_folder.resolve() if mutant.source_folder.resolve() == cwd else cwd
+-    run_source_folder = run_folder.resolve() / mutant.source_folder
++    run_source_folder = None / mutant.source_folder
+ 
+     run_env = os.environ.copy()
+     python_path = os.pathsep.join(
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">27</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">28</td>
+        <td class="line_text">
+            <pre>    run_env = os.environ.copy()</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:28
+@@ -25,7 +25,7 @@
+     run_cwd = run_folder.resolve() if mutant.source_folder.resolve() == cwd else cwd
+     run_source_folder = run_folder.resolve() / mutant.source_folder
+ 
+-    run_env = os.environ.copy()
++    run_env = None
+     python_path = os.pathsep.join(
+         [
+             str(run_source_folder),
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">29</td>
+        <td class="line_text">
+            <pre>    python_path = os.pathsep.join(</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:29
+@@ -26,13 +26,7 @@
+     run_source_folder = run_folder.resolve() / mutant.source_folder
+ 
+     run_env = os.environ.copy()
+-    python_path = os.pathsep.join(
+-        [
+-            str(run_source_folder),
+-            str(Path.cwd().resolve()),
+-            run_env.get(&#34;PYTHONPATH&#34;, &#34;&#34;),
+-        ],
+-    )
++    python_path = None
+     update_env = {
+         &#34;PYTHONDONTWRITEBYTECODE&#34;: &#34;1&#34;,
+         &#34;PYTHONPATH&#34;: python_path,
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">30</td>
+        <td class="line_text">
+            <pre>        [</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">31</td>
+        <td class="line_text">
+            <pre>            str(run_source_folder),</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">32</td>
+        <td class="line_text">
+            <pre>            str(Path.cwd().resolve()),</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">33</td>
+        <td class="line_text">
+            <pre>            run_env.get(&#34;PYTHONPATH&#34;, &#34;&#34;),</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:33
+@@ -30,7 +30,7 @@
+         [
+             str(run_source_folder),
+             str(Path.cwd().resolve()),
+-            run_env.get(&#34;PYTHONPATH&#34;, &#34;&#34;),
++            run_env.get(&#39;XXPYTHONPATHXX&#39;, &#34;&#34;),
+         ],
+     )
+     update_env = {
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:33
+@@ -30,7 +30,7 @@
+         [
+             str(run_source_folder),
+             str(Path.cwd().resolve()),
+-            run_env.get(&#34;PYTHONPATH&#34;, &#34;&#34;),
++            run_env.get(&#34;PYTHONPATH&#34;, &#39;XXXX&#39;),
+         ],
+     )
+     update_env = {
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">34</td>
+        <td class="line_text">
+            <pre>        ],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">35</td>
+        <td class="line_text">
+            <pre>    )</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">36</td>
+        <td class="line_text">
+            <pre>    update_env = {</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">37</td>
+        <td class="line_text">
+            <pre>        &#34;PYTHONDONTWRITEBYTECODE&#34;: &#34;1&#34;,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:37
+@@ -34,7 +34,7 @@
+         ],
+     )
+     update_env = {
+-        &#34;PYTHONDONTWRITEBYTECODE&#34;: &#34;1&#34;,
++        &#39;XXPYTHONDONTWRITEBYTECODEXX&#39;: &#34;1&#34;,
+         &#34;PYTHONPATH&#34;: python_path,
+         &#34;MUT_SOURCE_FILE&#34;: str(mutant.source_file),
+         &#34;MUT_LINENO&#34;: str(mutant.lineno),
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:37
+@@ -34,7 +34,7 @@
+         ],
+     )
+     update_env = {
+-        &#34;PYTHONDONTWRITEBYTECODE&#34;: &#34;1&#34;,
++        &#34;PYTHONDONTWRITEBYTECODE&#34;: &#39;XX1XX&#39;,
+         &#34;PYTHONPATH&#34;: python_path,
+         &#34;MUT_SOURCE_FILE&#34;: str(mutant.source_file),
+         &#34;MUT_LINENO&#34;: str(mutant.lineno),
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">38</td>
+        <td class="line_text">
+            <pre>        &#34;PYTHONPATH&#34;: python_path,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:38
+@@ -35,7 +35,7 @@
+     )
+     update_env = {
+         &#34;PYTHONDONTWRITEBYTECODE&#34;: &#34;1&#34;,
+-        &#34;PYTHONPATH&#34;: python_path,
++        &#39;XXPYTHONPATHXX&#39;: python_path,
+         &#34;MUT_SOURCE_FILE&#34;: str(mutant.source_file),
+         &#34;MUT_LINENO&#34;: str(mutant.lineno),
+         &#34;MUT_END_LINENO&#34;: str(mutant.end_lineno),
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">39</td>
+        <td class="line_text">
+            <pre>        &#34;MUT_SOURCE_FILE&#34;: str(mutant.source_file),</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:39
+@@ -36,7 +36,7 @@
+     update_env = {
+         &#34;PYTHONDONTWRITEBYTECODE&#34;: &#34;1&#34;,
+         &#34;PYTHONPATH&#34;: python_path,
+-        &#34;MUT_SOURCE_FILE&#34;: str(mutant.source_file),
++        &#39;XXMUT_SOURCE_FILEXX&#39;: str(mutant.source_file),
+         &#34;MUT_LINENO&#34;: str(mutant.lineno),
+         &#34;MUT_END_LINENO&#34;: str(mutant.end_lineno),
+         &#34;MUT_COL_OFFSET&#34;: str(mutant.col_offset),
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:39
+@@ -36,7 +36,7 @@
+     update_env = {
+         &#34;PYTHONDONTWRITEBYTECODE&#34;: &#34;1&#34;,
+         &#34;PYTHONPATH&#34;: python_path,
+-        &#34;MUT_SOURCE_FILE&#34;: str(mutant.source_file),
++        &#34;MUT_SOURCE_FILE&#34;: None,
+         &#34;MUT_LINENO&#34;: str(mutant.lineno),
+         &#34;MUT_END_LINENO&#34;: str(mutant.end_lineno),
+         &#34;MUT_COL_OFFSET&#34;: str(mutant.col_offset),
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">40</td>
+        <td class="line_text">
+            <pre>        &#34;MUT_LINENO&#34;: str(mutant.lineno),</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:40
+@@ -37,7 +37,7 @@
+         &#34;PYTHONDONTWRITEBYTECODE&#34;: &#34;1&#34;,
+         &#34;PYTHONPATH&#34;: python_path,
+         &#34;MUT_SOURCE_FILE&#34;: str(mutant.source_file),
+-        &#34;MUT_LINENO&#34;: str(mutant.lineno),
++        &#39;XXMUT_LINENOXX&#39;: str(mutant.lineno),
+         &#34;MUT_END_LINENO&#34;: str(mutant.end_lineno),
+         &#34;MUT_COL_OFFSET&#34;: str(mutant.col_offset),
+         &#34;MUT_END_COL_OFFSET&#34;: str(mutant.end_col_offset),
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:40
+@@ -37,7 +37,7 @@
+         &#34;PYTHONDONTWRITEBYTECODE&#34;: &#34;1&#34;,
+         &#34;PYTHONPATH&#34;: python_path,
+         &#34;MUT_SOURCE_FILE&#34;: str(mutant.source_file),
+-        &#34;MUT_LINENO&#34;: str(mutant.lineno),
++        &#34;MUT_LINENO&#34;: None,
+         &#34;MUT_END_LINENO&#34;: str(mutant.end_lineno),
+         &#34;MUT_COL_OFFSET&#34;: str(mutant.col_offset),
+         &#34;MUT_END_COL_OFFSET&#34;: str(mutant.end_col_offset),
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">41</td>
+        <td class="line_text">
+            <pre>        &#34;MUT_END_LINENO&#34;: str(mutant.end_lineno),</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:41
+@@ -38,7 +38,7 @@
+         &#34;PYTHONPATH&#34;: python_path,
+         &#34;MUT_SOURCE_FILE&#34;: str(mutant.source_file),
+         &#34;MUT_LINENO&#34;: str(mutant.lineno),
+-        &#34;MUT_END_LINENO&#34;: str(mutant.end_lineno),
++        &#39;XXMUT_END_LINENOXX&#39;: str(mutant.end_lineno),
+         &#34;MUT_COL_OFFSET&#34;: str(mutant.col_offset),
+         &#34;MUT_END_COL_OFFSET&#34;: str(mutant.end_col_offset),
+         &#34;MUT_TEXT&#34;: str(mutant.text),
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:41
+@@ -38,7 +38,7 @@
+         &#34;PYTHONPATH&#34;: python_path,
+         &#34;MUT_SOURCE_FILE&#34;: str(mutant.source_file),
+         &#34;MUT_LINENO&#34;: str(mutant.lineno),
+-        &#34;MUT_END_LINENO&#34;: str(mutant.end_lineno),
++        &#34;MUT_END_LINENO&#34;: None,
+         &#34;MUT_COL_OFFSET&#34;: str(mutant.col_offset),
+         &#34;MUT_END_COL_OFFSET&#34;: str(mutant.end_col_offset),
+         &#34;MUT_TEXT&#34;: str(mutant.text),
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">42</td>
+        <td class="line_text">
+            <pre>        &#34;MUT_COL_OFFSET&#34;: str(mutant.col_offset),</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:42
+@@ -39,7 +39,7 @@
+         &#34;MUT_SOURCE_FILE&#34;: str(mutant.source_file),
+         &#34;MUT_LINENO&#34;: str(mutant.lineno),
+         &#34;MUT_END_LINENO&#34;: str(mutant.end_lineno),
+-        &#34;MUT_COL_OFFSET&#34;: str(mutant.col_offset),
++        &#39;XXMUT_COL_OFFSETXX&#39;: str(mutant.col_offset),
+         &#34;MUT_END_COL_OFFSET&#34;: str(mutant.end_col_offset),
+         &#34;MUT_TEXT&#34;: str(mutant.text),
+     }
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:42
+@@ -39,7 +39,7 @@
+         &#34;MUT_SOURCE_FILE&#34;: str(mutant.source_file),
+         &#34;MUT_LINENO&#34;: str(mutant.lineno),
+         &#34;MUT_END_LINENO&#34;: str(mutant.end_lineno),
+-        &#34;MUT_COL_OFFSET&#34;: str(mutant.col_offset),
++        &#34;MUT_COL_OFFSET&#34;: None,
+         &#34;MUT_END_COL_OFFSET&#34;: str(mutant.end_col_offset),
+         &#34;MUT_TEXT&#34;: str(mutant.text),
+     }
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">43</td>
+        <td class="line_text">
+            <pre>        &#34;MUT_END_COL_OFFSET&#34;: str(mutant.end_col_offset),</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:43
+@@ -40,7 +40,7 @@
+         &#34;MUT_LINENO&#34;: str(mutant.lineno),
+         &#34;MUT_END_LINENO&#34;: str(mutant.end_lineno),
+         &#34;MUT_COL_OFFSET&#34;: str(mutant.col_offset),
+-        &#34;MUT_END_COL_OFFSET&#34;: str(mutant.end_col_offset),
++        &#39;XXMUT_END_COL_OFFSETXX&#39;: str(mutant.end_col_offset),
+         &#34;MUT_TEXT&#34;: str(mutant.text),
+     }
+     if &#34;command_line_env&#34; in config.runner_opts:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:43
+@@ -40,7 +40,7 @@
+         &#34;MUT_LINENO&#34;: str(mutant.lineno),
+         &#34;MUT_END_LINENO&#34;: str(mutant.end_lineno),
+         &#34;MUT_COL_OFFSET&#34;: str(mutant.col_offset),
+-        &#34;MUT_END_COL_OFFSET&#34;: str(mutant.end_col_offset),
++        &#34;MUT_END_COL_OFFSET&#34;: None,
+         &#34;MUT_TEXT&#34;: str(mutant.text),
+     }
+     if &#34;command_line_env&#34; in config.runner_opts:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">44</td>
+        <td class="line_text">
+            <pre>        &#34;MUT_TEXT&#34;: str(mutant.text),</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:44
+@@ -41,7 +41,7 @@
+         &#34;MUT_END_LINENO&#34;: str(mutant.end_lineno),
+         &#34;MUT_COL_OFFSET&#34;: str(mutant.col_offset),
+         &#34;MUT_END_COL_OFFSET&#34;: str(mutant.end_col_offset),
+-        &#34;MUT_TEXT&#34;: str(mutant.text),
++        &#39;XXMUT_TEXTXX&#39;: str(mutant.text),
+     }
+     if &#34;command_line_env&#34; in config.runner_opts:
+         update_env.update(config.runner_opts[&#34;command_line_env&#34;])
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:44
+@@ -41,7 +41,7 @@
+         &#34;MUT_END_LINENO&#34;: str(mutant.end_lineno),
+         &#34;MUT_COL_OFFSET&#34;: str(mutant.col_offset),
+         &#34;MUT_END_COL_OFFSET&#34;: str(mutant.end_col_offset),
+-        &#34;MUT_TEXT&#34;: str(mutant.text),
++        &#34;MUT_TEXT&#34;: None,
+     }
+     if &#34;command_line_env&#34; in config.runner_opts:
+         update_env.update(config.runner_opts[&#34;command_line_env&#34;])
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">45</td>
+        <td class="line_text">
+            <pre>    }</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">46</td>
+        <td class="line_text">
+            <pre>    if &#34;command_line_env&#34; in config.runner_opts:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:46
+@@ -43,7 +43,7 @@
+         &#34;MUT_END_COL_OFFSET&#34;: str(mutant.end_col_offset),
+         &#34;MUT_TEXT&#34;: str(mutant.text),
+     }
+-    if &#34;command_line_env&#34; in config.runner_opts:
++    if &#39;command_line_env&#39; not in config.runner_opts:
+         update_env.update(config.runner_opts[&#34;command_line_env&#34;])
+     run_env.update(update_env)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:46
+@@ -43,7 +43,7 @@
+         &#34;MUT_END_COL_OFFSET&#34;: str(mutant.end_col_offset),
+         &#34;MUT_TEXT&#34;: str(mutant.text),
+     }
+-    if &#34;command_line_env&#34; in config.runner_opts:
++    if &#39;XXcommand_line_envXX&#39; in config.runner_opts:
+         update_env.update(config.runner_opts[&#34;command_line_env&#34;])
+     run_env.update(update_env)
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">47</td>
+        <td class="line_text">
+            <pre>        update_env.update(config.runner_opts[&#34;command_line_env&#34;])</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:47
+@@ -44,7 +44,7 @@
+         &#34;MUT_TEXT&#34;: str(mutant.text),
+     }
+     if &#34;command_line_env&#34; in config.runner_opts:
+-        update_env.update(config.runner_opts[&#34;command_line_env&#34;])
++        update_env.update(config.runner_opts[&#39;XXcommand_line_envXX&#39;])
+     run_env.update(update_env)
+ 
+     logger.debug(&#34;update_env=%s&#34;, pprint_str(update_env))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:47
+@@ -44,7 +44,7 @@
+         &#34;MUT_TEXT&#34;: str(mutant.text),
+     }
+     if &#34;command_line_env&#34; in config.runner_opts:
+-        update_env.update(config.runner_opts[&#34;command_line_env&#34;])
++        None
+     run_env.update(update_env)
+ 
+     logger.debug(&#34;update_env=%s&#34;, pprint_str(update_env))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:47
+@@ -44,7 +44,7 @@
+         &#34;MUT_TEXT&#34;: str(mutant.text),
+     }
+     if &#34;command_line_env&#34; in config.runner_opts:
+-        update_env.update(config.runner_opts[&#34;command_line_env&#34;])
++        update_env.update(None)
+     run_env.update(update_env)
+ 
+     logger.debug(&#34;update_env=%s&#34;, pprint_str(update_env))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">48</td>
+        <td class="line_text">
+            <pre>    run_env.update(update_env)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:48
+@@ -45,7 +45,7 @@
+     }
+     if &#34;command_line_env&#34; in config.runner_opts:
+         update_env.update(config.runner_opts[&#34;command_line_env&#34;])
+-    run_env.update(update_env)
++    None
+ 
+     logger.debug(&#34;update_env=%s&#34;, pprint_str(update_env))
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">49</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">50</td>
+        <td class="line_text">
+            <pre>    logger.debug(&#34;update_env=%s&#34;, pprint_str(update_env))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:50
+@@ -47,7 +47,7 @@
+         update_env.update(config.runner_opts[&#34;command_line_env&#34;])
+     run_env.update(update_env)
+ 
+-    logger.debug(&#34;update_env=%s&#34;, pprint_str(update_env))
++    logger.debug(&#39;XXupdate_env=%sXX&#39;, pprint_str(update_env))
+ 
+     cmd: str = config.runner_opts.get(&#34;command_line&#34;, &#34;pytest -x --assert=plain -o pythonpath=&#39;{PYTHONPATH}&#39;&#34;)
+     cmd = cmd.format(PYTHONPATH=python_path)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:50
+@@ -47,7 +47,7 @@
+         update_env.update(config.runner_opts[&#34;command_line_env&#34;])
+     run_env.update(update_env)
+ 
+-    logger.debug(&#34;update_env=%s&#34;, pprint_str(update_env))
++    None
+ 
+     cmd: str = config.runner_opts.get(&#34;command_line&#34;, &#34;pytest -x --assert=plain -o pythonpath=&#39;{PYTHONPATH}&#39;&#34;)
+     cmd = cmd.format(PYTHONPATH=python_path)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">51</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">52</td>
+        <td class="line_text">
+            <pre>    cmd: str = config.runner_opts.get(&#34;command_line&#34;, &#34;pytest -x --assert=plain -o pythonpath=&#39;{PYTHONPATH}&#39;&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:52
+@@ -49,7 +49,7 @@
+ 
+     logger.debug(&#34;update_env=%s&#34;, pprint_str(update_env))
+ 
+-    cmd: str = config.runner_opts.get(&#34;command_line&#34;, &#34;pytest -x --assert=plain -o pythonpath=&#39;{PYTHONPATH}&#39;&#34;)
++    cmd: str = config.runner_opts.get(&#39;XXcommand_lineXX&#39;, &#34;pytest -x --assert=plain -o pythonpath=&#39;{PYTHONPATH}&#39;&#34;)
+     cmd = cmd.format(PYTHONPATH=python_path)
+     logger.debug(&#34;command: %s&#34;, cmd)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:52
+@@ -49,7 +49,7 @@
+ 
+     logger.debug(&#34;update_env=%s&#34;, pprint_str(update_env))
+ 
+-    cmd: str = config.runner_opts.get(&#34;command_line&#34;, &#34;pytest -x --assert=plain -o pythonpath=&#39;{PYTHONPATH}&#39;&#34;)
++    cmd: str = config.runner_opts.get(&#34;command_line&#34;, &#34;XXpytest -x --assert=plain -o pythonpath=&#39;{PYTHONPATH}&#39;XX&#34;)
+     cmd = cmd.format(PYTHONPATH=python_path)
+     logger.debug(&#34;command: %s&#34;, cmd)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:52
+@@ -49,7 +49,7 @@
+ 
+     logger.debug(&#34;update_env=%s&#34;, pprint_str(update_env))
+ 
+-    cmd: str = config.runner_opts.get(&#34;command_line&#34;, &#34;pytest -x --assert=plain -o pythonpath=&#39;{PYTHONPATH}&#39;&#34;)
++    cmd: str = None
+     cmd = cmd.format(PYTHONPATH=python_path)
+     logger.debug(&#34;command: %s&#34;, cmd)
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">53</td>
+        <td class="line_text">
+            <pre>    cmd = cmd.format(PYTHONPATH=python_path)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:53
+@@ -50,7 +50,7 @@
+     logger.debug(&#34;update_env=%s&#34;, pprint_str(update_env))
+ 
+     cmd: str = config.runner_opts.get(&#34;command_line&#34;, &#34;pytest -x --assert=plain -o pythonpath=&#39;{PYTHONPATH}&#39;&#34;)
+-    cmd = cmd.format(PYTHONPATH=python_path)
++    cmd = None
+     logger.debug(&#34;command: %s&#34;, cmd)
+ 
+     try:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">54</td>
+        <td class="line_text">
+            <pre>    logger.debug(&#34;command: %s&#34;, cmd)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:54
+@@ -51,7 +51,7 @@
+ 
+     cmd: str = config.runner_opts.get(&#34;command_line&#34;, &#34;pytest -x --assert=plain -o pythonpath=&#39;{PYTHONPATH}&#39;&#34;)
+     cmd = cmd.format(PYTHONPATH=python_path)
+-    logger.debug(&#34;command: %s&#34;, cmd)
++    logger.debug(&#39;XXcommand: %sXX&#39;, cmd)
+ 
+     try:
+         result = subprocess.run(
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:54
+@@ -51,7 +51,7 @@
+ 
+     cmd: str = config.runner_opts.get(&#34;command_line&#34;, &#34;pytest -x --assert=plain -o pythonpath=&#39;{PYTHONPATH}&#39;&#34;)
+     cmd = cmd.format(PYTHONPATH=python_path)
+-    logger.debug(&#34;command: %s&#34;, cmd)
++    None
+ 
+     try:
+         result = subprocess.run(
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">55</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">56</td>
+        <td class="line_text">
+            <pre>    try:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">57</td>
+        <td class="line_text">
+            <pre>        result = subprocess.run(</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:57
+@@ -54,14 +54,7 @@
+     logger.debug(&#34;command: %s&#34;, cmd)
+ 
+     try:
+-        result = subprocess.run(
+-            shlex.split(cmd),  # noqa: S603
+-            cwd=run_cwd,
+-            env=run_env,
+-            capture_output=True,
+-            check=False,
+-            timeout=timeout,
+-        )
++        result = None
+     except TimeoutExpired as te:
+         return MutantTrialResult(
+             found=False,
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">58</td>
+        <td class="line_text">
+            <pre>            shlex.split(cmd),  # noqa: S603</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">59</td>
+        <td class="line_text">
+            <pre>            cwd=run_cwd,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">60</td>
+        <td class="line_text">
+            <pre>            env=run_env,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">61</td>
+        <td class="line_text">
+            <pre>            capture_output=True,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:61
+@@ -58,7 +58,7 @@
+             shlex.split(cmd),  # noqa: S603
+             cwd=run_cwd,
+             env=run_env,
+-            capture_output=True,
++            capture_output=False,
+             check=False,
+             timeout=timeout,
+         )
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">62</td>
+        <td class="line_text">
+            <pre>            check=False,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:62
+@@ -59,7 +59,7 @@
+             cwd=run_cwd,
+             env=run_env,
+             capture_output=True,
+-            check=False,
++            check=True,
+             timeout=timeout,
+         )
+     except TimeoutExpired as te:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">63</td>
+        <td class="line_text">
+            <pre>            timeout=timeout,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">64</td>
+        <td class="line_text">
+            <pre>        )</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">65</td>
+        <td class="line_text">
+            <pre>    except TimeoutExpired as te:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">66</td>
+        <td class="line_text">
+            <pre>        return MutantTrialResult(</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:66
+@@ -63,11 +63,7 @@
+             timeout=timeout,
+         )
+     except TimeoutExpired as te:
+-        return MutantTrialResult(
+-            found=False,
+-            reason_code=MutantTrialResult.RC_TIMEOUT,
+-            reason_desc=f&#34;TimeoutExpired {te}&#34;,
+-        )
++        return None
+ 
+     if result.returncode == 1:
+         return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:66
+@@ -63,11 +63,7 @@
+             timeout=timeout,
+         )
+     except TimeoutExpired as te:
+-        return MutantTrialResult(
+-            found=False,
+-            reason_code=MutantTrialResult.RC_TIMEOUT,
+-            reason_desc=f&#34;TimeoutExpired {te}&#34;,
+-        )
++        return None
+ 
+     if result.returncode == 1:
+         return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">67</td>
+        <td class="line_text">
+            <pre>            found=False,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:67
+@@ -64,7 +64,7 @@
+         )
+     except TimeoutExpired as te:
+         return MutantTrialResult(
+-            found=False,
++            found=True,
+             reason_code=MutantTrialResult.RC_TIMEOUT,
+             reason_desc=f&#34;TimeoutExpired {te}&#34;,
+         )
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">68</td>
+        <td class="line_text">
+            <pre>            reason_code=MutantTrialResult.RC_TIMEOUT,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">69</td>
+        <td class="line_text">
+            <pre>            reason_desc=f&#34;TimeoutExpired {te}&#34;,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:69
+@@ -66,7 +66,7 @@
+         return MutantTrialResult(
+             found=False,
+             reason_code=MutantTrialResult.RC_TIMEOUT,
+-            reason_desc=f&#34;TimeoutExpired {te}&#34;,
++            reason_desc=f&#34;&#39;XXTimeoutExpired XX&#39;{te}&#34;,
+         )
+ 
+     if result.returncode == 1:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">70</td>
+        <td class="line_text">
+            <pre>        )</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">71</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">72</td>
+        <td class="line_text">
+            <pre>    if result.returncode == 1:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:72
+@@ -69,7 +69,7 @@
+             reason_desc=f&#34;TimeoutExpired {te}&#34;,
+         )
+ 
+-    if result.returncode == 1:
++    if result.returncode != 1:
+         return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
+     if result.returncode == 0:
+         return MutantTrialResult(
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:72
+@@ -69,7 +69,7 @@
+             reason_desc=f&#34;TimeoutExpired {te}&#34;,
+         )
+ 
+-    if result.returncode == 1:
++    if result.returncode == 2:
+         return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
+     if result.returncode == 0:
+         return MutantTrialResult(
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:72
+@@ -69,7 +69,7 @@
+             reason_desc=f&#34;TimeoutExpired {te}&#34;,
+         )
+ 
+-    if result.returncode == 1:
++    if result.returncode == 0:
+         return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
+     if result.returncode == 0:
+         return MutantTrialResult(
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">73</td>
+        <td class="line_text">
+            <pre>        return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:73
+@@ -70,7 +70,7 @@
+         )
+ 
+     if result.returncode == 1:
+-        return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
++        return MutantTrialResult(found=False, reason_code=MutantTrialResult.RC_FOUND)
+     if result.returncode == 0:
+         return MutantTrialResult(
+             found=False,
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:73
+@@ -70,7 +70,7 @@
+         )
+ 
+     if result.returncode == 1:
+-        return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
++        return None
+     if result.returncode == 0:
+         return MutantTrialResult(
+             found=False,
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:73
+@@ -70,7 +70,7 @@
+         )
+ 
+     if result.returncode == 1:
+-        return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
++        return None
+     if result.returncode == 0:
+         return MutantTrialResult(
+             found=False,
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">74</td>
+        <td class="line_text">
+            <pre>    if result.returncode == 0:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:74
+@@ -71,7 +71,7 @@
+ 
+     if result.returncode == 1:
+         return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
+-    if result.returncode == 0:
++    if result.returncode != 0:
+         return MutantTrialResult(
+             found=False,
+             reason_code=MutantTrialResult.RC_NOT_FOUND,
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:74
+@@ -71,7 +71,7 @@
+ 
+     if result.returncode == 1:
+         return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
+-    if result.returncode == 0:
++    if result.returncode == 1:
+         return MutantTrialResult(
+             found=False,
+             reason_code=MutantTrialResult.RC_NOT_FOUND,
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:74
+@@ -71,7 +71,7 @@
+ 
+     if result.returncode == 1:
+         return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
+-    if result.returncode == 0:
++    if result.returncode == -1:
+         return MutantTrialResult(
+             found=False,
+             reason_code=MutantTrialResult.RC_NOT_FOUND,
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">75</td>
+        <td class="line_text">
+            <pre>        return MutantTrialResult(</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:75
+@@ -72,10 +72,7 @@
+     if result.returncode == 1:
+         return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
+     if result.returncode == 0:
+-        return MutantTrialResult(
+-            found=False,
+-            reason_code=MutantTrialResult.RC_NOT_FOUND,
+-        )
++        return None
+     return MutantTrialResult(
+         found=True,
+         reason_code=MutantTrialResult.RC_OTHER,
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:75
+@@ -72,10 +72,7 @@
+     if result.returncode == 1:
+         return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
+     if result.returncode == 0:
+-        return MutantTrialResult(
+-            found=False,
+-            reason_code=MutantTrialResult.RC_NOT_FOUND,
+-        )
++        return None
+     return MutantTrialResult(
+         found=True,
+         reason_code=MutantTrialResult.RC_OTHER,
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">76</td>
+        <td class="line_text">
+            <pre>            found=False,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:76
+@@ -73,7 +73,7 @@
+         return MutantTrialResult(found=True, reason_code=MutantTrialResult.RC_FOUND)
+     if result.returncode == 0:
+         return MutantTrialResult(
+-            found=False,
++            found=True,
+             reason_code=MutantTrialResult.RC_NOT_FOUND,
+         )
+     return MutantTrialResult(
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">77</td>
+        <td class="line_text">
+            <pre>            reason_code=MutantTrialResult.RC_NOT_FOUND,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">78</td>
+        <td class="line_text">
+            <pre>        )</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">79</td>
+        <td class="line_text">
+            <pre>    return MutantTrialResult(</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:79
+@@ -76,10 +76,4 @@
+             found=False,
+             reason_code=MutantTrialResult.RC_NOT_FOUND,
+         )
+-    return MutantTrialResult(
+-        found=True,
+-        reason_code=MutantTrialResult.RC_OTHER,
+-        reason_desc=result.stdout.decode(&#34;utf-8&#34;, errors=&#34;replace&#34;)  # nomut: String
+-        + &#34;\n&#34;
+-        + result.stderr.decode(&#34;utf-8&#34;, errors=&#34;replace&#34;),  # nomut: String
+-    )
++    return None
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:79
+@@ -76,10 +76,4 @@
+             found=False,
+             reason_code=MutantTrialResult.RC_NOT_FOUND,
+         )
+-    return MutantTrialResult(
+-        found=True,
+-        reason_code=MutantTrialResult.RC_OTHER,
+-        reason_desc=result.stdout.decode(&#34;utf-8&#34;, errors=&#34;replace&#34;)  # nomut: String
+-        + &#34;\n&#34;
+-        + result.stderr.decode(&#34;utf-8&#34;, errors=&#34;replace&#34;),  # nomut: String
+-    )
++    return None
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">80</td>
+        <td class="line_text">
+            <pre>        found=True,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:80
+@@ -77,7 +77,7 @@
+             reason_code=MutantTrialResult.RC_NOT_FOUND,
+         )
+     return MutantTrialResult(
+-        found=True,
++        found=False,
+         reason_code=MutantTrialResult.RC_OTHER,
+         reason_desc=result.stdout.decode(&#34;utf-8&#34;, errors=&#34;replace&#34;)  # nomut: String
+         + &#34;\n&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">81</td>
+        <td class="line_text">
+            <pre>        reason_code=MutantTrialResult.RC_OTHER,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">82</td>
+        <td class="line_text">
+            <pre>        reason_desc=result.stdout.decode(&#34;utf-8&#34;, errors=&#34;replace&#34;)  # nomut: String</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:82
+@@ -79,7 +79,5 @@
+     return MutantTrialResult(
+         found=True,
+         reason_code=MutantTrialResult.RC_OTHER,
+-        reason_desc=result.stdout.decode(&#34;utf-8&#34;, errors=&#34;replace&#34;)  # nomut: String
+-        + &#34;\n&#34;
+-        + result.stderr.decode(&#34;utf-8&#34;, errors=&#34;replace&#34;),  # nomut: String
++        reason_desc=result.stdout.decode(&#39;utf-8&#39;, errors=&#39;replace&#39;) + &#39;\n&#39; - result.stderr.decode(&#39;utf-8&#39;, errors=&#39;replace&#39;),  # nomut: String
+     )
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:82
+@@ -79,7 +79,5 @@
+     return MutantTrialResult(
+         found=True,
+         reason_code=MutantTrialResult.RC_OTHER,
+-        reason_desc=result.stdout.decode(&#34;utf-8&#34;, errors=&#34;replace&#34;)  # nomut: String
+-        + &#34;\n&#34;
+-        + result.stderr.decode(&#34;utf-8&#34;, errors=&#34;replace&#34;),  # nomut: String
++        reason_desc=(result.stdout.decode(&#39;utf-8&#39;, errors=&#39;replace&#39;) + &#39;\n&#39;) * result.stderr.decode(&#39;utf-8&#39;, errors=&#39;replace&#39;),  # nomut: String
+     )
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">83</td>
+        <td class="line_text">
+            <pre>        + &#34;\n&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\runners\command_line.py
++++ [Mutant] src\poodle\runners\command_line.py:83
+@@ -80,6 +80,6 @@
+         found=True,
+         reason_code=MutantTrialResult.RC_OTHER,
+         reason_desc=result.stdout.decode(&#34;utf-8&#34;, errors=&#34;replace&#34;)  # nomut: String
+-        + &#34;\n&#34;
++        + &#39;XX\nXX&#39;
+         + result.stderr.decode(&#34;utf-8&#34;, errors=&#34;replace&#34;),  # nomut: String
+     )
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">84</td>
+        <td class="line_text">
+            <pre>        + result.stderr.decode(&#34;utf-8&#34;, errors=&#34;replace&#34;),  # nomut: String</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">85</td>
+        <td class="line_text">
+            <pre>    )</pre>
+        </td>
+    </tr>
+    
+    
+</table>
+
+    </main>
+    <footer>
+        
+        <p>Generated by <a href="http://poodle.rtfd.io" class="nav">Poodle</a> version 1.2.0 at 2023-12-29 20:42:38-0600</p>
+        
+    </footer>
+    
+
+    <script type="text/javascript" src="html-report.js"></script>
+    
+<script>addShowHideEventListeners();</script>
+
+</body>
+
+</html>

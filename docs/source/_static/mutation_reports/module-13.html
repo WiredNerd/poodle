@@ -1,0 +1,6468 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Module Source: src\poodle\data_types\data.py</title>
+    <link rel="stylesheet" type="text/css" href="html-report.css" />
+    <link rel="icon" href="poodle.ico" type="image/x-icon" />
+    
+</head>
+
+<body>
+    <header>
+        
+
+        <h1>Module Source: src\poodle\data_types\data.py</h1>
+        
+        <span class="subtitle"><span class="label">Project:</span> poodle
+             version 1.2.0 </span>
+        
+        
+&nbsp;&nbsp;<a href="index.html" class="subtitle">&lt;Index</a>
+<div class="subtitle">
+<span class="label">Mutants:</span> 173,
+<span class="label">Found:</span> 166,
+<span class="label">Not Found:</span> 7,
+<span class="label">Timeout:</span> 0,
+<span class="label">Error:</span> 0
+</div>
+<div class="subtitle">
+<span class="label">Module Score:</span> 95.95%
+</div>
+
+    </header>
+    <main>
+        
+<table class="source">
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">1</td>
+        <td class="line_text">
+            <pre>&#34;&#34;&#34;Shared Data Classes used by Poodle.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">2</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">3</td>
+        <td class="line_text">
+            <pre>from __future__ import annotations</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">4</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">5</td>
+        <td class="line_text">
+            <pre>from dataclasses import asdict, dataclass</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">6</td>
+        <td class="line_text">
+            <pre>from pathlib import Path</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">7</td>
+        <td class="line_text">
+            <pre>from typing import TYPE_CHECKING, Any</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">8</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">9</td>
+        <td class="line_text">
+            <pre>if TYPE_CHECKING:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">10</td>
+        <td class="line_text">
+            <pre>    from typing_extensions import Self</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">11</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">12</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">13</td>
+        <td class="line_text">
+            <pre>@dataclass</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">14</td>
+        <td class="line_text">
+            <pre>class PoodleSerialize:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">15</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Base Class for Data Classes that need to be serialized to JSON.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">16</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">17</td>
+        <td class="line_text">
+            <pre>    @staticmethod</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Decorator</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:17
+@@ -14,10 +14,7 @@
+ class PoodleSerialize:
+     &#34;&#34;&#34;Base Class for Data Classes that need to be serialized to JSON.&#34;&#34;&#34;
+ 
+-    @staticmethod
+-    def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+-        &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        return d
++    @def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+    &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+    return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">18</td>
+        <td class="line_text">
+            <pre>    def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">19</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">20</td>
+        <td class="line_text">
+            <pre>        return d</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:20
+@@ -17,7 +17,7 @@
+     @staticmethod
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        return d
++        return None
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">21</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">22</td>
+        <td class="line_text">
+            <pre>    def to_dict(self) -&gt; dict[str, Any]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">23</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">24</td>
+        <td class="line_text">
+            <pre>        return asdict(self)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:24
+@@ -21,7 +21,7 @@
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+-        return asdict(self)
++        return None
+ 
+ 
+ @dataclass
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:24
+@@ -21,7 +21,7 @@
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+-        return asdict(self)
++        return None
+ 
+ 
+ @dataclass
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">25</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">26</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">27</td>
+        <td class="line_text">
+            <pre>@dataclass</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">28</td>
+        <td class="line_text">
+            <pre>class PoodleConfig:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">29</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Configuration options resolved from command line and config files.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">30</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">31</td>
+        <td class="line_text">
+            <pre>    project_name: str | None</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">32</td>
+        <td class="line_text">
+            <pre>    project_version: str | None</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">33</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">34</td>
+        <td class="line_text">
+            <pre>    config_file: Path | None</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">35</td>
+        <td class="line_text">
+            <pre>    source_folders: list[Path]</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">36</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">37</td>
+        <td class="line_text">
+            <pre>    only_files: list[str]</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">38</td>
+        <td class="line_text">
+            <pre>    file_flags: int | None</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">39</td>
+        <td class="line_text">
+            <pre>    file_filters: list[str]</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">40</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">41</td>
+        <td class="line_text">
+            <pre>    file_copy_flags: int | None</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">42</td>
+        <td class="line_text">
+            <pre>    file_copy_filters: list[str]</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">43</td>
+        <td class="line_text">
+            <pre>    work_folder: Path</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">44</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">45</td>
+        <td class="line_text">
+            <pre>    max_workers: int | None</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">46</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">47</td>
+        <td class="line_text">
+            <pre>    log_format: str</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">48</td>
+        <td class="line_text">
+            <pre>    log_level: int | str</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">49</td>
+        <td class="line_text">
+            <pre>    echo_enabled: bool | None</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">50</td>
+        <td class="line_text">
+            <pre>    echo_no_color: bool | None</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">51</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">52</td>
+        <td class="line_text">
+            <pre>    mutator_opts: dict</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">53</td>
+        <td class="line_text">
+            <pre>    skip_mutators: list[str]</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">54</td>
+        <td class="line_text">
+            <pre>    add_mutators: list[Any]</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">55</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">56</td>
+        <td class="line_text">
+            <pre>    min_timeout: int</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">57</td>
+        <td class="line_text">
+            <pre>    timeout_multiplier: int</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">58</td>
+        <td class="line_text">
+            <pre>    runner: str</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">59</td>
+        <td class="line_text">
+            <pre>    runner_opts: dict</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">60</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">61</td>
+        <td class="line_text">
+            <pre>    reporters: list[str]</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">62</td>
+        <td class="line_text">
+            <pre>    reporter_opts: dict</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">63</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">64</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">65</td>
+        <td class="line_text">
+            <pre>@dataclass</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">66</td>
+        <td class="line_text">
+            <pre>class FileMutation:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">67</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Mutation instructions for the current file.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">68</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">69</td>
+        <td class="line_text">
+            <pre>    mutator_name: str</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">70</td>
+        <td class="line_text">
+            <pre>    lineno: int</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">71</td>
+        <td class="line_text">
+            <pre>    col_offset: int</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">72</td>
+        <td class="line_text">
+            <pre>    end_lineno: int</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">73</td>
+        <td class="line_text">
+            <pre>    end_col_offset: int</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">74</td>
+        <td class="line_text">
+            <pre>    text: str</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">75</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">76</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">77</td>
+        <td class="line_text">
+            <pre>@dataclass</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">78</td>
+        <td class="line_text">
+            <pre>class Mutant(FileMutation, PoodleSerialize):</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">79</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Mutation instructions for a specific file and folder.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">80</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">81</td>
+        <td class="line_text">
+            <pre>    source_folder: Path</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">82</td>
+        <td class="line_text">
+            <pre>    source_file: Path | None</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  not_found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">83</td>
+        <td class="line_text">
+            <pre>    unified_diff: str | None = None</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  not_found ">
+    <p><span class="label">Status:</span> Mutant Not Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:83
+@@ -80,7 +80,7 @@
+ 
+     source_folder: Path
+     source_file: Path | None
+-    unified_diff: str | None = None
++    unified_diff: str | None = &#39; &#39;
+ 
+     @staticmethod
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">84</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">85</td>
+        <td class="line_text">
+            <pre>    @staticmethod</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Decorator</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:85
+@@ -82,14 +82,7 @@
+     source_file: Path | None
+     unified_diff: str | None = None
+ 
+-    @staticmethod
+-    def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+-        &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        if &#34;source_folder&#34; in d:
+-            d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
+-        if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
+-            d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
+-        return d
++    @def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+    &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+    if &#39;source_folder&#39; in d:
+        d[&#39;source_folder&#39;] = Path(d[&#39;source_folder&#39;])
+    if &#39;source_file&#39; in d and d[&#39;source_folder&#39;] is not None:
+        d[&#39;source_file&#39;] = Path(d[&#39;source_file&#39;])
+    return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">86</td>
+        <td class="line_text">
+            <pre>    def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">87</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">88</td>
+        <td class="line_text">
+            <pre>        if &#34;source_folder&#34; in d:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:88
+@@ -85,7 +85,7 @@
+     @staticmethod
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        if &#34;source_folder&#34; in d:
++        if &#39;source_folder&#39; not in d:
+             d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
+         if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
+             d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:88
+@@ -85,7 +85,7 @@
+     @staticmethod
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        if &#34;source_folder&#34; in d:
++        if &#39;XXsource_folderXX&#39; in d:
+             d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
+         if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
+             d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">89</td>
+        <td class="line_text">
+            <pre>            d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:89
+@@ -86,7 +86,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;source_folder&#34; in d:
+-            d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
++            d[&#39;XXsource_folderXX&#39;] = Path(d[&#34;source_folder&#34;])
+         if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
+             d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:89
+@@ -86,7 +86,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;source_folder&#34; in d:
+-            d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
++            d[&#34;source_folder&#34;] = Path(d[&#39;XXsource_folderXX&#39;])
+         if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
+             d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:89
+@@ -86,7 +86,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;source_folder&#34; in d:
+-            d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
++            d[&#34;source_folder&#34;] = None
+         if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
+             d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:89
+@@ -86,7 +86,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;source_folder&#34; in d:
+-            d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
++            None = Path(d[&#34;source_folder&#34;])
+         if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
+             d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:89
+@@ -86,7 +86,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;source_folder&#34; in d:
+-            d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
++            d[&#34;source_folder&#34;] = Path(None)
+         if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
+             d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
+         return d
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  partial_found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">90</td>
+        <td class="line_text">
+            <pre>        if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  not_found ">
+    <p><span class="label">Status:</span> Mutant Not Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:90
+@@ -87,7 +87,7 @@
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;source_folder&#34; in d:
+             d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
+-        if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
++        if &#39;source_file&#39; in d or d[&#39;source_folder&#39;] is not None:
+             d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  not_found ">
+    <p><span class="label">Status:</span> Mutant Not Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:90
+@@ -87,7 +87,7 @@
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;source_folder&#34; in d:
+             d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
+-        if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
++        if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not &#39; &#39;:
+             d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:90
+@@ -87,7 +87,7 @@
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;source_folder&#34; in d:
+             d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
+-        if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
++        if &#39;XXsource_fileXX&#39; in d and d[&#34;source_folder&#34;] is not None:
+             d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:90
+@@ -87,7 +87,7 @@
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;source_folder&#34; in d:
+             d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
+-        if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
++        if &#34;source_file&#34; in d and d[&#39;XXsource_folderXX&#39;] is not None:
+             d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:90
+@@ -87,7 +87,7 @@
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;source_folder&#34; in d:
+             d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
+-        if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
++        if &#34;source_file&#34; in d and None is not None:
+             d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">91</td>
+        <td class="line_text">
+            <pre>            d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:91
+@@ -88,7 +88,7 @@
+         if &#34;source_folder&#34; in d:
+             d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
+         if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
+-            d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
++            d[&#39;XXsource_fileXX&#39;] = Path(d[&#34;source_file&#34;])
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:91
+@@ -88,7 +88,7 @@
+         if &#34;source_folder&#34; in d:
+             d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
+         if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
+-            d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
++            d[&#34;source_file&#34;] = Path(d[&#39;XXsource_fileXX&#39;])
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:91
+@@ -88,7 +88,7 @@
+         if &#34;source_folder&#34; in d:
+             d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
+         if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
+-            d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
++            d[&#34;source_file&#34;] = None
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:91
+@@ -88,7 +88,7 @@
+         if &#34;source_folder&#34; in d:
+             d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
+         if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
+-            d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
++            None = Path(d[&#34;source_file&#34;])
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:91
+@@ -88,7 +88,7 @@
+         if &#34;source_folder&#34; in d:
+             d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
+         if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
+-            d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
++            d[&#34;source_file&#34;] = Path(None)
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">92</td>
+        <td class="line_text">
+            <pre>        return d</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:92
+@@ -89,7 +89,7 @@
+             d[&#34;source_folder&#34;] = Path(d[&#34;source_folder&#34;])
+         if &#34;source_file&#34; in d and d[&#34;source_folder&#34;] is not None:
+             d[&#34;source_file&#34;] = Path(d[&#34;source_file&#34;])
+-        return d
++        return None
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">93</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">94</td>
+        <td class="line_text">
+            <pre>    def to_dict(self) -&gt; dict[str, Any]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">95</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">96</td>
+        <td class="line_text">
+            <pre>        d = asdict(self)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:96
+@@ -93,7 +93,7 @@
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+-        d = asdict(self)
++        d = None
+         d[&#34;source_folder&#34;] = str(self.source_folder)
+         if isinstance(self.source_file, Path):
+             d[&#34;source_file&#34;] = str(self.source_file)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">97</td>
+        <td class="line_text">
+            <pre>        d[&#34;source_folder&#34;] = str(self.source_folder)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:97
+@@ -94,7 +94,7 @@
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+-        d[&#34;source_folder&#34;] = str(self.source_folder)
++        d[&#39;XXsource_folderXX&#39;] = str(self.source_folder)
+         if isinstance(self.source_file, Path):
+             d[&#34;source_file&#34;] = str(self.source_file)
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:97
+@@ -94,7 +94,7 @@
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+-        d[&#34;source_folder&#34;] = str(self.source_folder)
++        d[&#34;source_folder&#34;] = None
+         if isinstance(self.source_file, Path):
+             d[&#34;source_file&#34;] = str(self.source_file)
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:97
+@@ -94,7 +94,7 @@
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+-        d[&#34;source_folder&#34;] = str(self.source_folder)
++        None = str(self.source_folder)
+         if isinstance(self.source_file, Path):
+             d[&#34;source_file&#34;] = str(self.source_file)
+         return d
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">98</td>
+        <td class="line_text">
+            <pre>        if isinstance(self.source_file, Path):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:98
+@@ -95,7 +95,7 @@
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+         d[&#34;source_folder&#34;] = str(self.source_folder)
+-        if isinstance(self.source_file, Path):
++        if None:
+             d[&#34;source_file&#34;] = str(self.source_file)
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">99</td>
+        <td class="line_text">
+            <pre>            d[&#34;source_file&#34;] = str(self.source_file)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:99
+@@ -96,7 +96,7 @@
+         d = asdict(self)
+         d[&#34;source_folder&#34;] = str(self.source_folder)
+         if isinstance(self.source_file, Path):
+-            d[&#34;source_file&#34;] = str(self.source_file)
++            d[&#39;XXsource_fileXX&#39;] = str(self.source_file)
+         return d
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:99
+@@ -96,7 +96,7 @@
+         d = asdict(self)
+         d[&#34;source_folder&#34;] = str(self.source_folder)
+         if isinstance(self.source_file, Path):
+-            d[&#34;source_file&#34;] = str(self.source_file)
++            d[&#34;source_file&#34;] = None
+         return d
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:99
+@@ -96,7 +96,7 @@
+         d = asdict(self)
+         d[&#34;source_folder&#34;] = str(self.source_folder)
+         if isinstance(self.source_file, Path):
+-            d[&#34;source_file&#34;] = str(self.source_file)
++            None = str(self.source_file)
+         return d
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">100</td>
+        <td class="line_text">
+            <pre>        return d</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:100
+@@ -97,7 +97,7 @@
+         d[&#34;source_folder&#34;] = str(self.source_folder)
+         if isinstance(self.source_file, Path):
+             d[&#34;source_file&#34;] = str(self.source_file)
+-        return d
++        return None
+ 
+ 
+ @dataclass
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">101</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">102</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">103</td>
+        <td class="line_text">
+            <pre>@dataclass</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">104</td>
+        <td class="line_text">
+            <pre>class MutantTrialResult(PoodleSerialize):</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">105</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Mutation Trial Result for a Mutant.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">106</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">107</td>
+        <td class="line_text">
+            <pre>    found: bool</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">108</td>
+        <td class="line_text">
+            <pre>    reason_code: str</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">109</td>
+        <td class="line_text">
+            <pre>    reason_desc: str | None = None</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:109
+@@ -106,7 +106,7 @@
+ 
+     found: bool
+     reason_code: str
+-    reason_desc: str | None = None
++    reason_desc: str | None = &#39; &#39;
+ 
+     RC_FOUND = &#34;Mutant Found&#34;
+     RC_NOT_FOUND = &#34;Mutant Not Found&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">110</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">111</td>
+        <td class="line_text">
+            <pre>    RC_FOUND = &#34;Mutant Found&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:111
+@@ -108,7 +108,7 @@
+     reason_code: str
+     reason_desc: str | None = None
+ 
+-    RC_FOUND = &#34;Mutant Found&#34;
++    RC_FOUND = &#39;XXMutant FoundXX&#39;
+     RC_NOT_FOUND = &#34;Mutant Not Found&#34;
+     RC_TIMEOUT = &#34;Trial Exceeded Timeout&#34;
+     RC_INCOMPLETE = &#34;Testing Incomplete&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">112</td>
+        <td class="line_text">
+            <pre>    RC_NOT_FOUND = &#34;Mutant Not Found&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:112
+@@ -109,7 +109,7 @@
+     reason_desc: str | None = None
+ 
+     RC_FOUND = &#34;Mutant Found&#34;
+-    RC_NOT_FOUND = &#34;Mutant Not Found&#34;
++    RC_NOT_FOUND = &#39;XXMutant Not FoundXX&#39;
+     RC_TIMEOUT = &#34;Trial Exceeded Timeout&#34;
+     RC_INCOMPLETE = &#34;Testing Incomplete&#34;
+     RC_OTHER = &#34;Other, See Description&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">113</td>
+        <td class="line_text">
+            <pre>    RC_TIMEOUT = &#34;Trial Exceeded Timeout&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:113
+@@ -110,7 +110,7 @@
+ 
+     RC_FOUND = &#34;Mutant Found&#34;
+     RC_NOT_FOUND = &#34;Mutant Not Found&#34;
+-    RC_TIMEOUT = &#34;Trial Exceeded Timeout&#34;
++    RC_TIMEOUT = &#39;XXTrial Exceeded TimeoutXX&#39;
+     RC_INCOMPLETE = &#34;Testing Incomplete&#34;
+     RC_OTHER = &#34;Other, See Description&#34;
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">114</td>
+        <td class="line_text">
+            <pre>    RC_INCOMPLETE = &#34;Testing Incomplete&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:114
+@@ -111,7 +111,7 @@
+     RC_FOUND = &#34;Mutant Found&#34;
+     RC_NOT_FOUND = &#34;Mutant Not Found&#34;
+     RC_TIMEOUT = &#34;Trial Exceeded Timeout&#34;
+-    RC_INCOMPLETE = &#34;Testing Incomplete&#34;
++    RC_INCOMPLETE = &#39;XXTesting IncompleteXX&#39;
+     RC_OTHER = &#34;Other, See Description&#34;
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">115</td>
+        <td class="line_text">
+            <pre>    RC_OTHER = &#34;Other, See Description&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:115
+@@ -112,7 +112,7 @@
+     RC_NOT_FOUND = &#34;Mutant Not Found&#34;
+     RC_TIMEOUT = &#34;Trial Exceeded Timeout&#34;
+     RC_INCOMPLETE = &#34;Testing Incomplete&#34;
+-    RC_OTHER = &#34;Other, See Description&#34;
++    RC_OTHER = &#39;XXOther, See DescriptionXX&#39;
+ 
+ 
+ @dataclass
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">116</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">117</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">118</td>
+        <td class="line_text">
+            <pre>@dataclass</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">119</td>
+        <td class="line_text">
+            <pre>class MutantTrial(PoodleSerialize):</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">120</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Trial Result for a Mutant.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">121</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">122</td>
+        <td class="line_text">
+            <pre>    mutant: Mutant</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">123</td>
+        <td class="line_text">
+            <pre>    result: MutantTrialResult</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">124</td>
+        <td class="line_text">
+            <pre>    duration: float</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">125</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">126</td>
+        <td class="line_text">
+            <pre>    @staticmethod</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Decorator</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:126
+@@ -123,14 +123,7 @@
+     result: MutantTrialResult
+     duration: float
+ 
+-    @staticmethod
+-    def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+-        &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        if &#34;mutant&#34; in d:
+-            d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
+-        if &#34;result&#34; in d:
+-            d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
+-        return d
++    @def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+    &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+    if &#39;mutant&#39; in d:
+        d[&#39;mutant&#39;] = Mutant(**Mutant.from_dict(d[&#39;mutant&#39;]))
+    if &#39;result&#39; in d:
+        d[&#39;result&#39;] = MutantTrialResult(**d[&#39;result&#39;])
+    return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">127</td>
+        <td class="line_text">
+            <pre>    def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">128</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">129</td>
+        <td class="line_text">
+            <pre>        if &#34;mutant&#34; in d:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:129
+@@ -126,7 +126,7 @@
+     @staticmethod
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        if &#34;mutant&#34; in d:
++        if &#39;mutant&#39; not in d:
+             d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
+         if &#34;result&#34; in d:
+             d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:129
+@@ -126,7 +126,7 @@
+     @staticmethod
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        if &#34;mutant&#34; in d:
++        if &#39;XXmutantXX&#39; in d:
+             d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
+         if &#34;result&#34; in d:
+             d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">130</td>
+        <td class="line_text">
+            <pre>            d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:130
+@@ -127,7 +127,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant&#34; in d:
+-            d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
++            d[&#39;XXmutantXX&#39;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
+         if &#34;result&#34; in d:
+             d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:130
+@@ -127,7 +127,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant&#34; in d:
+-            d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
++            d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#39;XXmutantXX&#39;]))
+         if &#34;result&#34; in d:
+             d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:130
+@@ -127,7 +127,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant&#34; in d:
+-            d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
++            d[&#34;mutant&#34;] = None
+         if &#34;result&#34; in d:
+             d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:130
+@@ -127,7 +127,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant&#34; in d:
+-            d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
++            None = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
+         if &#34;result&#34; in d:
+             d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:130
+@@ -127,7 +127,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant&#34; in d:
+-            d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
++            d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(None))
+         if &#34;result&#34; in d:
+             d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
+         return d
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">131</td>
+        <td class="line_text">
+            <pre>        if &#34;result&#34; in d:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:131
+@@ -128,7 +128,7 @@
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant&#34; in d:
+             d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
+-        if &#34;result&#34; in d:
++        if &#39;result&#39; not in d:
+             d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:131
+@@ -128,7 +128,7 @@
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant&#34; in d:
+             d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
+-        if &#34;result&#34; in d:
++        if &#39;XXresultXX&#39; in d:
+             d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">132</td>
+        <td class="line_text">
+            <pre>            d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:132
+@@ -129,7 +129,7 @@
+         if &#34;mutant&#34; in d:
+             d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
+         if &#34;result&#34; in d:
+-            d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
++            d[&#39;XXresultXX&#39;] = MutantTrialResult(**d[&#34;result&#34;])
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:132
+@@ -129,7 +129,7 @@
+         if &#34;mutant&#34; in d:
+             d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
+         if &#34;result&#34; in d:
+-            d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
++            d[&#34;result&#34;] = MutantTrialResult(**d[&#39;XXresultXX&#39;])
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:132
+@@ -129,7 +129,7 @@
+         if &#34;mutant&#34; in d:
+             d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
+         if &#34;result&#34; in d:
+-            d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
++            d[&#34;result&#34;] = None
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:132
+@@ -129,7 +129,7 @@
+         if &#34;mutant&#34; in d:
+             d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
+         if &#34;result&#34; in d:
+-            d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
++            None = MutantTrialResult(**d[&#34;result&#34;])
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:132
+@@ -129,7 +129,7 @@
+         if &#34;mutant&#34; in d:
+             d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
+         if &#34;result&#34; in d:
+-            d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
++            d[&#34;result&#34;] = MutantTrialResult(**None)
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">133</td>
+        <td class="line_text">
+            <pre>        return d</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:133
+@@ -130,7 +130,7 @@
+             d[&#34;mutant&#34;] = Mutant(**Mutant.from_dict(d[&#34;mutant&#34;]))
+         if &#34;result&#34; in d:
+             d[&#34;result&#34;] = MutantTrialResult(**d[&#34;result&#34;])
+-        return d
++        return None
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">134</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">135</td>
+        <td class="line_text">
+            <pre>    def to_dict(self) -&gt; dict[str, Any]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">136</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">137</td>
+        <td class="line_text">
+            <pre>        d = asdict(self)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:137
+@@ -134,7 +134,7 @@
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+-        d = asdict(self)
++        d = None
+         d[&#34;mutant&#34;] = self.mutant.to_dict()
+         d[&#34;result&#34;] = self.result.to_dict()
+         return d
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">138</td>
+        <td class="line_text">
+            <pre>        d[&#34;mutant&#34;] = self.mutant.to_dict()</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:138
+@@ -135,7 +135,7 @@
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+-        d[&#34;mutant&#34;] = self.mutant.to_dict()
++        d[&#39;XXmutantXX&#39;] = self.mutant.to_dict()
+         d[&#34;result&#34;] = self.result.to_dict()
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:138
+@@ -135,7 +135,7 @@
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+-        d[&#34;mutant&#34;] = self.mutant.to_dict()
++        d[&#34;mutant&#34;] = None
+         d[&#34;result&#34;] = self.result.to_dict()
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:138
+@@ -135,7 +135,7 @@
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+-        d[&#34;mutant&#34;] = self.mutant.to_dict()
++        None = self.mutant.to_dict()
+         d[&#34;result&#34;] = self.result.to_dict()
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">139</td>
+        <td class="line_text">
+            <pre>        d[&#34;result&#34;] = self.result.to_dict()</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:139
+@@ -136,7 +136,7 @@
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+         d[&#34;mutant&#34;] = self.mutant.to_dict()
+-        d[&#34;result&#34;] = self.result.to_dict()
++        d[&#39;XXresultXX&#39;] = self.result.to_dict()
+         return d
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:139
+@@ -136,7 +136,7 @@
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+         d[&#34;mutant&#34;] = self.mutant.to_dict()
+-        d[&#34;result&#34;] = self.result.to_dict()
++        d[&#34;result&#34;] = None
+         return d
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:139
+@@ -136,7 +136,7 @@
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+         d[&#34;mutant&#34;] = self.mutant.to_dict()
+-        d[&#34;result&#34;] = self.result.to_dict()
++        None = self.result.to_dict()
+         return d
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">140</td>
+        <td class="line_text">
+            <pre>        return d</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:140
+@@ -137,7 +137,7 @@
+         d = asdict(self)
+         d[&#34;mutant&#34;] = self.mutant.to_dict()
+         d[&#34;result&#34;] = self.result.to_dict()
+-        return d
++        return None
+ 
+ 
+ @dataclass
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">141</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">142</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">143</td>
+        <td class="line_text">
+            <pre>@dataclass</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">144</td>
+        <td class="line_text">
+            <pre>class TestingSummary(PoodleSerialize):</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">145</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Summary Statistics for a Test Run.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">146</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">147</td>
+        <td class="line_text">
+            <pre>    trials: int = 0</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:147
+@@ -144,7 +144,7 @@
+ class TestingSummary(PoodleSerialize):
+     &#34;&#34;&#34;Summary Statistics for a Test Run.&#34;&#34;&#34;
+ 
+-    trials: int = 0
++    trials: int = 1
+     tested: int = 0
+     found: int = 0
+     not_found: int = 0
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:147
+@@ -144,7 +144,7 @@
+ class TestingSummary(PoodleSerialize):
+     &#34;&#34;&#34;Summary Statistics for a Test Run.&#34;&#34;&#34;
+ 
+-    trials: int = 0
++    trials: int = -1
+     tested: int = 0
+     found: int = 0
+     not_found: int = 0
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">148</td>
+        <td class="line_text">
+            <pre>    tested: int = 0</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:148
+@@ -145,7 +145,7 @@
+     &#34;&#34;&#34;Summary Statistics for a Test Run.&#34;&#34;&#34;
+ 
+     trials: int = 0
+-    tested: int = 0
++    tested: int = 1
+     found: int = 0
+     not_found: int = 0
+     timeout: int = 0
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:148
+@@ -145,7 +145,7 @@
+     &#34;&#34;&#34;Summary Statistics for a Test Run.&#34;&#34;&#34;
+ 
+     trials: int = 0
+-    tested: int = 0
++    tested: int = -1
+     found: int = 0
+     not_found: int = 0
+     timeout: int = 0
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">149</td>
+        <td class="line_text">
+            <pre>    found: int = 0</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:149
+@@ -146,7 +146,7 @@
+ 
+     trials: int = 0
+     tested: int = 0
+-    found: int = 0
++    found: int = 1
+     not_found: int = 0
+     timeout: int = 0
+     errors: int = 0
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:149
+@@ -146,7 +146,7 @@
+ 
+     trials: int = 0
+     tested: int = 0
+-    found: int = 0
++    found: int = -1
+     not_found: int = 0
+     timeout: int = 0
+     errors: int = 0
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">150</td>
+        <td class="line_text">
+            <pre>    not_found: int = 0</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:150
+@@ -147,7 +147,7 @@
+     trials: int = 0
+     tested: int = 0
+     found: int = 0
+-    not_found: int = 0
++    not_found: int = 1
+     timeout: int = 0
+     errors: int = 0
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:150
+@@ -147,7 +147,7 @@
+     trials: int = 0
+     tested: int = 0
+     found: int = 0
+-    not_found: int = 0
++    not_found: int = -1
+     timeout: int = 0
+     errors: int = 0
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">151</td>
+        <td class="line_text">
+            <pre>    timeout: int = 0</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:151
+@@ -148,7 +148,7 @@
+     tested: int = 0
+     found: int = 0
+     not_found: int = 0
+-    timeout: int = 0
++    timeout: int = 1
+     errors: int = 0
+ 
+     @property
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:151
+@@ -148,7 +148,7 @@
+     tested: int = 0
+     found: int = 0
+     not_found: int = 0
+-    timeout: int = 0
++    timeout: int = -1
+     errors: int = 0
+ 
+     @property
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">152</td>
+        <td class="line_text">
+            <pre>    errors: int = 0</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:152
+@@ -149,7 +149,7 @@
+     found: int = 0
+     not_found: int = 0
+     timeout: int = 0
+-    errors: int = 0
++    errors: int = 1
+ 
+     @property
+     def success_rate(self) -&gt; float:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:152
+@@ -149,7 +149,7 @@
+     found: int = 0
+     not_found: int = 0
+     timeout: int = 0
+-    errors: int = 0
++    errors: int = -1
+ 
+     @property
+     def success_rate(self) -&gt; float:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">153</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">154</td>
+        <td class="line_text">
+            <pre>    @property</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Decorator</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:154
+@@ -151,14 +151,7 @@
+     timeout: int = 0
+     errors: int = 0
+ 
+-    @property
+-    def success_rate(self) -&gt; float:
+-        &#34;&#34;&#34;Return the success rate of the test run.&#34;&#34;&#34;
+-        if self.trials &gt; 0:
+-            return self.found / self.trials
+-        if self.tested &gt; 0:
+-            return self.found / self.tested
+-        return 0.0
++    @def success_rate(self) -&gt; float:
+    &#34;&#34;&#34;Return the success rate of the test run.&#34;&#34;&#34;
+    if self.trials &gt; 0:
+        return self.found / self.trials
+    if self.tested &gt; 0:
+        return self.found / self.tested
+    return 0.0
+ 
+     @property
+     def coverage_display(self) -&gt; str:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">155</td>
+        <td class="line_text">
+            <pre>    def success_rate(self) -&gt; float:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">156</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Return the success rate of the test run.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  partial_found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">157</td>
+        <td class="line_text">
+            <pre>        if self.trials &gt; 0:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:157
+@@ -154,7 +154,7 @@
+     @property
+     def success_rate(self) -&gt; float:
+         &#34;&#34;&#34;Return the success rate of the test run.&#34;&#34;&#34;
+-        if self.trials &gt; 0:
++        if self.trials &lt;= 0:
+             return self.found / self.trials
+         if self.tested &gt; 0:
+             return self.found / self.tested
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:157
+@@ -154,7 +154,7 @@
+     @property
+     def success_rate(self) -&gt; float:
+         &#34;&#34;&#34;Return the success rate of the test run.&#34;&#34;&#34;
+-        if self.trials &gt; 0:
++        if self.trials &gt;= 0:
+             return self.found / self.trials
+         if self.tested &gt; 0:
+             return self.found / self.tested
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  not_found ">
+    <p><span class="label">Status:</span> Mutant Not Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:157
+@@ -154,7 +154,7 @@
+     @property
+     def success_rate(self) -&gt; float:
+         &#34;&#34;&#34;Return the success rate of the test run.&#34;&#34;&#34;
+-        if self.trials &gt; 0:
++        if self.trials &gt; 1:
+             return self.found / self.trials
+         if self.tested &gt; 0:
+             return self.found / self.tested
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:157
+@@ -154,7 +154,7 @@
+     @property
+     def success_rate(self) -&gt; float:
+         &#34;&#34;&#34;Return the success rate of the test run.&#34;&#34;&#34;
+-        if self.trials &gt; 0:
++        if self.trials &gt; -1:
+             return self.found / self.trials
+         if self.tested &gt; 0:
+             return self.found / self.tested
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">158</td>
+        <td class="line_text">
+            <pre>            return self.found / self.trials</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:158
+@@ -155,7 +155,7 @@
+     def success_rate(self) -&gt; float:
+         &#34;&#34;&#34;Return the success rate of the test run.&#34;&#34;&#34;
+         if self.trials &gt; 0:
+-            return self.found / self.trials
++            return self.found * self.trials
+         if self.tested &gt; 0:
+             return self.found / self.tested
+         return 0.0
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:158
+@@ -155,7 +155,7 @@
+     def success_rate(self) -&gt; float:
+         &#34;&#34;&#34;Return the success rate of the test run.&#34;&#34;&#34;
+         if self.trials &gt; 0:
+-            return self.found / self.trials
++            return self.found - self.trials
+         if self.tested &gt; 0:
+             return self.found / self.tested
+         return 0.0
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:158
+@@ -155,7 +155,7 @@
+     def success_rate(self) -&gt; float:
+         &#34;&#34;&#34;Return the success rate of the test run.&#34;&#34;&#34;
+         if self.trials &gt; 0:
+-            return self.found / self.trials
++            return None
+         if self.tested &gt; 0:
+             return self.found / self.tested
+         return 0.0
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  partial_found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">159</td>
+        <td class="line_text">
+            <pre>        if self.tested &gt; 0:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:159
+@@ -156,7 +156,7 @@
+         &#34;&#34;&#34;Return the success rate of the test run.&#34;&#34;&#34;
+         if self.trials &gt; 0:
+             return self.found / self.trials
+-        if self.tested &gt; 0:
++        if self.tested &lt;= 0:
+             return self.found / self.tested
+         return 0.0
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:159
+@@ -156,7 +156,7 @@
+         &#34;&#34;&#34;Return the success rate of the test run.&#34;&#34;&#34;
+         if self.trials &gt; 0:
+             return self.found / self.trials
+-        if self.tested &gt; 0:
++        if self.tested &gt;= 0:
+             return self.found / self.tested
+         return 0.0
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  not_found ">
+    <p><span class="label">Status:</span> Mutant Not Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:159
+@@ -156,7 +156,7 @@
+         &#34;&#34;&#34;Return the success rate of the test run.&#34;&#34;&#34;
+         if self.trials &gt; 0:
+             return self.found / self.trials
+-        if self.tested &gt; 0:
++        if self.tested &gt; 1:
+             return self.found / self.tested
+         return 0.0
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:159
+@@ -156,7 +156,7 @@
+         &#34;&#34;&#34;Return the success rate of the test run.&#34;&#34;&#34;
+         if self.trials &gt; 0:
+             return self.found / self.trials
+-        if self.tested &gt; 0:
++        if self.tested &gt; -1:
+             return self.found / self.tested
+         return 0.0
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">160</td>
+        <td class="line_text">
+            <pre>            return self.found / self.tested</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:160
+@@ -157,7 +157,7 @@
+         if self.trials &gt; 0:
+             return self.found / self.trials
+         if self.tested &gt; 0:
+-            return self.found / self.tested
++            return self.found * self.tested
+         return 0.0
+ 
+     @property
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:160
+@@ -157,7 +157,7 @@
+         if self.trials &gt; 0:
+             return self.found / self.trials
+         if self.tested &gt; 0:
+-            return self.found / self.tested
++            return self.found - self.tested
+         return 0.0
+ 
+     @property
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:160
+@@ -157,7 +157,7 @@
+         if self.trials &gt; 0:
+             return self.found / self.trials
+         if self.tested &gt; 0:
+-            return self.found / self.tested
++            return None
+         return 0.0
+ 
+     @property
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">161</td>
+        <td class="line_text">
+            <pre>        return 0.0</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:161
+@@ -158,7 +158,7 @@
+             return self.found / self.trials
+         if self.tested &gt; 0:
+             return self.found / self.tested
+-        return 0.0
++        return 1.0
+ 
+     @property
+     def coverage_display(self) -&gt; str:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:161
+@@ -158,7 +158,7 @@
+             return self.found / self.trials
+         if self.tested &gt; 0:
+             return self.found / self.tested
+-        return 0.0
++        return None
+ 
+     @property
+     def coverage_display(self) -&gt; str:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">162</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">163</td>
+        <td class="line_text">
+            <pre>    @property</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Decorator</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:163
+@@ -160,10 +160,7 @@
+             return self.found / self.tested
+         return 0.0
+ 
+-    @property
+-    def coverage_display(self) -&gt; str:
+-        &#34;&#34;&#34;Return a formatted string for the coverage percentage.&#34;&#34;&#34;
+-        return f&#34;{self.success_rate * 100:.2f}%&#34;
++    @def coverage_display(self) -&gt; str:
+    &#34;&#34;&#34;Return a formatted string for the coverage percentage.&#34;&#34;&#34;
+    return f&#39;{self.success_rate * 100:.2f}%&#39;
+ 
+     def __iadd__(self, result: MutantTrialResult) -&gt; Self:
+         &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">164</td>
+        <td class="line_text">
+            <pre>    def coverage_display(self) -&gt; str:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">165</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Return a formatted string for the coverage percentage.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">166</td>
+        <td class="line_text">
+            <pre>        return f&#34;{self.success_rate * 100:.2f}%&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:166
+@@ -163,7 +163,7 @@
+     @property
+     def coverage_display(self) -&gt; str:
+         &#34;&#34;&#34;Return a formatted string for the coverage percentage.&#34;&#34;&#34;
+-        return f&#34;{self.success_rate * 100:.2f}%&#34;
++        return f&#34;{self.success_rate / 100:.2f}%&#34;
+ 
+     def __iadd__(self, result: MutantTrialResult) -&gt; Self:
+         &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:166
+@@ -163,7 +163,7 @@
+     @property
+     def coverage_display(self) -&gt; str:
+         &#34;&#34;&#34;Return a formatted string for the coverage percentage.&#34;&#34;&#34;
+-        return f&#34;{self.success_rate * 100:.2f}%&#34;
++        return f&#34;{self.success_rate + 100:.2f}%&#34;
+ 
+     def __iadd__(self, result: MutantTrialResult) -&gt; Self:
+         &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:166
+@@ -163,7 +163,7 @@
+     @property
+     def coverage_display(self) -&gt; str:
+         &#34;&#34;&#34;Return a formatted string for the coverage percentage.&#34;&#34;&#34;
+-        return f&#34;{self.success_rate * 100:.2f}%&#34;
++        return f&#34;{self.success_rate * 101:.2f}%&#34;
+ 
+     def __iadd__(self, result: MutantTrialResult) -&gt; Self:
+         &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:166
+@@ -163,7 +163,7 @@
+     @property
+     def coverage_display(self) -&gt; str:
+         &#34;&#34;&#34;Return a formatted string for the coverage percentage.&#34;&#34;&#34;
+-        return f&#34;{self.success_rate * 100:.2f}%&#34;
++        return f&#34;{self.success_rate * 99:.2f}%&#34;
+ 
+     def __iadd__(self, result: MutantTrialResult) -&gt; Self:
+         &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:166
+@@ -163,7 +163,7 @@
+     @property
+     def coverage_display(self) -&gt; str:
+         &#34;&#34;&#34;Return a formatted string for the coverage percentage.&#34;&#34;&#34;
+-        return f&#34;{self.success_rate * 100:.2f}%&#34;
++        return f&#34;{self.success_rate * 100:&#39;XX.2fXX&#39;}%&#34;
+ 
+     def __iadd__(self, result: MutantTrialResult) -&gt; Self:
+         &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:166
+@@ -163,7 +163,7 @@
+     @property
+     def coverage_display(self) -&gt; str:
+         &#34;&#34;&#34;Return a formatted string for the coverage percentage.&#34;&#34;&#34;
+-        return f&#34;{self.success_rate * 100:.2f}%&#34;
++        return f&#34;{self.success_rate * 100:.2f}&#39;XX%XX&#39;&#34;
+ 
+     def __iadd__(self, result: MutantTrialResult) -&gt; Self:
+         &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:166
+@@ -163,7 +163,7 @@
+     @property
+     def coverage_display(self) -&gt; str:
+         &#34;&#34;&#34;Return a formatted string for the coverage percentage.&#34;&#34;&#34;
+-        return f&#34;{self.success_rate * 100:.2f}%&#34;
++        return None
+ 
+     def __iadd__(self, result: MutantTrialResult) -&gt; Self:
+         &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">167</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">168</td>
+        <td class="line_text">
+            <pre>    def __iadd__(self, result: MutantTrialResult) -&gt; Self:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">169</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">170</td>
+        <td class="line_text">
+            <pre>        if isinstance(result, MutantTrialResult):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:170
+@@ -167,7 +167,7 @@
+ 
+     def __iadd__(self, result: MutantTrialResult) -&gt; Self:
+         &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;
+-        if isinstance(result, MutantTrialResult):
++        if None:
+             self.tested += 1
+             if result.found:
+                 self.found += 1
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">171</td>
+        <td class="line_text">
+            <pre>            self.tested += 1</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:171
+@@ -168,7 +168,7 @@
+     def __iadd__(self, result: MutantTrialResult) -&gt; Self:
+         &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;
+         if isinstance(result, MutantTrialResult):
+-            self.tested += 1
++            self.tested = 1
+             if result.found:
+                 self.found += 1
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:171
+@@ -168,7 +168,7 @@
+     def __iadd__(self, result: MutantTrialResult) -&gt; Self:
+         &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;
+         if isinstance(result, MutantTrialResult):
+-            self.tested += 1
++            self.tested -= 1
+             if result.found:
+                 self.found += 1
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:171
+@@ -168,7 +168,7 @@
+     def __iadd__(self, result: MutantTrialResult) -&gt; Self:
+         &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;
+         if isinstance(result, MutantTrialResult):
+-            self.tested += 1
++            self.tested *= 1
+             if result.found:
+                 self.found += 1
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:171
+@@ -168,7 +168,7 @@
+     def __iadd__(self, result: MutantTrialResult) -&gt; Self:
+         &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;
+         if isinstance(result, MutantTrialResult):
+-            self.tested += 1
++            self.tested += 2
+             if result.found:
+                 self.found += 1
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:171
+@@ -168,7 +168,7 @@
+     def __iadd__(self, result: MutantTrialResult) -&gt; Self:
+         &#34;&#34;&#34;Update Testing Summary with data from MutantTrialResult.&#34;&#34;&#34;
+         if isinstance(result, MutantTrialResult):
+-            self.tested += 1
++            self.tested += 0
+             if result.found:
+                 self.found += 1
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">172</td>
+        <td class="line_text">
+            <pre>            if result.found:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">173</td>
+        <td class="line_text">
+            <pre>                self.found += 1</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:173
+@@ -170,7 +170,7 @@
+         if isinstance(result, MutantTrialResult):
+             self.tested += 1
+             if result.found:
+-                self.found += 1
++                self.found = 1
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+                 self.not_found += 1
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:173
+@@ -170,7 +170,7 @@
+         if isinstance(result, MutantTrialResult):
+             self.tested += 1
+             if result.found:
+-                self.found += 1
++                self.found -= 1
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+                 self.not_found += 1
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:173
+@@ -170,7 +170,7 @@
+         if isinstance(result, MutantTrialResult):
+             self.tested += 1
+             if result.found:
+-                self.found += 1
++                self.found *= 1
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+                 self.not_found += 1
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:173
+@@ -170,7 +170,7 @@
+         if isinstance(result, MutantTrialResult):
+             self.tested += 1
+             if result.found:
+-                self.found += 1
++                self.found += 2
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+                 self.not_found += 1
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:173
+@@ -170,7 +170,7 @@
+         if isinstance(result, MutantTrialResult):
+             self.tested += 1
+             if result.found:
+-                self.found += 1
++                self.found += 0
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+                 self.not_found += 1
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">174</td>
+        <td class="line_text">
+            <pre>            elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:174
+@@ -171,7 +171,7 @@
+             self.tested += 1
+             if result.found:
+                 self.found += 1
+-            elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
++            elif result.reason_code != MutantTrialResult.RC_NOT_FOUND:
+                 self.not_found += 1
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+                 self.timeout += 1
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">175</td>
+        <td class="line_text">
+            <pre>                self.not_found += 1</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:175
+@@ -172,7 +172,7 @@
+             if result.found:
+                 self.found += 1
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+-                self.not_found += 1
++                self.not_found = 1
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+                 self.timeout += 1
+             else:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:175
+@@ -172,7 +172,7 @@
+             if result.found:
+                 self.found += 1
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+-                self.not_found += 1
++                self.not_found -= 1
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+                 self.timeout += 1
+             else:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:175
+@@ -172,7 +172,7 @@
+             if result.found:
+                 self.found += 1
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+-                self.not_found += 1
++                self.not_found *= 1
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+                 self.timeout += 1
+             else:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:175
+@@ -172,7 +172,7 @@
+             if result.found:
+                 self.found += 1
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+-                self.not_found += 1
++                self.not_found += 2
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+                 self.timeout += 1
+             else:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:175
+@@ -172,7 +172,7 @@
+             if result.found:
+                 self.found += 1
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+-                self.not_found += 1
++                self.not_found += 0
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+                 self.timeout += 1
+             else:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">176</td>
+        <td class="line_text">
+            <pre>            elif result.reason_code == MutantTrialResult.RC_TIMEOUT:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:176
+@@ -173,7 +173,7 @@
+                 self.found += 1
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+                 self.not_found += 1
+-            elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
++            elif result.reason_code != MutantTrialResult.RC_TIMEOUT:
+                 self.timeout += 1
+             else:
+                 self.errors += 1
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">177</td>
+        <td class="line_text">
+            <pre>                self.timeout += 1</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:177
+@@ -174,7 +174,7 @@
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+                 self.not_found += 1
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+-                self.timeout += 1
++                self.timeout = 1
+             else:
+                 self.errors += 1
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:177
+@@ -174,7 +174,7 @@
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+                 self.not_found += 1
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+-                self.timeout += 1
++                self.timeout -= 1
+             else:
+                 self.errors += 1
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:177
+@@ -174,7 +174,7 @@
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+                 self.not_found += 1
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+-                self.timeout += 1
++                self.timeout *= 1
+             else:
+                 self.errors += 1
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:177
+@@ -174,7 +174,7 @@
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+                 self.not_found += 1
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+-                self.timeout += 1
++                self.timeout += 2
+             else:
+                 self.errors += 1
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:177
+@@ -174,7 +174,7 @@
+             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
+                 self.not_found += 1
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+-                self.timeout += 1
++                self.timeout += 0
+             else:
+                 self.errors += 1
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">178</td>
+        <td class="line_text">
+            <pre>            else:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">179</td>
+        <td class="line_text">
+            <pre>                self.errors += 1</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:179
+@@ -176,7 +176,7 @@
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+                 self.timeout += 1
+             else:
+-                self.errors += 1
++                self.errors = 1
+ 
+         return self
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:179
+@@ -176,7 +176,7 @@
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+                 self.timeout += 1
+             else:
+-                self.errors += 1
++                self.errors -= 1
+ 
+         return self
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> AugAssign</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:179
+@@ -176,7 +176,7 @@
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+                 self.timeout += 1
+             else:
+-                self.errors += 1
++                self.errors *= 1
+ 
+         return self
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:179
+@@ -176,7 +176,7 @@
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+                 self.timeout += 1
+             else:
+-                self.errors += 1
++                self.errors += 2
+ 
+         return self
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:179
+@@ -176,7 +176,7 @@
+             elif result.reason_code == MutantTrialResult.RC_TIMEOUT:
+                 self.timeout += 1
+             else:
+-                self.errors += 1
++                self.errors += 0
+ 
+         return self
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">180</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">181</td>
+        <td class="line_text">
+            <pre>        return self</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:181
+@@ -178,7 +178,7 @@
+             else:
+                 self.errors += 1
+ 
+-        return self
++        return None
+ 
+     @staticmethod
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">182</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">183</td>
+        <td class="line_text">
+            <pre>    @staticmethod</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Decorator</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:183
+@@ -180,12 +180,7 @@
+ 
+         return self
+ 
+-    @staticmethod
+-    def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+-        &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        d.pop(&#34;success_rate&#34;, None)
+-        d.pop(&#34;coverage_display&#34;, None)
+-        return d
++    @def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+    &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+    d.pop(&#39;success_rate&#39;, None)
+    d.pop(&#39;coverage_display&#39;, None)
+    return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">184</td>
+        <td class="line_text">
+            <pre>    def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">185</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  partial_found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">186</td>
+        <td class="line_text">
+            <pre>        d.pop(&#34;success_rate&#34;, None)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  not_found ">
+    <p><span class="label">Status:</span> Mutant Not Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:186
+@@ -183,7 +183,7 @@
+     @staticmethod
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        d.pop(&#34;success_rate&#34;, None)
++        d.pop(&#34;success_rate&#34;, &#39; &#39;)
+         d.pop(&#34;coverage_display&#34;, None)
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:186
+@@ -183,7 +183,7 @@
+     @staticmethod
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        d.pop(&#34;success_rate&#34;, None)
++        d.pop(&#39;XXsuccess_rateXX&#39;, None)
+         d.pop(&#34;coverage_display&#34;, None)
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:186
+@@ -183,7 +183,7 @@
+     @staticmethod
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        d.pop(&#34;success_rate&#34;, None)
++        None
+         d.pop(&#34;coverage_display&#34;, None)
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  partial_found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">187</td>
+        <td class="line_text">
+            <pre>        d.pop(&#34;coverage_display&#34;, None)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  not_found ">
+    <p><span class="label">Status:</span> Mutant Not Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:187
+@@ -184,7 +184,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         d.pop(&#34;success_rate&#34;, None)
+-        d.pop(&#34;coverage_display&#34;, None)
++        d.pop(&#34;coverage_display&#34;, &#39; &#39;)
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:187
+@@ -184,7 +184,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         d.pop(&#34;success_rate&#34;, None)
+-        d.pop(&#34;coverage_display&#34;, None)
++        d.pop(&#39;XXcoverage_displayXX&#39;, None)
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:187
+@@ -184,7 +184,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         d.pop(&#34;success_rate&#34;, None)
+-        d.pop(&#34;coverage_display&#34;, None)
++        None
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">188</td>
+        <td class="line_text">
+            <pre>        return d</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:188
+@@ -185,7 +185,7 @@
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         d.pop(&#34;success_rate&#34;, None)
+         d.pop(&#34;coverage_display&#34;, None)
+-        return d
++        return None
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">189</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">190</td>
+        <td class="line_text">
+            <pre>    def to_dict(self) -&gt; dict[str, Any]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">191</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">192</td>
+        <td class="line_text">
+            <pre>        d = asdict(self)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:192
+@@ -189,7 +189,7 @@
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+-        d = asdict(self)
++        d = None
+         d[&#34;success_rate&#34;] = self.success_rate
+         d[&#34;coverage_display&#34;] = self.coverage_display
+         return d
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">193</td>
+        <td class="line_text">
+            <pre>        d[&#34;success_rate&#34;] = self.success_rate</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:193
+@@ -190,7 +190,7 @@
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+-        d[&#34;success_rate&#34;] = self.success_rate
++        d[&#39;XXsuccess_rateXX&#39;] = self.success_rate
+         d[&#34;coverage_display&#34;] = self.coverage_display
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:193
+@@ -190,7 +190,7 @@
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+-        d[&#34;success_rate&#34;] = self.success_rate
++        None = self.success_rate
+         d[&#34;coverage_display&#34;] = self.coverage_display
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">194</td>
+        <td class="line_text">
+            <pre>        d[&#34;coverage_display&#34;] = self.coverage_display</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:194
+@@ -191,7 +191,7 @@
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+         d[&#34;success_rate&#34;] = self.success_rate
+-        d[&#34;coverage_display&#34;] = self.coverage_display
++        d[&#39;XXcoverage_displayXX&#39;] = self.coverage_display
+         return d
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:194
+@@ -191,7 +191,7 @@
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+         d[&#34;success_rate&#34;] = self.success_rate
+-        d[&#34;coverage_display&#34;] = self.coverage_display
++        None = self.coverage_display
+         return d
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">195</td>
+        <td class="line_text">
+            <pre>        return d</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:195
+@@ -192,7 +192,7 @@
+         d = asdict(self)
+         d[&#34;success_rate&#34;] = self.success_rate
+         d[&#34;coverage_display&#34;] = self.coverage_display
+-        return d
++        return None
+ 
+ 
+ @dataclass
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">196</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">197</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">198</td>
+        <td class="line_text">
+            <pre>@dataclass</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">199</td>
+        <td class="line_text">
+            <pre>class TestingResults(PoodleSerialize):</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">200</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Collection of all trials and summary statistics.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">201</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">202</td>
+        <td class="line_text">
+            <pre>    mutant_trials: list[MutantTrial]</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">203</td>
+        <td class="line_text">
+            <pre>    summary: TestingSummary</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">204</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">205</td>
+        <td class="line_text">
+            <pre>    @staticmethod</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Decorator</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:205
+@@ -202,14 +202,7 @@
+     mutant_trials: list[MutantTrial]
+     summary: TestingSummary
+ 
+-    @staticmethod
+-    def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+-        &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        if &#34;mutant_trials&#34; in d:
+-            d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+-        if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
+-            d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+-        return d
++    @def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+    &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+    if &#39;mutant_trials&#39; in d:
+        d[&#39;mutant_trials&#39;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#39;mutant_trials&#39;]]
+    if &#39;summary&#39; in d and d[&#39;summary&#39;] is not None:
+        d[&#39;summary&#39;] = TestingSummary(**TestingSummary.from_dict(d[&#39;summary&#39;]))
+    return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">206</td>
+        <td class="line_text">
+            <pre>    def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">207</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">208</td>
+        <td class="line_text">
+            <pre>        if &#34;mutant_trials&#34; in d:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:208
+@@ -205,7 +205,7 @@
+     @staticmethod
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        if &#34;mutant_trials&#34; in d:
++        if &#39;mutant_trials&#39; not in d:
+             d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+         if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
+             d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:208
+@@ -205,7 +205,7 @@
+     @staticmethod
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+-        if &#34;mutant_trials&#34; in d:
++        if &#39;XXmutant_trialsXX&#39; in d:
+             d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+         if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
+             d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">209</td>
+        <td class="line_text">
+            <pre>            d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:209
+@@ -206,7 +206,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant_trials&#34; in d:
+-            d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
++            d[&#39;XXmutant_trialsXX&#39;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+         if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
+             d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:209
+@@ -206,7 +206,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant_trials&#34; in d:
+-            d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
++            d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#39;XXmutant_trialsXX&#39;]]
+         if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
+             d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:209
+@@ -206,7 +206,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant_trials&#34; in d:
+-            d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
++            d[&#34;mutant_trials&#34;] = [None for trial in d[&#34;mutant_trials&#34;]]
+         if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
+             d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:209
+@@ -206,7 +206,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant_trials&#34; in d:
+-            d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
++            None = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+         if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
+             d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:209
+@@ -206,7 +206,7 @@
+     def from_dict(d: dict[str, Any]) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant_trials&#34; in d:
+-            d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
++            d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in None]
+         if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
+             d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+         return d
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">210</td>
+        <td class="line_text">
+            <pre>        if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:210
+@@ -207,7 +207,7 @@
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant_trials&#34; in d:
+             d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+-        if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
++        if &#39;summary&#39; in d or d[&#39;summary&#39;] is not None:
+             d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:210
+@@ -207,7 +207,7 @@
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant_trials&#34; in d:
+             d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+-        if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
++        if &#34;summary&#34; in d and d[&#34;summary&#34;] is not &#39; &#39;:
+             d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:210
+@@ -207,7 +207,7 @@
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant_trials&#34; in d:
+             d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+-        if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
++        if &#39;XXsummaryXX&#39; in d and d[&#34;summary&#34;] is not None:
+             d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:210
+@@ -207,7 +207,7 @@
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant_trials&#34; in d:
+             d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+-        if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
++        if &#34;summary&#34; in d and d[&#39;XXsummaryXX&#39;] is not None:
+             d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:210
+@@ -207,7 +207,7 @@
+         &#34;&#34;&#34;Correct fields in Dictionary for JSON deserialization.&#34;&#34;&#34;
+         if &#34;mutant_trials&#34; in d:
+             d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+-        if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
++        if &#34;summary&#34; in d and None is not None:
+             d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+         return d
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">211</td>
+        <td class="line_text">
+            <pre>            d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:211
+@@ -208,7 +208,7 @@
+         if &#34;mutant_trials&#34; in d:
+             d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+         if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
+-            d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
++            d[&#39;XXsummaryXX&#39;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:211
+@@ -208,7 +208,7 @@
+         if &#34;mutant_trials&#34; in d:
+             d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+         if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
+-            d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
++            d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#39;XXsummaryXX&#39;]))
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:211
+@@ -208,7 +208,7 @@
+         if &#34;mutant_trials&#34; in d:
+             d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+         if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
+-            d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
++            d[&#34;summary&#34;] = None
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:211
+@@ -208,7 +208,7 @@
+         if &#34;mutant_trials&#34; in d:
+             d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+         if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
+-            d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
++            None = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:211
+@@ -208,7 +208,7 @@
+         if &#34;mutant_trials&#34; in d:
+             d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+         if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
+-            d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
++            d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(None))
+         return d
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">212</td>
+        <td class="line_text">
+            <pre>        return d</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:212
+@@ -209,7 +209,7 @@
+             d[&#34;mutant_trials&#34;] = [MutantTrial(**MutantTrial.from_dict(trial)) for trial in d[&#34;mutant_trials&#34;]]
+         if &#34;summary&#34; in d and d[&#34;summary&#34;] is not None:
+             d[&#34;summary&#34;] = TestingSummary(**TestingSummary.from_dict(d[&#34;summary&#34;]))
+-        return d
++        return None
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">213</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">214</td>
+        <td class="line_text">
+            <pre>    def to_dict(self) -&gt; dict[str, Any]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">215</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">216</td>
+        <td class="line_text">
+            <pre>        d = asdict(self)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:216
+@@ -213,7 +213,7 @@
+ 
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+-        d = asdict(self)
++        d = None
+         d[&#34;mutant_trials&#34;] = [trial.to_dict() for trial in self.mutant_trials]
+         d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is not None else None
+         return d
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">217</td>
+        <td class="line_text">
+            <pre>        d[&#34;mutant_trials&#34;] = [trial.to_dict() for trial in self.mutant_trials]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:217
+@@ -214,6 +214,6 @@
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+-        d[&#34;mutant_trials&#34;] = [trial.to_dict() for trial in self.mutant_trials]
++        d[&#39;XXmutant_trialsXX&#39;] = [trial.to_dict() for trial in self.mutant_trials]
+         d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is not None else None
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:217
+@@ -214,6 +214,6 @@
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+-        d[&#34;mutant_trials&#34;] = [trial.to_dict() for trial in self.mutant_trials]
++        d[&#34;mutant_trials&#34;] = [None for trial in self.mutant_trials]
+         d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is not None else None
+         return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:217
+@@ -214,6 +214,6 @@
+     def to_dict(self) -&gt; dict[str, Any]:
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+-        d[&#34;mutant_trials&#34;] = [trial.to_dict() for trial in self.mutant_trials]
++        None = [trial.to_dict() for trial in self.mutant_trials]
+         d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is not None else None
+         return d
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">218</td>
+        <td class="line_text">
+            <pre>        d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is not None else None</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:218
+@@ -215,5 +215,5 @@
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+         d[&#34;mutant_trials&#34;] = [trial.to_dict() for trial in self.mutant_trials]
+-        d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is not None else None
+-        return d
++        d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is None else None
++        return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:218
+@@ -215,5 +215,5 @@
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+         d[&#34;mutant_trials&#34;] = [trial.to_dict() for trial in self.mutant_trials]
+-        d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is not None else None
+-        return d
++        d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is not &#39; &#39; else None
++        return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:218
+@@ -215,5 +215,5 @@
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+         d[&#34;mutant_trials&#34;] = [trial.to_dict() for trial in self.mutant_trials]
+-        d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is not None else None
+-        return d
++        d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is not None else &#39; &#39;
++        return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:218
+@@ -215,5 +215,5 @@
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+         d[&#34;mutant_trials&#34;] = [trial.to_dict() for trial in self.mutant_trials]
+-        d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is not None else None
+-        return d
++        d[&#39;XXsummaryXX&#39;] = self.summary.to_dict() if self.summary is not None else None
++        return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:218
+@@ -215,5 +215,5 @@
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+         d[&#34;mutant_trials&#34;] = [trial.to_dict() for trial in self.mutant_trials]
+-        d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is not None else None
+-        return d
++        d[&#34;summary&#34;] = None if self.summary is not None else None
++        return d
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:218
+@@ -215,5 +215,5 @@
+         &#34;&#34;&#34;Convert to Dictionary for JSON serialization.&#34;&#34;&#34;
+         d = asdict(self)
+         d[&#34;mutant_trials&#34;] = [trial.to_dict() for trial in self.mutant_trials]
+-        d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is not None else None
+-        return d
++        None = self.summary.to_dict() if self.summary is not None else None
++        return d
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">219</td>
+        <td class="line_text">
+            <pre>        return d</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\data_types\data.py
++++ [Mutant] src\poodle\data_types\data.py:219
+@@ -216,4 +216,4 @@
+         d = asdict(self)
+         d[&#34;mutant_trials&#34;] = [trial.to_dict() for trial in self.mutant_trials]
+         d[&#34;summary&#34;] = self.summary.to_dict() if self.summary is not None else None
+-        return d
++        return None
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+</table>
+
+    </main>
+    <footer>
+        
+        <p>Generated by <a href="http://poodle.rtfd.io" class="nav">Poodle</a> version 1.2.0 at 2023-12-29 20:42:38-0600</p>
+        
+    </footer>
+    
+
+    <script type="text/javascript" src="html-report.js"></script>
+    
+<script>addShowHideEventListeners();</script>
+
+</body>
+
+</html>

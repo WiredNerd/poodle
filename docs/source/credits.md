@@ -33,6 +33,8 @@ When I was looking for a Python Mutation Testing tool, the top candidates I foun
   - Click is a Python package for creating beautiful command line interfaces in a composable way with as little code as necessary.
 * - [wcmatch](https://facelessuser.github.io/wcmatch/)
   - Wildcard Match provides an enhanced fnmatch, glob, and pathlib library in order to provide file matching and globbing that more closely follows the features found in Bash
+* - [jinja](https://jinja.palletsprojects.com/)
+  - Jinja is a fast, expressive, extensible templating engine. Special placeholders in the template allow writing code similar to Python syntax. Then the template is passed data to render the final document.
 * - [pytest](https://docs.pytest.org/)
   - The pytest framework makes it easy to write small, readable tests, and can scale to support complex functional testing for applications and libraries
 * - [pytest-cov](https://pytest-cov.readthedocs.io/)
@@ -55,4 +57,6 @@ When I was looking for a Python Mutation Testing tool, the top candidates I foun
   - A Sphinx and Docutils extension to parse MyST Markdown.
 * - [sphinx_design](https://sphinx-design.readthedocs.io/)
   - A sphinx extension for designing beautiful, screen-size responsive web-components.
+* - [sphinx-copybutton](https://sphinx-copybutton.readthedocs.io/)
+  - Sphinx-copybutton does one thing: add a little “copy” button to the right of your code blocks. That’s it! It is a lightweight wrapper around the excellent (and also lightweight) Javascript library [ClipboardJS](https://clipboardjs.com/).
 :::
