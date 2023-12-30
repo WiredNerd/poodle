@@ -19,10 +19,20 @@ reporter_json_example.md
 
 ## Builtin Reporter Names
 
-* "summary": [Summary Reporter](#summary-reporter)
-* "not_found": [Not Found Reporter](#not-found-reporter)
-* "json": [JSON Reporter](#json-reporter)
-* "html": [HTML Reporter](#html-reporter)
+:::{list-table}
+:header-rows: 0
+:align: left
+
+* - summary
+  - [Summary Reporter](#summary-reporter)
+* - not_found
+  - [Not Found Reporter](#not-found-reporter)
+* - json
+  - [JSON Reporter](#json-reporter)
+* - html
+  - [HTML Reporter](#html-reporter)
+
+:::
 
 ## Summary Reporter
 

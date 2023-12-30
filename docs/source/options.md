@@ -959,6 +959,10 @@ not_found_file = "mutants-not-found.txt"
 
 #### Builtin reporter_opts
 
+Common:
+* [project_name](#project_name)
+* [project_version](#project_version)
+
 Not Found Reporter:
 * [not_found_file](reporters.md#not_found_file)
 
@@ -967,3 +971,8 @@ JSON Reporter:
 * [json_report_file](reporters.md#json_report_file)
 * [json_report_found](reporters.md#json_report_found)
 * [json_report_not_found](reporters.md#json_report_not_found)
+
+HTML Reporter:
+* [report_folder](reporters.md#report_folder)
+* [include_found_trials_on_index](reporters.md#include_found_trials_on_index)
+* [include_found_trials_with_source](reporters.md#include_found_trials_with_source)
