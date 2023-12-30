@@ -93,6 +93,7 @@ class TestBuildConfig:
     @mock.patch("poodle.config.os")
     @mock.patch("poodle.config.get_config_file_path")
     @mock.patch("poodle.config.get_config_file_data")
+    @mock.patch("poodle.config.get_project_info")
     @mock.patch("poodle.config.get_cmd_line_log_level")
     @mock.patch("poodle.config.get_source_folders")
     @mock.patch("poodle.config.get_str_from_config")
@@ -117,6 +118,7 @@ class TestBuildConfig:
         get_str_from_config,
         get_source_folders,
         get_cmd_line_log_level,
+        get_project_info,
         get_config_file_data,
         get_config_file_path,
         mock_os,
@@ -127,6 +129,8 @@ class TestBuildConfig:
             {"runner": "value"},
             {"reporter": "value"},
         ]
+
+        get_project_info.return_value = ("example", "1,2,3")
 
         cmd_sources = (Path("src"),)
         cmd_config_file = Path("config.toml")
@@ -146,6 +150,8 @@ class TestBuildConfig:
             cmd_only_files=("example.py",),
             cmd_report=("myreporter",),
         ) == config.PoodleConfig(
+            project_name=get_str_from_config.return_value,
+            project_version=get_str_from_config.return_value,
             config_file=config_file_path,
             source_folders=get_source_folders.return_value,
             only_files=get_str_list_from_config.return_value,
@@ -171,6 +177,13 @@ class TestBuildConfig:
         )
 
         # return PoodleConfig
+
+        # project_name
+        get_str_from_config.assert_any_call("project_name", config_file_data, default="example")
+
+        # project_version
+        get_str_from_config.assert_any_call("project_version", config_file_data, default="1,2,3")
+
         # source_folders
         get_source_folders.assert_called_once_with(cmd_sources, config_file_data)
 
@@ -257,8 +270,10 @@ class TestBuildConfig:
         get_dict_from_config.assert_any_call("reporter_opts", config_file_data, default=config.default_reporter_opts)
 
     @mock.patch("poodle.config.get_config_file_data")
-    def test_build_config_defaults(self, get_config_file_data):
+    @mock.patch("poodle.config.get_project_info_toml")
+    def test_build_config_defaults(self, get_project_info_toml, get_config_file_data):
         get_config_file_data.return_value = {}
+        get_project_info_toml.return_value = (None, None)
 
         assert config.build_config(
             cmd_sources=(),
@@ -270,6 +285,8 @@ class TestBuildConfig:
             cmd_only_files=(),
             cmd_report=(),
         ) == config.PoodleConfig(
+            project_name=None,
+            project_version=None,
             config_file=Path("pyproject.toml"),
             source_folders=[Path("src")],
             only_files=[],
@@ -295,8 +312,10 @@ class TestBuildConfig:
         )
 
     @mock.patch("poodle.config.get_config_file_data")
-    def test_build_config_duplicate_reporters(self, get_config_file_data):
+    @mock.patch("poodle.config.get_project_info_toml")
+    def test_build_config_duplicate_reporters(self, get_project_info_toml, get_config_file_data):
         get_config_file_data.return_value = {}
+        get_project_info_toml.return_value = (None, None)
 
         assert config.build_config(
             cmd_sources=(),
@@ -308,6 +327,8 @@ class TestBuildConfig:
             cmd_only_files=(),
             cmd_report=("myreporter", "summary"),
         ) == config.PoodleConfig(
+            project_name=None,
+            project_version=None,
             config_file=Path("pyproject.toml"),
             source_folders=[Path("src")],
             only_files=[],
@@ -450,7 +471,25 @@ class TestGetConfigFileData:
             config.get_config_file_data(Path("config.txt"))
 
 
+class TestGetProjectInfo:
+    def test_get_project_info_no_file(self):
+        assert config.get_project_info(None) == ("", "")
+
+    @mock.patch("poodle.config.get_project_info_toml")
+    def test_get_project_info_data(self, get_project_info_toml):
+        get_project_info_toml.return_value = ("example", "1.2.3")
+        assert config.get_project_info(Path("config.toml")) == ("example", "1.2.3")
+        get_project_info_toml.assert_called_with(Path("config.toml"))
+
+    def test_get_project_info_invalid(self):
+        with pytest.raises(PoodleInputError, match="^Config file type not supported: --config_file='config.txt'$"):
+            config.get_project_info(Path("config.txt"))
+
+
 config_toml_poodle = """
+[project]
+name = "example"
+version = "1.2.3"
 [poodle]
 test = "value1"
 """
@@ -483,6 +522,20 @@ class TestGetConfigFileDataToml:
         file_path = mock.MagicMock()
         file_path.open.return_value = BytesIO(bytes(config_toml_no_data, encoding="utf-8"))
         assert config.get_config_file_data_toml(file_path) == {}
+        file_path.open.assert_called_with(mode="rb")
+
+
+class TestGetProjectInfoToml:
+    def test_get_project_info_toml_poodle(self):
+        file_path = mock.MagicMock()
+        file_path.open.return_value = BytesIO(bytes(config_toml_poodle, encoding="utf-8"))
+        assert config.get_project_info_toml(file_path) == ("example", "1.2.3")
+        file_path.open.assert_called_with(mode="rb")
+
+    def test_get_project_info_toml_no_data(self):
+        file_path = mock.MagicMock()
+        file_path.open.return_value = BytesIO(bytes(config_toml_no_data, encoding="utf-8"))
+        assert config.get_project_info_toml(file_path) == ("", "")
         file_path.open.assert_called_with(mode="rb")
 
 

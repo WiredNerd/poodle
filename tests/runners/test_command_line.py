@@ -97,7 +97,7 @@ class TestCommandLineRunner:
 
             assert out.found is True
             assert out.reason_code == out.RC_FOUND
-            assert out.reason_desc == "output\nerror"
+            assert out.reason_desc is None
 
     def test_runner_src_is_cwd(self, subprocess_run, logger_mock):
         with mock.patch.dict("os.environ", {"PYTHONPATH": "/project/src"}, clear=True):
@@ -169,7 +169,7 @@ class TestCommandLineRunner:
 
             assert out.found is True
             assert out.reason_code == out.RC_FOUND
-            assert out.reason_desc == "output\nerror"
+            assert out.reason_desc is None
 
     def test_unset_path(self, subprocess_run):
         with mock.patch.dict("os.environ", {}, clear=True):
@@ -229,7 +229,7 @@ class TestCommandLineRunner:
 
             assert out.found is True
             assert out.reason_code == out.RC_FOUND
-            assert out.reason_desc == "output\nerror"
+            assert out.reason_desc is None
 
     def test_rc_0(self, subprocess_run):
         with mock.patch.dict("os.environ", {}, clear=True):

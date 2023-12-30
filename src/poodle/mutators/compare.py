@@ -16,6 +16,7 @@ class ComparisonMutator(ast.NodeVisitor, Mutator):
     # https://docs.python.org/3/library/ast.html#ast.Compare
     # https://www.w3schools.com/python/python_operators.asp
     # ast.Eq      ==
+    # ast.NotEq   !=
     # ast.Lt      <
     # ast.LtE     <=
     # ast.Gt      >

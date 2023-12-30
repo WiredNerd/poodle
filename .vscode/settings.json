@@ -40,4 +40,6 @@
         "wcmatch",
         "wirednerd"
     ],
+    "scss.format.preserveNewLines": false,
+    "scss.format.newlineBetweenSelectors": false,
 }

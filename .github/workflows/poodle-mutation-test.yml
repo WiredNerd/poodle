@@ -20,4 +20,10 @@ jobs:
       - name: poodle
         run: |
           pytest --cov=src --cov-context=test
-          poodle -w 8
+          poodle
+      - name: Upload Report HTML
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Mutation testing report HTML
+          path: mutation_reports

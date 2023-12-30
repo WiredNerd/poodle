@@ -255,10 +255,10 @@ class TestUnifiedDiff:
             "3 Poodles are the best\n",
         ]
         mutant.source_file.read_text.return_value.splitlines.return_value = file_lines
-        mutant.source_file.resolve.return_value = Path("example.py")
+        mutant.source_file.__str__.return_value = "src/example.py"
         diff_str = (
-            "--- example.py\n"
-            "+++ [Mutant] example.py:2\n"
+            "--- src/example.py\n"
+            "+++ [Mutant] src/example.py:2\n"
             "@@ -1,3 +1,3 @@\n"
             " 1 The quick brown fox jumps over the lazy dog\n"
             "-2 Hello World!\n"

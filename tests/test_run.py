@@ -184,7 +184,7 @@ class TestMutantTrials:
         executor = concurrent.futures.ProcessPoolExecutor.return_value.__enter__.return_value
         executor.submit.side_effect = futures
 
-        summary = TestingSummary(trials=2, tested=2, found=1, not_found=1, success_rate=0.5)
+        summary = TestingSummary(trials=2, tested=2, found=1, not_found=1)
         testing_results = TestingResults(mutant_trials=trials, summary=summary)
 
         actual_results = run.run_mutant_trails(work, mutants, 10)
@@ -241,7 +241,7 @@ class TestMutantTrials:
         executor = concurrent.futures.ProcessPoolExecutor.return_value.__enter__.return_value
         executor.submit.side_effect = futures
 
-        summary = TestingSummary(trials=2, tested=0, found=0, not_found=0, success_rate=0)
+        summary = TestingSummary(trials=2, tested=0, found=0, not_found=0)
         testing_results = TestingResults(mutant_trials=trials, summary=summary)
 
         actual_results = run.run_mutant_trails(work, mutants, 10)

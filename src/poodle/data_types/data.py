@@ -28,6 +28,9 @@ class PoodleSerialize:
 class PoodleConfig:
     """Configuration options resolved from command line and config files."""
 
+    project_name: str | None
+    project_version: str | None
+
     config_file: Path | None
     source_folders: list[Path]
 
@@ -105,11 +108,11 @@ class MutantTrialResult(PoodleSerialize):
     reason_code: str
     reason_desc: str | None = None
 
-    RC_FOUND = "mutant_found"
-    RC_NOT_FOUND = "mutant_not_found"
-    RC_TIMEOUT = "timeout"
-    RC_INCOMPLETE = "incomplete"
-    RC_OTHER = "other"
+    RC_FOUND = "Mutant Found"
+    RC_NOT_FOUND = "Mutant Not Found"
+    RC_TIMEOUT = "Trial Exceeded Timeout"
+    RC_INCOMPLETE = "Testing Incomplete"
+    RC_OTHER = "Other, See Description"
 
 
 @dataclass
@@ -147,7 +150,15 @@ class TestingSummary(PoodleSerialize):
     not_found: int = 0
     timeout: int = 0
     errors: int = 0
-    success_rate: float = 0.0
+
+    @property
+    def success_rate(self) -> float:
+        """Return the success rate of the test run."""
+        if self.trials > 0:
+            return self.found / self.trials
+        if self.tested > 0:
+            return self.found / self.tested
+        return 0.0
 
     @property
     def coverage_display(self) -> str:
@@ -167,20 +178,19 @@ class TestingSummary(PoodleSerialize):
             else:
                 self.errors += 1
 
-        if self.trials > 0:
-            self.success_rate = self.found / self.trials
-
         return self
 
     @staticmethod
     def from_dict(d: dict[str, Any]) -> dict[str, Any]:
         """Correct fields in Dictionary for JSON deserialization."""
+        d.pop("success_rate", None)
         d.pop("coverage_display", None)
         return d
 
     def to_dict(self) -> dict[str, Any]:
         """Convert to Dictionary for JSON serialization."""
         d = asdict(self)
+        d["success_rate"] = self.success_rate
         d["coverage_display"] = self.coverage_display
         return d
 

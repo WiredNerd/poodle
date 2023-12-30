@@ -1,0 +1,228 @@
+body {
+  margin: 10px;
+  font-family: Verdana, sans-serif;
+  font-size: 0.9em;
+  background: white;
+  color: black; }
+  @media (prefers-color-scheme: dark) {
+    body {
+      background: #031a30; } }
+  @media (prefers-color-scheme: dark) {
+    body {
+      color: white; } }
+  body a {
+    text-decoration: none;
+    color: #053361; }
+    @media (prefers-color-scheme: dark) {
+      body a {
+        color: #94b3d1; } }
+    body a:hover {
+      text-decoration: underline;
+      color: inherit; }
+  body p {
+    margin: 0; }
+  body h1, body h2, body h3 {
+    margin: 0;
+    font-family: Georgia, serif; }
+  body pre {
+    font-family: "Lucida Console", "Courier New", monospace;
+    font-size: 0.8em;
+    margin: 0; }
+  body .label {
+    font-weight: bold;
+    font-style: normal; }
+
+header {
+  padding: 10px;
+  background: #6699cc;
+  color: black; }
+  @media (prefers-color-scheme: dark) {
+    header {
+      background: #1f66ad; } }
+  @media (prefers-color-scheme: dark) {
+    header {
+      color: white; } }
+  header .subtitle {
+    margin-top: 10px;
+    font-family: "Lucida Console", "Courier New", monospace;
+    font-style: italic;
+    font-size: 0.8em; }
+  header .nav {
+    margin-top: 10px;
+    font-family: "Lucida Console", "Courier New", monospace;
+    text-decoration: underline;
+    font-size: 0.8em; }
+  header a {
+    text-decoration: none;
+    color: #053361; }
+    @media (prefers-color-scheme: dark) {
+      header a {
+        color: #bdccdb; } }
+    header a:hover {
+      text-decoration: underline;
+      color: inherit; }
+
+main {
+  margin-top: 20px;
+  margin-bottom: 2em; }
+
+footer {
+  margin-top: 20px;
+  font-style: italic;
+  font-size: 0.8em;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: #6699cc;
+  color: black; }
+  @media (prefers-color-scheme: dark) {
+    footer {
+      background: #1f66ad; } }
+  @media (prefers-color-scheme: dark) {
+    footer {
+      color: white; } }
+  footer .nav {
+    text-decoration: underline; }
+
+table.index {
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 0; }
+  table.index th, table.index td {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 10px;
+    padding-right: 10px; }
+  table.index thead {
+    font-family: Georgia, serif;
+    vertical-align: bottom; }
+    table.index thead th {
+      border-bottom: 2px solid #6699cc; }
+    table.index thead .name {
+      text-align: left; }
+    table.index thead .stat {
+      position: relative;
+      text-align: right;
+      width: 3em;
+      white-space: nowrap;
+      -webkit-writing-mode: vertical-lr;
+      /* old Win safari */
+      writing-mode: vertical-lr;
+      writing-mode: tb-lr;
+      transform-origin: bottom right;
+      transform: scale(-1, -1) rotate(135deg) translate(15px, -20px); }
+    table.index thead .score {
+      text-align: right; }
+  table.index tbody td {
+    border-bottom: 1px solid #0f4d8a; }
+  table.index tbody .name {
+    text-align: left; }
+  table.index tbody .stat {
+    text-align: right;
+    font-family: "Lucida Console", "Courier New", monospace; }
+  table.index tbody .score {
+    text-align: right;
+    font-family: "Lucida Console", "Courier New", monospace; }
+  table.index tfoot td {
+    border-top: 2px solid #6699cc; }
+  table.index tfoot .name {
+    text-align: right; }
+  table.index tfoot .stat, table.index tfoot .score {
+    text-align: right;
+    font-family: "Lucida Console", "Courier New", monospace; }
+
+div.detail {
+  margin-top: 40px; }
+  div.detail hr {
+    border-width: 2px;
+    border-style: solid;
+    border-color: #6699cc; }
+    @media (prefers-color-scheme: dark) {
+      div.detail hr {
+        border-color: #1f66ad; } }
+  div.detail h2 {
+    margin-top: 20px; }
+
+table.source {
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 0;
+  font-family: "Lucida Console", "Courier New", monospace; }
+  table.source td {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 10px;
+    padding-right: 10px; }
+  table.source td.line_number {
+    text-align: right;
+    color: black; }
+    @media (prefers-color-scheme: dark) {
+      table.source td.line_number {
+        color: #94b3d1; } }
+  table.source td.line_text {
+    border: 0;
+    border-left-width: 5px;
+    border-style: solid;
+    background: inherit;
+    border-color: white; }
+    @media (prefers-color-scheme: dark) {
+      table.source td.line_text {
+        border-color: #031a30; } }
+  table.source div.trial {
+    margin-top: 0px; }
+  table.source tr.source_row:hover {
+    background-color: #bdccdb; }
+    @media (prefers-color-scheme: dark) {
+      table.source tr.source_row:hover {
+        background: #053361; } }
+  table.source tr.show_hide_row:hover {
+    cursor: pointer; }
+  table.source tr.plain td.line_text {
+    border-color: #3380cc; }
+    @media (prefers-color-scheme: dark) {
+      table.source tr.plain td.line_text {
+        border-color: #0f4d8a; } }
+  table.source tr.found td.line_text {
+    border-color: #1ae61a; }
+  table.source tr.found:hover {
+    background-color: #deedde; }
+    @media (prefers-color-scheme: dark) {
+      table.source tr.found:hover {
+        background: #033003; } }
+  table.source tr.not_found td.line_text {
+    border-color: #e61a1a; }
+  table.source tr.not_found:hover {
+    background-color: #dbbdbd; }
+    @media (prefers-color-scheme: dark) {
+      table.source tr.not_found:hover {
+        background: #300303; } }
+  table.source tr.partial_found td.line_text {
+    border-color: #e6a21a; }
+  table.source tr.partial_found:hover {
+    background-color: #ede8de; }
+    @media (prefers-color-scheme: dark) {
+      table.source tr.partial_found:hover {
+        background: #302103; } }
+div.trial {
+  margin-top: 20px;
+  padding: 10px;
+  border-width: 2px 2px 2px 5px;
+  border-style: solid;
+  border-color: #0f4d8a; }
+  div.trial pre {
+    margin-left: 2em; }
+  div.trial.found {
+    border-color: #1ae61a;
+    background-color: #deedde; }
+    @media (prefers-color-scheme: dark) {
+      div.trial.found {
+        background: #033003; } }
+  div.trial.not_found {
+    border-color: #e61a1a;
+    background-color: #dbbdbd; }
+    @media (prefers-color-scheme: dark) {
+      div.trial.not_found {
+        background: #300303; } }
+.detail_row {
+  display: none; }
