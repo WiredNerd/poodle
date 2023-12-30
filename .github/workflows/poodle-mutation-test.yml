@@ -3,6 +3,7 @@ name: Poodle Mutation Test
 on: 
   workflow_dispatch:
 
+# json is created and saved in update-coverage workflow
 jobs:
   poodle:
     name: Mutation Test with Poodle
