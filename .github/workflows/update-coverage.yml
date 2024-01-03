@@ -23,21 +23,22 @@ jobs:
           pip install -r requirements.txt --upgrade
           pip install --editable .
       - name: pytest
-        run: pytest --cov=src --cov-context=test --cov-report=json:code-coverage.json || true
+        run: pytest --cov=src --cov-context=test --cov-report=json:code-coverage.json
       - name: commit-json-report
-        if: ${{ github.ref_name == 'main' }}
+        if: ${{ always() && github.ref_name == 'main' }}
         uses: EndBug/add-and-commit@v9
         with:
           add: "code-coverage.json"
           pull: "--rebase=true --autostash"
           message: ':robot: Update Coverage Report'
       - name: artifact-html-report
+        if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: Coverage Report
           path: cov-html
       - name: Poodle
-        run: poodle --report json || true
+        run: poodle --report json --report html
       - name: Upload Report HTML
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
@@ -45,7 +46,7 @@ jobs:
           name: Mutation testing report HTML
           path: mutation_reports
       - name: save-json-report
-        if: ${{ github.ref_name == 'main' }}
+        if: ${{ always() && github.ref_name == 'main' }}
         uses: EndBug/add-and-commit@v9
         with:
           add: "mutation-testing-report.json"
