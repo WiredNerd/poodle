@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "poodle"
 description = "Mutation Testing Tool"
-version = "1.2.0"
+version = "1.2.1"
 license = { file = "LICENSE" }
 keywords = [
     "test",
@@ -44,6 +44,12 @@ dependencies = [
 poodle = "poodle.cli:main"
 
 [tool.setuptools]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"poodle.templates" = ["*.*"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

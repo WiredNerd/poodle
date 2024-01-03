@@ -378,9 +378,15 @@ class TestReportHtml:
         report_folder.__truediv__.assert_has_calls(
             [
                 mock.call("index.html"),
-                mock.call().write_text(env.get_template.return_value.render.return_value.strip.return_value),
+                mock.call().write_text(
+                    env.get_template.return_value.render.return_value.strip.return_value,
+                    encoding="utf-8",
+                ),
                 mock.call(module["report_file"]),
-                mock.call().write_text(env.get_template.return_value.render.return_value.strip.return_value),
+                mock.call().write_text(
+                    env.get_template.return_value.render.return_value.strip.return_value,
+                    encoding="utf-8",
+                ),
             ]
         )
 
