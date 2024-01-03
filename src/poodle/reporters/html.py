@@ -54,12 +54,12 @@ def report_html(config: PoodleConfig, echo: Callable, testing_results: TestingRe
     index_template = env.get_template("html-report-index.html.jinja")
     index_page = index_template.render(total=testing_results.summary, modules=modules, **common_vars)
     index_file = report_folder / "index.html"
-    index_file.write_text(index_page.strip())
+    index_file.write_text(index_page.strip(), encoding="utf-8")
 
     module_template = env.get_template("html-report-module.html.jinja")
     for source_file, module in modules.items():
         module_page = module_template.render(source_file=source_file, module=module, **common_vars)
-        (report_folder / module["report_file"]).write_text(module_page.strip())
+        (report_folder / module["report_file"]).write_text(module_page.strip(), encoding="utf-8")
 
     echo(f"HTML Report Generated at {index_file.resolve()}")
 
