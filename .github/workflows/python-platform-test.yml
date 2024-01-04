@@ -35,9 +35,9 @@ jobs:
       - name: Poodle example project
         run : |
           cd example
-          poodle --report summary --report not_found --report json --report html
+          poodle --report summary --report not_found --json results.json --html html_report
       - name: Poodle example flat project
         run : |
           cd example2
-          poodle --report summary --report not_found --report json --report html
+          poodle --report summary --report not_found --json results.json --html html_report
             
