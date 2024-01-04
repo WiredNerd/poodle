@@ -153,6 +153,11 @@ class TestBuildConfig:
             yield get_int_from_config
 
     @pytest.fixture()
+    def get_float_from_config(self):
+        with mock.patch("poodle.config.get_float_from_config") as get_float_from_config:
+            yield get_float_from_config
+
+    @pytest.fixture()
     def get_any_from_config(self):
         with mock.patch("poodle.config.get_any_from_config") as get_any_from_config:
             yield get_any_from_config
@@ -223,6 +228,7 @@ class TestBuildConfig:
         cmd_report: tuple[str] = (),  # type: ignore[assignment]
         cmd_html: Path | None = None,
         cmd_json: Path | None = None,
+        cmd_fail_under: float | None = None,
     ):
         return config.build_config(
             cmd_sources,
@@ -235,6 +241,7 @@ class TestBuildConfig:
             cmd_report,
             cmd_html,
             cmd_json,
+            cmd_fail_under,
         )
 
     def test_build_config_project_info(self, get_project_info: mock.MagicMock):
@@ -446,6 +453,13 @@ class TestBuildConfig:
             command_line={"json_report_file": Path("json"), "html": {"report_folder": Path("html")}},
         )
 
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_fail_under(self, get_float_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with(cmd_fail_under=50)
+        assert config_data.fail_under == get_float_from_config.return_value
+        get_float_from_config.assert_any_call("fail_under", config_file_data, command_line=50)
+
     @mock.patch("poodle.config.get_config_file_data")
     @mock.patch("poodle.config.get_project_info")
     def test_build_config_defaults(self, get_project_info, get_config_file_data):
@@ -463,6 +477,7 @@ class TestBuildConfig:
             cmd_report=(),
             cmd_html=None,
             cmd_json=None,
+            cmd_fail_under=None,
         ) == config.PoodleConfig(
             project_name=None,
             project_version=None,
@@ -488,6 +503,7 @@ class TestBuildConfig:
             runner_opts={},
             reporters=["summary", "not_found"],
             reporter_opts={},
+            fail_under=None,
         )
 
 
@@ -1184,6 +1200,68 @@ class TestGetIntFromConfig:
 
         with pytest.raises(ValueError, match="^test_option from Source Name must be a valid int$"):
             config.get_int_from_config(
+                option_name="test_option",
+                config_data={"test_option": "3"},
+                command_line="4",
+                default="5",
+            )
+
+
+class TestGetFloatFromConfig:
+    def test_default(self, get_option_from_config):
+        get_option_from_config.return_value = (None, None)
+
+        assert (
+            config.get_float_from_config(
+                option_name="test_option",
+                config_data={"test_option": 3},
+                command_line=4,
+                default=5,
+            )
+            == 5.0
+        )
+
+        get_option_from_config.assert_called_with(
+            option_name="test_option",
+            config_data={"test_option": 3},
+            command_line=4,
+        )
+
+    def test_default_inputs(self, get_option_from_config):
+        get_option_from_config.return_value = (None, None)
+
+        assert (
+            config.get_float_from_config(
+                option_name="test_option",
+                config_data={"test_option": 3},
+            )
+            is None
+        )
+
+        get_option_from_config.assert_called_with(
+            option_name="test_option",
+            config_data={"test_option": 3},
+            command_line=None,
+        )
+
+    def test_str_to_float(self, get_option_from_config):
+        get_option_from_config.return_value = ("5", "Source Name")
+
+        assert (
+            config.get_float_from_config(
+                option_name="test_option",
+                config_data={"test_option": "3"},
+                command_line="4",
+                default="5",
+            )
+            == 5
+        )
+
+    def test_convert_error(self, get_option_from_config):
+        get_option_from_config.return_value = ("a", "Source Name")
+
+        with pytest.raises(ValueError, match="^test_option from Source Name must be a valid float$"):
+            config.get_float_from_config(
                 option_name="test_option",
                 config_data={"test_option": "3"},
                 command_line="4",

@@ -61,6 +61,8 @@ class PoodleConfig:
     reporters: list[str]
     reporter_opts: dict
 
+    fail_under: float | None
+
 
 @dataclass
 class FileMutation:

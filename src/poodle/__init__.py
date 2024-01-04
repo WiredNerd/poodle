@@ -8,7 +8,15 @@ from contextlib import suppress
 from pathlib import Path
 from typing import Any
 
-__version__ = "1.2.2"
+__version__ = "1.3.0"
+
+
+class PoodleTestingFailedError(Exception):
+    """Poodle testing failed."""
+
+
+class PoodleNoMutantsFoundError(Exception):
+    """Poodle could not find any mutants to test."""
 
 
 class PoodleInputError(ValueError):

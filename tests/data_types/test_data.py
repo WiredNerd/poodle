@@ -52,6 +52,8 @@ class PoodleConfigStub(PoodleConfig):
     reporters: list[str] = None  # type: ignore [assignment]
     reporter_opts: dict = None  # type: ignore [assignment]
 
+    fail_under: float | None = None
+
 
 class TestPoodleConfig:
     @staticmethod
@@ -81,6 +83,7 @@ class TestPoodleConfig:
             runner_opts={"command_line": "pytest tests"},
             reporters=["summary"],
             reporter_opts={"summary": "value"},
+            fail_under=95.0,
         )
 
     def test_poodle_config(self):
@@ -118,6 +121,8 @@ class TestPoodleConfig:
 
         assert config.reporters == ["summary"]
         assert config.reporter_opts == {"summary": "value"}
+
+        assert config.fail_under == 95.0
 
 
 class TestFileMutation:

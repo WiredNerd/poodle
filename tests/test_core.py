@@ -2,7 +2,7 @@ from unittest import mock
 
 import pytest
 
-from poodle import PoodleInputError, PoodleTrialRunError, core
+from poodle import PoodleNoMutantsFoundError, PoodleTestingFailedError, core
 from poodle.data_types import MutantTrial, PoodleWork
 from tests.data_types.test_data import PoodleConfigStub
 
@@ -28,12 +28,10 @@ class TestMain:
     @mock.patch("poodle.core.create_mutants_for_all_mutators")
     @mock.patch("poodle.core.clean_run_each_source_folder")
     @mock.patch("poodle.core.run_mutant_trails")
-    @mock.patch("poodle.core.click")
     @mock.patch("poodle.core.print_header")
     def test_main(
         self,
         print_header: mock.MagicMock,
-        core_click: mock.MagicMock,
         run_mutant_trails: mock.MagicMock,
         clean_run_each_source_folder: mock.MagicMock,
         create_mutants_for_all_mutators: mock.MagicMock,
@@ -113,10 +111,8 @@ class TestMain:
     @mock.patch("poodle.core.create_mutants_for_all_mutators")
     @mock.patch("poodle.core.clean_run_each_source_folder")
     @mock.patch("poodle.core.run_mutant_trails")
-    @mock.patch("poodle.core.click")
     def test_main_not_exists(
         self,
-        core_click: mock.MagicMock,
         run_mutant_trails: mock.MagicMock,
         clean_run_each_source_folder: mock.MagicMock,
         create_mutants_for_all_mutators: mock.MagicMock,
@@ -166,10 +162,8 @@ class TestMain:
     @mock.patch("poodle.core.create_mutants_for_all_mutators")
     @mock.patch("poodle.core.clean_run_each_source_folder")
     @mock.patch("poodle.core.run_mutant_trails")
-    @mock.patch("poodle.core.click")
     def test_input_error(
         self,
-        core_click: mock.MagicMock,
         run_mutant_trails: mock.MagicMock,
         clean_run_each_source_folder: mock.MagicMock,
         create_mutants_for_all_mutators: mock.MagicMock,
@@ -182,12 +176,13 @@ class TestMain:
         poodle_work_class: mock.MagicMock,
         logger_mock: mock.MagicMock,
     ):
-        poodle_work_class.side_effect = [PoodleInputError("Input Error", "Bad Input")]
+        work_folder = mock.MagicMock()
+        work_folder.exists.return_value = False
 
-        core.main_process(PoodleConfigStub())
+        create_mutants_for_all_mutators.return_value = []
 
-        core_click.echo.assert_any_call("Input Error")
-        core_click.echo.assert_any_call("Bad Input")
+        with pytest.raises(PoodleNoMutantsFoundError, match="^No mutants were found to test!$"):
+            core.main_process(PoodleConfigStub(work_folder=work_folder))
 
     @mock.patch("poodle.core.PoodleWork")
     @mock.patch("poodle.core.pprint_str")
@@ -199,10 +194,8 @@ class TestMain:
     @mock.patch("poodle.core.create_mutants_for_all_mutators")
     @mock.patch("poodle.core.clean_run_each_source_folder")
     @mock.patch("poodle.core.run_mutant_trails")
-    @mock.patch("poodle.core.click")
-    def test_trial_error(
+    def test_fail_under_error(
         self,
-        core_click: mock.MagicMock,
         run_mutant_trails: mock.MagicMock,
         clean_run_each_source_folder: mock.MagicMock,
         create_mutants_for_all_mutators: mock.MagicMock,
@@ -215,12 +208,25 @@ class TestMain:
         poodle_work_class: mock.MagicMock,
         logger_mock: mock.MagicMock,
     ):
-        poodle_work_class.side_effect = [PoodleTrialRunError("Trial Error", "Execution Failed")]
+        work_folder = mock.MagicMock()
+        work_folder.exists.return_value = False
 
-        core.main_process(PoodleConfigStub())
+        results = run_mutant_trails.return_value
 
-        core_click.echo.assert_any_call("Trial Error")
-        core_click.echo.assert_any_call("Execution Failed")
+        results.summary.coverage_display = "80.00%"
+        results.summary.success_rate = 0.8
+
+        clean_run_each_source_folder.return_value = {"folder": MutantTrial(mutant=None, result=None, duration=1.0)}  # type: ignore [arg-type]
+
+        with pytest.raises(PoodleTestingFailedError, match=r"^Mutation score 80.00% is below 99.00%$"):
+            core.main_process(
+                PoodleConfigStub(
+                    work_folder=work_folder,
+                    fail_under=99,
+                    min_timeout=10,
+                    timeout_multiplier=10,
+                )
+            )
 
 
 poodle_header_str = r"""
