@@ -31,6 +31,7 @@
         "fromlist",
         "getaffinity",
         "keepends",
+        "mergedeep",
         "Mult",
         "PYTHONDONTWRITEBYTECODE",
         "redef",

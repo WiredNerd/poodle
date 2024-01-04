@@ -38,13 +38,13 @@ jobs:
           name: Coverage Report
           path: cov-html
       - name: Poodle
-        run: poodle --report json --report html
+        run: poodle --json mutation-testing-report.json --html html-report
       - name: Upload Report HTML
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: Mutation testing report HTML
-          path: mutation_reports
+          path: html-report
       - name: save-json-report
         if: ${{ always() && github.ref_name == 'main' }}
         uses: EndBug/add-and-commit@v9

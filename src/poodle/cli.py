@@ -25,6 +25,8 @@ CONTEXT_SETTINGS = {
 @click.option("--exclude", help="Add a glob exclude file filter. Multiple allowed.", multiple=True)
 @click.option("--only", help="Glob pattern for files to mutate. Multiple allowed.", multiple=True)
 @click.option("--report", help="Enable reporter by name. Multiple allowed.", multiple=True)
+@click.option("--html", help="Folder name to store HTML report in.", type=click.Path(path_type=Path))
+@click.option("--json", help="File to create with JSON report.", type=click.Path(path_type=Path))
 def main(
     sources: tuple[Path],
     config_file: Path | None,
@@ -34,10 +36,12 @@ def main(
     exclude: tuple[str],
     only: tuple[str],
     report: tuple[str],
+    html: Path | None,
+    json: Path | None,
 ) -> None:
     """Poodle Mutation Test Tool."""
     try:
-        config = build_config(sources, config_file, quiet, verbose, workers, exclude, only, report)
+        config = build_config(sources, config_file, quiet, verbose, workers, exclude, only, report, html, json)
     except PoodleInputError as err:
         click.echo(err.args)
         sys.exit(4)
