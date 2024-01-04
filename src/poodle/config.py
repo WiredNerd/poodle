@@ -53,6 +53,7 @@ def build_config(  # noqa: PLR0913
     cmd_report: tuple[str],
     cmd_html: Path | None,
     cmd_json: Path | None,
+    cmd_fail_under: float | None,
 ) -> PoodleConfig:
     """Build PoodleConfig object."""
     config_file_path = get_config_file_path(cmd_config_file)
@@ -118,6 +119,7 @@ def build_config(  # noqa: PLR0913
         runner_opts=get_dict_from_config("runner_opts", config_file_data),
         reporters=get_reporters(config_file_data, cmd_report, cmd_html, cmd_json),
         reporter_opts=get_dict_from_config("reporter_opts", config_file_data, command_line=cmd_reporter_opts),
+        fail_under=get_float_from_config("fail_under", config_file_data, command_line=cmd_fail_under),
     )
 
 
@@ -411,6 +413,28 @@ def get_int_from_config(
         return int(value)
     except ValueError:
         msg = f"{option_name} from {source} must be a valid int"
+        raise PoodleInputError(msg) from None
+
+
+def get_float_from_config(
+    option_name: str,
+    config_data: dict,
+    default: float | None = None,
+    command_line: float | None = None,
+) -> float | None:
+    """Retrieve Config Option that should be an float or None.
+
+    Retrieve highest priority value from config sources.
+    """
+    value, source = get_option_from_config(option_name=option_name, config_data=config_data, command_line=command_line)
+
+    if value is None:
+        return default
+
+    try:
+        return float(value)
+    except ValueError:
+        msg = f"{option_name} from {source} must be a valid float"
         raise PoodleInputError(msg) from None
 
 

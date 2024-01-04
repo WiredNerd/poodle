@@ -8,33 +8,38 @@ from unittest import mock
 import pytest
 from click.testing import CliRunner
 
-from poodle import PoodleInputError, cli
+from poodle import PoodleInputError, PoodleNoMutantsFoundError, PoodleTestingFailedError, PoodleTrialRunError, cli
 
 
-class TestCli:
-    @pytest.fixture(autouse=True)
-    def _setup(self):
-        importlib.reload(cli)
+@pytest.fixture(autouse=True)
+def _setup():
+    importlib.reload(cli)
 
-    @pytest.fixture()
-    def main_process(self):
-        with mock.patch("poodle.cli.core.main_process") as main_process:
-            yield main_process
 
-    @pytest.fixture()
-    def build_config(self):
-        with mock.patch("poodle.cli.build_config") as build_config:
-            yield build_config
+@pytest.fixture()
+def main_process():
+    with mock.patch("poodle.cli.core.main_process") as main_process:
+        yield main_process
 
-    @pytest.fixture()
-    def echo(self):
-        with mock.patch("poodle.cli.click.echo") as echo:
-            yield echo
 
-    @pytest.fixture()
-    def runner(self):
-        return CliRunner()
+@pytest.fixture()
+def build_config():
+    with mock.patch("poodle.cli.build_config") as build_config:
+        yield build_config
 
+
+@pytest.fixture()
+def echo():
+    with mock.patch("poodle.cli.click.echo") as echo:
+        yield echo
+
+
+@pytest.fixture()
+def runner():
+    return CliRunner()
+
+
+class TestCliHelp:
     def test_cli_help(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
         result = runner.invoke(cli.main, ["--help"])
         assert result.exit_code == 0
@@ -136,6 +141,20 @@ class TestCli:
             is not None
         )
 
+    def test_cli_help_fail_under(self, runner: CliRunner):
+        result = runner.invoke(cli.main, ["--help"])
+        assert result.exit_code == 0
+        assert (
+            re.match(
+                r".*--fail_under FLOAT\s+Fail if mutation score is under this value\..*",
+                result.output,
+                flags=re.DOTALL,
+            )
+            is not None
+        )
+
+
+class TestInputs:
     def assert_build_config_called_with(
         self,
         build_config: mock.MagicMock,
@@ -149,6 +168,7 @@ class TestCli:
         report: tuple[str] = (),  # type: ignore [assignment]
         html: Path | None = None,
         json: Path | None = None,
+        fail_under: float | None = None,
     ):
         build_config.assert_called_with(
             sources,
@@ -161,6 +181,7 @@ class TestCli:
             report,
             html,
             json,
+            fail_under,
         )
 
     def test_cli(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
@@ -263,21 +284,53 @@ class TestCli:
         self.assert_build_config_called_with(build_config, json=Path("summary.json"))
         main_process.assert_called_with(build_config.return_value)
 
-    def test_main_input_error(
+    def test_main_fail_under(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
+        result = runner.invoke(cli.main, ["--fail_under", "80"])
+        assert result.exit_code == 0
+        self.assert_build_config_called_with(build_config, fail_under=80)
+        main_process.assert_called_with(build_config.return_value)
+
+
+class TestErrors:
+    def test_main_build_config_input_error(
         self,
         main_process: mock.MagicMock,
         echo: mock.MagicMock,
         build_config: mock.MagicMock,
         runner: CliRunner,
     ):
-        build_config.side_effect = PoodleInputError("bad input")
+        build_config.side_effect = PoodleInputError("bad input", "input error")
         result = runner.invoke(cli.main, [])
         assert result.exit_code == 4
         build_config.assert_called()
-        echo.assert_called_with(("bad input",))
+        echo.assert_has_calls(
+            [
+                mock.call("bad input"),
+                mock.call("input error"),
+            ]
+        )
         main_process.assert_not_called()
 
-    def test_main_keyboard_interrupt(
+    def test_main_process_testing_failed(
+        self,
+        main_process: mock.MagicMock,
+        echo: mock.MagicMock,
+        build_config: mock.MagicMock,
+        runner: CliRunner,
+    ):
+        main_process.side_effect = PoodleTestingFailedError("testing failed", "error message")
+        result = runner.invoke(cli.main, [])
+        assert result.exit_code == 1
+        build_config.assert_called()
+        echo.assert_has_calls(
+            [
+                mock.call("testing failed"),
+                mock.call("error message"),
+            ]
+        )
+        main_process.assert_called_with(build_config.return_value)
+
+    def test_main_process_keyboard_interrupt(
         self,
         main_process: mock.MagicMock,
         echo: mock.MagicMock,
@@ -288,11 +341,68 @@ class TestCli:
         result = runner.invoke(cli.main, [])
         assert result.exit_code == 2
         build_config.assert_called()
-        echo.assert_called_with("Aborted due to Keyboard Interrupt!")
+        echo.assert_called_once_with("Aborted due to Keyboard Interrupt!")
+        main_process.assert_called_with(build_config.return_value)
+
+    def test_main_process_trial_run_error(
+        self,
+        main_process: mock.MagicMock,
+        echo: mock.MagicMock,
+        build_config: mock.MagicMock,
+        runner: CliRunner,
+    ):
+        main_process.side_effect = PoodleTrialRunError("testing failed", "error message")
+        result = runner.invoke(cli.main, [])
+        assert result.exit_code == 3
+        build_config.assert_called()
+        echo.assert_has_calls(
+            [
+                mock.call("testing failed"),
+                mock.call("error message"),
+            ]
+        )
+        main_process.assert_called_with(build_config.return_value)
+
+    def test_main_process_input_error(
+        self,
+        main_process: mock.MagicMock,
+        echo: mock.MagicMock,
+        build_config: mock.MagicMock,
+        runner: CliRunner,
+    ):
+        main_process.side_effect = PoodleInputError("testing failed", "error message")
+        result = runner.invoke(cli.main, [])
+        assert result.exit_code == 4
+        build_config.assert_called()
+        echo.assert_has_calls(
+            [
+                mock.call("testing failed"),
+                mock.call("error message"),
+            ]
+        )
+        main_process.assert_called_with(build_config.return_value)
+
+    def test_main_process_no_mutants_error(
+        self,
+        main_process: mock.MagicMock,
+        echo: mock.MagicMock,
+        build_config: mock.MagicMock,
+        runner: CliRunner,
+    ):
+        main_process.side_effect = PoodleNoMutantsFoundError("testing failed", "error message")
+        result = runner.invoke(cli.main, [])
+        assert result.exit_code == 5
+        build_config.assert_called()
+        echo.assert_has_calls(
+            [
+                mock.call("testing failed"),
+                mock.call("error message"),
+            ]
+        )
         main_process.assert_called_with(build_config.return_value)
 
     @mock.patch("poodle.cli.traceback")
-    def test_main_other_error(
+    def test_main_process_other_error(
         self,
         traceback: mock.MagicMock,
         main_process: mock.MagicMock,

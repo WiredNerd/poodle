@@ -11,6 +11,14 @@ from typing import Any
 __version__ = "1.2.2"
 
 
+class PoodleTestingFailedError(Exception):
+    """Poodle testing failed."""
+
+
+class PoodleNoMutantsFoundError(Exception):
+    """Poodle could not find any mutants to test."""
+
+
 class PoodleInputError(ValueError):
     """An input value from Command Line, poodle_config.py, or a config file was invalid."""
 
