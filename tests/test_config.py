@@ -173,7 +173,7 @@ class TestBuildConfig:
             yield default_max_workers
 
     @pytest.fixture()
-    def setup_build_config_mocks(
+    def _setup_build_config_mocks(
         self,
         get_cmd_line_echo_enabled: mock.MagicMock,
         get_any_list_from_config: mock.MagicMock,
@@ -218,9 +218,9 @@ class TestBuildConfig:
         cmd_quiet: int = 0,
         cmd_verbose: int = 0,
         cmd_max_workers: int | None = None,
-        cmd_excludes: tuple[str] = (),
-        cmd_only_files: tuple[str] = (),
-        cmd_report: tuple[str] = (),
+        cmd_excludes: tuple[str] = (),  # type: ignore[assignment]
+        cmd_only_files: tuple[str] = (),  # type: ignore[assignment]
+        cmd_report: tuple[str] = (),  # type: ignore[assignment]
         cmd_html: Path | None = None,
         cmd_json: Path | None = None,
     ):
@@ -243,21 +243,21 @@ class TestBuildConfig:
         assert config_data.project_name == "example"
         assert config_data.project_version == "1.2.3"
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_config_file(self, get_config_file_path, get_config_file_data):
         config_data = self.build_config_with(cmd_config_file=Path("config.toml"))
         assert config_data.config_file == get_config_file_path.return_value
         get_config_file_path.assert_called_with(Path("config.toml"))
         get_config_file_data.assert_called_with(get_config_file_path.return_value)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_source_folders(self, get_source_folders, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with(cmd_sources=(Path("source"),))
         assert config_data.source_folders == get_source_folders.return_value
         get_source_folders.assert_called_with((Path("source"),), config_file_data)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_only_files(self, get_str_list_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with(cmd_only_files=("example.py",))
@@ -269,27 +269,27 @@ class TestBuildConfig:
             command_line=("example.py",),
         )
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_file_flags(self, get_int_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with()
         assert config_data.file_flags == get_int_from_config.return_value
         get_int_from_config.assert_any_call("file_flags", config_file_data, default=config.default_file_flags)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_file_filters(self, get_str_list_from_config):
         get_str_list_from_config.return_value = ["test_*.py", "*_test.py", "poodle_config.py", "setup.py"]
         config_data = self.build_config_with(cmd_excludes=("notcov.py",))
         assert config_data.file_filters == ["test_*.py", "*_test.py", "poodle_config.py", "setup.py", "notcov.py"]
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_file_copy_flags(self, get_int_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with()
         assert config_data.file_copy_flags == get_int_from_config.return_value
         get_int_from_config.assert_any_call("file_copy_flags", config_file_data, default=config.default_file_copy_flags)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_file_copy_filters(self, get_str_list_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with()
@@ -300,14 +300,14 @@ class TestBuildConfig:
             default=config.default_file_copy_filters,
         )
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_work_folder(self, get_path_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with()
         assert config_data.work_folder == get_path_from_config.return_value
         get_path_from_config.assert_any_call("work_folder", config_file_data, default=config.default_work_folder)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_max_workers(self, get_int_from_config, default_max_workers, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         default_max_workers.return_value = 5
@@ -315,7 +315,7 @@ class TestBuildConfig:
         assert config_data.max_workers == get_int_from_config.return_value
         get_int_from_config.assert_any_call("max_workers", config_file_data, default=5, command_line=3)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_logging(
         self,
         get_str_from_config,
@@ -340,7 +340,7 @@ class TestBuildConfig:
         )
         mock_logging.basicConfig.assert_called_once_with(format="example log format", level=logging.CRITICAL)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_echo_enabled(self, get_bool_from_config, get_cmd_line_echo_enabled, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with(cmd_quiet=1)
@@ -353,75 +353,75 @@ class TestBuildConfig:
         )
         get_cmd_line_echo_enabled.assert_called_once_with(1)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_echo_no_color(self, get_bool_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with()
         assert config_data.echo_no_color == get_bool_from_config.return_value
         get_bool_from_config.assert_any_call("echo_no_color", config_file_data)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_mutator_opts(self, get_dict_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with()
         assert config_data.mutator_opts == get_dict_from_config.return_value
         get_dict_from_config.assert_any_call("mutator_opts", config_file_data)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_skip_mutators(self, get_str_list_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with()
         assert config_data.skip_mutators == get_str_list_from_config.return_value
         get_str_list_from_config.assert_any_call("skip_mutators", config_file_data, default=[])
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_add_mutators(self, get_any_list_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with()
         assert config_data.add_mutators == get_any_list_from_config.return_value
         get_any_list_from_config.assert_any_call("add_mutators", config_file_data)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_min_timeout(self, get_int_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with()
         assert config_data.min_timeout == get_int_from_config.return_value
         get_int_from_config.assert_any_call("min_timeout", config_file_data)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_min_timeout_default(self, get_int_from_config):
         get_int_from_config.return_value = None
         config_data = self.build_config_with()
         assert config_data.min_timeout == config.default_min_timeout
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_timeout_multiplier(self, get_int_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with()
         assert config_data.timeout_multiplier == get_int_from_config.return_value
         get_int_from_config.assert_any_call("timeout_multiplier", config_file_data)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_timeout_multiplier_default(self, get_int_from_config):
         get_int_from_config.return_value = None
         config_data = self.build_config_with()
         assert config_data.timeout_multiplier == config.default_timeout_multiplier
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_runner(self, get_str_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with()
         assert config_data.runner == get_str_from_config.return_value
         get_str_from_config.assert_any_call("runner", config_file_data, default=config.default_runner)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_runner_opts(self, get_dict_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with()
         assert config_data.runner_opts == get_dict_from_config.return_value
         get_dict_from_config.assert_any_call("runner_opts", config_file_data)
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_reporters(self, get_reporters, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with(
@@ -432,7 +432,7 @@ class TestBuildConfig:
         assert config_data.reporters == get_reporters.return_value
         get_reporters.assert_called_once_with(config_file_data, ("myreporter",), Path("html"), Path("json"))
 
-    @pytest.mark.usefixtures("setup_build_config_mocks")
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_reporter_opts(self, get_dict_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with(

@@ -8,7 +8,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
-from mergedeep import merge
+from mergedeep import merge  # type: ignore[import-untyped]
 from wcmatch import glob
 
 from . import PoodleInputError, poodle_config, tomllib
@@ -73,7 +73,7 @@ def build_config(  # noqa: PLR0913
     # file_filters += get_str_list_from_config("exclude", config_file_data, default=[]) # noqa: ERA001
     file_filters += cmd_excludes
 
-    cmd_reporter_opts = {}
+    cmd_reporter_opts: dict[str, Any] = {}
     if cmd_html:
         merge(cmd_reporter_opts, {"html": {"report_folder": cmd_html}})
     if cmd_json:
