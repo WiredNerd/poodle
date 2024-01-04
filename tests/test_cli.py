@@ -112,6 +112,30 @@ class TestCli:
             is not None
         )
 
+    def test_cli_help_html(self, runner: CliRunner):
+        result = runner.invoke(cli.main, ["--help"])
+        assert result.exit_code == 0
+        assert (
+            re.match(
+                r".*--html PATH\s+Folder name to store HTML report in\..*",
+                result.output,
+                flags=re.DOTALL,
+            )
+            is not None
+        )
+
+    def test_cli_help_json(self, runner: CliRunner):
+        result = runner.invoke(cli.main, ["--help"])
+        assert result.exit_code == 0
+        assert (
+            re.match(
+                r".*--json PATH\s+File to create with JSON report\..*",
+                result.output,
+                flags=re.DOTALL,
+            )
+            is not None
+        )
+
     def assert_build_config_called_with(
         self,
         build_config: mock.MagicMock,
@@ -123,6 +147,8 @@ class TestCli:
         exclude: tuple[str] = (),  # type: ignore [assignment]
         only: tuple[str] = (),  # type: ignore [assignment]
         report: tuple[str] = (),  # type: ignore [assignment]
+        html: Path | None = None,
+        json: Path | None = None,
     ):
         build_config.assert_called_with(
             sources,
@@ -133,6 +159,8 @@ class TestCli:
             exclude,
             only,
             report,
+            html,
+            json,
         )
 
     def test_cli(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
@@ -221,6 +249,18 @@ class TestCli:
         result = runner.invoke(cli.main, ["--report", "json"])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config, report=("json",))
+        main_process.assert_called_with(build_config.return_value)
+
+    def test_main_html(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
+        result = runner.invoke(cli.main, ["--html", "html_report"])
+        assert result.exit_code == 0
+        self.assert_build_config_called_with(build_config, html=Path("html_report"))
+        main_process.assert_called_with(build_config.return_value)
+
+    def test_main_json(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
+        result = runner.invoke(cli.main, ["--json", "summary.json"])
+        assert result.exit_code == 0
+        self.assert_build_config_called_with(build_config, json=Path("summary.json"))
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_input_error(
