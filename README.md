@@ -42,14 +42,18 @@ Usage: poodle [OPTIONS] [SOURCES]...
   Poodle Mutation Test Tool.
 
 Options:
-  -c PATH         Configuration File.
-  -q              Quiet mode: q, qq, or qqq
-  -v              Verbose mode: v, vv, or vvv
-  -w INTEGER      Maximum number of parallel workers.
-  --exclude TEXT  Add a glob exclude file filter. Multiple allowed.
-  --only TEXT     Glob pattern for files to mutate. Multiple allowed.
-  --report TEXT   Enable reporter by name. Multiple allowed.
-  --help          Show this message and exit.
+  -c PATH             Configuration File.
+  -q                  Quiet mode: q, qq, or qqq
+  -v                  Verbose mode: v, vv, or vvv
+  -w INTEGER          Maximum number of parallel workers.
+  --exclude TEXT      Add a glob exclude file filter. Multiple allowed.
+  --only TEXT         Glob pattern for files to mutate. Multiple allowed.
+  --report TEXT       Enable reporter by name. Multiple allowed.
+  --html PATH         Folder name to store HTML report in.
+  --json PATH         File to create with JSON report.
+  --fail_under FLOAT  Fail if mutation score is under this value.
+  --version           Show the version and exit.
+  --help              Show this message and exit.
 ```
 
 ## Documentation:

@@ -230,16 +230,24 @@ def get_project_info(config_file: Path | None) -> tuple[str, str]:
 
 def get_config_file_data_toml(config_file: Path) -> dict:
     """Retrieve Poodle configuration from a 'toml' Config File."""
-    config_data = tomllib.load(config_file.open(mode="rb"))
-    config_data: dict = config_data.get("tool", config_data)  # type: ignore[no-redef]
-    return config_data.get("poodle", {})
+    try:
+        config_data = tomllib.load(config_file.open(mode="rb"))
+        config_data: dict = config_data.get("tool", config_data)  # type: ignore[no-redef]
+        return config_data.get("poodle", {})
+    except tomllib.TOMLDecodeError as err:
+        msgs = [f"Error decoding toml file: {config_file}"]
+        msgs.extend(err.args)
+        raise PoodleInputError(*msgs) from None
 
 
 def get_project_info_toml(config_file: Path) -> tuple[str, str]:
     """Retrieve Project Name and Version from a 'toml' Config File."""
-    config_data = tomllib.load(config_file.open(mode="rb"))
-    config_data: dict = config_data.get("project", config_data)  # type: ignore[no-redef]
-    return config_data.get("name", ""), config_data.get("version", "")
+    try:
+        config_data = tomllib.load(config_file.open(mode="rb"))
+        config_data: dict = config_data.get("project", config_data)  # type: ignore[no-redef]
+        return config_data.get("name", ""), config_data.get("version", "")
+    except tomllib.TOMLDecodeError:
+        return "", ""
 
 
 def get_source_folders(command_line_sources: tuple[Path], config_data: dict) -> list[Path]:

@@ -56,33 +56,33 @@ def main(  # noqa: C901, PLR0912
         )
     except PoodleInputError as err:
         for arg in err.args:
-            click.echo(arg)
+            click.secho(arg, fg="red")
         sys.exit(4)
 
     try:
         core.main_process(config)
     except PoodleTestingFailedError as err:
         for arg in err.args:
-            click.echo(arg)
+            click.secho(arg, fg="yellow")
         sys.exit(1)
     except KeyboardInterrupt:
-        click.echo("Aborted due to Keyboard Interrupt!")
+        click.secho("Aborted due to Keyboard Interrupt!", fg="yellow")
         sys.exit(2)
     except PoodleTrialRunError as err:
         for arg in err.args:
-            click.echo(arg)
+            click.secho(arg, fg="red")
         sys.exit(3)
     except PoodleInputError as err:
         for arg in err.args:
-            click.echo(arg)
+            click.secho(arg, fg="red")
         sys.exit(4)
     except PoodleNoMutantsFoundError as err:
         for arg in err.args:
-            click.echo(arg)
+            click.secho(arg, fg="yellow")
         sys.exit(5)
     except:  # noqa: E722
-        click.echo("Aborted due to Internal Error!")
-        click.echo(traceback.format_exc())
+        click.secho("Aborted due to Internal Error!", fg="red")
+        click.secho(traceback.format_exc(), fg="red")
         sys.exit(3)
     sys.exit(0)
 

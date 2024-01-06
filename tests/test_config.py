@@ -9,7 +9,7 @@ from unittest import mock
 import pytest
 from wcmatch import glob
 
-from poodle import PoodleInputError, config
+from poodle import PoodleInputError, config, tomllib
 
 
 @pytest.fixture(autouse=True)
@@ -720,6 +720,18 @@ class TestGetConfigFileDataToml:
         assert config.get_config_file_data_toml(file_path) == {}
         file_path.open.assert_called_with(mode="rb")
 
+    @mock.patch("poodle.config.tomllib.load")
+    def test_get_config_file_data_toml_decode_error(self, tomllib_load):
+        tomllib_load.side_effect = tomllib.TOMLDecodeError("Could not Decode", "Bad data")
+        config_file = mock.MagicMock()
+        with pytest.raises(PoodleInputError) as err:
+            config.get_config_file_data_toml(config_file)
+        assert err.value.args == (
+            f"Error decoding toml file: {config_file}",
+            "Could not Decode",
+            "Bad data",
+        )
+
 
 class TestGetProjectInfoToml:
     def test_get_project_info_toml_poodle(self):
@@ -733,6 +745,12 @@ class TestGetProjectInfoToml:
         file_path.open.return_value = BytesIO(bytes(config_toml_no_data, encoding="utf-8"))
         assert config.get_project_info_toml(file_path) == ("", "")
         file_path.open.assert_called_with(mode="rb")
+
+    @mock.patch("poodle.config.tomllib.load")
+    def test_get_project_info_data_decode_error(self, tomllib_load):
+        tomllib_load.side_effect = tomllib.TOMLDecodeError("Could not Decode", "Bad data")
+        config_file = mock.MagicMock()
+        assert config.get_project_info_toml(config_file) == ("", "")
 
 
 class TestGetSourceFolders:
