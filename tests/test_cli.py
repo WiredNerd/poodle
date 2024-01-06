@@ -29,9 +29,9 @@ def build_config():
 
 
 @pytest.fixture()
-def echo():
-    with mock.patch("poodle.cli.click.echo") as echo:
-        yield echo
+def secho():
+    with mock.patch("poodle.cli.click.secho") as secho:
+        yield secho
 
 
 @pytest.fixture()
@@ -295,7 +295,7 @@ class TestErrors:
     def test_main_build_config_input_error(
         self,
         main_process: mock.MagicMock,
-        echo: mock.MagicMock,
+        secho: mock.MagicMock,
         build_config: mock.MagicMock,
         runner: CliRunner,
     ):
@@ -303,10 +303,10 @@ class TestErrors:
         result = runner.invoke(cli.main, [])
         assert result.exit_code == 4
         build_config.assert_called()
-        echo.assert_has_calls(
+        secho.assert_has_calls(
             [
-                mock.call("bad input"),
-                mock.call("input error"),
+                mock.call("bad input", fg="red"),
+                mock.call("input error", fg="red"),
             ]
         )
         main_process.assert_not_called()
@@ -314,7 +314,7 @@ class TestErrors:
     def test_main_process_testing_failed(
         self,
         main_process: mock.MagicMock,
-        echo: mock.MagicMock,
+        secho: mock.MagicMock,
         build_config: mock.MagicMock,
         runner: CliRunner,
     ):
@@ -322,10 +322,10 @@ class TestErrors:
         result = runner.invoke(cli.main, [])
         assert result.exit_code == 1
         build_config.assert_called()
-        echo.assert_has_calls(
+        secho.assert_has_calls(
             [
-                mock.call("testing failed"),
-                mock.call("error message"),
+                mock.call("testing failed", fg="yellow"),
+                mock.call("error message", fg="yellow"),
             ]
         )
         main_process.assert_called_with(build_config.return_value)
@@ -333,7 +333,7 @@ class TestErrors:
     def test_main_process_keyboard_interrupt(
         self,
         main_process: mock.MagicMock,
-        echo: mock.MagicMock,
+        secho: mock.MagicMock,
         build_config: mock.MagicMock,
         runner: CliRunner,
     ):
@@ -341,13 +341,13 @@ class TestErrors:
         result = runner.invoke(cli.main, [])
         assert result.exit_code == 2
         build_config.assert_called()
-        echo.assert_called_once_with("Aborted due to Keyboard Interrupt!")
+        secho.assert_called_once_with("Aborted due to Keyboard Interrupt!", fg="yellow")
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_process_trial_run_error(
         self,
         main_process: mock.MagicMock,
-        echo: mock.MagicMock,
+        secho: mock.MagicMock,
         build_config: mock.MagicMock,
         runner: CliRunner,
     ):
@@ -355,10 +355,10 @@ class TestErrors:
         result = runner.invoke(cli.main, [])
         assert result.exit_code == 3
         build_config.assert_called()
-        echo.assert_has_calls(
+        secho.assert_has_calls(
             [
-                mock.call("testing failed"),
-                mock.call("error message"),
+                mock.call("testing failed", fg="red"),
+                mock.call("error message", fg="red"),
             ]
         )
         main_process.assert_called_with(build_config.return_value)
@@ -366,7 +366,7 @@ class TestErrors:
     def test_main_process_input_error(
         self,
         main_process: mock.MagicMock,
-        echo: mock.MagicMock,
+        secho: mock.MagicMock,
         build_config: mock.MagicMock,
         runner: CliRunner,
     ):
@@ -374,10 +374,10 @@ class TestErrors:
         result = runner.invoke(cli.main, [])
         assert result.exit_code == 4
         build_config.assert_called()
-        echo.assert_has_calls(
+        secho.assert_has_calls(
             [
-                mock.call("testing failed"),
-                mock.call("error message"),
+                mock.call("testing failed", fg="red"),
+                mock.call("error message", fg="red"),
             ]
         )
         main_process.assert_called_with(build_config.return_value)
@@ -385,7 +385,7 @@ class TestErrors:
     def test_main_process_no_mutants_error(
         self,
         main_process: mock.MagicMock,
-        echo: mock.MagicMock,
+        secho: mock.MagicMock,
         build_config: mock.MagicMock,
         runner: CliRunner,
     ):
@@ -393,10 +393,10 @@ class TestErrors:
         result = runner.invoke(cli.main, [])
         assert result.exit_code == 5
         build_config.assert_called()
-        echo.assert_has_calls(
+        secho.assert_has_calls(
             [
-                mock.call("testing failed"),
-                mock.call("error message"),
+                mock.call("testing failed", fg="yellow"),
+                mock.call("error message", fg="yellow"),
             ]
         )
         main_process.assert_called_with(build_config.return_value)
@@ -406,7 +406,7 @@ class TestErrors:
         self,
         traceback: mock.MagicMock,
         main_process: mock.MagicMock,
-        echo: mock.MagicMock,
+        secho: mock.MagicMock,
         build_config: mock.MagicMock,
         runner: CliRunner,
     ):
@@ -414,6 +414,6 @@ class TestErrors:
         result = runner.invoke(cli.main, [])
         assert result.exit_code == 3
         build_config.assert_called()
-        echo.assert_any_call("Aborted due to Internal Error!")
-        echo.assert_any_call(traceback.format_exc.return_value)
+        secho.assert_any_call("Aborted due to Internal Error!", fg="red")
+        secho.assert_any_call(traceback.format_exc.return_value, fg="red")
         main_process.assert_called_with(build_config.return_value)
