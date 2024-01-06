@@ -348,7 +348,7 @@ class TestTestingSummary:
 
     def test_coverage_display(self):
         summary = TestingSummary(trials=9, found=6)
-        assert summary.coverage_display == "66.67%"
+        assert summary.coverage_display == "66.6%"
 
     def test_iadd(self):
         summary = TestingSummary(trials=10)
@@ -438,7 +438,7 @@ class TestTestingSummary:
             "timeout": 6,
             "errors": 5,
             "success_rate": 0.8,
-            "coverage_display": "80.00%",
+            "coverage_display": "80%",
         }
 
     def test_serialize(self):

@@ -279,3 +279,21 @@ class TestUnifiedDiff:
             source_file=None,
         )
         assert util.create_unified_diff(mutant) is None
+
+
+class TestDisplayPercent:
+    @pytest.mark.parametrize(
+        ("value", "expected"),
+        [
+            (0.0014, "0.1%"),
+            (0.0016, "0.1%"),
+            (0.1239, "12.3%"),
+            (0.12, "12%"),
+            (0.1, "10%"),
+            (0.99, "99%"),
+            (0.999, "99.9%"),
+            (0.9999, "99.9%"),
+        ],
+    )
+    def test_display_percent(self, value, expected):
+        assert util.display_percent(value) == expected

@@ -252,10 +252,7 @@ class TestMainProcess:
     @pytest.mark.usefixtures("_setup_main_process")
     def test_main_process_fail_under_pass(
         self,
-        poodle_work_class: mock.MagicMock,
         run_mutant_trails: mock.MagicMock,
-        generate_reporters: mock.MagicMock,
-        create_unified_diff: mock.MagicMock,
     ):
         config = PoodleConfigStub(fail_under=80.0)
 
@@ -269,18 +266,15 @@ class TestMainProcess:
     @pytest.mark.usefixtures("_setup_main_process")
     def test_main_process_fail_under_fail(
         self,
-        poodle_work_class: mock.MagicMock,
         run_mutant_trails: mock.MagicMock,
-        generate_reporters: mock.MagicMock,
-        create_unified_diff: mock.MagicMock,
     ):
         config = PoodleConfigStub(fail_under=80.0)
 
         results = run_mutant_trails.return_value
         results.summary.success_rate = 0.7999
-        results.summary.coverage_display = "79.99%"
+        results.summary.coverage_display = "79.9%"
 
-        with pytest.raises(PoodleTestingFailedError, match=r"^Mutation score 79.99% is below goal of 80.00%$"):
+        with pytest.raises(PoodleTestingFailedError, match=r"^Mutation score 79.9% is below goal of 80%$"):
             core.main_process(config)
 
 

@@ -6,6 +6,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from poodle import util
+
 if TYPE_CHECKING:
     from typing_extensions import Self
 
@@ -165,7 +167,7 @@ class TestingSummary(PoodleSerialize):
     @property
     def coverage_display(self) -> str:
         """Return a formatted string for the coverage percentage."""
-        return f"{self.success_rate * 100:.2f}%"
+        return util.display_percent(self.success_rate)
 
     def __iadd__(self, result: MutantTrialResult) -> Self:
         """Update Testing Summary with data from MutantTrialResult."""

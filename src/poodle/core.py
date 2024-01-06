@@ -11,7 +11,7 @@ from .data_types import PoodleConfig, PoodleWork
 from .mutate import create_mutants_for_all_mutators, initialize_mutators
 from .report import generate_reporters
 from .run import clean_run_each_source_folder, get_runner, run_mutant_trails
-from .util import calc_timeout, create_temp_zips, create_unified_diff, pprint_str
+from .util import calc_timeout, create_temp_zips, create_unified_diff, display_percent, pprint_str
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -50,7 +50,8 @@ def main_process(config: PoodleConfig) -> None:
     delete_folder(config.work_folder)
 
     if config.fail_under and results.summary.success_rate < config.fail_under / 100:
-        msg = f"Mutation score {results.summary.coverage_display} is below goal of {config.fail_under:.2f}%"
+        display_fail_under = display_percent(config.fail_under / 100)
+        msg = f"Mutation score {results.summary.coverage_display} is below goal of {display_fail_under}"
         raise PoodleTestingFailedError(msg)
 
 

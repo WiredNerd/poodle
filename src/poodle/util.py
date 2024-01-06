@@ -126,3 +126,8 @@ def to_json(obj: PoodleSerialize, indent: int | str | None = None) -> str:
 def from_json(data: str, datatype: type[PoodleSerialize]) -> PoodleSerialize:
     """Convert json string to dataclass."""
     return datatype(**json.loads(data, object_hook=datatype.from_dict))
+
+
+def display_percent(value: float) -> str:
+    """Convert float to string with percent sign."""
+    return f"{value * 1000 // 1 / 10:.3g}%"
