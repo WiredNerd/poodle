@@ -1,6 +1,7 @@
 # Poodle
 ```{code-block} text
 :class: .no-copybutton
+
     ____                  ____         ''',
    / __ \____  ____  ____/ / /__    o_)O \)____)"
   / /_/ / __ \/ __ \/ __  / / _ \    \_        )
@@ -23,7 +24,7 @@ Mutation Testing proves the quality of your test suite by introducing bugs in yo
 The goal of Poodle is to be highly efficient, configurable, and extendable.
 
 * Multi-Threaded execution
-* Highly Configurable (toml and py)
+* Highly Configurable
 * Plug in custom code
 * Output reports in Text, HTML, and JSON
 * Python 3.9 - 3.12
@@ -44,13 +45,18 @@ Usage: poodle [OPTIONS] [SOURCES]...
   Poodle Mutation Test Tool.
 
 Options:
-  -c PATH         Configuration File.
-  -q              Quiet mode: q, qq, or qqq
-  -v              Verbose mode: v, vv, or vvv
-  -w INTEGER      Maximum number of parallel workers.
-  --exclude TEXT  Add a regex exclude file filter. Multiple allowed.
-  --only TEXT     Glob pattern for files to mutate. Multiple allowed.
-  --help          Show this message and exit.
+  -c PATH             Configuration File.
+  -q                  Quiet mode: q, qq, or qqq
+  -v                  Verbose mode: v, vv, or vvv
+  -w INTEGER          Maximum number of parallel workers.
+  --exclude TEXT      Add a glob exclude file filter. Multiple allowed.
+  --only TEXT         Glob pattern for files to mutate. Multiple allowed.
+  --report TEXT       Enable reporter by name. Multiple allowed.
+  --html PATH         Folder name to store HTML report in.
+  --json PATH         File to create with JSON report.
+  --fail_under FLOAT  Fail if mutation score is under this value.
+  --version           Show the version and exit.
+  --help              Show this message and exit.
 ```
 
 ## Table of Contents

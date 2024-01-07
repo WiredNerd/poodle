@@ -2,6 +2,7 @@
 
 ```{code-block} text
 :class: .no-copybutton
+
               /\___/\              ,'.-.'.           .-"-.
               `)9 9('              '\~ o/`          /|6 6|\
               {_:Y:.}_              { @ }          {/(_0_)\}
@@ -24,30 +25,56 @@ Poodle will search for available configuration files, and use the first availabl
 
 ```{code-block} text
 :class: .no-copybutton
+
 Usage: poodle [OPTIONS] [SOURCES]...
 
   Poodle Mutation Test Tool.
 
 Options:
-  -c PATH         Configuration File.
-  -q              Quiet mode: q, qq, or qqq
-  -v              Verbose mode: v, vv, or vvv
-  -w INTEGER      Maximum number of parallel workers.
-  --exclude TEXT  Add a regex exclude file filter. Multiple allowed.
-  --only TEXT     Glob pattern for files to mutate. Multiple allowed.
-  --help          Show this message and exit.
+  -c PATH             Configuration File.
+  -q                  Quiet mode: q, qq, or qqq
+  -v                  Verbose mode: v, vv, or vvv
+  -w INTEGER          Maximum number of parallel workers.
+  --exclude TEXT      Add a glob exclude file filter. Multiple allowed.
+  --only TEXT         Glob pattern for files to mutate. Multiple allowed.
+  --report TEXT       Enable reporter by name. Multiple allowed.
+  --html PATH         Folder name to store HTML report in.
+  --json PATH         File to create with JSON report.
+  --fail_under FLOAT  Fail if mutation score is under this value.
+  --version           Show the version and exit.
+  --help              Show this message and exit.
 ```
 
 ### Command Line Options
 
-* SOURCES [source_folders](#source_folders)
-* -c [config_file](#config_file)
-* -q [Quiet](#quiet-or-verbose)
-* -v [Verbose](#quiet-or-verbose)
-* -w [max_workers](#max_workers)
-* --exclude [file_filters](#file_filters)
-* --only [only_files](#only_files)
+:::{list-table}
+:header-rows: 0
+:align: left
 
+* - SOURCES 
+  - [source_folders](#source_folders)
+* - -c 
+  - [config_file](#config_file)
+* - -q 
+  - [Quiet](#quiet-or-verbose)
+* - -v 
+  - [Verbose](#quiet-or-verbose)
+* - -w 
+  - [max_workers](#max_workers)
+* - --exclude 
+  - [file_filters](#file_filters)
+* - --only 
+  - [only_files](#only_files)
+* - --report 
+  - [report](#report)
+* - --html 
+  - [html](#html)
+* - --json 
+  - [json](#json)
+* - --fail_under 
+  - [fail_under](#fail_under)
+
+:::
 
 ### Quiet or Verbose
 
@@ -82,6 +109,53 @@ The -q and -v flags control how quiet or verbose poodle will be.  These flags in
   - `True`
   - `logging.NOTSET`
 :::
+
+### Report
+
+Add specified Reporter to the list of reporters to use.  This can be:
+* Name of a [Builtin Reporter](reporters.md)
+* String fully qualified name of the Mutator Class
+* String fully qualified name of the Mutator Function
+
+This option can be specified multiple times to add multiple reporters.  The reporters are added to the [reporters](#reporters) list
+
+::::{tab-set}
+
+:::{tab-item} Command Line
+```bash
+poodle --report=html --report=mypackage.myreporter
+```
+:::
+
+::::
+
+### HTML
+
+Enable the HTML reporter and save the report to the specified folder.
+
+::::{tab-set}
+
+:::{tab-item} Command Line
+```bash
+poodle --html mutation-report/html
+```
+:::
+
+::::
+
+### JSON
+
+Enable the JSON reporter and save the report to the specified file.
+
+::::{tab-set}
+
+:::{tab-item} Command Line
+```bash
+poodle --json mutation-report.json
+```
+:::
+
+::::
 
 ## OPTIONS
 
@@ -976,3 +1050,41 @@ HTML Reporter:
 * [report_folder](reporters.md#report_folder)
 * [include_found_trials_on_index](reporters.md#include_found_trials_on_index)
 * [include_found_trials_with_source](reporters.md#include_found_trials_with_source)
+
+### fail_under
+
+This option specifies a Mutation Score Goal for the project.  If the Mutation Score for this run of testing is under the fail_under value, poodle will output a message and end with a Return Code of 1.
+
+The fail_under value is expressed as a Percentage of Mutants found.  A value of `85.2` means that the goal is to find 85.2% of Mutants.
+
+**Default:** `None`
+
+::::{tab-set}
+
+:::{tab-item} Command Line
+```bash
+poodle --fail_under 85.2
+```
+:::
+
+:::{tab-item} poodle_config.py
+```python3
+fail_under = 85.2
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+fail_under = 85.2
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+fail_under = 85.2
+```
+:::
+
+::::
