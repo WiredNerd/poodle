@@ -64,11 +64,8 @@ filterwarnings = [
 ]
 
 [tool.poodle]
-file_filters = ["test_*.py", "*_test.py", 'cli.py', 'run.py', '__init__.py']
+file_filters = ["test_*.py", "*_test.py", '__init__.py']
 reporters = ["summary", "html"]
-# skip_delete_folder = true
-skip_mutators = ["all"]
-add_mutators = ["Decorator"]
 
 [tool.poodle.runner_opts]
 command_line = "pytest -x --assert=plain -o pythonpath='{PYTHONPATH}' --sort-mode=mutcov"

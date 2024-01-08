@@ -28,14 +28,6 @@ def main_process(config: PoodleConfig) -> None:
     work.reporters = list(generate_reporters(config))
 
     mutants = create_mutants_for_all_mutators(work)
-    mutants.sort(
-        key=lambda mutant: (
-            mutant.source_folder,
-            str(mutant.source_file) or "",
-            mutant.lineno,
-            mutant.mutator_name,
-        )
-    )
     if not mutants:
         raise PoodleNoMutantsFoundError("No mutants were found to test!")
     work.echo(f"Identified {len(mutants)} mutants")
