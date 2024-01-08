@@ -5,6 +5,7 @@ from __future__ import annotations
 import difflib
 import json
 import logging
+import shutil
 from copy import deepcopy
 from io import StringIO
 from pprint import pprint
@@ -107,10 +108,11 @@ def create_unified_diff(mutant: Mutant) -> str | None:
     if mutant.source_file:
         file_lines = mutant.source_file.read_text("utf-8").splitlines(keepends=True)
         file_name = str(mutant.source_file)
+        mutant_lines = "".join(mutate_lines(mutant, file_lines)).splitlines(keepends=True)
         return "".join(
             difflib.unified_diff(
                 a=file_lines,
-                b=mutate_lines(mutant, file_lines),
+                b=mutant_lines,
                 fromfile=file_name,
                 tofile=f"[Mutant] {file_name}:{mutant.lineno}",
             )
@@ -131,3 +133,10 @@ def from_json(data: str, datatype: type[PoodleSerialize]) -> PoodleSerialize:
 def display_percent(value: float) -> str:
     """Convert float to string with percent sign."""
     return f"{value * 1000 // 1 / 10:.3g}%"
+
+
+def delete_folder(folder: pathlib.Path, config: PoodleConfig) -> None:
+    """Delete a folder."""
+    if folder.exists() and not config.skip_delete_folder:
+        logger.info("delete %s", folder)
+        shutil.rmtree(folder)

@@ -43,7 +43,6 @@ class PoodleConfig:
     file_copy_flags: int | None
     file_copy_filters: list[str]
     work_folder: Path
-
     max_workers: int | None
 
     log_format: str
@@ -64,6 +63,8 @@ class PoodleConfig:
     reporter_opts: dict
 
     fail_under: float | None
+
+    skip_delete_folder: bool | None
 
 
 @dataclass

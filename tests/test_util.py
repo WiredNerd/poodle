@@ -267,6 +267,36 @@ class TestUnifiedDiff:
         )
         assert util.create_unified_diff(mutant) == diff_str
 
+    def test_create_unified_diff_multiline(self):
+        mutant = Mutant(
+            mutator_name="Example",
+            lineno=2,
+            col_offset=2,
+            end_lineno=3,
+            end_col_offset=22,
+            text="Hello Poodle!\n3 Poodles are smart",
+            source_folder=mock.MagicMock(),
+            source_file=mock.MagicMock(),
+        )
+        file_lines = [
+            "1 The quick brown fox jumps over the lazy dog\n",
+            "2 Hello World!\n",
+            "3 Poodles are the best!\n",
+        ]
+        mutant.source_file.read_text.return_value.splitlines.return_value = file_lines
+        mutant.source_file.__str__.return_value = "src/example.py"
+        diff_str = (
+            "--- src/example.py\n"
+            "+++ [Mutant] src/example.py:2\n"
+            "@@ -1,3 +1,3 @@\n"
+            " 1 The quick brown fox jumps over the lazy dog\n"
+            "-2 Hello World!\n"
+            "-3 Poodles are the best!\n"
+            "+2 Hello Poodle!\n"
+            "+3 Poodles are smart!\n"
+        )
+        assert util.create_unified_diff(mutant) == diff_str
+
     def test_create_unified_diff_no_file(self):
         mutant = Mutant(
             mutator_name="Example",
@@ -297,3 +327,37 @@ class TestDisplayPercent:
     )
     def test_display_percent(self, value, expected):
         assert util.display_percent(value) == expected
+
+
+class TestDeleteFolder:
+    @pytest.fixture()
+    def shutil(self):
+        with mock.patch("poodle.util.shutil") as shutil:
+            yield shutil
+
+    def test_delete_folder_exists(self, shutil, mock_logger):
+        folder = mock.MagicMock()
+        folder.exists.return_value = True
+
+        util.delete_folder(folder, PoodleConfigStub(skip_delete_folder=False))
+
+        mock_logger.info.assert_called_once_with("delete %s", folder)
+        shutil.rmtree.assert_called_once_with(folder)
+
+    def test_delete_folder_exists_skip(self, shutil, mock_logger):
+        folder = mock.MagicMock()
+        folder.exists.return_value = True
+
+        util.delete_folder(folder, PoodleConfigStub(skip_delete_folder=True))
+
+        mock_logger.info.assert_not_called()
+        shutil.rmtree.assert_not_called()
+
+    def test_delete_folder_not_exists(self, shutil, mock_logger):
+        folder = mock.MagicMock()
+        folder.exists.return_value = False
+
+        util.delete_folder(folder, PoodleConfigStub(skip_delete_folder=False))
+
+        mock_logger.info.assert_not_called()
+        shutil.rmtree.assert_not_called()

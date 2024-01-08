@@ -138,7 +138,7 @@ class TestMainProcess:
         pprint_str.assert_called_once_with(config)
         logger_mock.info.assert_called_once_with("\n%s", pprint_str.return_value)
 
-        delete_folder.assert_called_with(config.work_folder)
+        delete_folder.assert_called_with(config.work_folder, config)
         assert delete_folder.call_count == 2
 
         create_temp_zips.assert_called_once_with(work)
@@ -350,28 +350,3 @@ class TestPrintHeader:
                 mock.call(),
             ]
         )
-
-
-class TestDeleteFolder:
-    @pytest.fixture()
-    def shutil(self):
-        with mock.patch("poodle.core.shutil") as shutil:
-            yield shutil
-
-    def test_delete_folder_exists(self, shutil, logger_mock):
-        folder = mock.MagicMock()
-        folder.exists.return_value = True
-
-        core.delete_folder(folder)
-
-        logger_mock.info.assert_called_once_with("delete %s", folder)
-        shutil.rmtree.assert_called_once_with(folder)
-
-    def test_delete_folder_not_exists(self, shutil, logger_mock):
-        folder = mock.MagicMock()
-        folder.exists.return_value = False
-
-        core.delete_folder(folder)
-
-        logger_mock.info.assert_not_called()
-        shutil.rmtree.assert_not_called()

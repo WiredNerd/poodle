@@ -49,9 +49,10 @@ builtin_mutators = {
 
 def initialize_mutators(work: PoodleWork) -> list[Callable | Mutator]:
     """Initialize all mutators from standard list and from config options."""
-    mutators: list[Any] = [
-        mutator for name, mutator in builtin_mutators.items() if name not in work.config.skip_mutators
-    ]
+    skip_mutators = [name.lower() for name in work.config.skip_mutators]
+    mutators: list[Any] = []
+    if "all" not in skip_mutators:
+        mutators.extend([mutator for name, mutator in builtin_mutators.items() if name.lower() not in skip_mutators])
     mutators.extend(work.config.add_mutators)
 
     return [initialize_mutator(work, mut_def) for mut_def in mutators]
@@ -63,6 +64,9 @@ def initialize_mutator(work: PoodleWork, mutator_def: Any) -> Callable | Mutator
     mutator_def may be string of object to import, Callable, Mutator subclass or Mutator subclass instance.
     """
     logger.debug(mutator_def)
+
+    if mutator_def in builtin_mutators:
+        mutator_def = builtin_mutators[mutator_def]
 
     if isinstance(mutator_def, str):
         try:

@@ -120,6 +120,7 @@ def build_config(  # noqa: PLR0913
         reporters=get_reporters(config_file_data, cmd_report, cmd_html, cmd_json),
         reporter_opts=get_dict_from_config("reporter_opts", config_file_data, command_line=cmd_reporter_opts),
         fail_under=get_float_from_config("fail_under", config_file_data, command_line=cmd_fail_under),
+        skip_delete_folder=get_bool_from_config("skip_delete_folder", config_file_data, default=False),
     )
 
 

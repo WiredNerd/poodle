@@ -183,9 +183,10 @@ class TestDecoratorMutator:
         mutator = DecoratorMutator(config=config, echo=mock_echo, other="value")
         module = "\n".join(  # noqa: FLY002
             [
-                "@dec.abc",
-                "def example(y):",
-                "    return y",
+                "class Example:",
+                "    @dec.abc",
+                "    def example(y):",
+                "        return y",
             ],
         )
         file_mutants = mutator.create_mutations(ast.parse(module))
@@ -193,17 +194,15 @@ class TestDecoratorMutator:
         assert len(file_mutants) == 1
 
         for mut in file_mutants:
-            assert mut.lineno == 1
-            assert mut.end_lineno == 3
-            assert mut.col_offset == 0
-            assert mut.end_col_offset == 12
+            assert mut.lineno == 2
+            assert mut.end_lineno == 4
+            assert mut.col_offset == 4
+            assert mut.end_col_offset == 16
 
-        assert file_mutants[0].text == "\n".join(  # noqa: FLY002
-            [
-                "def example(y):",
-                "    return y",
-            ]
-        )
+        assert file_mutants[0].text.splitlines() == [
+            "def example(y):",
+            "        return y",
+        ]
 
     def test_decorator_mutator_multi(self, mock_echo):
         config = mock.MagicMock(mutator_opts={})

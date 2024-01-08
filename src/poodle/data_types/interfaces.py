@@ -112,6 +112,14 @@ class Mutator(ABC):
 
         return cls.is_annotation(node.parent, child_node=node)
 
+    @classmethod
+    def unparse(cls, node: ast.AST, indent: int) -> str:
+        """Unparse AST node to string.  Indent any lines that are not the first line."""
+        lines = ast.unparse(node).splitlines(keepends=True)
+        if len(lines) > 1:
+            lines[1:] = [f"{' ' * indent}{line}" for line in lines[1:]]
+        return "".join(lines)
+
 
 # runner method signature:
 def runner(  # type: ignore [empty-body]
