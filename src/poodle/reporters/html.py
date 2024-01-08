@@ -5,6 +5,7 @@ from __future__ import annotations
 import datetime
 import re
 import shutil
+from collections import OrderedDict
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable
 
@@ -101,7 +102,7 @@ def module_data(testing_results: TestingResults, html_options: dict) -> dict[Pat
         if not include_found_index:
             module_dict[module]["trials"] = remove_found_trials(module_dict[module]["trials"])
 
-    return module_dict
+    return OrderedDict(sorted(module_dict.items(), key=lambda item: item[0]))
 
 
 def module_trials(
