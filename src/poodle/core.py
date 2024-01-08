@@ -3,18 +3,13 @@
 from __future__ import annotations
 
 import logging
-import shutil
-from typing import TYPE_CHECKING
 
 from . import PoodleNoMutantsFoundError, PoodleTestingFailedError, __version__
 from .data_types import PoodleConfig, PoodleWork
 from .mutate import create_mutants_for_all_mutators, initialize_mutators
 from .report import generate_reporters
 from .run import clean_run_each_source_folder, get_runner, run_mutant_trails
-from .util import calc_timeout, create_temp_zips, create_unified_diff, display_percent, pprint_str
-
-if TYPE_CHECKING:
-    from pathlib import Path
+from .util import calc_timeout, create_temp_zips, create_unified_diff, delete_folder, display_percent, pprint_str
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +20,7 @@ def main_process(config: PoodleConfig) -> None:
     print_header(work)
     logger.info("\n%s", pprint_str(config))
 
-    delete_folder(config.work_folder)
+    delete_folder(config.work_folder, config)
     create_temp_zips(work)
 
     work.mutators = initialize_mutators(work)
@@ -33,6 +28,14 @@ def main_process(config: PoodleConfig) -> None:
     work.reporters = list(generate_reporters(config))
 
     mutants = create_mutants_for_all_mutators(work)
+    mutants.sort(
+        key=lambda mutant: (
+            mutant.source_folder,
+            str(mutant.source_file) or "",
+            mutant.lineno,
+            mutant.mutator_name,
+        )
+    )
     if not mutants:
         raise PoodleNoMutantsFoundError("No mutants were found to test!")
     work.echo(f"Identified {len(mutants)} mutants")
@@ -47,7 +50,7 @@ def main_process(config: PoodleConfig) -> None:
     for reporter in work.reporters:
         reporter(config=config, echo=work.echo, testing_results=results)
 
-    delete_folder(config.work_folder)
+    delete_folder(config.work_folder, config)
 
     if config.fail_under and results.summary.success_rate < config.fail_under / 100:
         display_fail_under = display_percent(config.fail_under / 100)
@@ -80,10 +83,3 @@ def print_header(work: PoodleWork) -> None:
     if work.config.fail_under:
         work.echo(f" - Coverage Goal:  {work.config.fail_under:.2f}%")
     work.echo()
-
-
-def delete_folder(folder: Path) -> None:
-    """Delete a folder."""
-    if folder.exists():
-        logger.info("delete %s", folder)
-        shutil.rmtree(folder)

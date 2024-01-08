@@ -54,6 +54,8 @@ class PoodleConfigStub(PoodleConfig):
 
     fail_under: float | None = None
 
+    skip_delete_folder: bool = False
+
 
 class TestPoodleConfig:
     @staticmethod
@@ -84,6 +86,7 @@ class TestPoodleConfig:
             reporters=["summary"],
             reporter_opts={"summary": "value"},
             fail_under=95.0,
+            skip_delete_folder=False,
         )
 
     def test_poodle_config(self):

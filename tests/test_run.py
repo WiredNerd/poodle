@@ -301,10 +301,10 @@ class TestRunMutantTrial:
     @mock.patch("poodle.run.logging")
     @mock.patch("poodle.run.ZipFile")
     @mock.patch("poodle.run.mutate_lines")
-    @mock.patch("poodle.run.shutil")
+    @mock.patch("poodle.run.delete_folder")
     def test_run_mutant_trial(
         self,
-        mock_shutil,
+        delete_folder,
         mutate_lines,
         zip_file_cls,
         mock_logging,
@@ -361,7 +361,7 @@ class TestRunMutantTrial:
             timeout=10,
         )
 
-        mock_shutil.rmtree.assert_called_with(run_folder)
+        delete_folder.assert_called_with(run_folder, config)
 
         mock_logger.debug.assert_any_call("END: run_id=%s - Elapsed Time %.2f s", "1", 2)
 
@@ -370,10 +370,10 @@ class TestRunMutantTrial:
     @mock.patch("poodle.run.logging")
     @mock.patch("poodle.run.ZipFile")
     @mock.patch("poodle.run.mutate_lines")
-    @mock.patch("poodle.run.shutil")
+    @mock.patch("poodle.run.delete_folder")
     def test_run_mutant_trial_no_source(
         self,
-        mock_shutil,
+        delete_folder,
         mutate_lines,
         zip_file_cls,
         mock_logging,
@@ -428,7 +428,7 @@ class TestRunMutantTrial:
             timeout=10,
         )
 
-        mock_shutil.rmtree.assert_called_with(run_folder)
+        delete_folder.assert_called_with(run_folder, config)
 
         mock_logger.debug.assert_any_call("END: run_id=%s - Elapsed Time %.2f s", "1", 2)
 

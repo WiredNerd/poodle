@@ -460,6 +460,13 @@ class TestBuildConfig:
         assert config_data.fail_under == get_float_from_config.return_value
         get_float_from_config.assert_any_call("fail_under", config_file_data, command_line=50)
 
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_skip_delete_folder(self, get_bool_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.skip_delete_folder == get_bool_from_config.return_value
+        get_bool_from_config.assert_any_call("skip_delete_folder", config_file_data, default=False)
+
     @mock.patch("poodle.config.get_config_file_data")
     @mock.patch("poodle.config.get_project_info")
     def test_build_config_defaults(self, get_project_info, get_config_file_data):
@@ -504,6 +511,7 @@ class TestBuildConfig:
             reporters=["summary", "not_found"],
             reporter_opts={},
             fail_under=None,
+            skip_delete_folder=False,
         )
 
 

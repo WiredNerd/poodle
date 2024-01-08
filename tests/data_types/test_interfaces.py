@@ -54,7 +54,7 @@ class TestMutator:
             ],
         )
 
-        assert Mutator.get_location(ast.parse(module).body[0]) == (1, 1, 3, 12)
+        assert Mutator.get_location(ast.parse(module).body[0]) == (1, 0, 3, 12)
 
     @mock.patch("ast.walk")
     def test_get_location_no_ends(self, walk):
@@ -84,12 +84,28 @@ class TestMutator:
         assert Mutator.get_location(node) == (5, 8, 5, 12)
 
     @mock.patch("ast.walk")
-    def test_get_location_lt_lineno(self, walk):
+    def test_get_location_lt_lineno_eq_col(self, walk):
         node = mock.MagicMock(lineno=5, col_offset=8, end_lineno=5, end_col_offset=12)
         walk.return_value = [
-            mock.MagicMock(lineno=4, col_offset=10, end_lineno=5, end_col_offset=8),
+            mock.MagicMock(lineno=4, col_offset=8, end_lineno=5, end_col_offset=8),
         ]
-        assert Mutator.get_location(node) == (4, 10, 5, 12)
+        assert Mutator.get_location(node) == (4, 8, 5, 12)
+
+    @mock.patch("ast.walk")
+    def test_get_location_lt_lineno_gt_col(self, walk):
+        node = mock.MagicMock(lineno=5, col_offset=8, end_lineno=5, end_col_offset=12)
+        walk.return_value = [
+            mock.MagicMock(lineno=4, col_offset=9, end_lineno=5, end_col_offset=8),
+        ]
+        assert Mutator.get_location(node) == (4, 8, 5, 12)
+
+    @mock.patch("ast.walk")
+    def test_get_location_lt_lineno_lt_col(self, walk):
+        node = mock.MagicMock(lineno=5, col_offset=8, end_lineno=5, end_col_offset=12)
+        walk.return_value = [
+            mock.MagicMock(lineno=4, col_offset=7, end_lineno=5, end_col_offset=8),
+        ]
+        assert Mutator.get_location(node) == (4, 7, 5, 12)
 
     @mock.patch("ast.walk")
     def test_get_location_eq_lineno_lt_col(self, walk):

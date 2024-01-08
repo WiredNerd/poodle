@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import concurrent.futures
 import logging
-import shutil
 import time
 from typing import TYPE_CHECKING, Callable
 from zipfile import ZipFile
@@ -14,7 +13,7 @@ from click import style
 from . import PoodleTrialRunError
 from .data_types import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork, TestingResults, TestingSummary
 from .runners import command_line
-from .util import dynamic_import, mutate_lines
+from .util import delete_folder, dynamic_import, mutate_lines
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -176,7 +175,7 @@ def run_mutant_trial(  # noqa: PLR0913
         timeout=timeout,
     )
 
-    shutil.rmtree(run_folder)
+    delete_folder(run_folder, config)
 
     duration = time.time() - start
     logger.debug("END: run_id=%s - Elapsed Time %.2f s", run_id, duration)

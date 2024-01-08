@@ -69,9 +69,10 @@ class Mutator(ABC):
             if not hasattr(n, "lineno"):
                 continue
 
-            if n.lineno < lineno:
+            if n.lineno < lineno:  # decorators
                 lineno = n.lineno
-                col_offset = n.col_offset
+                if n.col_offset < col_offset:
+                    col_offset = n.col_offset
             elif n.lineno == lineno and n.col_offset < col_offset:
                 col_offset = n.col_offset
 
@@ -110,6 +111,14 @@ class Mutator(ABC):
             return True
 
         return cls.is_annotation(node.parent, child_node=node)
+
+    @classmethod
+    def unparse(cls, node: ast.AST, indent: int) -> str:
+        """Unparse AST node to string.  Indent any lines that are not the first line."""
+        lines = ast.unparse(node).splitlines(keepends=True)
+        if len(lines) > 1:
+            lines[1:] = [f"{' ' * indent}{line}" for line in lines[1:]]
+        return "".join(lines)
 
 
 # runner method signature:

@@ -1,3 +1,4 @@
+import importlib
 from unittest import mock
 
 import pytest
@@ -5,6 +6,11 @@ import pytest
 from poodle import PoodleInputError, mutate
 from poodle.data_types import FileMutation, Mutant, Mutator, PoodleWork
 from tests.data_types.test_data import PoodleConfigStub
+
+
+@pytest.fixture(autouse=True)
+def _reset():
+    importlib.reload(mutate)
 
 
 @pytest.fixture()
@@ -36,15 +42,40 @@ def fake_mutator(*_, **__) -> list[FileMutation]:
 
 
 class TestInit:
-    @mock.patch("poodle.mutate.builtin_mutators")
-    def test_initialize_mutators(self, builtin_mutators):
+    def test_initialize_mutators(self):
         config = PoodleConfigStub(skip_mutators=["m2"], add_mutators=["tests.test_mutate.fake_mutator"])
         work = PoodleWork(config)
         m1 = FakeMutator(config, echo=mock.MagicMock())
         m2 = FakeMutator(config, echo=mock.MagicMock())
         m3 = FakeMutator(config, echo=mock.MagicMock())
-        builtin_mutators.items.return_value = [("m1", m1), ("m2", m2), ("m3", m3)]
+        mutate.builtin_mutators = {"m1": m1, "m2": m2, "m3": m3}
         assert mutate.initialize_mutators(work) == [m1, m3, fake_mutator]
+
+    def test_initialize_mutators_lower(self):
+        config = PoodleConfigStub(skip_mutators=["M1", "m2"], add_mutators=["tests.test_mutate.fake_mutator"])
+        work = PoodleWork(config)
+        m1 = FakeMutator(config, echo=mock.MagicMock())
+        m2 = FakeMutator(config, echo=mock.MagicMock())
+        m3 = FakeMutator(config, echo=mock.MagicMock())
+        mutate.builtin_mutators = {"m1": m1, "m2": m2, "m3": m3}
+        assert mutate.initialize_mutators(work) == [m3, fake_mutator]
+
+    def test_initialize_mutators_all(self):
+        config = PoodleConfigStub(skip_mutators=["ALL"], add_mutators=["m2", "tests.test_mutate.fake_mutator"])
+        work = PoodleWork(config)
+        m1 = FakeMutator(config, echo=mock.MagicMock())
+        m2 = FakeMutator(config, echo=mock.MagicMock())
+        m3 = FakeMutator(config, echo=mock.MagicMock())
+        mutate.builtin_mutators = {"m1": m1, "m2": m2, "m3": m3}
+        assert mutate.initialize_mutators(work) == [m2, fake_mutator]
+
+    def test_initialize_mutator_builtin(self, logger_mock):
+        config = PoodleConfigStub()
+        work = PoodleWork(config)
+        m1 = FakeMutator(config, echo=mock.MagicMock())
+        mutate.builtin_mutators = {"m1": m1}
+        assert mutate.initialize_mutator(work, "m1") == m1
+        logger_mock.debug.assert_called_with("m1")
 
     def test_initialize_mutator_str_class(self, logger_mock):
         config = PoodleConfigStub()

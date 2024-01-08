@@ -178,13 +178,39 @@ class TestDecoratorMutator:
     def test_mutator_name(self):
         assert DecoratorMutator.mutator_name == "Decorator"
 
-    def test_decorator_mutator(self, mock_echo):
+    def test_decorator_mutator_single(self, mock_echo):
+        config = mock.MagicMock(mutator_opts={})
+        mutator = DecoratorMutator(config=config, echo=mock_echo, other="value")
+        module = "\n".join(  # noqa: FLY002
+            [
+                "class Example:",
+                "    @dec.abc",
+                "    def example(y):",
+                "        return y",
+            ],
+        )
+        file_mutants = mutator.create_mutations(ast.parse(module))
+
+        assert len(file_mutants) == 1
+
+        for mut in file_mutants:
+            assert mut.lineno == 2
+            assert mut.end_lineno == 4
+            assert mut.col_offset == 4
+            assert mut.end_col_offset == 16
+
+        assert file_mutants[0].text.splitlines() == [
+            "def example(y):",
+            "        return y",
+        ]
+
+    def test_decorator_mutator_multi(self, mock_echo):
         config = mock.MagicMock(mutator_opts={})
         mutator = DecoratorMutator(config=config, echo=mock_echo, other="value")
         module = "\n".join(  # noqa: FLY002
             [
                 "@dec1",
-                "@dec2",
+                "@dec2(a)",
                 "@dec1",
                 "def example(y):",
                 "    return y",
@@ -197,12 +223,12 @@ class TestDecoratorMutator:
         for mut in file_mutants:
             assert mut.lineno == 1
             assert mut.end_lineno == 5
-            assert mut.col_offset == 1
+            assert mut.col_offset == 0
             assert mut.end_col_offset == 12
 
         assert file_mutants[0].text == "\n".join(  # noqa: FLY002
             [
-                "@dec2",
+                "@dec2(a)",
                 "@dec1",
                 "def example(y):",
                 "    return y",
@@ -221,7 +247,7 @@ class TestDecoratorMutator:
         assert file_mutants[2].text == "\n".join(  # noqa: FLY002
             [
                 "@dec1",
-                "@dec2",
+                "@dec2(a)",
                 "def example(y):",
                 "    return y",
             ]
