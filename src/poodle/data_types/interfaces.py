@@ -69,9 +69,10 @@ class Mutator(ABC):
             if not hasattr(n, "lineno"):
                 continue
 
-            if n.lineno < lineno:
+            if n.lineno < lineno:  # decorators
                 lineno = n.lineno
-                col_offset = n.col_offset
+                if n.col_offset < col_offset:
+                    col_offset = n.col_offset
             elif n.lineno == lineno and n.col_offset < col_offset:
                 col_offset = n.col_offset
 
