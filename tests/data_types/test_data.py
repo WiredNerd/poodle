@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from poodle.data_types.data import (
+from poodle.common.data import (
     FileMutation,
     Mutant,
     MutantTrial,
@@ -14,7 +14,7 @@ from poodle.data_types.data import (
     TestingResults,
     TestingSummary,
 )
-from poodle.util import from_json, to_json
+from poodle.common.util import from_json, to_json
 
 
 @dataclass

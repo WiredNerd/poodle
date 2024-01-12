@@ -2,17 +2,32 @@
 
 from __future__ import annotations
 
+import importlib
 import logging
 import os
+import sys
 from collections.abc import Iterable
+from contextlib import suppress
 from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 from mergedeep import merge  # type: ignore[import-untyped]
 from wcmatch import glob
 
-from . import PoodleInputError, poodle_config, tomllib
-from .data_types import PoodleConfig
+from . import PoodleInputError
+from . import PoodleConfig
+
+try:
+    import tomllib  # type: ignore [import-not-found]
+except ModuleNotFoundError:  # < py3.11
+    import tomli as tomllib  # type: ignore [no-redef]
+
+poodle_config: ModuleType | None = None
+with suppress(ImportError):
+    sys.path.append(str(Path.cwd()))
+    poodle_config = importlib.import_module("poodle_config")
+
 
 default_source_folders = [Path("src"), Path("lib")]
 
@@ -135,8 +150,8 @@ def get_reporters(
     reporters += [reporter for reporter in cmd_report if reporter not in reporters]
     if cmd_html:
         reporters.append("html")
-    if cmd_json:
-        reporters.append("json")
+    # if cmd_json:
+    #     reporters.append("json")
     return reporters
 
 

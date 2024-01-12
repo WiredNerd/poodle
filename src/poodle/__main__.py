@@ -16,14 +16,22 @@ from . import (
     __version__,
     core,
 )
+from .common.base import poodle_config
+from .common.config import PoodleConfigData
 from .config import build_config
+from .plugins import options_from_plugins
+from .plugins import plugin_manager as pm
+from .plugins import register_plugins
+
+register_plugins()
+
 
 CONTEXT_SETTINGS = {
     "max_content_width": 120,
 }
 
 
-@click.command(context_settings=CONTEXT_SETTINGS)
+@click.group(context_settings=CONTEXT_SETTINGS, invoke_without_command=True)
 @click.argument("sources", type=click.Path(exists=True, path_type=Path), nargs=-1)
 @click.option("-c", "config_file", help="Configuration File.", type=click.Path(exists=True, path_type=Path))
 @click.option("-q", "quiet", help="Quiet mode: q, qq, or qqq", count=True)
@@ -32,27 +40,25 @@ CONTEXT_SETTINGS = {
 @click.option("--exclude", help="Add a glob exclude file filter. Multiple allowed.", multiple=True)
 @click.option("--only", help="Glob pattern for files to mutate. Multiple allowed.", multiple=True)
 @click.option("--report", help="Enable reporter by name. Multiple allowed.", multiple=True)
-@click.option("--html", help="Folder name to store HTML report in.", type=click.Path(path_type=Path))
-@click.option("--json", help="File to create with JSON report.", type=click.Path(path_type=Path))
+@options_from_plugins()
 @click.option("--fail_under", help="Fail if mutation score is under this value.", type=float)
 @click.version_option(version=__version__)
-def main(  # noqa: C901, PLR0912
-    sources: tuple[Path],
-    config_file: Path | None,
-    quiet: int,
-    verbose: int,
-    workers: int | None,
-    exclude: tuple[str],
-    only: tuple[str],
-    report: tuple[str],
-    html: Path | None,
-    json: Path | None,
-    fail_under: float | None,
-) -> None:
+def main(**cmd_kwargs: dict) -> None:
     """Poodle Mutation Test Tool."""
     try:
+        config_data = PoodleConfigData(cmd_kwargs)
         config = build_config(
-            sources, config_file, quiet, verbose, workers, exclude, only, report, html, json, fail_under
+            cmd_sources=cmd_kwargs["sources"],
+            cmd_config_file=cmd_kwargs["config_file"],
+            cmd_quiet=cmd_kwargs["quiet"],
+            cmd_verbose=cmd_kwargs["verbose"],
+            cmd_max_workers=cmd_kwargs["workers"],
+            cmd_excludes=cmd_kwargs["exclude"],
+            cmd_only_files=cmd_kwargs["only"],
+            cmd_report=cmd_kwargs["report"],
+            cmd_html=cmd_kwargs["html"],
+            cmd_json=cmd_kwargs["json"],
+            cmd_fail_under=cmd_kwargs["fail_under"],
         )
     except PoodleInputError as err:
         for arg in err.args:
@@ -60,7 +66,8 @@ def main(  # noqa: C901, PLR0912
         sys.exit(4)
 
     try:
-        core.main_process(config)
+        pm.hook.configure(config=config_data, poodle_config=poodle_config, cmd_kwargs=cmd_kwargs)
+        core.main_process(config, config_data)
     except PoodleTestingFailedError as err:
         for arg in err.args:
             click.secho(arg, fg="yellow")

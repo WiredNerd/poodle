@@ -11,9 +11,9 @@ from zipfile import ZipFile
 from click import style
 
 from . import PoodleTrialRunError
-from .data_types import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork, TestingResults, TestingSummary
+from . import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork, TestingResults, TestingSummary
 from .runners import command_line
-from .util import delete_folder, dynamic_import, mutate_lines
+from .common.util import delete_folder, dynamic_import, mutate_lines
 
 if TYPE_CHECKING:
     from pathlib import Path

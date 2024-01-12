@@ -6,7 +6,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from poodle import util
+from . import util
 
 if TYPE_CHECKING:
     from typing_extensions import Self

@@ -7,7 +7,7 @@ import re
 from copy import deepcopy
 from typing import ClassVar
 
-from poodle.data_types import FileMutation, Mutator
+from poodle import FileMutation, Mutator
 
 
 class ComparisonMutator(ast.NodeVisitor, Mutator):

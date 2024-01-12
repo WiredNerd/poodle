@@ -4,18 +4,25 @@ from __future__ import annotations
 
 import logging
 
-from . import PoodleNoMutantsFoundError, PoodleTestingFailedError, __version__
-from .data_types import PoodleConfig, PoodleWork
+from . import (
+    PoodleConfig,
+    PoodleConfigData,
+    PoodleNoMutantsFoundError,
+    PoodleTestingFailedError,
+    PoodleWork,
+    __version__,
+)
+from .common.util import calc_timeout, create_temp_zips, create_unified_diff, delete_folder, display_percent, pprint_str
 from .mutate import create_mutants_for_all_mutators, initialize_mutators
-from .report import generate_reporters
+from .plugins import plugin_manager as pm
 from .run import clean_run_each_source_folder, get_runner, run_mutant_trails
-from .util import calc_timeout, create_temp_zips, create_unified_diff, delete_folder, display_percent, pprint_str
 
 logger = logging.getLogger(__name__)
 
 
-def main_process(config: PoodleConfig) -> None:
+def main_process(config: PoodleConfig, config_data: PoodleConfigData) -> None:
     """Poodle core run process."""
+
     work = PoodleWork(config)  # sets logging defaults
     print_header(work)
     logger.info("\n%s", pprint_str(config))
@@ -25,7 +32,6 @@ def main_process(config: PoodleConfig) -> None:
 
     work.mutators = initialize_mutators(work)
     work.runner = get_runner(config)
-    work.reporters = list(generate_reporters(config))
 
     mutants = create_mutants_for_all_mutators(work)
     if not mutants:
@@ -39,8 +45,7 @@ def main_process(config: PoodleConfig) -> None:
     for trial in results.mutant_trials:
         trial.mutant.unified_diff = create_unified_diff(trial.mutant)
 
-    for reporter in work.reporters:
-        reporter(config=config, echo=work.echo, testing_results=results)
+    pm.hook.report_results(testing_results=results, config=config_data, secho=work.echo)
 
     delete_folder(config.work_folder, config)
 

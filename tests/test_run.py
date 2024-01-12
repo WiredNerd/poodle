@@ -6,7 +6,7 @@ import click
 import pytest
 
 from poodle import run
-from poodle.data_types import Mutant, MutantTrial, MutantTrialResult, PoodleWork, TestingResults, TestingSummary
+from poodle.common import Mutant, MutantTrial, MutantTrialResult, PoodleWork, TestingResults, TestingSummary
 from tests.data_types.test_data import PoodleConfigStub
 
 

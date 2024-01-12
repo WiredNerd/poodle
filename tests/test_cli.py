@@ -8,12 +8,12 @@ from unittest import mock
 import pytest
 from click.testing import CliRunner
 
-from poodle import PoodleInputError, PoodleNoMutantsFoundError, PoodleTestingFailedError, PoodleTrialRunError, cli
+from poodle import PoodleInputError, PoodleNoMutantsFoundError, PoodleTestingFailedError, PoodleTrialRunError, __main__
 
 
 @pytest.fixture(autouse=True)
 def _setup():
-    importlib.reload(cli)
+    importlib.reload(__main__)
 
 
 @pytest.fixture()
@@ -41,7 +41,7 @@ def runner():
 
 class TestCliHelp:
     def test_cli_help(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--help"])
+        result = runner.invoke(__main__.main, ["--help"])
         assert result.exit_code == 0
         assert result.output.find("Usage: main [OPTIONS] [SOURCES]...") is not None
         assert result.output.find("Poodle Mutation Test Tool.") is not None
@@ -50,27 +50,27 @@ class TestCliHelp:
 
     def test_cli_help_max_content_width(self, runner: CliRunner):
         with mock.patch("poodle.cli.click.command") as command:
-            importlib.reload(cli)
-            runner.invoke(cli.main, ["--help"])
+            importlib.reload(__main__)
+            runner.invoke(__main__.main, ["--help"])
         command.assert_called_with(context_settings={"max_content_width": 120})
 
     def test_cli_help_config_file(self, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--help"])
+        result = runner.invoke(__main__.main, ["--help"])
         assert result.exit_code == 0
         assert re.match(r".*-c PATH\s+Configuration File\..*", result.output, flags=re.DOTALL) is not None
 
     def test_cli_help_quiet(self, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--help"])
+        result = runner.invoke(__main__.main, ["--help"])
         assert result.exit_code == 0
         assert re.match(r".*-q\s+Quiet mode: q, qq, or qqq.*", result.output, flags=re.DOTALL) is not None
 
     def test_cli_help_verbose(self, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--help"])
+        result = runner.invoke(__main__.main, ["--help"])
         assert result.exit_code == 0
         assert re.match(r".*-v\s+Verbose mode: v, vv, or vvv.*", result.output, flags=re.DOTALL) is not None
 
     def test_cli_help_workers(self, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--help"])
+        result = runner.invoke(__main__.main, ["--help"])
         assert result.exit_code == 0
         assert (
             re.match(
@@ -82,7 +82,7 @@ class TestCliHelp:
         )
 
     def test_cli_help_exclude(self, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--help"])
+        result = runner.invoke(__main__.main, ["--help"])
         assert result.exit_code == 0
         assert (
             re.match(
@@ -94,7 +94,7 @@ class TestCliHelp:
         )
 
     def test_cli_help_only(self, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--help"])
+        result = runner.invoke(__main__.main, ["--help"])
         assert result.exit_code == 0
         assert (
             re.match(
@@ -106,7 +106,7 @@ class TestCliHelp:
         )
 
     def test_cli_help_report(self, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--help"])
+        result = runner.invoke(__main__.main, ["--help"])
         assert result.exit_code == 0
         assert (
             re.match(
@@ -118,7 +118,7 @@ class TestCliHelp:
         )
 
     def test_cli_help_html(self, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--help"])
+        result = runner.invoke(__main__.main, ["--help"])
         assert result.exit_code == 0
         assert (
             re.match(
@@ -130,7 +130,7 @@ class TestCliHelp:
         )
 
     def test_cli_help_json(self, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--help"])
+        result = runner.invoke(__main__.main, ["--help"])
         assert result.exit_code == 0
         assert (
             re.match(
@@ -142,7 +142,7 @@ class TestCliHelp:
         )
 
     def test_cli_help_fail_under(self, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--help"])
+        result = runner.invoke(__main__.main, ["--help"])
         assert result.exit_code == 0
         assert (
             re.match(
@@ -185,13 +185,13 @@ class TestInputs:
         )
 
     def test_cli(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, [])
+        result = runner.invoke(__main__.main, [])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config)
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_sources(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, ["src", "tests"])
+        result = runner.invoke(__main__.main, ["src", "tests"])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config, sources=(Path("src"), Path("tests")))  # type: ignore [arg-type]
         main_process.assert_called_with(build_config.return_value)
@@ -202,13 +202,13 @@ class TestInputs:
         build_config: mock.MagicMock,
         runner: CliRunner,
     ):
-        result = runner.invoke(cli.main, ["not_exist_path"])
+        result = runner.invoke(__main__.main, ["not_exist_path"])
         assert result.exit_code > 0
         build_config.assert_not_called()
         main_process.assert_not_called()
 
     def test_main_config_file(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, ["-c", "pyproject.toml"])
+        result = runner.invoke(__main__.main, ["-c", "pyproject.toml"])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config, config_file=Path("pyproject.toml"))
         main_process.assert_called_with(build_config.return_value)
@@ -219,73 +219,73 @@ class TestInputs:
         build_config: mock.MagicMock,
         runner: CliRunner,
     ):
-        result = runner.invoke(cli.main, ["-c", "not_exist_path"])
+        result = runner.invoke(__main__.main, ["-c", "not_exist_path"])
         assert result.exit_code > 0
         build_config.assert_not_called()
         main_process.assert_not_called()
 
     def test_main_quiet(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, ["-q"])
+        result = runner.invoke(__main__.main, ["-q"])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config, quiet=1)
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_quiet2(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, ["-qq"])
+        result = runner.invoke(__main__.main, ["-qq"])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config, quiet=2)
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_verbose(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, ["-v"])
+        result = runner.invoke(__main__.main, ["-v"])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config, verbose=1)
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_verbose2(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, ["-vv"])
+        result = runner.invoke(__main__.main, ["-vv"])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config, verbose=2)
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_workers(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, ["-w", "4"])
+        result = runner.invoke(__main__.main, ["-w", "4"])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config, workers=4)
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_exclude(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--exclude", "test_.*"])
+        result = runner.invoke(__main__.main, ["--exclude", "test_.*"])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config, exclude=("test_.*",))
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_only(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--only", "test_.*"])
+        result = runner.invoke(__main__.main, ["--only", "test_.*"])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config, only=("test_.*",))
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_report(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--report", "json"])
+        result = runner.invoke(__main__.main, ["--report", "json"])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config, report=("json",))
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_html(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--html", "html_report"])
+        result = runner.invoke(__main__.main, ["--html", "html_report"])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config, html=Path("html_report"))
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_json(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--json", "summary.json"])
+        result = runner.invoke(__main__.main, ["--json", "summary.json"])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config, json=Path("summary.json"))
         main_process.assert_called_with(build_config.return_value)
 
     def test_main_fail_under(self, main_process: mock.MagicMock, build_config: mock.MagicMock, runner: CliRunner):
-        result = runner.invoke(cli.main, ["--fail_under", "80"])
+        result = runner.invoke(__main__.main, ["--fail_under", "80"])
         assert result.exit_code == 0
         self.assert_build_config_called_with(build_config, fail_under=80)
         main_process.assert_called_with(build_config.return_value)
@@ -300,7 +300,7 @@ class TestErrors:
         runner: CliRunner,
     ):
         build_config.side_effect = PoodleInputError("bad input", "input error")
-        result = runner.invoke(cli.main, [])
+        result = runner.invoke(__main__.main, [])
         assert result.exit_code == 4
         build_config.assert_called()
         secho.assert_has_calls(
@@ -319,7 +319,7 @@ class TestErrors:
         runner: CliRunner,
     ):
         main_process.side_effect = PoodleTestingFailedError("testing failed", "error message")
-        result = runner.invoke(cli.main, [])
+        result = runner.invoke(__main__.main, [])
         assert result.exit_code == 1
         build_config.assert_called()
         secho.assert_has_calls(
@@ -338,7 +338,7 @@ class TestErrors:
         runner: CliRunner,
     ):
         main_process.side_effect = KeyboardInterrupt()
-        result = runner.invoke(cli.main, [])
+        result = runner.invoke(__main__.main, [])
         assert result.exit_code == 2
         build_config.assert_called()
         secho.assert_called_once_with("Aborted due to Keyboard Interrupt!", fg="yellow")
@@ -352,7 +352,7 @@ class TestErrors:
         runner: CliRunner,
     ):
         main_process.side_effect = PoodleTrialRunError("testing failed", "error message")
-        result = runner.invoke(cli.main, [])
+        result = runner.invoke(__main__.main, [])
         assert result.exit_code == 3
         build_config.assert_called()
         secho.assert_has_calls(
@@ -371,7 +371,7 @@ class TestErrors:
         runner: CliRunner,
     ):
         main_process.side_effect = PoodleInputError("testing failed", "error message")
-        result = runner.invoke(cli.main, [])
+        result = runner.invoke(__main__.main, [])
         assert result.exit_code == 4
         build_config.assert_called()
         secho.assert_has_calls(
@@ -390,7 +390,7 @@ class TestErrors:
         runner: CliRunner,
     ):
         main_process.side_effect = PoodleNoMutantsFoundError("testing failed", "error message")
-        result = runner.invoke(cli.main, [])
+        result = runner.invoke(__main__.main, [])
         assert result.exit_code == 5
         build_config.assert_called()
         secho.assert_has_calls(
@@ -411,7 +411,7 @@ class TestErrors:
         runner: CliRunner,
     ):
         main_process.side_effect = Exception()
-        result = runner.invoke(cli.main, [])
+        result = runner.invoke(__main__.main, [])
         assert result.exit_code == 3
         build_config.assert_called()
         secho.assert_any_call("Aborted due to Internal Error!", fg="red")

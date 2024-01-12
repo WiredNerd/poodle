@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import ast
 
-from poodle.data_types import FileMutation, Mutator
+from poodle import FileMutation, Mutator
 
 
 class UnaryOperationMutator(ast.NodeVisitor, Mutator):

@@ -1,6 +1,6 @@
 from unittest import mock
 
-from poodle.data_types.work import EchoWrapper, PoodleWork, logger
+from poodle.common.work import EchoWrapper, PoodleWork, logger
 from tests.data_types.test_data import PoodleConfigStub
 
 

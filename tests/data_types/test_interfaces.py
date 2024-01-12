@@ -4,8 +4,8 @@ from unittest import mock
 import click
 import pytest
 
-from poodle.data_types.data import FileMutation, PoodleConfig
-from poodle.data_types.interfaces import Mutator, create_mutations, reporter, runner
+from poodle.common.data import FileMutation, PoodleConfig
+from poodle.common.interfaces import Mutator, create_mutations, reporter, runner
 
 
 def test_create_mutations():

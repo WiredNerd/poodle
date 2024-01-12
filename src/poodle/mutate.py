@@ -9,7 +9,7 @@ from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Callable
 
 from . import PoodleInputError
-from .data_types import FileMutation, Mutant, Mutator, PoodleWork
+from . import FileMutation, Mutant, Mutator, PoodleWork
 from .mutators import (
     AugAssignMutator,
     BinaryOperationMutator,
@@ -24,7 +24,7 @@ from .mutators import (
     StringMutator,
     UnaryOperationMutator,
 )
-from .util import dynamic_import, files_list_for_folder
+from .common.util import dynamic_import, files_list_for_folder
 
 if TYPE_CHECKING:
     from pathlib import Path

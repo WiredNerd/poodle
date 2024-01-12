@@ -5,9 +5,9 @@ from unittest import mock
 
 import pytest
 
-from poodle.data_types import Mutant, MutantTrialResult
+from poodle.common import Mutant, MutantTrialResult
 from poodle.runners import command_line
-from poodle.util import pprint_str
+from poodle.common.util import pprint_str
 
 
 @pytest.fixture()

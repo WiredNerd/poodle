@@ -5,7 +5,7 @@ from __future__ import annotations
 import ast
 from copy import deepcopy
 
-from poodle.data_types import FileMutation, Mutator
+from poodle import FileMutation, Mutator
 
 
 class FunctionCallMutator(ast.NodeVisitor, Mutator):

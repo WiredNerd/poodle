@@ -3,7 +3,7 @@ from unittest import mock
 import pytest
 
 from poodle import PoodleNoMutantsFoundError, PoodleTestingFailedError, core
-from poodle.data_types import MutantTrial, PoodleWork
+from poodle.common import MutantTrial, PoodleWork
 from tests.data_types.test_data import PoodleConfigStub
 
 

@@ -7,7 +7,7 @@ from unittest import mock
 import pytest
 
 import poodle
-from poodle.data_types import Mutant, MutantTrial, MutantTrialResult, TestingResults, TestingSummary
+from poodle.common import Mutant, MutantTrial, MutantTrialResult, TestingResults, TestingSummary
 from poodle.reporters import html
 from tests.data_types.test_data import PoodleConfigStub
 

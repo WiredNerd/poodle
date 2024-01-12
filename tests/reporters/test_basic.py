@@ -5,8 +5,8 @@ from unittest import mock
 
 import pytest
 
-from poodle import util
-from poodle.data_types import Mutant, MutantTrial, MutantTrialResult, TestingResults, TestingSummary
+from poodle.common import util
+from poodle.common import Mutant, MutantTrial, MutantTrialResult, TestingResults, TestingSummary
 from poodle.reporters import basic, report_not_found, report_summary
 from tests.data_types.test_data import PoodleConfigStub
 
@@ -285,7 +285,7 @@ class TestReportJson:
         )
         basic.report_json(
             config=PoodleConfigStub(reporter_opts={}),
-            echo=mock_echo,
+            secho=mock_echo,
             testing_results=results,
         )
 
@@ -310,7 +310,7 @@ class TestReportJson:
         )
         basic.report_json(
             config=PoodleConfigStub(reporter_opts={}),
-            echo=mock_echo,
+            secho=mock_echo,
             testing_results=results,
         )
 
@@ -335,7 +335,7 @@ class TestReportJson:
         )
         basic.report_json(
             config=PoodleConfigStub(reporter_opts={"json_report_found": True}),
-            echo=mock_echo,
+            secho=mock_echo,
             testing_results=results,
         )
 
@@ -358,7 +358,7 @@ class TestReportJson:
         )
         basic.report_json(
             config=PoodleConfigStub(reporter_opts={"json_include_summary": False}),
-            echo=mock_echo,
+            secho=mock_echo,
             testing_results=results,
         )
 
@@ -383,7 +383,7 @@ class TestReportJson:
         )
         basic.report_json(
             config=PoodleConfigStub(reporter_opts={"json_report_file": Path("outfile.json")}),
-            echo=mock_echo,
+            secho=mock_echo,
             testing_results=results,
         )
 
@@ -410,7 +410,7 @@ class TestReportJson:
         )
         basic.report_json(
             config=PoodleConfigStub(reporter_opts={"json_report_file": "sysout"}),
-            echo=mock_echo,
+            secho=mock_echo,
             testing_results=results,
         )
 

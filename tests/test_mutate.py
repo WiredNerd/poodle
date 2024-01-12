@@ -4,7 +4,7 @@ from unittest import mock
 import pytest
 
 from poodle import PoodleInputError, mutate
-from poodle.data_types import FileMutation, Mutant, Mutator, PoodleWork
+from poodle.common import FileMutation, Mutant, Mutator, PoodleWork
 from tests.data_types.test_data import PoodleConfigStub
 
 

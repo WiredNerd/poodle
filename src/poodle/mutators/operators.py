@@ -5,7 +5,7 @@ from __future__ import annotations
 import ast
 from typing import Callable, ClassVar
 
-from poodle.data_types import FileMutation, Mutator, PoodleConfig
+from poodle import FileMutation, Mutator, PoodleConfig
 
 
 class OperationMutator(ast.NodeVisitor, Mutator):

@@ -9,8 +9,8 @@ import subprocess
 from pathlib import Path
 from subprocess import TimeoutExpired
 
-from poodle.data_types import Mutant, MutantTrialResult, PoodleConfig
-from poodle.util import pprint_str
+from poodle import Mutant, MutantTrialResult, PoodleConfig
+from poodle.common.util import pprint_str
 
 logger = logging.getLogger(__name__)
 

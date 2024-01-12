@@ -17,7 +17,8 @@ from wcmatch.pathlib import Path
 if TYPE_CHECKING:
     import pathlib
 
-    from .data_types import Mutant, MutantTrial, PoodleConfig, PoodleSerialize, PoodleWork
+    from .data import Mutant, MutantTrial, PoodleConfig, PoodleSerialize
+    from .work import PoodleWork
 
 logger = logging.getLogger(__name__)
 
@@ -121,12 +122,12 @@ def create_unified_diff(mutant: Mutant) -> str | None:
 
 
 def to_json(obj: PoodleSerialize, indent: int | str | None = None) -> str:
-    """Convert dataclass to json string."""
+    """Convert Class that extends PoodleSerialize to json string."""
     return json.dumps(obj, indent=indent, default=lambda x: x.to_dict())
 
 
 def from_json(data: str, datatype: type[PoodleSerialize]) -> PoodleSerialize:
-    """Convert json string to dataclass."""
+    """Convert json string to PoodleSerialize dataclass."""
     return datatype(**json.loads(data, object_hook=datatype.from_dict))
 
 

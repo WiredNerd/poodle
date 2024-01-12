@@ -3,8 +3,8 @@ from unittest import mock
 
 import pytest
 
-from poodle import util
-from poodle.data_types import Mutant, MutantTrial, PoodleWork
+from poodle.common import util
+from poodle.common import Mutant, MutantTrial, PoodleWork
 from tests.data_types.test_data import PoodleConfigStub
 
 
