@@ -11,12 +11,21 @@ from poodle import PoodleConfigData, PoodleOptionCollector, TestingResults, Test
 hookimpl = pluggy.HookimplMarker("poodle")
 
 
+@hookimpl(specname="register_plugins")
+def register_plugins(plugin_manager: pluggy.PluginManager) -> None:
+    """Register SYSOUT Reporter Class."""
+    plugin_manager.register(SysoutReporter())
+
+
 class SysoutReporter:
     show_not_found = True
 
     @hookimpl(specname="add_options")
     def add_options(self, options: PoodleOptionCollector) -> None:
-        options.add_file_option("display_not_found", "Show not found Mutations in sysout.")
+        options.add_file_option(
+            field_name="display_not_found",
+            description="Show not found Mutations in sysout.",
+        )
 
     @hookimpl(specname="configure")
     def configure(self, config: PoodleConfigData) -> None:

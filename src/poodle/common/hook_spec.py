@@ -12,6 +12,11 @@ from .data import TestingResults
 hookspec = pluggy.HookspecMarker("poodle")
 
 
+@hookspec(historic=True)
+def register_plugins(plugin_manager: pluggy.PluginManager) -> None:
+    """Register Other Plugins."""
+
+
 @hookspec()
 def add_options(options: PoodleOptionCollector) -> None:
     """Add Command Line Options."""

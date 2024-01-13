@@ -5,13 +5,18 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Callable
 
-import click
 import pluggy
 
 from poodle import PoodleConfigData, PoodleOptionCollector, TestingResults
 from poodle.common.util import to_json
 
 hookimpl = pluggy.HookimplMarker("poodle")
+
+
+@hookimpl(specname="register_plugins")
+def register_plugins(plugin_manager: pluggy.PluginManager) -> None:
+    """Register JSON Reporter Class."""
+    plugin_manager.register(JsonReporter())
 
 
 class JsonReporter:
@@ -24,10 +29,27 @@ class JsonReporter:
     @hookimpl(specname="add_options")
     def add_options(self, options: PoodleOptionCollector) -> None:
         options.add_cli_option("--json", help="File to create with JSON report.")
-        options.add_file_option("json_reporter.report_file", "File to create with JSON report.")
-        options.add_file_option("json_reporter.include_found", "Include found mutants in JSON report.")
-        options.add_file_option("json_reporter.include_not_found", "Include not found mutants in JSON report.")
-        options.add_file_option("json_reporter.include_summary", "Include summary in JSON report.")
+        options.add_group_description("json_reporter", "JSON Reporter Options in dict.")
+        options.add_file_option(
+            group="json_reporter",
+            field_name=".report_file",
+            description="File to create with JSON report.",
+        )
+        options.add_file_option(
+            group="json_reporter",
+            field_name=".include_found",
+            description="Include found mutants in JSON report.",
+        )
+        options.add_file_option(
+            group="json_reporter",
+            field_name=".include_not_found",
+            description="Include not found mutants in JSON report.",
+        )
+        options.add_file_option(
+            group="json_reporter",
+            field_name=".include_summary",
+            description="Include summary in JSON report.",
+        )
 
     @hookimpl(specname="configure")
     def configure(self, config: PoodleConfigData) -> None:

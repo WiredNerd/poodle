@@ -22,6 +22,12 @@ if TYPE_CHECKING:
 hookimpl = pluggy.HookimplMarker("poodle")
 
 
+@hookimpl(specname="register_plugins")
+def register_plugins(plugin_manager: pluggy.PluginManager) -> None:
+    """Register HTML Reporter Class."""
+    plugin_manager.register(HtmlReporter())
+
+
 class HtmlReporter:
     def template_path(self) -> Path:
         """Return the path to the HTML Template folder."""
@@ -41,10 +47,21 @@ class HtmlReporter:
     @hookimpl(specname="add_options")
     def add_options(self, options: PoodleOptionCollector) -> None:
         options.add_cli_option("--html", help="Folder to create with HTML report.", type=click.Path(path_type=Path))
-        options.add_file_option("html_reporter.report_folder", "Folder name to store HTML report in.")
-        options.add_file_option("html_reporter.include_found_trials_on_index", "Include found trials on index page.")
+        options.add_group_description("html_reporter", "HTML Reporter Options in dict.")
         options.add_file_option(
-            "html_reporter.include_found_trials_with_source", "Include found trials with source code pages."
+            group="html_reporter",
+            field_name=".report_folder",
+            description="Folder name to store HTML report in.",
+        )
+        options.add_file_option(
+            group="html_reporter",
+            field_name=".include_found_trials_on_index",
+            description="Include found trials on index page.",
+        )
+        options.add_file_option(
+            group="html_reporter",
+            field_name=".include_found_trials_with_source",
+            description="Include found trials with source code pages.",
         )
 
     @hookimpl(specname="configure")

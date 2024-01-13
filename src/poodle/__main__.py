@@ -19,9 +19,13 @@ from . import (
 from .common.base import poodle_config
 from .common.config import PoodleConfigData
 from .config import build_config
-from .plugins import options_from_plugins
-from .plugins import plugin_manager as pm
-from .plugins import register_plugins
+from .plugins import (
+    click_epilog_from_plugins,
+    click_options_from_plugins,
+    collect_options,
+    plugin_manager,
+    register_plugins,
+)
 
 register_plugins()
 
@@ -30,8 +34,10 @@ CONTEXT_SETTINGS = {
     "max_content_width": 120,
 }
 
+collect_options()
 
-@click.group(context_settings=CONTEXT_SETTINGS, invoke_without_command=True)
+
+@click.group(context_settings=CONTEXT_SETTINGS, invoke_without_command=True, epilog=click_epilog_from_plugins())
 @click.argument("sources", type=click.Path(exists=True, path_type=Path), nargs=-1)
 @click.option("-c", "config_file", help="Configuration File.", type=click.Path(exists=True, path_type=Path))
 @click.option("-q", "quiet", help="Quiet mode: q, qq, or qqq", count=True)
@@ -40,7 +46,7 @@ CONTEXT_SETTINGS = {
 @click.option("--exclude", help="Add a glob exclude file filter. Multiple allowed.", multiple=True)
 @click.option("--only", help="Glob pattern for files to mutate. Multiple allowed.", multiple=True)
 @click.option("--report", help="Enable reporter by name. Multiple allowed.", multiple=True)
-@options_from_plugins()
+@click_options_from_plugins()
 @click.option("--fail_under", help="Fail if mutation score is under this value.", type=float)
 @click.version_option(version=__version__)
 def main(**cmd_kwargs: dict) -> None:
@@ -66,7 +72,7 @@ def main(**cmd_kwargs: dict) -> None:
         sys.exit(4)
 
     try:
-        pm.hook.configure(config=config_data, poodle_config=poodle_config, cmd_kwargs=cmd_kwargs)
+        plugin_manager.hook.configure(config=config_data, poodle_config=poodle_config, cmd_kwargs=cmd_kwargs)
         core.main_process(config, config_data)
     except PoodleTestingFailedError as err:
         for arg in err.args:
