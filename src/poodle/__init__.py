@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-__version__ = "1.3.2"
+__version__ = "2.0.0"
 
 from poodle.common.base import PoodleOptionCollector
 from poodle.common.config import PoodleConfigData
