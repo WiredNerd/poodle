@@ -1,28 +1,21 @@
 from __future__ import annotations
 
-import importlib
-import sys
 from collections import OrderedDict
 from collections.abc import Iterable
 from contextlib import suppress
 from functools import cached_property
 from pathlib import Path
-from types import ModuleType
 from typing import Any
 
 from mergedeep import merge  # type: ignore[import-untyped]
 
 from .exceptions import PoodleInputError
+from .util import get_poodle_config
 
 try:
     import tomllib  # type: ignore [import-not-found]
 except ModuleNotFoundError:  # < py3.11
     import tomli as tomllib  # type: ignore [no-redef]
-
-poodle_config: ModuleType | None = None
-with suppress(ImportError):
-    sys.path.append(str(Path.cwd()))
-    poodle_config = importlib.import_module("poodle_config")
 
 
 class PoodleConfigBase:
@@ -31,7 +24,7 @@ class PoodleConfigBase:
     def __init__(self, cmd_kwargs: dict) -> None:
         """Initialize Poodle Configuration."""
         self.cmd_kwargs = cmd_kwargs
-        self.poodle_config = poodle_config
+        self.poodle_config = get_poodle_config()
 
     @cached_property
     def config_file(self) -> Path | None:
@@ -48,10 +41,10 @@ class PoodleConfigBase:
                 raise PoodleInputError(msg)
             return config_file
 
-        if hasattr(poodle_config, "config_file"):
-            config_file = Path(poodle_config.config_file)
+        if hasattr(self.poodle_config, "config_file"):
+            config_file = Path(self.poodle_config.config_file)
             if not config_file.is_file():
-                msg = f"config_file not found: '{poodle_config.config_file}'"
+                msg = f"config_file not found: '{self.poodle_config.config_file}'"
                 raise PoodleInputError(msg)
             return config_file
 
@@ -119,9 +112,9 @@ class PoodleConfigBase:
                 msg = f"{option_name} in config file {self.config_file} must be a valid dict"
                 raise PoodleInputError(msg) from None
 
-        if hasattr(poodle_config, option_name):
+        if hasattr(self.poodle_config, option_name):
             try:
-                merge(option_value, getattr(poodle_config, option_name))
+                merge(option_value, getattr(self.poodle_config, option_name))
             except TypeError:
                 msg = f"{option_name} in poodle_config.py must be a valid dict"
                 raise PoodleInputError(msg) from None
@@ -144,8 +137,8 @@ class PoodleConfigBase:
         if cmd_option_name and (self.cmd_kwargs[cmd_option_name] or self.cmd_kwargs[cmd_option_name] is False):
             return self.cmd_kwargs[cmd_option_name], "Command Line"
 
-        if hasattr(poodle_config, option_name):
-            return getattr(poodle_config, option_name), "poodle_config.py"
+        if hasattr(self.poodle_config, option_name):
+            return getattr(self.poodle_config, option_name), "poodle_config.py"
 
         if option_name in self.config_file_data:
             return self.config_file_data[option_name], "config file"

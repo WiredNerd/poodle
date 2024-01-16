@@ -5,10 +5,21 @@ from __future__ import annotations
 import ast
 from typing import Callable, ClassVar
 
-from poodle import FileMutation, Mutator, PoodleConfig
+import pluggy
+
+from poodle import FileMutation, MutatorBase, PoodleConfigData
+
+hookimpl = pluggy.HookimplMarker("poodle")
 
 
-class OperationMutator(ast.NodeVisitor, Mutator):
+@hookimpl(specname="register_plugins")
+def register_plugins(plugin_manager: pluggy.PluginManager) -> None:
+    """Register Operator Mutator Classes."""
+    plugin_manager.register(BinaryOperationMutator(), "BinaryOperationMutator")
+    plugin_manager.register(AugAssignMutator(), "AugAssignMutator")
+
+
+class OperationMutator(ast.NodeVisitor, MutatorBase):
     """Base class for mutating operations."""
 
     # Binary Operators as of Python 3.12:
@@ -73,22 +84,24 @@ class OperationMutator(ast.NodeVisitor, Mutator):
         },
     }
 
-    def __init__(self, config: PoodleConfig, echo: Callable, *args, **kwargs) -> None:
-        """Initialize and read settings."""
-        super().__init__(config, echo, *args, **kwargs)
-        self.mutants: list[FileMutation] = []
+    @hookimpl()
+    def configure(self, config: PoodleConfigData, secho: Callable) -> None:
+        mutator_opts = config.merge_dict_from_config("mutator_opts", {})
+        level = mutator_opts.get("operator_level", "std")
 
-        level = self.config.mutator_opts.get("operator_level", "std")
         if level not in self.type_map_levels:
-            echo(f"WARN: Invalid value operator_opts.operator_level={level}.  Using Default value 'std'")
+            secho(f"WARN: Invalid value operator_opts.operator_level={level}.  Using Default value 'std'", fg="yellow")
             level = "std"
 
         self.type_map: dict[type, list[type]] = self.type_map_levels[level]
 
-    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
-        """Visit ast nodes and return created mutants."""
+    @hookimpl(specname="create_mutations")
+    def create_mutations(self, parsed_ast: ast.Module, config: PoodleConfigData) -> list[FileMutation]:
+        """Visit all nodes and return created mutants."""
+        if not self.is_enabled(config):
+            return []
+
         self.mutants = []
-        self.add_parent_attr(parsed_ast)
         self.visit(parsed_ast)
         return self.mutants
 

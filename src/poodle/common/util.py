@@ -2,13 +2,20 @@
 
 from __future__ import annotations
 
+import ast
 import difflib
+import importlib
 import json
 import logging
 import shutil
+import sys
+from contextlib import suppress
 from copy import deepcopy
+from functools import cache
 from io import StringIO
+from pathlib import Path
 from pprint import pprint
+from types import ModuleType
 from typing import TYPE_CHECKING, Any
 from zipfile import ZipFile
 
@@ -21,6 +28,25 @@ if TYPE_CHECKING:
     from .work import PoodleWork
 
 logger = logging.getLogger(__name__)
+
+
+def add_parent_attr(parsed_ast: ast.Module) -> None:
+    """Update all child nodes in tree with parent field."""
+    for node in ast.walk(parsed_ast):
+        for child in ast.iter_child_nodes(node):
+            child.parent = node  # type: ignore [attr-defined]
+
+
+@cache
+def get_poodle_config() -> ModuleType | None:
+    if "poodle_config" in sys.modules:
+        return sys.modules["poodle_config"]
+    with suppress(ModuleNotFoundError):
+        cwd_path = str(Path.cwd())
+        if cwd_path not in sys.path:
+            sys.path.append(str(Path.cwd()))
+        return importlib.import_module("poodle_config")
+    return None
 
 
 def files_list_for_folder(

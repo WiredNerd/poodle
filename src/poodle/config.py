@@ -15,18 +15,20 @@ from typing import Any
 from mergedeep import merge  # type: ignore[import-untyped]
 from wcmatch import glob
 
-from . import PoodleInputError
-from . import PoodleConfig
+from . import PoodleConfig, PoodleInputError
 
 try:
     import tomllib  # type: ignore [import-not-found]
 except ModuleNotFoundError:  # < py3.11
     import tomli as tomllib  # type: ignore [no-redef]
 
-poodle_config: ModuleType | None = None
-with suppress(ImportError):
-    sys.path.append(str(Path.cwd()))
-    poodle_config = importlib.import_module("poodle_config")
+# poodle_config: ModuleType | None = None
+# with suppress(ImportError):
+#     sys.path.append(str(Path.cwd()))
+#     poodle_config = importlib.import_module("poodle_config")
+#     print(poodle_config, "config")
+
+poodle_config = None
 
 
 default_source_folders = [Path("src"), Path("lib")]

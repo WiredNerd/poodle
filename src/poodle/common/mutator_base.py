@@ -1,33 +1,27 @@
-"""Abstract Classes and Model functions for Mutators, Runners, and Reporters."""
-
 from __future__ import annotations
 
 import ast
-from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Callable
 
-from .data import FileMutation, Mutant, MutantTrialResult, PoodleConfig
+from mergedeep import merge  # type: ignore[import-untyped]
 
-if TYPE_CHECKING:
-    from pathlib import Path
+from .config import PoodleConfigData
+from .data import FileMutation
 
 
-class Mutator(ABC):
-    """Abstract class for Mutators."""
-
-    def __init__(self, config: PoodleConfig, echo: Callable, *_, **__) -> None:
-        """Initialize PoodleMutator."""
-        self.config = config
-        self.echo = echo
+class MutatorBase:
+    """Base class for Mutators."""
 
     mutator_name = ""
 
-    @abstractmethod
-    def create_mutations(self, parsed_ast: ast.Module, file_lines: list[str], *_, **__) -> list[FileMutation]:
-        """Create a list of Mutants for the provided parsed Module.
+    def is_enabled(self, config: PoodleConfigData) -> bool:
+        """Return True if mutator is enabled."""
+        if self.mutator_name.lower() in config.skip_mutators:
+            return False
 
-        This will be called once with parsed ast for each Module.
-        """
+        if config.only_mutators:
+            return self.mutator_name.lower() in config.only_mutators
+
+        return True
 
     @classmethod
     def create_file_mutation(cls, node: ast.AST, text: str) -> FileMutation:
@@ -74,13 +68,6 @@ class Mutator(ABC):
 
         return (lineno, col_offset, end_lineno, end_col_offset)
 
-    @staticmethod
-    def add_parent_attr(parsed_ast: ast.Module) -> None:
-        """Update all child nodes in tree with parent field."""
-        for node in ast.walk(parsed_ast):
-            for child in ast.iter_child_nodes(node):
-                child.parent = node  # type: ignore [attr-defined]
-
     @classmethod
     def is_annotation(cls, node: ast.AST, child_node: ast.AST | None = None) -> bool:  # nomut: Keyword
         """Recursively search parent nodes to see if the starting node is part of an annotation.
@@ -99,25 +86,9 @@ class Mutator(ABC):
         return cls.is_annotation(node.parent, child_node=node)
 
     @staticmethod
-    def unparse(node: ast.AST, indent: int) -> str:
+    def unparse_indent(node: ast.AST, indent: int) -> str:
         """Unparse AST node to string.  Indent any lines that are not the first line."""
         lines = ast.unparse(node).splitlines(keepends=True)
         if len(lines) > 1:
             lines[1:] = [f"{' ' * indent}{line}" for line in lines[1:]]
         return "".join(lines)
-
-
-# runner method signature:
-def runner(  # type: ignore [empty-body]
-    config: PoodleConfig,
-    echo: Callable,
-    run_folder: Path,
-    mutant: Mutant,
-    timeout: float | None,
-    *_,
-    **__,
-) -> MutantTrialResult:
-    """Run trial of mutant in specified folder.
-
-    Files from the source folder have been copied to the run folder, and mutation has been applied.
-    """

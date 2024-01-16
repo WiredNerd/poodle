@@ -3,7 +3,7 @@ from unittest import mock
 
 import pytest
 
-from poodle.mutators.compare import ComparisonMutator
+from poodle.mutators.mutator_compare import ComparisonMutator
 
 
 @pytest.fixture()

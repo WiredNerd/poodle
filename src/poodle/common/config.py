@@ -30,11 +30,15 @@ class PoodleConfigData(PoodleConfigBase):
 
     default_work_folder = Path(".poodle-temp")
 
+    default_mutator_filter_patterns = [
+        r'.*__name__\s*==\s*(\'|")__main__(\'|").*',
+    ]
+
     # default_min_timeout = 10
     # default_timeout_multiplier = 10
     # default_runner = "command_line"
 
-    default_reporters = ["summary", "not_found"]
+    default_reporters = ["sysout"]
 
     @cached_property
     def log_format(self) -> str:
@@ -199,13 +203,29 @@ class PoodleConfigData(PoodleConfigBase):
         """Retrieve list of reporters to use."""
         return OrderedSet(self.get_str_list_from_config("reporters", "report") or self.default_reporters)
 
+    @cached_property
+    def mutator_filter_patterns(self) -> list[str]:
+        """List of filter patterns to exclude from mutation."""
+        filter_patterns = self.default_mutator_filter_patterns
+        filter_patterns += self.get_str_list_from_config("mutator_filter_patterns") or []
+        return filter_patterns
+
+    @cached_property
+    def skip_mutators(self) -> list[str]:
+        """List of disabled mutators."""
+        names = self.get_str_list_from_config("skip_mutators") or []
+        return [name.lower() for name in names]
+
+    @cached_property
+    def only_mutators(self) -> list[str]:
+        """List of enabled mutators.  Overrides skip_mutators."""
+        names = self.get_str_list_from_config("only_mutators") or []
+        return [name.lower() for name in names]
+
 
 #     cmd_fail_under: float | None,
 
-#     logging.basicConfig(format=log_format, level=log_level)
-
 #         mutator_opts=get_dict_from_config("mutator_opts", config_file_data),
-#         skip_mutators=get_str_list_from_config("skip_mutators", config_file_data, default=[]),
 #         add_mutators=get_any_list_from_config("add_mutators", config_file_data),
 #         min_timeout=get_int_from_config("min_timeout", config_file_data) or default_min_timeout,
 #         timeout_multiplier=get_int_from_config("timeout_multiplier", config_file_data) or default_timeout_multiplier,

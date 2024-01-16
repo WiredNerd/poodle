@@ -23,4 +23,5 @@ from poodle.common.exceptions import (
     PoodleTrialRunError,
 )
 from poodle.common.interfaces import Mutator
+from poodle.common.mutator_base import MutatorBase
 from poodle.common.work import PoodleWork

@@ -18,6 +18,7 @@ def register_plugins(plugin_manager: pluggy.PluginManager) -> None:
 
 
 class SysoutReporter:
+    enabled = True
     show_not_found = True
 
     @hookimpl(specname="add_options")
@@ -31,10 +32,15 @@ class SysoutReporter:
     def configure(self, config: PoodleConfigData) -> None:
         self.show_not_found = config.get_bool_from_config("display_not_found")
         self.show_not_found = True if self.show_not_found is None else self.show_not_found
+        if "sysout" in config.reporters:
+            self.enabled = True
 
     @hookimpl(specname="report_results")
     def report_sysout(self, testing_results: TestingResults, secho: Callable) -> None:
         """Echo quick summary to console."""
+        if not self.enabled:
+            return
+
         self.report_summary(testing_results.summary, secho)
         if self.show_not_found:
             self.report_not_found(testing_results, secho)

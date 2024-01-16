@@ -1,5 +1,5 @@
 """Report Mutation Testing Results."""
 
-from . import html, json, sysout
+from . import reporter_html, reporter_json, reporter_sysout
 
-reporter_plugins = [html, json, sysout]
+reporter_plugins = [reporter_html, reporter_json, reporter_sysout]

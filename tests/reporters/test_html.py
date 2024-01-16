@@ -8,7 +8,7 @@ import pytest
 
 import poodle
 from poodle.common import Mutant, MutantTrial, MutantTrialResult, TestingResults, TestingSummary
-from poodle.reporters import html
+from poodle.reporters import reporter_html
 from tests.data_types.test_data import PoodleConfigStub
 
 
@@ -184,7 +184,7 @@ def build_testing_results(mutant_trials_augassign, mutant_trials_compare) -> Tes
 class TestTemplatePath:
     @mock.patch("poodle.reporters.html.Path")
     def test_template_path(self, mock_path: mock.MagicMock):
-        assert html.template_path() == mock_path(poodle.__file__).parent.parent / "templates"
+        assert reporter_html.template_path() == mock_path(poodle.__file__).parent.parent / "templates"
 
 
 class TestStaticFiles:
@@ -193,7 +193,7 @@ class TestStaticFiles:
             "html-report.js",
             "html-report.css",
             "poodle.ico",
-        ] == html.STATIC_FILES
+        ] == reporter_html.STATIC_FILES
 
 
 class TestReportHtml:
@@ -255,7 +255,7 @@ class TestReportHtml:
         config = PoodleConfigStub(reporter_opts={"html": "not a dictionary"})
 
         with pytest.raises(TypeError, match=r"^HTML Reporter Options \(reporter_opts\.html\) must be a Dictionary\.$"):
-            html.report_html(config, mock_echo, testing_results)
+            reporter_html.report_html(config, mock_echo, testing_results)
 
     @pytest.mark.usefixtures("_setup_report_html_mocks")
     def test_report_html_report_folder(
@@ -272,7 +272,7 @@ class TestReportHtml:
 
         report_folder = mock_path.return_value
 
-        html.report_html(config, mock_echo, testing_results)
+        reporter_html.report_html(config, mock_echo, testing_results)
 
         mock_path.assert_any_call("report")
         copy_static_files.assert_called_once_with(report_folder)
@@ -289,7 +289,7 @@ class TestReportHtml:
 
         report_folder = mock_path.return_value
 
-        html.report_html(config, mock_echo, testing_results)
+        reporter_html.report_html(config, mock_echo, testing_results)
 
         mock_path.assert_any_call("mutation_reports")
         copy_static_files.assert_called_once_with(report_folder)
@@ -308,7 +308,7 @@ class TestReportHtml:
         }
         config = PoodleConfigStub(reporter_opts={"html": html_options})
 
-        html.report_html(config, mock_echo, testing_results)
+        reporter_html.report_html(config, mock_echo, testing_results)
 
         mock_package_loader.assert_called_once_with("poodle")
         loader = mock_package_loader.return_value
@@ -327,7 +327,7 @@ class TestReportHtml:
         }
         config = PoodleConfigStub(reporter_opts={"html": html_options})
 
-        html.report_html(config, mock_echo, testing_results)
+        reporter_html.report_html(config, mock_echo, testing_results)
 
         module_data.assert_called_once_with(testing_results, html_options)
 
@@ -363,7 +363,7 @@ class TestReportHtml:
         modules.items.return_value = [(source_file, module)]
         env = mock_environment.return_value
 
-        html.report_html(config, mock_echo, testing_results)
+        reporter_html.report_html(config, mock_echo, testing_results)
 
         env.get_template.assert_has_calls(
             [
@@ -410,7 +410,7 @@ class TestReportHtml:
         report_folder = mock_path.return_value
         output_files: mock.MagicMock = report_folder.__truediv__.return_value
 
-        html.report_html(config, echo, testing_results)
+        reporter_html.report_html(config, echo, testing_results)
 
         call_list = output_files.write_text.call_args_list
         for call in call_list:
@@ -432,13 +432,13 @@ class TestCopyStaticFiles:
 
     def test_copy_static_files(self, mock_shutil: mock.MagicMock, template_path: mock.MagicMock):
         report_folder = mock.MagicMock()
-        html.copy_static_files(report_folder)
+        reporter_html.copy_static_files(report_folder)
 
         templates_folder = template_path.return_value
 
         report_folder.mkdir.assert_called_once_with(parents=True, exist_ok=True)
         mock_shutil.copy2.assert_has_calls(
-            [mock.call(templates_folder / file, report_folder / file) for file in html.STATIC_FILES]
+            [mock.call(templates_folder / file, report_folder / file) for file in reporter_html.STATIC_FILES]
         )
 
 
@@ -447,14 +447,14 @@ class TestLocalTimestamp:
     def test_local_timestamp(self, mock_datetime: mock.MagicMock):
         dt = datetime.datetime(2021, 1, 1, 0, 0, 0, 0, tzinfo=datetime.timezone.utc)
         mock_datetime.datetime.now.return_value = dt
-        timestamp = html.local_timestamp()
+        timestamp = reporter_html.local_timestamp()
         assert timestamp == dt.astimezone().strftime("%Y-%m-%d %H:%M:%S%z")
 
 
 class TestModuleData:
     def test_module_data_report_file(self, testing_results):
         html_options = {}
-        module_dict = html.module_data(testing_results, html_options)
+        module_dict = reporter_html.module_data(testing_results, html_options)
 
         augassign_path = Path("example/src/augassign.py")
         compare_path = Path("example/src/compare.py")
@@ -471,7 +471,7 @@ class TestModuleData:
 
     def test_module_data_file_id(self, testing_results):
         html_options = {}
-        module_dict = html.module_data(testing_results, html_options)
+        module_dict = reporter_html.module_data(testing_results, html_options)
 
         augassign_path = Path("example/src/augassign.py")
         compare_path = Path("example/src/compare.py")
@@ -481,7 +481,7 @@ class TestModuleData:
 
     def test_module_data_trials_found(self, testing_results, mutant_trials_augassign, mutant_trials_compare):
         html_options = {"include_found_trials_on_index": True}
-        module_dict = html.module_data(testing_results, html_options)
+        module_dict = reporter_html.module_data(testing_results, html_options)
 
         augassign_path = Path("example/src/augassign.py")
         compare_path = Path("example/src/compare.py")
@@ -499,7 +499,7 @@ class TestModuleData:
         ],
     )
     def test_module_data_trials_not_found(self, html_options, testing_results, mutant_trials_augassign):
-        module_dict = html.module_data(testing_results, html_options)
+        module_dict = reporter_html.module_data(testing_results, html_options)
 
         augassign_path = Path("example/src/augassign.py")
         compare_path = Path("example/src/compare.py")
@@ -515,7 +515,7 @@ class TestModuleData:
         ],
     )
     def test_module_data_lines_found(self, html_options, testing_results, mutant_trials_augassign):
-        module_dict = html.module_data(testing_results, html_options)
+        module_dict = reporter_html.module_data(testing_results, html_options)
 
         augassign_path = Path("example/src/augassign.py")
 
@@ -534,7 +534,7 @@ class TestModuleData:
 
     def test_module_data_lines_not_found(self, testing_results, mutant_trials_augassign):
         html_options = {"include_found_trials_with_source": False}
-        module_dict = html.module_data(testing_results, html_options)
+        module_dict = reporter_html.module_data(testing_results, html_options)
 
         augassign_path = Path("example/src/augassign.py")
 
@@ -553,7 +553,7 @@ class TestModuleData:
 
     def test_module_data_lines_summary(self, testing_results):
         html_options = {"include_found_trials_with_source": False}
-        module_dict = html.module_data(testing_results, html_options)
+        module_dict = reporter_html.module_data(testing_results, html_options)
 
         augassign_path = Path("example/src/augassign.py")
 
@@ -568,7 +568,7 @@ class TestModuleData:
 
     def test_module_data_include_found(self, testing_results, mutant_trials_augassign):
         html_options = {"include_found_details": True}
-        module_dict = html.module_data(testing_results, html_options)
+        module_dict = reporter_html.module_data(testing_results, html_options)
 
         augassign_path = Path("example/src/augassign.py")
 
@@ -584,14 +584,14 @@ class TestModuleTrials:
     def test_module_trials(self, mutant_trials_augassign: list, mutant_trials_compare: list):
         module = Path("example/src/augassign.py")
         mutant_trials = mutant_trials_augassign + mutant_trials_compare
-        assert list(html.module_trials(module, mutant_trials)) == mutant_trials_augassign
+        assert list(reporter_html.module_trials(module, mutant_trials)) == mutant_trials_augassign
 
 
 class TestModuleLines:
     def test_module_lines(self):
         module = mock.MagicMock()
         module.read_text.return_value = module_augassign
-        lines = list(html.module_lines(module))
+        lines = list(reporter_html.module_lines(module))
 
         assert lines[0] == {
             "lineno": 1,
@@ -613,9 +613,9 @@ class TestModuleTrialsToLines:
     def test_module_add_trials_to_lines_not_found_only(self, mutant_trials_augassign):
         module = mock.MagicMock()
         module.read_text.return_value = module_augassign
-        lines = list(html.module_lines(module))
+        lines = list(reporter_html.module_lines(module))
 
-        html.module_add_trials_to_lines(mutant_trials_augassign, lines, False)
+        reporter_html.module_add_trials_to_lines(mutant_trials_augassign, lines, False)
 
         assert lines[0]["trials"] == []
         assert lines[0]["row_class"] == "plain"
@@ -632,9 +632,9 @@ class TestModuleTrialsToLines:
     def test_module_add_trials_to_lines_include_found(self, mutant_trials_augassign):
         module = mock.MagicMock()
         module.read_text.return_value = module_augassign
-        lines = list(html.module_lines(module))
+        lines = list(reporter_html.module_lines(module))
 
-        html.module_add_trials_to_lines(mutant_trials_augassign, lines, True)
+        reporter_html.module_add_trials_to_lines(mutant_trials_augassign, lines, True)
 
         assert lines[0]["trials"] == []
         assert lines[0]["row_class"] == "plain"
@@ -651,9 +651,9 @@ class TestModuleTrialsToLines:
     def test_module_add_trials_to_lines_found_first(self, mutant_trials_augassign):
         module = mock.MagicMock()
         module.read_text.return_value = module_augassign
-        lines = list(html.module_lines(module))
+        lines = list(reporter_html.module_lines(module))
 
-        html.module_add_trials_to_lines(
+        reporter_html.module_add_trials_to_lines(
             [
                 mutant_trials_augassign[2],
                 mutant_trials_augassign[3],
@@ -668,9 +668,9 @@ class TestModuleTrialsToLines:
     def test_module_add_trials_to_lines_not_found_first(self, mutant_trials_augassign):
         module = mock.MagicMock()
         module.read_text.return_value = module_augassign
-        lines = list(html.module_lines(module))
+        lines = list(reporter_html.module_lines(module))
 
-        html.module_add_trials_to_lines(
+        reporter_html.module_add_trials_to_lines(
             [
                 mutant_trials_augassign[3],
                 mutant_trials_augassign[2],
@@ -685,7 +685,7 @@ class TestModuleTrialsToLines:
 
 class TestModuleSummary:
     def test_module_summary(self, mutant_trials_augassign: list[MutantTrial]):
-        assert html.module_summary(mutant_trials_augassign) == TestingSummary(
+        assert reporter_html.module_summary(mutant_trials_augassign) == TestingSummary(
             trials=4,
             tested=4,
             found=2,
@@ -697,7 +697,7 @@ class TestModuleSummary:
 
 class TestRemoveFoundTrials:
     def test_remove_found_trials(self, mutant_trials_augassign: list[MutantTrial]):
-        assert html.remove_found_trials(mutant_trials_augassign) == [
+        assert reporter_html.remove_found_trials(mutant_trials_augassign) == [
             mutant_trials_augassign[1],
             mutant_trials_augassign[3],
         ]

@@ -6,98 +6,34 @@ import ast
 import logging
 import re
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Callable
 
-from . import PoodleInputError
-from . import FileMutation, Mutant, Mutator, PoodleWork
-from .mutators import (
-    AugAssignMutator,
-    BinaryOperationMutator,
-    ComparisonMutator,
-    DecoratorMutator,
-    DictArrayCallMutator,
-    FunctionCallMutator,
-    KeywordMutator,
-    LambdaReturnMutator,
-    NumberMutator,
-    ReturnMutator,
-    StringMutator,
-    UnaryOperationMutator,
-)
-from .common.util import dynamic_import, files_list_for_folder
+import pluggy
+
+from . import FileMutation, Mutant, Mutator, PoodleConfigData, PoodleInputError, PoodleWork
+from .common import util
+from .common.util import files_list_for_folder
 
 if TYPE_CHECKING:
     from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-builtin_mutators = {
-    BinaryOperationMutator.mutator_name: BinaryOperationMutator,
-    AugAssignMutator.mutator_name: AugAssignMutator,
-    UnaryOperationMutator.mutator_name: UnaryOperationMutator,
-    ComparisonMutator.mutator_name: ComparisonMutator,
-    KeywordMutator.mutator_name: KeywordMutator,
-    NumberMutator.mutator_name: NumberMutator,
-    StringMutator.mutator_name: StringMutator,
-    FunctionCallMutator.mutator_name: FunctionCallMutator,
-    DictArrayCallMutator.mutator_name: DictArrayCallMutator,
-    LambdaReturnMutator.mutator_name: LambdaReturnMutator,
-    ReturnMutator.mutator_name: ReturnMutator,
-    DecoratorMutator.mutator_name: DecoratorMutator,
-}
 
-
-def initialize_mutators(work: PoodleWork) -> list[Callable | Mutator]:
-    """Initialize all mutators from standard list and from config options."""
-    skip_mutators = [name.lower() for name in work.config.skip_mutators]
-    mutators: list[Any] = []
-    if "all" not in skip_mutators:
-        mutators.extend([mutator for name, mutator in builtin_mutators.items() if name.lower() not in skip_mutators])
-    mutators.extend(work.config.add_mutators)
-
-    return [initialize_mutator(work, mut_def) for mut_def in mutators]
-
-
-def initialize_mutator(work: PoodleWork, mutator_def: Any) -> Callable | Mutator:  # noqa: ANN401
-    """Import and initialize a Mutator.
-
-    mutator_def may be string of object to import, Callable, Mutator subclass or Mutator subclass instance.
-    """
-    logger.debug(mutator_def)
-
-    if mutator_def in builtin_mutators:
-        mutator_def = builtin_mutators[mutator_def]
-
-    if isinstance(mutator_def, str):
-        try:
-            mutator_def = dynamic_import(mutator_def)
-        except Exception as ex:  # noqa: BLE001
-            msg = f"Import failed for mutator '{mutator_def}'"
-            raise PoodleInputError(msg) from ex
-
-    if isinstance(mutator_def, type) and issubclass(mutator_def, Mutator):
-        return mutator_def(config=work.config, echo=work.echo)
-
-    if callable(mutator_def) or isinstance(mutator_def, Mutator):
-        return mutator_def
-
-    msg = (
-        f"Unable to create mutator '{mutator_def}' of type={type(mutator_def)}. "
-        "Expected String, Callable, Mutator subclass or Mutator subclass instance."
-    )
-    raise PoodleInputError(msg)
-
-
-def create_mutants_for_all_mutators(work: PoodleWork) -> list[Mutant]:
+def create_mutants_for_all_mutators(
+    work: PoodleWork, config_data: PoodleConfigData, pm: pluggy.PluginManager
+) -> list[Mutant]:
     """Create consolidated, flattened list of all mutants to be tried."""
     return [
         mutant
         for folder, files in get_target_files(work).items()
         for file in files
         for mutant in create_mutants_for_file(
-            work,
-            folder,
-            file,
+            work=work,
+            config_data=config_data,
+            folder=folder,
+            file=file,
+            pm=pm,
         )
     ]
 
@@ -134,7 +70,9 @@ def get_target_files(work: PoodleWork) -> dict[Path, list[Path]]:
     }
 
 
-def create_mutants_for_file(work: PoodleWork, folder: Path, file: Path) -> list[Mutant]:
+def create_mutants_for_file(
+    work: PoodleWork, config_data: PoodleConfigData, folder: Path, file: Path, pm: pluggy.PluginManager
+) -> list[Mutant]:
     """Create all mutants for specified file.
 
     * Parse ast from file.
@@ -145,6 +83,7 @@ def create_mutants_for_file(work: PoodleWork, folder: Path, file: Path) -> list[
     logger.debug("Create Mutants for file %s", file)
 
     parsed_ast = ast.parse(file.read_bytes(), file)
+    util.add_parent_attr(parsed_ast)
     file_lines = file.read_text("utf-8").splitlines()
 
     def call_mutator(mutator: Callable | Mutator) -> list[FileMutation]:
@@ -152,16 +91,31 @@ def create_mutants_for_file(work: PoodleWork, folder: Path, file: Path) -> list[
             return mutator.create_mutations(parsed_ast=deepcopy(parsed_ast), file_lines=deepcopy(file_lines))
         return mutator(config=work.config, parsed_ast=deepcopy(parsed_ast), file_lines=deepcopy(file_lines))
 
-    mutant_nested_list = [call_mutator(mutator) for mutator in work.mutators]
-    file_mutants = [mutant for mutant_list in mutant_nested_list if mutant_list for mutant in mutant_list]
+    parsed_ast_plugin_copy = deepcopy(parsed_ast)
+    file_lines_plugin_copy = deepcopy(file_lines)
+    mutant_nested_list = pm.hook.create_mutations(
+        parsed_ast=parsed_ast_plugin_copy, file_lines=file_lines_plugin_copy, config=config_data
+    )
+    if ast.dump(parsed_ast_plugin_copy, include_attributes=True) != ast.dump(parsed_ast, include_attributes=True):
+        raise PoodleInputError(
+            "Plugin Mutators may not modify the parsed_ast.",
+            "Ensure no plugin mutators modify the parsed_ast.",
+        )
+    if file_lines_plugin_copy != file_lines:
+        raise PoodleInputError(
+            "Plugin Mutators may not modify the file_lines.",
+            "Ensure no plugin mutators modify the file_lines.",
+        )
 
-    line_filters = parse_filters(file_lines)
+    file_mutants = [mutant for mutant_list in mutant_nested_list for mutant in mutant_list]
+
+    line_filters = parse_filters(file_lines, config_data.mutator_filter_patterns)
     file_mutants = [mut for mut in file_mutants if not is_filtered(line_filters, mut)]
 
     return [Mutant(source_folder=folder, source_file=file, **vars(file_mutant)) for file_mutant in file_mutants]
 
 
-def parse_filters(file_lines: list[str]) -> dict[int, set[str]]:
+def parse_filters(file_lines: list[str], filter_patterns: list[str]) -> dict[int, set[str]]:
     r"""Parse text for comments to filter mutations.
 
     Block all mutations:
@@ -183,8 +137,11 @@ def parse_filters(file_lines: list[str]) -> dict[int, set[str]]:
     no_mut_on = False
 
     for lineno, line in enumerate(file_lines, start=1):
+        # pragma filter
         if re.search(r"#\s*pragma:\s*no mutate[\s#$]*", line):
             add_line_filter(line_filters, lineno, "all")
+
+        # nomut filters
         no_mut_filter: list[str] = re.findall(r"#\s*nomut:?\s*([A-Za-z0-9,\s]*)[#$]*", line)
 
         if no_mut_filter and no_mut_filter[0].strip().lower() in ("start", "on"):
@@ -199,6 +156,11 @@ def parse_filters(file_lines: list[str]) -> dict[int, set[str]]:
 
         if no_mut_filter and no_mut_filter[0].strip().lower() in ("end", "off"):
             no_mut_on = False
+
+        # filter patterns
+        for filter in filter_patterns:
+            if re.search(filter, line):
+                add_line_filter(line_filters, lineno, "all")
 
     return line_filters
 

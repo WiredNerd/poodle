@@ -4,10 +4,20 @@ from __future__ import annotations
 
 import ast
 
-from poodle import FileMutation, Mutator
+import pluggy
+
+from poodle import FileMutation, MutatorBase, PoodleConfigData
+
+hookimpl = pluggy.HookimplMarker("poodle")
 
 
-class UnaryOperationMutator(ast.NodeVisitor, Mutator):
+@hookimpl(specname="register_plugins")
+def register_plugins(plugin_manager: pluggy.PluginManager) -> None:
+    """Register Unary Op Mutator Class."""
+    plugin_manager.register(UnaryOperationMutator(), "UnaryOperationMutator")
+
+
+class UnaryOperationMutator(ast.NodeVisitor, MutatorBase):
     """Mutate Unary Operations."""
 
     # https://docs.python.org/3/library/ast.html#ast.UnaryOp
@@ -18,10 +28,13 @@ class UnaryOperationMutator(ast.NodeVisitor, Mutator):
     # ast.Invert    ~
 
     mutator_name = "UnaryOp"
-    mutants: list[FileMutation]
 
-    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -> list[FileMutation]:
+    @hookimpl(specname="create_mutations")
+    def create_mutations(self, parsed_ast: ast.Module, config: PoodleConfigData) -> list[FileMutation]:
         """Visit all Unary Operations and return created mutants."""
+        if not self.is_enabled(config):
+            return []
+
         self.mutants = []
         self.visit(parsed_ast)
         return self.mutants

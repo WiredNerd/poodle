@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 import sys
 import traceback
 from pathlib import Path
 
 import click
+
+from poodle.common.work import EchoWrapper
 
 from . import (
     PoodleInputError,
@@ -16,8 +19,8 @@ from . import (
     __version__,
     core,
 )
-from .common.base import poodle_config
 from .common.config import PoodleConfigData
+from .common.util import get_poodle_config
 from .config import build_config
 from .plugins import (
     click_epilog_from_plugins,
@@ -66,14 +69,21 @@ def main(**cmd_kwargs: dict) -> None:
             cmd_json=cmd_kwargs["json"],
             cmd_fail_under=cmd_kwargs["fail_under"],
         )
+        secho = EchoWrapper(config_data.echo_enabled, config_data.echo_no_color)
     except PoodleInputError as err:
         for arg in err.args:
             click.secho(arg, fg="red")
         sys.exit(4)
 
     try:
-        plugin_manager.hook.configure(config=config_data, poodle_config=poodle_config, cmd_kwargs=cmd_kwargs)
-        core.main_process(config, config_data)
+        plugin_manager.hook.configure(
+            config=config_data,
+            poodle_config=get_poodle_config(),
+            cmd_kwargs=cmd_kwargs,
+            secho=secho,
+        )
+        logging.basicConfig(format=config_data.log_format, level=config_data.log_level)
+        core.main_process(config, config_data, secho)
     except PoodleTestingFailedError as err:
         for arg in err.args:
             click.secho(arg, fg="yellow")

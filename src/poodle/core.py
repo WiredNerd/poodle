@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Callable
 
 from . import (
     PoodleConfig,
@@ -13,30 +14,31 @@ from . import (
     __version__,
 )
 from .common.util import calc_timeout, create_temp_zips, create_unified_diff, delete_folder, display_percent, pprint_str
-from .mutate import create_mutants_for_all_mutators, initialize_mutators
+from .mutate import create_mutants_for_all_mutators
 from .plugins import plugin_manager as pm
 from .run import clean_run_each_source_folder, get_runner, run_mutant_trails
 
 logger = logging.getLogger(__name__)
 
 
-def main_process(config: PoodleConfig, config_data: PoodleConfigData) -> None:
+def main_process(config: PoodleConfig, config_data: PoodleConfigData, secho: Callable) -> None:
     """Poodle core run process."""
 
     work = PoodleWork(config)  # sets logging defaults
     print_header(work)
     logger.info("\n%s", pprint_str(config))
+    logger.info("\n%s", pprint_str(vars(config_data)))
 
     delete_folder(config.work_folder, config)
     create_temp_zips(work)
 
-    work.mutators = initialize_mutators(work)
     work.runner = get_runner(config)
 
-    mutants = create_mutants_for_all_mutators(work)
+    mutants = create_mutants_for_all_mutators(work, config_data, pm)
     if not mutants:
         raise PoodleNoMutantsFoundError("No mutants were found to test!")
     work.echo(f"Identified {len(mutants)} mutants")
+    pm.hook.filter_mutations(mutants=mutants, config=config_data)
 
     clean_run_results = clean_run_each_source_folder(work)
     timeout = calc_timeout(config, clean_run_results)
