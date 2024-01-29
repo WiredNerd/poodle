@@ -7,13 +7,13 @@ import re
 import shutil
 from collections import OrderedDict
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 import click
 import pluggy
 from jinja2 import Environment, PackageLoader
 
-from poodle import MutantTrial, PoodleConfigData, PoodleOptionCollector, TestingResults, TestingSummary
+from poodle import EchoWrapper, MutantTrial, PoodleConfigData, PoodleOptionCollector, TestingResults, TestingSummary
 from poodle import __version__ as poodle_version
 
 if TYPE_CHECKING:
@@ -66,7 +66,7 @@ class HtmlReporter:
 
     @hookimpl(specname="configure")
     def configure(self, config: PoodleConfigData) -> None:
-        if config.cmd_kwargs.get("html", ""):
+        if "html" in config.cmd_kwargs:
             config.reporters.add("html")
         if "html" in config.reporters:
             self.enabled = True
@@ -74,6 +74,8 @@ class HtmlReporter:
         html = config.merge_dict_from_config("html_reporter")
 
         self.report_folder = Path(html.get("report_folder", self.report_folder))
+        if config.cmd_kwargs["html"]:
+            self.report_folder = Path(config.cmd_kwargs["html"])
         self.include_found_trials_on_index = html.get(
             "include_found_trials_on_index", self.include_found_trials_on_index
         )
@@ -82,7 +84,7 @@ class HtmlReporter:
         )
 
     @hookimpl(specname="report_results")
-    def report_html(self, secho: Callable, testing_results: TestingResults, config: PoodleConfigData) -> None:
+    def report_html(self, secho: EchoWrapper, testing_results: TestingResults, config: PoodleConfigData) -> None:
         """Build HTML Report for Testing Results."""
         if not self.enabled:
             return

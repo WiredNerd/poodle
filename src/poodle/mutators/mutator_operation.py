@@ -7,7 +7,7 @@ from typing import Callable, ClassVar
 
 import pluggy
 
-from poodle import FileMutation, MutatorBase, PoodleConfigData
+from poodle import FileMutation, MutatorBase, PoodleConfigData, EchoWrapper
 
 hookimpl = pluggy.HookimplMarker("poodle")
 
@@ -85,7 +85,7 @@ class OperationMutator(ast.NodeVisitor, MutatorBase):
     }
 
     @hookimpl()
-    def configure(self, config: PoodleConfigData, secho: Callable) -> None:
+    def configure(self, config: PoodleConfigData, secho: EchoWrapper) -> None:
         mutator_opts = config.merge_dict_from_config("mutator_opts", {})
         level = mutator_opts.get("operator_level", "std")
 

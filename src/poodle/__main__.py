@@ -9,7 +9,7 @@ from pathlib import Path
 
 import click
 
-from poodle.common.work import EchoWrapper
+from poodle.common.echo_wrapper import EchoWrapper
 
 from . import (
     PoodleInputError,
@@ -20,8 +20,6 @@ from . import (
     core,
 )
 from .common.config import PoodleConfigData
-from .common.util import get_poodle_config
-from .config import build_config
 from .plugins import (
     click_epilog_from_plugins,
     click_options_from_plugins,
@@ -50,26 +48,13 @@ collect_options()
 @click.option("--only", help="Glob pattern for files to mutate. Multiple allowed.", multiple=True)
 @click.option("--report", help="Enable reporter by name. Multiple allowed.", multiple=True)
 @click_options_from_plugins()
-@click.option("--fail_under", help="Fail if mutation score is under this value.", type=float)
+# @click.option("--fail_under", help="Fail if mutation score is under this value.", type=float)
 @click.version_option(version=__version__)
 def main(**cmd_kwargs: dict) -> None:
     """Poodle Mutation Test Tool."""
     try:
         config_data = PoodleConfigData(cmd_kwargs)
-        config = build_config(
-            cmd_sources=cmd_kwargs["sources"],
-            cmd_config_file=cmd_kwargs["config_file"],
-            cmd_quiet=cmd_kwargs["quiet"],
-            cmd_verbose=cmd_kwargs["verbose"],
-            cmd_max_workers=cmd_kwargs["workers"],
-            cmd_excludes=cmd_kwargs["exclude"],
-            cmd_only_files=cmd_kwargs["only"],
-            cmd_report=cmd_kwargs["report"],
-            cmd_html=cmd_kwargs["html"],
-            cmd_json=cmd_kwargs["json"],
-            cmd_fail_under=cmd_kwargs["fail_under"],
-        )
-        secho = EchoWrapper(config_data.echo_enabled, config_data.echo_no_color)
+        echo_wrapper = EchoWrapper(config_data.echo_enabled, config_data.echo_no_color)
     except PoodleInputError as err:
         for arg in err.args:
             click.secho(arg, fg="red")
@@ -78,12 +63,12 @@ def main(**cmd_kwargs: dict) -> None:
     try:
         plugin_manager.hook.configure(
             config=config_data,
-            poodle_config=get_poodle_config(),
+            poodle_config=config_data.poodle_config,
             cmd_kwargs=cmd_kwargs,
-            secho=secho,
+            secho=echo_wrapper,
         )
         logging.basicConfig(format=config_data.log_format, level=config_data.log_level)
-        core.main_process(config, config_data, secho)
+        core.main_process(config_data, echo_wrapper)
     except PoodleTestingFailedError as err:
         for arg in err.args:
             click.secho(arg, fg="yellow")

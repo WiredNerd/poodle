@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Callable
-
 import pluggy
 
-from poodle import PoodleConfigData, PoodleOptionCollector, TestingResults, TestingSummary
+from poodle import EchoWrapper, PoodleConfigData, PoodleOptionCollector, TestingResults, TestingSummary
 
 hookimpl = pluggy.HookimplMarker("poodle")
 
@@ -36,7 +34,7 @@ class SysoutReporter:
             self.enabled = True
 
     @hookimpl(specname="report_results")
-    def report_sysout(self, testing_results: TestingResults, secho: Callable) -> None:
+    def report_sysout(self, testing_results: TestingResults, secho: EchoWrapper) -> None:
         """Echo quick summary to console."""
         if not self.enabled:
             return
@@ -45,7 +43,7 @@ class SysoutReporter:
         if self.show_not_found:
             self.report_not_found(testing_results, secho)
 
-    def report_summary(self, summary: TestingSummary, secho: Callable) -> None:
+    def report_summary(self, summary: TestingSummary, secho: EchoWrapper) -> None:
         """Echo quick summary to console."""
         if summary.trials < 1:
             secho("!!! No mutants found to test !!!", fg="yellow")
@@ -61,7 +59,7 @@ class SysoutReporter:
         if summary.errors:
             secho(f" - {summary.errors} mutant(s) could not be tested due to an error.")
 
-    def report_not_found(self, testing_results: TestingResults, secho: Callable) -> None:
+    def report_not_found(self, testing_results: TestingResults, secho: EchoWrapper) -> None:
         """Echo information about Trials that did not pass."""
         failed_trials = [trial for trial in testing_results.mutant_trials if not trial.result.found]
         if not failed_trials:

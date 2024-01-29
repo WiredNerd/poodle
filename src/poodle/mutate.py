@@ -10,9 +10,11 @@ from typing import TYPE_CHECKING, Callable
 
 import pluggy
 
-from . import FileMutation, Mutant, Mutator, PoodleConfigData, PoodleInputError, PoodleWork
-from .common import util
-from .common.util import files_list_for_folder
+from .common.config import PoodleConfigData
+from .common.data import FileMutation, Mutant
+from .common.echo_wrapper import EchoWrapper
+from .common.exceptions import PoodleInputError
+from .common.file_utils import files_list_for_folder
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -21,41 +23,35 @@ logger = logging.getLogger(__name__)
 
 
 def create_mutants_for_all_mutators(
-    work: PoodleWork, config_data: PoodleConfigData, pm: pluggy.PluginManager
+    secho: EchoWrapper, config_data: PoodleConfigData, pm: pluggy.PluginManager
 ) -> list[Mutant]:
     """Create consolidated, flattened list of all mutants to be tried."""
     return [
         mutant
-        for folder, files in get_target_files(work).items()
+        for folder, files in get_target_files(config_data).items()
         for file in files
-        for mutant in create_mutants_for_file(
-            work=work,
-            config_data=config_data,
-            folder=folder,
-            file=file,
-            pm=pm,
-        )
+        for mutant in create_mutants_for_file(folder, file, secho, config_data, pm)
     ]
 
 
-def get_target_files(work: PoodleWork) -> dict[Path, list[Path]]:
+def get_target_files(config_data: PoodleConfigData) -> dict[Path, list[Path]]:
     """Create mapping from each source folder to all mutable files in that folder."""
     logger.debug(
         "get_target_files source_folders=%s only_files=%s file_filters=%s",
-        work.config.source_folders,
-        work.config.only_files,
-        work.config.source_folders,
+        config_data.source_folders,
+        config_data.only_files,
+        config_data.file_filters,
     )
 
-    if work.config.only_files:
+    if config_data.only_files:
         out: dict[Path, list[Path]] = {}
-        for folder in work.config.source_folders:
+        for folder in config_data.source_folders:
             out[folder] = []
-            for glob in work.config.only_files:
+            for glob in config_data.only_files:
                 out[folder] += files_list_for_folder(
                     folder=folder,
                     match_glob=glob,
-                    flags=work.config.file_flags,
+                    flags=config_data.file_flags,
                     filter_globs=[],
                 )
         return out
@@ -63,15 +59,19 @@ def get_target_files(work: PoodleWork) -> dict[Path, list[Path]]:
         folder: files_list_for_folder(
             folder=folder,
             match_glob="*.py",
-            flags=work.config.file_flags,
-            filter_globs=work.config.file_filters,
+            flags=config_data.file_flags,
+            filter_globs=config_data.file_filters,
         )
-        for folder in work.config.source_folders
+        for folder in config_data.source_folders
     }
 
 
 def create_mutants_for_file(
-    work: PoodleWork, config_data: PoodleConfigData, folder: Path, file: Path, pm: pluggy.PluginManager
+    folder: Path,
+    file: Path,
+    secho: EchoWrapper,
+    config_data: PoodleConfigData,
+    pm: pluggy.PluginManager,
 ) -> list[Mutant]:
     """Create all mutants for specified file.
 
@@ -83,18 +83,16 @@ def create_mutants_for_file(
     logger.debug("Create Mutants for file %s", file)
 
     parsed_ast = ast.parse(file.read_bytes(), file)
-    util.add_parent_attr(parsed_ast)
+    add_parent_attr(parsed_ast)
     file_lines = file.read_text("utf-8").splitlines()
-
-    def call_mutator(mutator: Callable | Mutator) -> list[FileMutation]:
-        if isinstance(mutator, Mutator):
-            return mutator.create_mutations(parsed_ast=deepcopy(parsed_ast), file_lines=deepcopy(file_lines))
-        return mutator(config=work.config, parsed_ast=deepcopy(parsed_ast), file_lines=deepcopy(file_lines))
 
     parsed_ast_plugin_copy = deepcopy(parsed_ast)
     file_lines_plugin_copy = deepcopy(file_lines)
     mutant_nested_list = pm.hook.create_mutations(
-        parsed_ast=parsed_ast_plugin_copy, file_lines=file_lines_plugin_copy, config=config_data
+        parsed_ast=parsed_ast_plugin_copy,
+        file_lines=file_lines_plugin_copy,
+        config=config_data,
+        secho=secho,
     )
     if ast.dump(parsed_ast_plugin_copy, include_attributes=True) != ast.dump(parsed_ast, include_attributes=True):
         raise PoodleInputError(
@@ -113,6 +111,13 @@ def create_mutants_for_file(
     file_mutants = [mut for mut in file_mutants if not is_filtered(line_filters, mut)]
 
     return [Mutant(source_folder=folder, source_file=file, **vars(file_mutant)) for file_mutant in file_mutants]
+
+
+def add_parent_attr(parsed_ast: ast.Module) -> None:
+    """Update all child nodes in tree with parent field."""
+    for node in ast.walk(parsed_ast):
+        for child in ast.iter_child_nodes(node):
+            child.parent = node  # type: ignore [attr-defined]
 
 
 def parse_filters(file_lines: list[str], filter_patterns: list[str]) -> dict[int, set[str]]:

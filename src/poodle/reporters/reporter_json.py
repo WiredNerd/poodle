@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Callable
 
 import pluggy
 
-from poodle import PoodleConfigData, PoodleOptionCollector, TestingResults
+from poodle import EchoWrapper, PoodleConfigData, PoodleOptionCollector, TestingResults
 from poodle.common.util import to_json
 
 hookimpl = pluggy.HookimplMarker("poodle")
@@ -66,7 +65,7 @@ class JsonReporter:
         self.include_summary = json.get("include_summary", True)
 
     @hookimpl(specname="report_results")
-    def report_json(self, testing_results: TestingResults, secho: Callable) -> None:
+    def report_json(self, testing_results: TestingResults, secho: EchoWrapper) -> None:
         """Create JSON file with test results."""
         if not self.enabled:
             return

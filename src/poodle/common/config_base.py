@@ -1,6 +1,7 @@
+"""Superclass for Poodle Configuration."""
+
 from __future__ import annotations
 
-from collections import OrderedDict
 from collections.abc import Iterable
 from contextlib import suppress
 from functools import cached_property
@@ -19,9 +20,11 @@ except ModuleNotFoundError:  # < py3.11
 
 
 class PoodleConfigBase:
-    """Poodle Configuration Initialization and Base Operations."""
+    """Superclass for Poodle Configuration.
 
-    def __init__(self, cmd_kwargs: dict) -> None:
+    Contains properties and methods used for retrieving configuration options."""
+
+    def __init__(self, cmd_kwargs: dict = {}) -> None:
         """Initialize Poodle Configuration."""
         self.cmd_kwargs = cmd_kwargs
         self.poodle_config = get_poodle_config()
@@ -34,19 +37,19 @@ class PoodleConfigBase:
         Command Line, poodle.toml, pyproject.toml.
         Returns None if no config file found.
         """
-        config_file = self.cmd_kwargs.get("config_file", None)
-        if isinstance(config_file, Path):
-            if not config_file.is_file():
-                msg = f"Config file not found: '{config_file}'"
+        cmd_config_file = self.cmd_kwargs.get("config_file")
+        if isinstance(cmd_config_file, Path):
+            if not cmd_config_file.is_file():
+                msg = f"Config file not found: '{cmd_config_file}'"
                 raise PoodleInputError(msg)
-            return config_file
+            return cmd_config_file
 
         if hasattr(self.poodle_config, "config_file"):
-            config_file = Path(self.poodle_config.config_file)
-            if not config_file.is_file():
-                msg = f"config_file not found: '{self.poodle_config.config_file}'"
+            pc_config_file = Path(self.poodle_config.config_file)
+            if not pc_config_file.is_file():
+                msg = f"poodle_config.config_file not found: '{self.poodle_config.config_file}'"
                 raise PoodleInputError(msg)
-            return config_file
+            return pc_config_file
 
         files = [
             "poodle.toml",
@@ -67,22 +70,22 @@ class PoodleConfigBase:
             return {}
 
         if self.config_file.suffix == ".toml":
-            return self._get_config_file_data_toml(self.config_file)
+            return self._get_config_file_data_toml()
 
         # TODO: tox.ini and setup.cfg
         # https://tox.wiki/en/3.24.5/config.html
 
-        msg = f"Config file type not supported: --config_file='{self.config_file}'"
+        msg = f"Config file type not supported: '{self.config_file}'"
         raise PoodleInputError(msg)
 
-    def _get_config_file_data_toml(self, config_file: Path) -> dict:
+    def _get_config_file_data_toml(self) -> dict:
         """Retrieve Poodle configuration from a 'toml' Config File."""
         try:
-            config_data = tomllib.load(config_file.open(mode="rb"))
+            config_data = tomllib.load(self.config_file.open(mode="rb"))
             config_data: dict = config_data.get("tool", config_data)  # type: ignore[no-redef]
             return config_data.get("poodle", {})
         except tomllib.TOMLDecodeError as err:
-            msgs = [f"Error decoding toml file: {config_file}"]
+            msgs = [f"Error decoding toml file: '{self.config_file}'"]
             msgs.extend(err.args)
             raise PoodleInputError(*msgs) from None
 
@@ -92,7 +95,7 @@ class PoodleConfigBase:
         file = Path("pyproject.toml")
         if file.is_file():
             with suppress(tomllib.TOMLDecodeError):
-                return tomllib.load(Path("pyproject.toml").open(mode="rb"))
+                return tomllib.load(file.open(mode="rb"))
         return {}
 
     def merge_dict_from_config(self, option_name: str, defaults: dict = {}) -> dict:
@@ -134,7 +137,11 @@ class PoodleConfigBase:
 
         Returns: Identified Config value, Source Name
         """
-        if cmd_option_name and (self.cmd_kwargs[cmd_option_name] or self.cmd_kwargs[cmd_option_name] is False):
+        if (
+            cmd_option_name
+            and cmd_option_name in self.cmd_kwargs
+            and (self.cmd_kwargs[cmd_option_name] or self.cmd_kwargs[cmd_option_name] is False)
+        ):
             return self.cmd_kwargs[cmd_option_name], "Command Line"
 
         if hasattr(self.poodle_config, option_name):
@@ -151,16 +158,12 @@ class PoodleConfigBase:
 
     def get_str_from_config(self, option_name: str, cmd_option_name: str | None = None) -> str | None:
         """Retrieve Config Option that should be a String."""
-        value, source = self.get_option_from_config(option_name, cmd_option_name)
+        value, _ = self.get_option_from_config(option_name, cmd_option_name)
 
         if value is None:
             return None
 
-        try:
-            return str(value)
-        except TypeError:
-            msg = f"{option_name} from {source} must be a valid str"
-            raise PoodleInputError(msg) from None
+        return str(value)
 
     def get_bool_from_config(self, option_name: str, cmd_option_name: str | None = None) -> bool | None:
         """Retrieve Config Option that should be a bool."""
@@ -178,7 +181,11 @@ class PoodleConfigBase:
                 msg = f"{option_name} from {source} must be a valid bool"
                 raise PoodleInputError(msg) from None
 
-        return None
+        if value is None:
+            return None
+
+        msg = f"{option_name} from {source} must be a valid bool"
+        raise PoodleInputError(msg) from None
 
     def get_path_from_config(self, option_name: str, cmd_option_name: str | None = None) -> Path | None:
         """Retrieve Config Option that should be a StrPath."""
@@ -266,73 +273,3 @@ class PoodleConfigBase:
         except TypeError:
             msg = f"{option_name} from {source} must be a valid Iterable[StrPath]"
             raise PoodleInputError(msg) from None
-
-
-class PoodleOptionCollector:
-    cli_options = []
-    file_options = OrderedDict()
-    hidden_options = OrderedDict()
-    group_descriptions = {}
-
-    def add_cli_option(self, *param_decls: str, cls: type | None = None, **attrs: Any) -> None:
-        """Add Command Line Option.
-
-        :param param_decls: Option names.
-        :param cls: Option class.
-        :param attrs: Option attributes.
-
-        See click.option decorator for more information."""
-        self.cli_options.append({"param_decls": param_decls, "cls": cls, "attrs": attrs})
-
-    def add_file_option(self, field_name, description, group=None, hidden=False) -> None:
-        """Add File Option to Help Text.
-
-        :param field_name: Name of field in config file or poodle_config.py module.
-        :param description: Description of option.
-        :param group: Group name, if any."""
-        options = self.file_options if not hidden else self.hidden_options
-        if group:
-            if group not in options:
-                options[group] = OrderedDict()
-            options[group][field_name] = description
-        else:
-            options[field_name] = description
-
-    def add_group_description(self, group_name: str, description: str) -> None:
-        """Add Group Description to Help Text.
-
-        :param group_name: Name of group.
-        :param description: Description of group."""
-        self.group_descriptions[group_name] = description
-
-    def click_epilog_from_plugins(self):
-        epilog = "\b"
-
-        pad = self.longest_field_size(self.file_options.keys()) + 2
-
-        for field_name, description in reversed(self.file_options.items()):
-            if isinstance(description, dict):
-                if not epilog.endswith("\b"):
-                    epilog += "\n\b"
-                epilog += self.click_epilog_for_group(field_name, description)
-            else:
-                epilog += f"\n{field_name + ':':<{pad}}{description}"
-
-        return epilog
-
-    def click_epilog_for_group(self, group: str, fields: dict) -> str:
-        indent = 2
-        pad = max(self.longest_field_size(fields.keys()) + indent, len(group)) + 2
-
-        epilog = f"\n{group + ':':<{pad}}{self.group_descriptions.get(group, '')}"
-        for field_name, description in fields.items():
-            field_name_out = (" " * indent) + field_name + ":"
-            epilog += f"\n{field_name_out:<{pad}}{description}"
-
-        epilog += "\n\b"
-        return epilog
-
-    @staticmethod
-    def longest_field_size(fields: list[str]) -> int:
-        """Return the longest field size."""
-        return max(len(field) for field in fields)

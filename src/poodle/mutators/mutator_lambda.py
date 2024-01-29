@@ -4,11 +4,10 @@ from __future__ import annotations
 
 import ast
 from copy import deepcopy
-from typing import Any, Callable
 
 import pluggy
 
-from poodle import FileMutation, Mutator, MutatorBase, PoodleConfigData
+from poodle import FileMutation, MutatorBase, PoodleConfigData
 
 hookimpl = pluggy.HookimplMarker("poodle")
 

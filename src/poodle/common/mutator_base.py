@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import ast
 
-from mergedeep import merge  # type: ignore[import-untyped]
-
 from .config import PoodleConfigData
 from .data import FileMutation
 
@@ -23,13 +21,12 @@ class MutatorBase:
 
         return True
 
-    @classmethod
-    def create_file_mutation(cls, node: ast.AST, text: str) -> FileMutation:
+    def create_file_mutation(self, node: ast.AST, text: str) -> FileMutation:
         """Create a FileMutation copying location data from specified node."""
-        lineno, col_offset, end_lineno, end_col_offset = cls.get_location(node)
+        lineno, col_offset, end_lineno, end_col_offset = self.get_location(node)
 
         return FileMutation(
-            mutator_name=cls.mutator_name,
+            mutator_name=self.mutator_name,
             lineno=lineno,
             col_offset=col_offset,
             end_lineno=end_lineno,
@@ -49,22 +46,19 @@ class MutatorBase:
             if not hasattr(n, "lineno"):
                 continue
 
-            if n.lineno < lineno:  # decorators
+            if n.lineno <= lineno:  # decorators
                 lineno = n.lineno
-                if n.col_offset < col_offset:
-                    col_offset = n.col_offset
-            elif n.lineno == lineno and n.col_offset < col_offset:
-                col_offset = n.col_offset
+                col_offset = min(n.col_offset, col_offset)
 
             if not hasattr(n, "end_lineno") or not n.end_lineno:
                 continue
 
             if n.end_lineno > end_lineno:
                 end_lineno = n.end_lineno
-                if n.end_col_offset:
-                    end_col_offset = n.end_col_offset
-            elif n.end_lineno == end_lineno and n.end_col_offset and n.end_col_offset > end_col_offset:
-                end_col_offset = n.end_col_offset
+                end_col_offset = n.end_col_offset if n.end_col_offset else end_col_offset
+
+            elif n.end_lineno == end_lineno and n.end_col_offset:
+                end_col_offset = max(n.end_col_offset, end_col_offset)
 
         return (lineno, col_offset, end_lineno, end_col_offset)
 
@@ -89,6 +83,5 @@ class MutatorBase:
     def unparse_indent(node: ast.AST, indent: int) -> str:
         """Unparse AST node to string.  Indent any lines that are not the first line."""
         lines = ast.unparse(node).splitlines(keepends=True)
-        if len(lines) > 1:
-            lines[1:] = [f"{' ' * indent}{line}" for line in lines[1:]]
+        lines[1:] = [f"{' ' * indent}{line}" for line in lines[1:]]
         return "".join(lines)

@@ -8,102 +8,140 @@ import time
 from typing import TYPE_CHECKING, Callable
 from zipfile import ZipFile
 
+import dill
+import pluggy
 from click import style
 
-from . import PoodleTrialRunError
-from . import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork, TestingResults, TestingSummary
-from .runners import command_line
-from .common.util import delete_folder, dynamic_import, mutate_lines
+from .common.config import PoodleConfigData
+from .common.data import (
+    CleanRunTrial,
+    Mutant,
+    MutantTrial,
+    MutantTrialResult,
+    TestingResults,
+    TestingSummary,
+    RunResult,
+)
+from .common.echo_wrapper import EchoWrapper
+from .common.exceptions import PoodleTrialRunError
+from .common.file_utils import delete_folder
+from .common.util import mutate_lines
 
 if TYPE_CHECKING:
     from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-builtin_runners = {
-    "command_line": command_line.runner,
-}
 
-
-def get_runner(config: PoodleConfig) -> Callable:
-    """Retrieve runner callable given internal runner name or external runner python name."""
-    logger.debug("Runner: %s", config.runner)
-
-    if config.runner in builtin_runners:
-        return builtin_runners[config.runner]
-
-    return dynamic_import(config.runner)
-
-
-def clean_run_each_source_folder(work: PoodleWork) -> dict[Path, MutantTrial]:
+def clean_run_each_source_folder(
+    folder_zips: dict[Path, Path],
+    next_num: Callable,
+    secho: EchoWrapper,
+    pm: pluggy.PluginManager,
+    config_data: PoodleConfigData,
+) -> list[CleanRunTrial]:
     """Run a trial on each source folder with no mutation."""
-    return {folder: clean_run_trial(work, folder) for folder in work.config.source_folders}
+    return [
+        clean_run_trial(
+            source_folder,
+            folder_zips[source_folder],
+            next_num,
+            secho,
+            pm,
+            config_data,
+        )
+        for source_folder in config_data.source_folders
+    ]
 
 
-def clean_run_trial(work: PoodleWork, folder: Path) -> MutantTrial:
+def clean_run_trial(
+    source_folder: Path,
+    folder_zip: Path,
+    next_num: Callable,
+    secho: EchoWrapper,
+    pm: pluggy.PluginManager,
+    config_data: PoodleConfigData,
+) -> MutantTrial:
     """Run a trial with no mutation."""
     start = time.time()
-    work.echo(f"Testing clean run of folder '{folder}'...", nl=False)
-    mutant_trial = run_mutant_trial(
-        config=work.config,
-        echo=work.echo,
-        folder_zip=work.folder_zips[folder],
-        mutant=Mutant(
-            mutator_name="",
-            source_folder=folder,
-            source_file=None,
-            lineno=0,
-            col_offset=0,
-            end_lineno=0,
-            end_col_offset=0,
-            text="",
-        ),
-        run_id=work.next_num(),
-        runner=work.runner,
-        timeout=None,
-    )
-    if mutant_trial.result.found:  # not expected
-        work.echo(style("FAILED", fg="red"))
-        raise PoodleTrialRunError("Clean Run Failed", mutant_trial.result.reason_desc)
+    secho(f"Testing clean run of folder '{source_folder}'...", nl=False)
 
-    work.echo("PASSED")
+    run_id = next_num()
+    run_folder = setup_run_folder(run_id, folder_zip, None, config_data)
+
+    logger.debug("START: run_id=%s run_folder=%s", run_id, run_folder)
+
+    test_run_result: RunResult = pm.hook.run_testing(
+        run_folder=run_folder,
+        timeout=None,
+        config=config_data,
+        secho=secho,
+        source_folder=source_folder,
+        mutant=None,
+    )
+
+    delete_folder(run_folder, config_data)
+
+    duration = time.time() - start
+    logger.debug("END: run_id=%s - Elapsed Time %.2f s", run_id, duration)
+
+    if test_run_result.result != RunResult.RESULT_PASSED:
+        secho(style("FAILED", fg="red"))
+        raise PoodleTrialRunError("Clean Run Failed", test_run_result.description)
+
+    secho("PASSED")
     logger.info("Elapsed Time %.2f s", time.time() - start)
 
-    return mutant_trial
+    return CleanRunTrial(
+        source_folder=source_folder,
+        result=test_run_result,
+        duration=duration,
+    )
 
 
-def run_mutant_trails(work: PoodleWork, mutants: list[Mutant], timeout: float) -> TestingResults:
+def run_mutant_trails(
+    mutants: list[Mutant],
+    folder_zips: dict[Path, Path],
+    next_num: Callable,
+    timeout: float,
+    secho: EchoWrapper,
+    pm: pluggy.PluginManager,
+    config_data: PoodleConfigData,
+) -> TestingResults:
     """Run the Mutant Trials and collect results.
 
     Report status as execution proceeds.
     """
     start = time.time()
-    work.echo("Testing mutants")
-    with concurrent.futures.ProcessPoolExecutor(max_workers=work.config.max_workers) as executor:
+    secho("Testing mutants")
+    with concurrent.futures.ProcessPoolExecutor(max_workers=config_data.max_workers) as executor:
         try:
+            pm_dump = dill.dumps(pm)
+            config_data_dump = dill.dumps(config_data)
             futures = [
                 executor.submit(
                     run_mutant_trial,
-                    work.config,
-                    work.echo,
-                    work.folder_zips[mutant.source_folder],
+                    next_num(),
+                    folder_zips[mutant.source_folder],
                     mutant,
-                    work.next_num(),
-                    work.runner,
                     timeout,
+                    secho,
+                    pm_dump,
+                    config_data_dump,
                 )
                 for mutant in mutants
             ]
+            print("submitted")
 
             summary = TestingSummary()
             summary.trials = len(mutants)
             for future in concurrent.futures.as_completed(futures):
                 if future.cancelled():
-                    work.echo("Canceled")
+                    secho("Canceled")
                 else:
                     mutant_trial: MutantTrial = future.result()
                     summary += mutant_trial.result
-                    work.echo(
+                    secho(
                         f"COMPLETED {summary.tested:>4}/{summary.trials:<4}"
                         f"\tFOUND {summary.found:>4}"
                         f"\tNOT FOUND {summary.not_found:>4}"
@@ -111,7 +149,7 @@ def run_mutant_trails(work: PoodleWork, mutants: list[Mutant], timeout: float) -
                         f"\tERRORS {summary.errors:>4}",
                     )
         except KeyboardInterrupt:
-            work.echo("Received Keyboard Interrupt.  Cancelling Remaining Trials.")
+            secho("Received Keyboard Interrupt.  Cancelling Remaining Trials.")
             executor.shutdown(wait=True, cancel_futures=True)
             raise
 
@@ -124,25 +162,19 @@ def run_mutant_trails(work: PoodleWork, mutants: list[Mutant], timeout: float) -
 
 
 def run_mutant_trial(  # noqa: PLR0913
-    config: PoodleConfig,
-    echo: Callable,
+    run_id: str,
     folder_zip: Path,
     mutant: Mutant,
-    run_id: str,
-    runner: Callable,
     timeout: float | None,
+    secho: EchoWrapper,
+    pm_dump: bytes,
+    config_data_dump: bytes,
 ) -> MutantTrial:
-    """Run Trial for specified Mutant.
+    pm: pluggy.PluginManager = dill.loads(pm_dump)
+    config_data: PoodleConfigData = dill.loads(config_data_dump)
 
-    Create a Run Folder.
-    Unzip the zip file to the Run Folder.
-    Apply Mutation.
-    Call the Trial Runner.
-    Delete the Run Folder.
-    Return MutantTrial with result data.
-    """
     start = time.time()
-    logging.basicConfig(format=config.log_format, level=config.log_level)
+    logging.basicConfig(format=config_data.log_format, level=config_data.log_level)
 
     logger.debug(
         "SETUP: run_id=%s folder_zip=%s file=%s:%s text='%s'",
@@ -153,31 +185,68 @@ def run_mutant_trial(  # noqa: PLR0913
         mutant.text,
     )
 
-    run_folder = config.work_folder / ("run-" + run_id)
-    run_folder.mkdir()
-
-    with ZipFile(folder_zip, "r") as zip_file:
-        zip_file.extractall(run_folder)
-
-    if mutant.source_file:
-        target_file = run_folder / mutant.source_file
-        file_lines = target_file.read_text("utf-8").splitlines(keepends=True)
-        file_lines = mutate_lines(mutant, file_lines)
-        target_file.write_text(data="".join(file_lines), encoding="utf-8")
+    run_folder = setup_run_folder(run_id, folder_zip, mutant, config_data)
 
     logger.debug("START: run_id=%s run_folder=%s", run_id, run_folder)
 
-    result: MutantTrialResult = runner(
-        config=config,
-        echo=echo,
+    test_run_result: RunResult = pm.hook.run_testing(
         run_folder=run_folder,
-        mutant=mutant,
         timeout=timeout,
+        config=config_data,
+        secho=secho,
+        source_folder=mutant.source_folder,
+        mutant=mutant,
     )
 
-    delete_folder(run_folder, config)
+    if test_run_result.result == RunResult.RESULT_PASSED:
+        result = MutantTrialResult(
+            found=False,
+            reason_code=MutantTrialResult.RC_NOT_FOUND,
+        )
+    elif test_run_result.result == RunResult.RESULT_FAILED:
+        result = MutantTrialResult(
+            found=True,
+            reason_code=MutantTrialResult.RC_FOUND,
+        )
+    elif test_run_result.result == RunResult.RESULT_TIMEOUT:
+        result = MutantTrialResult(
+            found=False,
+            reason_code=MutantTrialResult.RC_TIMEOUT,
+            reason_desc=test_run_result.description,
+        )
+    else:
+        result = MutantTrialResult(
+            found=True,
+            reason_code=MutantTrialResult.RC_OTHER,
+            reason_desc=test_run_result.description,
+        )
+
+    delete_folder(run_folder, config_data)
 
     duration = time.time() - start
     logger.debug("END: run_id=%s - Elapsed Time %.2f s", run_id, duration)
 
     return MutantTrial(mutant=mutant, result=result, duration=duration)
+
+
+def setup_run_folder(
+    run_id: str,
+    folder_zip: Path,
+    mutant: Mutant | None,
+    config_data: PoodleConfigData,
+):
+    logger.debug("setup_run_folder: run_id=%s", run_id)
+
+    run_folder = config_data.work_folder / ("run-" + run_id)
+    run_folder.mkdir()
+
+    with ZipFile(folder_zip, "r") as zip_file:
+        zip_file.extractall(run_folder)
+
+    if mutant and mutant.source_file:
+        target_file = run_folder / mutant.source_file
+        file_lines = target_file.read_text("utf-8").splitlines(keepends=True)
+        file_lines = mutate_lines(mutant, file_lines)
+        target_file.write_text(data="".join(file_lines), encoding="utf-8")
+
+    return run_folder

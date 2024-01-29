@@ -5,13 +5,15 @@ from __future__ import annotations
 import click
 import pluggy
 
-from .common import base, hook_spec
-from .common.util import get_poodle_config as get_poodle_config
+from .common import hook_spec
+from .common.option_collector import PoodleOptionCollector
+from .common.util import get_poodle_config
 from .mutators import mutator_plugins
 from .reporters import reporter_plugins
+from .runners import runner_plugins
 
 plugin_manager = pluggy.PluginManager("poodle")
-opt_collector = hook_spec.PoodleOptionCollector()
+opt_collector = PoodleOptionCollector()
 
 
 def register_plugins():
@@ -19,6 +21,9 @@ def register_plugins():
     plugin_manager.hook.register_plugins.call_historic(kwargs={"plugin_manager": plugin_manager})
 
     for plugin in mutator_plugins:
+        plugin_manager.register(plugin)
+
+    for plugin in runner_plugins:
         plugin_manager.register(plugin)
 
     for plugin in reporter_plugins:
