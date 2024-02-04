@@ -5,10 +5,13 @@ from typing import Any
 
 
 class PoodleOptionCollector:
-    cli_options = []
-    file_options = OrderedDict()
-    hidden_options = OrderedDict()
-    group_descriptions = {}
+    """Collect options for use in help text."""
+
+    def __init__(self):
+        self.cli_options = []
+        self.file_options = OrderedDict()
+        self.hidden_options = OrderedDict()
+        self.group_descriptions = {}
 
     def add_cli_option(self, *param_decls: str, cls: type | None = None, **attrs: Any) -> None:
         """Add Command Line Option.
@@ -20,7 +23,9 @@ class PoodleOptionCollector:
         See click.option decorator for more information."""
         self.cli_options.append({"param_decls": param_decls, "cls": cls, "attrs": attrs})
 
-    def add_file_option(self, field_name, description, group=None, hidden=False) -> None:
+    def add_file_option(
+        self, field_name: str, description: str, group: str | None = None, hidden: bool = False
+    ) -> None:
         """Add File Option to Help Text.
 
         :param field_name: Name of field in config file or poodle_config.py module.
@@ -42,6 +47,7 @@ class PoodleOptionCollector:
         self.group_descriptions[group_name] = description
 
     def click_epilog_from_plugins(self):
+        """Create epilog for click from file options."""
         epilog = "\b"
 
         pad = self.longest_field_size(self.file_options.keys()) + 2
@@ -57,6 +63,7 @@ class PoodleOptionCollector:
         return epilog
 
     def click_epilog_for_group(self, group: str, fields: dict) -> str:
+        """Create epilog for group of options."""
         indent = 2
         pad = max(self.longest_field_size(fields.keys()) + indent, len(group)) + 2
 

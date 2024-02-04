@@ -43,3 +43,8 @@ class TestEchoWrapper:
         echo_wrapper = EchoWrapper(echo_enabled=True, echo_no_color=False)
         echo_wrapper("test", file="file", nl=False, err=False, color=False, style="style")
         mock_secho.assert_called_once_with("test", "file", False, False, False, style="style")
+
+    def test_echo_wrapper_no_input(self, mock_secho: mock.MagicMock):
+        echo_wrapper = EchoWrapper(echo_enabled=True, echo_no_color=False)
+        echo_wrapper()
+        mock_secho.assert_called_once_with(None, None, True, False, None)

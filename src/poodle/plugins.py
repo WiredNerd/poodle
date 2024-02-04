@@ -6,8 +6,8 @@ import click
 import pluggy
 
 from .common import hook_spec
+from .common.config_util import get_poodle_config
 from .common.option_collector import PoodleOptionCollector
-from .common.util import get_poodle_config
 from .mutators import mutator_plugins
 from .reporters import reporter_plugins
 from .runners import runner_plugins

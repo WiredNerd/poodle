@@ -3,17 +3,11 @@
 from __future__ import annotations
 
 import difflib
-import importlib
 import json
 import logging
-import sys
-from contextlib import suppress
 from copy import deepcopy
-from functools import cache
 from io import StringIO
-from pathlib import Path
 from pprint import pprint
-from types import ModuleType
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
@@ -22,18 +16,6 @@ if TYPE_CHECKING:
 
 
 logger = logging.getLogger(__name__)
-
-
-@cache
-def get_poodle_config() -> ModuleType | None:
-    if "poodle_config" in sys.modules:
-        return sys.modules["poodle_config"]
-    with suppress(ModuleNotFoundError):
-        cwd_path = str(Path.cwd())
-        if cwd_path not in sys.path:
-            sys.path.append(str(Path.cwd()))
-        return importlib.import_module("poodle_config")
-    return None
 
 
 def pprint_str(obj: Any) -> str:  # noqa: ANN401

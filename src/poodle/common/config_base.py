@@ -10,8 +10,8 @@ from typing import Any
 
 from mergedeep import merge  # type: ignore[import-untyped]
 
+from .config_util import get_poodle_config
 from .exceptions import PoodleInputError
-from .util import get_poodle_config
 
 try:
     import tomllib  # type: ignore [import-not-found]
@@ -127,7 +127,7 @@ class PoodleConfigBase:
     def get_option_from_config(
         self,
         option_name: str,
-        cmd_option_name: str | None = None,
+        cmd_option_name: str = "",  # nomut: string
     ) -> tuple[Any | None, str | None]:
         """Retrieve Config Option of any type.
 
@@ -152,11 +152,19 @@ class PoodleConfigBase:
 
         return None, None
 
-    def get_any_from_config(self, option_name: str, cmd_option_name: str | None = None) -> Any:  # noqa: ANN401
+    def get_any_from_config(
+        self,
+        option_name: str,
+        cmd_option_name: str = "",  # nomut: string
+    ) -> Any:  # noqa: ANN401
         """Retrieve Config Option that can by any type."""
         return self.get_option_from_config(option_name, cmd_option_name)[0]
 
-    def get_str_from_config(self, option_name: str, cmd_option_name: str | None = None) -> str | None:
+    def get_str_from_config(
+        self,
+        option_name: str,
+        cmd_option_name: str = "",  # nomut: string
+    ) -> str | None:
         """Retrieve Config Option that should be a String."""
         value, _ = self.get_option_from_config(option_name, cmd_option_name)
 
@@ -165,7 +173,11 @@ class PoodleConfigBase:
 
         return str(value)
 
-    def get_bool_from_config(self, option_name: str, cmd_option_name: str | None = None) -> bool | None:
+    def get_bool_from_config(
+        self,
+        option_name: str,
+        cmd_option_name: str = "",  # nomut: string
+    ) -> bool | None:
         """Retrieve Config Option that should be a bool."""
         value, source = self.get_option_from_config(option_name, cmd_option_name)
 
@@ -187,7 +199,11 @@ class PoodleConfigBase:
         msg = f"{option_name} from {source} must be a valid bool"
         raise PoodleInputError(msg) from None
 
-    def get_path_from_config(self, option_name: str, cmd_option_name: str | None = None) -> Path | None:
+    def get_path_from_config(
+        self,
+        option_name: str,
+        cmd_option_name: str = "",  # nomut: string
+    ) -> Path | None:
         """Retrieve Config Option that should be a StrPath."""
         value, source = self.get_option_from_config(option_name, cmd_option_name)
 
@@ -200,7 +216,11 @@ class PoodleConfigBase:
             msg = f"{option_name} from {source} must be a valid StrPath"
             raise PoodleInputError(msg) from None
 
-    def get_int_from_config(self, option_name: str, cmd_option_name: str | None = None) -> int | None:
+    def get_int_from_config(
+        self,
+        option_name: str,
+        cmd_option_name: str = "",  # nomut: string
+    ) -> int | None:
         """Retrieve Config Option that should be an int."""
         value, source = self.get_option_from_config(option_name, cmd_option_name)
 
@@ -213,7 +233,11 @@ class PoodleConfigBase:
             msg = f"{option_name} from {source} must be a valid int"
             raise PoodleInputError(msg) from None
 
-    def get_float_from_config(self, option_name: str, cmd_option_name: str | None = None) -> float | None:
+    def get_float_from_config(
+        self,
+        option_name: str,
+        cmd_option_name: str = "",  # nomut: string
+    ) -> float | None:
         """Retrieve Config Option that should be a float."""
         value, source = self.get_option_from_config(option_name, cmd_option_name)
 
@@ -226,7 +250,11 @@ class PoodleConfigBase:
             msg = f"{option_name} from {source} must be a valid float"
             raise PoodleInputError(msg) from None
 
-    def get_any_list_from_config(self, option_name: str, cmd_option_name: str | None = None) -> list[Any] | None:
+    def get_any_list_from_config(
+        self,
+        option_name: str,
+        cmd_option_name: str = "",  # nomut: string
+    ) -> list[Any] | None:
         """Retrieve Config Option that should be a List of any types."""
         values = self.get_any_from_config(option_name, cmd_option_name)
 
@@ -241,7 +269,11 @@ class PoodleConfigBase:
 
         return [values]
 
-    def get_str_list_from_config(self, option_name: str, cmd_option_name: str | None = None) -> list[str] | None:
+    def get_str_list_from_config(
+        self,
+        option_name: str,
+        cmd_option_name: str = "",  # nomut: string
+    ) -> list[str] | None:
         """Retrieve Config Option that should be a List of Strings."""
 
         values, source = self.get_option_from_config(option_name, cmd_option_name)
@@ -258,7 +290,11 @@ class PoodleConfigBase:
             msg = f"{option_name} from {source} must be a valid Iterable[str]"
             raise PoodleInputError(msg) from None
 
-    def get_path_list_from_config(self, option_name: str, cmd_option_name: str | None = None) -> list[Path] | None:
+    def get_path_list_from_config(
+        self,
+        option_name: str,
+        cmd_option_name: str = "",  # nomut: string
+    ) -> list[Path] | None:
         """Retrieve Config Option that should be a List of Paths."""
         values, source = self.get_option_from_config(option_name, cmd_option_name)
 
