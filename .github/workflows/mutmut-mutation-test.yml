@@ -9,7 +9,7 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install Dependencies and Tools
@@ -30,13 +30,13 @@ jobs:
           head mutation-testing-report.xml -n 3
       - name: Upload Report HTML
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Mutation testing report HTML
           path: html
       - name: Upload Report XML
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Mutation testing report XML
           path: mutation-testing-report.xml
