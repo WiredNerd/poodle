@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import concurrent.futures
 import logging
+import math
 import time
 from typing import TYPE_CHECKING, Callable
 from zipfile import ZipFile
@@ -18,9 +19,9 @@ from .common.data import (
     Mutant,
     MutantTrial,
     MutantTrialResult,
+    RunResult,
     TestingResults,
     TestingSummary,
-    RunResult,
 )
 from .common.echo_wrapper import EchoWrapper
 from .common.exceptions import PoodleTrialRunError
@@ -135,6 +136,8 @@ def run_mutant_trails(
 
             summary = TestingSummary()
             summary.trials = len(mutants)
+            pad = int(math.log(summary.trials, 10) + 1)
+
             for future in concurrent.futures.as_completed(futures):
                 if future.cancelled():
                     secho("Canceled")
@@ -142,11 +145,11 @@ def run_mutant_trails(
                     mutant_trial: MutantTrial = future.result()
                     summary += mutant_trial.result
                     secho(
-                        f"COMPLETED {summary.tested:>4}/{summary.trials:<4}"
-                        f"\tFOUND {summary.found:>4}"
-                        f"\tNOT FOUND {summary.not_found:>4}"
-                        f"\tTIMEOUT {summary.timeout:>4}"
-                        f"\tERRORS {summary.errors:>4}",
+                        f"COMPLETED {summary.tested:>{pad}}/{summary.trials:<{pad}}   "
+                        f"FOUND {summary.found:>{pad}}   "
+                        f"NOT FOUND {summary.not_found:>{pad}}   "
+                        f"TIMEOUT {summary.timeout:>{pad}}   "
+                        f"ERRORS {summary.errors:>{pad}}",
                     )
         except KeyboardInterrupt:
             secho("Received Keyboard Interrupt.  Cancelling Remaining Trials.")

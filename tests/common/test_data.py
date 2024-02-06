@@ -9,11 +9,12 @@ from poodle.common.data import (
     Mutant,
     MutantTrial,
     MutantTrialResult,
+    RunResult,
     TestingResults,
     TestingSummary,
-    RunResult,
+    from_json,
+    to_json,
 )
-from poodle.common.util import from_json, to_json
 
 
 class TestFileMutation:

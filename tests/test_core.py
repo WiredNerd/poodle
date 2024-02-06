@@ -350,3 +350,33 @@
 #                 mock.call(),
 #             ]
 #         )
+
+
+# class TestCalcTimeout:
+#     def test_calc_timeout(self):
+#         config = PoodleConfigStub(min_timeout=10, timeout_multiplier=10)
+#         clean_run_results = {
+#             "folder": MutantTrial(mutant=None, result=None, duration=2.01),
+#         }
+#         assert round(util.calc_timeout(config, clean_run_results), 1) == 20.1
+
+#     def test_calc_timeout_mult(self):
+#         config = PoodleConfigStub(min_timeout=10, timeout_multiplier=5)
+#         clean_run_results = {
+#             "folder": MutantTrial(mutant=None, result=None, duration=2.01),
+#         }
+#         assert round(util.calc_timeout(config, clean_run_results), 2) == round(10.05, 2)
+
+#     def test_calc_timeout_min(self):
+#         config = PoodleConfigStub(min_timeout=10, timeout_multiplier=10)
+#         clean_run_results = {
+#             "folder": MutantTrial(mutant=None, result=None, duration=0.1),
+#         }
+#         assert round(util.calc_timeout(config, clean_run_results), 1) == 10.0
+
+#     def test_calc_timeout_min_20(self):
+#         config = PoodleConfigStub(min_timeout=20, timeout_multiplier=10)
+#         clean_run_results = {
+#             "folder": MutantTrial(mutant=None, result=None, duration=0.1),
+#         }
+#         assert round(util.calc_timeout(config, clean_run_results), 1) == 20.0

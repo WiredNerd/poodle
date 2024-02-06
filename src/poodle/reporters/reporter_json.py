@@ -7,7 +7,7 @@ from pathlib import Path
 import pluggy
 
 from poodle import EchoWrapper, PoodleConfigData, PoodleOptionCollector, TestingResults
-from poodle.common.util import to_json
+from poodle.common.data import to_json
 
 hookimpl = pluggy.HookimplMarker("poodle")
 

@@ -6,11 +6,12 @@ import logging
 
 from . import __version__
 from .common.config import PoodleConfigData
+from .common.data import CleanRunTrial
 from .common.echo_wrapper import EchoWrapper
 from .common.exceptions import PoodleNoMutantsFoundError
 from .common.file_utils import create_temp_zips, delete_folder
 from .common.id_gen import IdentifierGenerator
-from .common.util import calc_timeout, create_unified_diff, pprint_str
+from .common.util import create_unified_diff, pprint_to_str
 from .mutate import create_mutants_for_all_mutators
 from .plugins import plugin_manager as pm
 from .run import clean_run_each_source_folder, run_mutant_trails
@@ -22,7 +23,7 @@ def main_process(config_data: PoodleConfigData, secho: EchoWrapper) -> None:
     """Poodle core run process."""
     id_gen = IdentifierGenerator()
     print_header(config_data, secho)
-    logger.info("\n%s", pprint_str(vars(config_data)))
+    logger.info("\n%s", pprint_to_str(vars(config_data)))
 
     delete_folder(config_data.work_folder, config_data)
     folder_zips = create_temp_zips(config_data, id_gen)
@@ -75,3 +76,9 @@ def print_header(config_data: PoodleConfigData, secho: EchoWrapper) -> None:
     # if config_data.fail_under:
     #     secho(f" - Coverage Goal:  {config_data.fail_under:.2f}%")
     secho()
+
+
+def calc_timeout(config_data: PoodleConfigData, clean_run_results: list[CleanRunTrial]) -> float:
+    """Determine timeout value to use in runner."""
+    max_clean_run = max([trial.duration for trial in clean_run_results])
+    return max(float(max_clean_run) * config_data.timeout_multiplier, config_data.min_timeout)

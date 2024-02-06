@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -205,3 +206,13 @@ class TestingResults(PoodleSerialize):
         d["mutant_trials"] = [trial.to_dict() for trial in self.mutant_trials]
         d["summary"] = self.summary.to_dict() if self.summary is not None else None
         return d
+
+
+def to_json(obj: PoodleSerialize, indent: int | str | None = None) -> str:
+    """Convert Class that extends PoodleSerialize to json string."""
+    return json.dumps(obj, indent=indent, default=lambda x: x.to_dict())
+
+
+def from_json(data: str, datatype: type[PoodleSerialize]) -> PoodleSerialize:
+    """Convert json string to PoodleSerialize dataclass."""
+    return datatype(**json.loads(data, object_hook=datatype.from_dict))

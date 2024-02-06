@@ -12,7 +12,7 @@ from subprocess import TimeoutExpired
 import pluggy
 
 from poodle import Mutant, PoodleConfigData, RunResult
-from poodle.common.util import pprint_str
+from poodle.common.util import pprint_to_str
 
 hookimpl = pluggy.HookimplMarker("poodle")
 
@@ -72,7 +72,7 @@ def command_line_runner(
     update_env.update(runner_opts.get("environment", {}))
     run_env.update(update_env)
 
-    logger.debug("update_env=%s", pprint_str(update_env))
+    logger.debug("update_env=%s", pprint_to_str(update_env))
 
     cmd: str = runner_opts["command"]
     cmd = cmd.format(PYTHONPATH=python_path)
