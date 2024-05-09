@@ -11,9 +11,9 @@ from poodle.common.data import (
     Mutant,
     MutantTrial,
     MutantTrialResult,
+    RunResult,
     TestingResults,
     TestingSummary,
-    RunResult,
 )
 from poodle.common.echo_wrapper import EchoWrapper
 from poodle.common.exceptions import (

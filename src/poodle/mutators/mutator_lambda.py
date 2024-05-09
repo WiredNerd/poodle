@@ -38,7 +38,7 @@ class LambdaMutator(ast.NodeVisitor, MutatorBase):
         """Replace body of Lambda with None or empty string."""
         if isinstance(node.body, ast.Constant) and node.body.value is None:
             mut = deepcopy(node)
-            mut.body = ast.Constant("")
+            mut.body = ast.Constant(" ")
             self.mutants.append(self.create_file_mutation(mut, ast.unparse(mut)))
         else:
             mut = deepcopy(node)

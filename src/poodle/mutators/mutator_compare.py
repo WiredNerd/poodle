@@ -62,8 +62,9 @@ class ComparisonMutator(ast.NodeVisitor, MutatorBase):
 
     def visit_Compare(self, node: ast.Compare) -> None:
         """Identify replacement Operations and create Mutants."""
-
         for idx, op in enumerate(node.ops):
+            if type(op) not in self.type_map:
+                continue
             for new_op in self.type_map[type(op)]:
                 mut = deepcopy(node)
                 mut.ops[idx] = new_op()

@@ -11,6 +11,7 @@
     "python.testing.pytestArgs": [
         "-vv",
         "-s",
+        // "--sort-mode=ordered",
         "tests"
     ],
     "python.analysis.extraPaths": [
@@ -45,4 +46,5 @@
     ],
     "scss.format.preserveNewLines": false,
     "scss.format.newlineBetweenSelectors": false,
+    "terminal.integrated.cwd": "C:\\DEVPY"
 }

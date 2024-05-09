@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+
 class PoodleTestingFailedError(Exception):
     """Poodle testing failed."""
 

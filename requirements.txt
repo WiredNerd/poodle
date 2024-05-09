@@ -14,5 +14,6 @@ pysass
 pytest
 pytest-sort>=1.3.0
 pytest-cov
+coverage[toml]
 
 mock-decorator

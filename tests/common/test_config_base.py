@@ -423,7 +423,7 @@ class TestGetOptionFromConfig:
         config.poodle_config = mock.MagicMock()
         config.poodle_config.test_option = "pc_data"
         config.config_file_data = {"test_option": "file_data"}
-        assert config.get_option_from_config("test_option","option") == ("pc_data", "poodle_config.py")
+        assert config.get_option_from_config("test_option", "option") == ("pc_data", "poodle_config.py")
 
     def test_get_option_from_config_pc(self):
         config = config_base.PoodleConfigBase()

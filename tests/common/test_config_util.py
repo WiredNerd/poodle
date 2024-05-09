@@ -1,15 +1,16 @@
 from __future__ import annotations
 
+import importlib
+import sys
 from pathlib import Path
 from unittest import mock
 
 import pytest
 
 from poodle.common import config_util
-import sys
-import importlib
 
 m_name = config_util.__name__
+
 
 @pytest.fixture(autouse=True)
 def _reset() -> None:

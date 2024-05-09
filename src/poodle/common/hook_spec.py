@@ -8,7 +8,7 @@ from typing import Any
 import pluggy
 
 from .config import PoodleConfigData
-from .data import FileMutation, Mutant, TestingResults, RunResult
+from .data import FileMutation, Mutant, RunResult, TestingResults
 from .echo_wrapper import EchoWrapper
 from .option_collector import PoodleOptionCollector
 

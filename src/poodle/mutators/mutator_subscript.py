@@ -28,7 +28,7 @@ class SubscriptMutator(ast.NodeVisitor, MutatorBase):
         """Visit all nodes and return created mutants."""
         if not self.is_enabled(config):
             return []
-        
+
         self.mutants = []
         self.visit(parsed_ast)
         return self.mutants
@@ -37,5 +37,5 @@ class SubscriptMutator(ast.NodeVisitor, MutatorBase):
         """Replace Call to retrieve from Dict or Array with None."""
         if self.is_annotation(node):
             return
-        
+
         self.mutants.append(self.create_file_mutation(node, "None"))

@@ -7,7 +7,7 @@ from typing import Callable, ClassVar
 
 import pluggy
 
-from poodle import FileMutation, MutatorBase, PoodleConfigData, EchoWrapper
+from poodle import EchoWrapper, FileMutation, MutatorBase, PoodleConfigData
 
 hookimpl = pluggy.HookimplMarker("poodle")
 
@@ -66,7 +66,7 @@ class OperationMutator(ast.NodeVisitor, MutatorBase):
             ast.RShift: [ast.LShift],
             ast.BitOr: [ast.BitAnd],
             ast.BitXor: [ast.BitOr, ast.BitAnd],
-            ast.BitAnd: [ast.BitOr],
+            ast.BitAnd: [ast.BitOr, ast.BitXor],
         },
         "max": {
             ast.Add: [ast.Sub, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow],
@@ -84,10 +84,10 @@ class OperationMutator(ast.NodeVisitor, MutatorBase):
         },
     }
 
-    @hookimpl()
+    @hookimpl(specname="configure")
     def configure(self, config: PoodleConfigData, secho: EchoWrapper) -> None:
         mutator_opts = config.merge_dict_from_config("mutator_opts", {})
-        level = mutator_opts.get("operator_level", "std")
+        level = str(mutator_opts.get("operator_level", "std")).lower()
 
         if level not in self.type_map_levels:
             secho(f"WARN: Invalid value operator_opts.operator_level={level}.  Using Default value 'std'", fg="yellow")
