@@ -18,17 +18,20 @@
         "tests",
         "example/src",
         "example/tests",
+        "example2",
     ],
     "python.autoComplete.extraPaths": [
         "src",
         "example/src",
         "example/tests",
+        "example2",
     ],
     "python.testing.pytestPath": "src",
     "cSpell.words": [
         "fromlist",
         "getaffinity",
         "keepends",
+        "mergedeep",
         "Mult",
         "PYTHONDONTWRITEBYTECODE",
         "redef",
@@ -38,4 +41,6 @@
         "wcmatch",
         "wirednerd"
     ],
+    "scss.format.preserveNewLines": false,
+    "scss.format.newlineBetweenSelectors": false,
 }

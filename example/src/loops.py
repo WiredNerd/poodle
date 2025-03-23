@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 def sum_of_evens(values: list[int]):
     sum = 0
     for value in values:

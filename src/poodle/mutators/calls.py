@@ -110,4 +110,4 @@ class DecoratorMutator(ast.NodeVisitor, Mutator):
             for idx in range(len(node.decorator_list)):
                 new_node = deepcopy(node)
                 new_node.decorator_list.pop(idx)
-                self.mutants.append(self.create_file_mutation(node, ast.unparse(new_node)))
+                self.mutants.append(self.create_file_mutation(node, self.unparse(new_node, new_node.col_offset)))

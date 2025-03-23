@@ -1,0 +1,344 @@
+$color_0: white;
+$color_1: hsl(210, 30%, 80%);
+$color_2: hsl(210, 40%, 70%);
+$color_3: hsl(210, 50%, 60%);
+$color_4: hsl(210, 60%, 50%);
+$color_5: hsl(210, 70%, 40%);
+$color_6: hsl(210, 80%, 30%);
+$color_7: hsl(210, 90%, 20%);
+$color_8: hsl(210, 90%, 10%);
+$color_9: black;
+$color_found: hsl(120, 80%, 50%);
+$color_found_light_bg: hsl(120, 30%, 90%);
+$color_found_dark_bg: hsl(120, 90%, 10%);
+$color_not_found: hsl(0, 80%, 50%);
+$color_not_found_light_bg: hsl(0, 30%, 80%);
+$color_not_found_dark_bg: hsl(0, 90%, 10%);
+$color_partial: hsl(40, 80%, 50%);
+$color_partial_light_bg: hsl(40, 30%, 90%);
+$color_partial_dark_bg: hsl(40, 90%, 10%);
+$font_title: Georgia, serif;
+$font_text: Verdana, sans-serif;
+$font_code: 'Lucida Console', 'Courier New', monospace;
+
+@mixin dark_theme_bg($color) {
+  @media (prefers-color-scheme: dark) {
+    background: $color;
+  }
+}
+
+@mixin dark_theme_color($color) {
+  @media (prefers-color-scheme: dark) {
+    color: $color;
+  }
+}
+
+@mixin dark_theme_border_color($color) {
+  @media (prefers-color-scheme: dark) {
+    border-color: $color;
+  }
+}
+
+body {
+  margin: 10px;
+  font-family: $font_text;
+  font-size: 0.9em;
+  background: $color_0;
+  color: $color_9;
+  @include dark_theme_bg($color_8);
+  @include dark_theme_color($color_0);
+
+  a {
+    text-decoration: none;
+    color: $color_7;
+    @include dark_theme_color($color_2);
+
+    &:hover {
+      text-decoration: underline;
+      color: inherit;
+    }
+  }
+
+  p {
+    margin: 0;
+  }
+
+  h1, h2, h3 {
+    margin: 0;
+    font-family: $font_title;
+  }
+
+  pre {
+    font-family: $font_code;
+    font-size: 0.8em;
+    margin: 0;
+  }
+
+  .label {
+    font-weight: bold;
+    font-style: normal;
+  }
+}
+
+header {
+  padding: 10px;
+  background: $color_3;
+  color: $color_9;
+  @include dark_theme_bg($color_5);
+  @include dark_theme_color($color_0);
+
+  .subtitle {
+    margin-top: 10px;
+    font-family: $font_code;
+    font-style: italic;
+    font-size: 0.8em;
+  }
+
+  .nav {
+    margin-top: 10px;
+    font-family: $font_code;
+    text-decoration: underline;
+    font-size: 0.8em;
+  }
+
+  a {
+    text-decoration: none;
+    color: $color_7;
+    @include dark_theme_color($color_1);
+
+    &:hover {
+      text-decoration: underline;
+      color: inherit;
+    }
+  }
+}
+
+main {
+  margin-top: 20px;
+  margin-bottom: 2em;
+}
+
+footer {
+  margin-top: 20px;
+  font-style: italic;
+  font-size: 0.8em;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: $color_3;
+  color: $color_9;
+  @include dark_theme_bg($color_5);
+  @include dark_theme_color($color_0);
+
+  .nav {
+    text-decoration: underline;
+  }
+}
+
+table.index {
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 0;
+
+  th, td {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  thead {
+    font-family: $font_title;
+    vertical-align: bottom;
+
+    th {
+      border-bottom: 2px solid $color_3;
+    }
+
+    .name {
+      text-align: left;
+    }
+
+    .stat {
+      position: relative;
+      text-align: right;
+      width: 3em;
+      white-space: nowrap;
+      -webkit-writing-mode: vertical-lr;
+      /* old Win safari */
+      writing-mode: vertical-lr;
+      writing-mode: tb-lr;
+      transform-origin: bottom right;
+      transform: scale(-1, -1) rotate(135deg) translate(15px, -20px);
+    }
+
+    .score {
+      text-align: right;
+    }
+  }
+
+  tbody {
+    td {
+      border-bottom: 1px solid $color_6;
+    }
+
+    .name {
+      text-align: left;
+    }
+
+    .stat {
+      text-align: right;
+      font-family: $font_code;
+    }
+
+    .score {
+      text-align: right;
+      font-family: $font_code;
+    }
+  }
+
+  tfoot {
+    td {
+      border-top: 2px solid $color_3;
+    }
+
+    .name {
+      text-align: right;
+    }
+
+    .stat, .score {
+      text-align: right;
+      font-family: $font_code;
+    }
+  }
+}
+
+div.detail {
+  margin-top: 40px;
+
+  hr {
+    border-width: 2px;
+    border-style: solid;
+    border-color: $color_3;
+    @include dark_theme_border_color($color_5);
+  }
+
+  h2 {
+    margin-top: 20px;
+  }
+}
+
+table.source {
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 0;
+  font-family: $font_code;
+
+  td {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  td.line_number {
+    text-align: right;
+    color: $color_9;
+    @include dark_theme_color($color_2);
+  }
+
+  td.line_text {
+    border: 0;
+    border-left-width: 5px;
+    border-style: solid;
+    background: inherit;
+    border-color: $color_0;
+    @include dark_theme_border_color($color_8);
+  }
+
+  div.trial {
+    margin-top: 0px;
+  }
+
+  tr.source_row {
+    &:hover {
+      background-color: $color_1;
+      @include dark_theme_bg($color_7);
+    }
+  }
+
+  tr.show_hide_row {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  tr.plain {
+    td.line_text {
+      border-color: $color_4;
+      @include dark_theme_border_color($color_6);
+    }
+  }
+
+  tr.found {
+    td.line_text {
+      border-color: $color_found;
+    }
+
+    &:hover {
+      background-color: $color_found_light_bg;
+      @include dark_theme_bg($color_found_dark_bg);
+    }
+  }
+
+  tr.not_found {
+    td.line_text {
+      border-color: $color_not_found;
+    }
+
+    &:hover {
+      background-color: $color_not_found_light_bg;
+      @include dark_theme_bg($color_not_found_dark_bg);
+    }
+  }
+
+  tr.partial_found {
+    td.line_text {
+      border-color: $color_partial;
+    }
+
+    &:hover {
+      background-color: $color_partial_light_bg;
+      @include dark_theme_bg($color_partial_dark_bg);
+    }
+  }
+}
+
+div.trial {
+  margin-top: 20px;
+  padding: 10px;
+  border-width: 2px 2px 2px 5px;
+  border-style: solid;
+  border-color: $color_6;
+
+  pre {
+    margin-left: 2em;
+  }
+
+  &.found {
+    border-color: $color_found;
+    background-color: $color_found_light_bg;
+    @include dark_theme_bg($color_found_dark_bg);
+  }
+
+  &.not_found {
+    border-color: $color_not_found;
+    background-color: $color_not_found_light_bg;
+    @include dark_theme_bg($color_not_found_dark_bg);
+  }
+}
+
+.detail_row {
+  display: none;
+}

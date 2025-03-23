@@ -8,6 +8,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
+from mergedeep import merge  # type: ignore[import-untyped]
 from wcmatch import glob
 
 from . import PoodleInputError, poodle_config, tomllib
@@ -19,20 +20,16 @@ default_log_format = "%(levelname)s [%(process)d] %(name)s.%(funcName)s:%(lineno
 default_log_level = logging.WARN
 
 default_file_flags = glob.GLOBSTAR | glob.NODIR
-default_file_filters = ["test_*.py", "*_test.py"]
+default_file_filters = ["test_*.py", "*_test.py", "poodle_config.py", "setup.py"]
 default_file_copy_flags = glob.GLOBSTAR | glob.NODIR
-default_file_copy_filters = ["test_*.py", "*_test.py", "__pycache__/**"]
+default_file_copy_filters = ["__pycache__/**"]
 default_work_folder = Path(".poodle-temp")
-
-default_mutator_opts: dict[str, Any] = {}
 
 default_min_timeout = 10
 default_timeout_multiplier = 10
 default_runner = "command_line"
-default_runner_opts: dict[str, Any] = {"command_line": "pytest -x --assert=plain -o pythonpath="}
 
 default_reporters = ["summary", "not_found"]
-default_reporter_opts: dict[str, Any] = {}
 
 
 def default_max_workers() -> int:
@@ -53,10 +50,15 @@ def build_config(  # noqa: PLR0913
     cmd_max_workers: int | None,
     cmd_excludes: tuple[str],
     cmd_only_files: tuple[str],
+    cmd_report: tuple[str],
+    cmd_html: Path | None,
+    cmd_json: Path | None,
+    cmd_fail_under: float | None,
 ) -> PoodleConfig:
     """Build PoodleConfig object."""
     config_file_path = get_config_file_path(cmd_config_file)
     config_file_data = get_config_file_data(config_file_path)
+    project_name, project_version = get_project_info(config_file_path)
 
     log_format = get_str_from_config("log_format", config_file_data, default=default_log_format)
     log_level: int | str = get_any_from_config(
@@ -72,7 +74,15 @@ def build_config(  # noqa: PLR0913
     # file_filters += get_str_list_from_config("exclude", config_file_data, default=[]) # noqa: ERA001
     file_filters += cmd_excludes
 
+    cmd_reporter_opts: dict[str, Any] = {}
+    if cmd_html:
+        merge(cmd_reporter_opts, {"html": {"report_folder": cmd_html}})
+    if cmd_json:
+        merge(cmd_reporter_opts, {"json_report_file": cmd_json})
+
     return PoodleConfig(
+        project_name=get_str_from_config("project_name", config_file_data, default=project_name),
+        project_version=get_str_from_config("project_version", config_file_data, default=project_version),
         config_file=config_file_path,
         source_folders=get_source_folders(cmd_sources, config_file_data),
         only_files=get_str_list_from_config("only_files", config_file_data, default=[], command_line=cmd_only_files),
@@ -100,16 +110,34 @@ def build_config(  # noqa: PLR0913
             command_line=get_cmd_line_echo_enabled(cmd_quiet),
         ),
         echo_no_color=get_bool_from_config("echo_no_color", config_file_data),
-        mutator_opts=get_dict_from_config("mutator_opts", config_file_data, default=default_mutator_opts),
+        mutator_opts=get_dict_from_config("mutator_opts", config_file_data),
         skip_mutators=get_str_list_from_config("skip_mutators", config_file_data, default=[]),
         add_mutators=get_any_list_from_config("add_mutators", config_file_data),
         min_timeout=get_int_from_config("min_timeout", config_file_data) or default_min_timeout,
         timeout_multiplier=get_int_from_config("timeout_multiplier", config_file_data) or default_timeout_multiplier,
         runner=get_str_from_config("runner", config_file_data, default=default_runner),
-        runner_opts=get_dict_from_config("runner_opts", config_file_data, default=default_runner_opts),
-        reporters=get_str_list_from_config("reporters", config_file_data, default=default_reporters),
-        reporter_opts=get_dict_from_config("reporter_opts", config_file_data, default=default_reporter_opts),
+        runner_opts=get_dict_from_config("runner_opts", config_file_data),
+        reporters=get_reporters(config_file_data, cmd_report, cmd_html, cmd_json),
+        reporter_opts=get_dict_from_config("reporter_opts", config_file_data, command_line=cmd_reporter_opts),
+        fail_under=get_float_from_config("fail_under", config_file_data, command_line=cmd_fail_under),
+        skip_delete_folder=get_bool_from_config("skip_delete_folder", config_file_data, default=False),
     )
+
+
+def get_reporters(
+    config_file_data: dict,
+    cmd_report: tuple[str],
+    cmd_html: Path | None,
+    cmd_json: Path | None,
+) -> list[str]:
+    """Retrieve list of reporters to use."""
+    reporters = get_str_list_from_config("reporters", config_file_data, default=default_reporters)
+    reporters += [reporter for reporter in cmd_report if reporter not in reporters]
+    if cmd_html:
+        reporters.append("html")
+    if cmd_json:
+        reporters.append("json")
+    return reporters
 
 
 def get_cmd_line_log_level(cmd_quiet: int, cmd_verbose: int) -> int | None:
@@ -186,11 +214,41 @@ def get_config_file_data(config_file: Path | None) -> dict:
     raise PoodleInputError(msg)
 
 
+def get_project_info(config_file: Path | None) -> tuple[str, str]:
+    """Retrieve Poodle configuration from specified Config File."""
+    if not config_file:
+        return ("", "")
+
+    if config_file.suffix == ".toml":
+        return get_project_info_toml(config_file)
+
+    # TODO: tox.ini and setup.cfg
+    # https://tox.wiki/en/3.24.5/config.html
+
+    msg = f"Config file type not supported: --config_file='{config_file}'"
+    raise PoodleInputError(msg)
+
+
 def get_config_file_data_toml(config_file: Path) -> dict:
     """Retrieve Poodle configuration from a 'toml' Config File."""
-    config_data = tomllib.load(config_file.open(mode="rb"))
-    config_data = config_data.get("tool", config_data)
-    return config_data.get("poodle", {})
+    try:
+        config_data = tomllib.load(config_file.open(mode="rb"))
+        config_data: dict = config_data.get("tool", config_data)  # type: ignore[no-redef]
+        return config_data.get("poodle", {})
+    except tomllib.TOMLDecodeError as err:
+        msgs = [f"Error decoding toml file: {config_file}"]
+        msgs.extend(err.args)
+        raise PoodleInputError(*msgs) from None
+
+
+def get_project_info_toml(config_file: Path) -> tuple[str, str]:
+    """Retrieve Project Name and Version from a 'toml' Config File."""
+    try:
+        config_data = tomllib.load(config_file.open(mode="rb"))
+        config_data: dict = config_data.get("project", config_data)  # type: ignore[no-redef]
+        return config_data.get("name", ""), config_data.get("version", "")
+    except tomllib.TOMLDecodeError:
+        return "", ""
 
 
 def get_source_folders(command_line_sources: tuple[Path], config_data: dict) -> list[Path]:
@@ -280,7 +338,7 @@ def get_path_list_from_config(
         command_line=command_line_fix,
     )
 
-    if not values:
+    if values is None:
         return default_fix
 
     try:
@@ -367,6 +425,28 @@ def get_int_from_config(
         raise PoodleInputError(msg) from None
 
 
+def get_float_from_config(
+    option_name: str,
+    config_data: dict,
+    default: float | None = None,
+    command_line: float | None = None,
+) -> float | None:
+    """Retrieve Config Option that should be an float or None.
+
+    Retrieve highest priority value from config sources.
+    """
+    value, source = get_option_from_config(option_name=option_name, config_data=config_data, command_line=command_line)
+
+    if value is None:
+        return default
+
+    try:
+        return float(value)
+    except ValueError:
+        msg = f"{option_name} from {source} must be a valid float"
+        raise PoodleInputError(msg) from None
+
+
 def get_str_from_config(
     option_name: str,
     config_data: dict,
@@ -406,7 +486,7 @@ def get_str_list_from_config(
         command_line=command_line_fix,
     )
 
-    if not values:
+    if values is None:
         return default_fix
 
     if isinstance(values, str):
@@ -464,19 +544,19 @@ def get_dict_from_config(
 
     if option_name in config_data:
         try:
-            option_value.update(config_data[option_name])
-        except ValueError:
+            merge(option_value, config_data[option_name])
+        except TypeError:
             msg = f"{option_name} in config file must be a valid dict"
             raise PoodleInputError(msg) from None
 
     if hasattr(poodle_config, option_name):
         try:
-            option_value.update(getattr(poodle_config, option_name))
-        except ValueError:
+            merge(option_value, getattr(poodle_config, option_name))
+        except TypeError:
             msg = f"poodle_config.{option_name} must be a valid dict"
             raise PoodleInputError(msg) from None
 
     if command_line:
-        option_value.update(command_line)
+        merge(option_value, command_line)
 
     return option_value

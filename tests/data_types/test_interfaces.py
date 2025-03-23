@@ -31,6 +31,7 @@ class TestMutator:
         assert mutator.echo == click.echo
 
     def test_mutator_name(self):
+        assert Mutator.mutator_name == ""
         assert self.DummyMutator.mutator_name == "DummyMutator"
 
     def test_create_file_mutation(self):
@@ -53,7 +54,7 @@ class TestMutator:
             ],
         )
 
-        assert Mutator.get_location(ast.parse(module).body[0]) == (1, 1, 3, 12)
+        assert Mutator.get_location(ast.parse(module).body[0]) == (1, 0, 3, 12)
 
     @mock.patch("ast.walk")
     def test_get_location_no_ends(self, walk):
@@ -83,12 +84,28 @@ class TestMutator:
         assert Mutator.get_location(node) == (5, 8, 5, 12)
 
     @mock.patch("ast.walk")
-    def test_get_location_lt_lineno(self, walk):
+    def test_get_location_lt_lineno_eq_col(self, walk):
         node = mock.MagicMock(lineno=5, col_offset=8, end_lineno=5, end_col_offset=12)
         walk.return_value = [
-            mock.MagicMock(lineno=4, col_offset=10, end_lineno=5, end_col_offset=8),
+            mock.MagicMock(lineno=4, col_offset=8, end_lineno=5, end_col_offset=8),
         ]
-        assert Mutator.get_location(node) == (4, 10, 5, 12)
+        assert Mutator.get_location(node) == (4, 8, 5, 12)
+
+    @mock.patch("ast.walk")
+    def test_get_location_lt_lineno_gt_col(self, walk):
+        node = mock.MagicMock(lineno=5, col_offset=8, end_lineno=5, end_col_offset=12)
+        walk.return_value = [
+            mock.MagicMock(lineno=4, col_offset=9, end_lineno=5, end_col_offset=8),
+        ]
+        assert Mutator.get_location(node) == (4, 8, 5, 12)
+
+    @mock.patch("ast.walk")
+    def test_get_location_lt_lineno_lt_col(self, walk):
+        node = mock.MagicMock(lineno=5, col_offset=8, end_lineno=5, end_col_offset=12)
+        walk.return_value = [
+            mock.MagicMock(lineno=4, col_offset=7, end_lineno=5, end_col_offset=8),
+        ]
+        assert Mutator.get_location(node) == (4, 7, 5, 12)
 
     @mock.patch("ast.walk")
     def test_get_location_eq_lineno_lt_col(self, walk):
@@ -140,6 +157,44 @@ class TestMutator:
         assert bin_op.left.parent == bin_op
         assert bin_op.op.parent == bin_op
         assert bin_op.right.parent == bin_op
+
+    def test_is_annotation_function_def(self):
+        parsed_ast = ast.parse(
+            "def my_func(xl: list[int] = 1)-> list[str]:\n  return [str(x) for x in xl]",
+            mode="exec",
+        )
+        Mutator.add_parent_attr(parsed_ast)
+
+        assert not Mutator.is_annotation(parsed_ast)  ## no parent
+
+        function_def = parsed_ast.body[0]
+        arg_xl = function_def.args.args[0]
+        arg_xl_annotation: ast.Subscript = arg_xl.annotation  # type: ignore [annotation-unchecked]
+        arg_xl_default: ast.Constant = function_def.args.defaults[0]  # type: ignore [annotation-unchecked]
+
+        assert Mutator.is_annotation(arg_xl_annotation) is True
+        assert Mutator.is_annotation(arg_xl_annotation.value) is True  ## list
+        assert Mutator.is_annotation(arg_xl_default) is False
+
+        returns_subscript = function_def.returns
+        assert Mutator.is_annotation(returns_subscript) is True
+        assert Mutator.is_annotation(returns_subscript.value) is True  ## list
+
+        list_comp = function_def.body[0].value
+        assert Mutator.is_annotation(list_comp) is False
+
+    def test_is_annotation_ann_assign(self):
+        parsed_ast = ast.parse("x: list[str] | tuple[str] = y", mode="exec")
+        Mutator.add_parent_attr(parsed_ast)
+
+        assert Mutator.is_annotation(parsed_ast) is False
+        ann_assign = parsed_ast.body[0]
+        assert Mutator.is_annotation(ann_assign) is False
+        assert Mutator.is_annotation(ann_assign.target) is False  # Name: x
+        assert Mutator.is_annotation(ann_assign.annotation) is True  # BinOp: BitOr
+        assert Mutator.is_annotation(ann_assign.annotation.left) is True  # list[str]
+        assert Mutator.is_annotation(ann_assign.annotation.left.value) is True  # list
+        assert Mutator.is_annotation(ann_assign.value) is False  # Name: y
 
 
 def test_runner():

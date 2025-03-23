@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -13,10 +14,14 @@ from poodle.data_types.data import (
     TestingResults,
     TestingSummary,
 )
+from poodle.util import from_json, to_json
 
 
 @dataclass
 class PoodleConfigStub(PoodleConfig):
+    project_name: str | None = None
+    project_version: str | None = None
+
     config_file: Path | None = None
     source_folders: list[Path] = None  # type: ignore [assignment]
 
@@ -47,11 +52,17 @@ class PoodleConfigStub(PoodleConfig):
     reporters: list[str] = None  # type: ignore [assignment]
     reporter_opts: dict = None  # type: ignore [assignment]
 
+    fail_under: float | None = None
+
+    skip_delete_folder: bool = False
+
 
 class TestPoodleConfig:
     @staticmethod
     def create_poodle_config():
         return PoodleConfig(
+            project_name="example",
+            project_version="1.2.3",
             config_file=Path("filename.toml"),
             source_folders=[Path("src")],
             only_files=["example.py"],
@@ -74,10 +85,15 @@ class TestPoodleConfig:
             runner_opts={"command_line": "pytest tests"},
             reporters=["summary"],
             reporter_opts={"summary": "value"},
+            fail_under=95.0,
+            skip_delete_folder=False,
         )
 
     def test_poodle_config(self):
         config = self.create_poodle_config()
+
+        assert config.project_name == "example"
+        assert config.project_version == "1.2.3"
 
         assert config.config_file == Path("filename.toml")
         assert config.source_folders == [Path("src")]
@@ -108,6 +124,8 @@ class TestPoodleConfig:
 
         assert config.reporters == ["summary"]
         assert config.reporter_opts == {"summary": "value"}
+
+        assert config.fail_under == 95.0
 
 
 class TestFileMutation:
@@ -169,44 +187,126 @@ class TestMutant:
         assert poodle_mutant.end_col_offset == 0
         assert poodle_mutant.text == ""
 
+    def mutant_object(self):
+        return Mutant(
+            mutator_name="test",
+            lineno=1,
+            col_offset=2,
+            end_lineno=3,
+            end_col_offset=4,
+            text="mutant",
+            source_folder=Path("src"),
+            source_file=Path("test.py"),
+            unified_diff="diff",
+        )
+
+    def mutant_dict(self):
+        return {
+            "mutator_name": "test",
+            "lineno": 1,
+            "col_offset": 2,
+            "end_lineno": 3,
+            "end_col_offset": 4,
+            "text": "mutant",
+            "source_folder": "src",
+            "source_file": "test.py",
+            "unified_diff": "diff",
+        }
+
+    def test_serialize(self):
+        mutant = self.mutant_object()
+        expected = self.mutant_dict()
+        assert mutant.to_dict() == expected
+        assert to_json(mutant) == json.dumps(expected)
+
+    def test_deserialize(self):
+        mutant = json.dumps(self.mutant_dict())
+        expected = self.mutant_object()
+        assert from_json(mutant, Mutant) == expected
+
 
 class TestMutantTrialResult:
     def test_mutant_trial_result(self):
-        result = MutantTrialResult(passed=True, reason_code="test", reason_desc="it worked")
+        result = MutantTrialResult(found=True, reason_code="test", reason_desc="it worked")
 
-        assert result.passed is True
+        assert result.found is True
         assert result.reason_code == "test"
         assert result.reason_desc == "it worked"
-        assert result.RC_FOUND == "mutant_found"
-        assert result.RC_NOT_FOUND == "mutant_not_found"
-        assert result.RC_TIMEOUT == "timeout"
-        assert result.RC_INCOMPLETE == "incomplete"
-        assert result.RC_OTHER == "other"
+        assert result.RC_FOUND == "Mutant Found"
+        assert result.RC_NOT_FOUND == "Mutant Not Found"
+        assert result.RC_TIMEOUT == "Trial Exceeded Timeout"
+        assert result.RC_INCOMPLETE == "Testing Incomplete"
+        assert result.RC_OTHER == "Other, See Description"
 
     def test_mutant_trial_result_min(self):
         result = MutantTrialResult(
-            passed=True,
+            found=True,
             reason_code="test",
         )
 
-        assert result.passed is True
+        assert result.found is True
         assert result.reason_code == "test"
         assert result.reason_desc is None
-        assert result.RC_FOUND == "mutant_found"
-        assert result.RC_NOT_FOUND == "mutant_not_found"
-        assert result.RC_TIMEOUT == "timeout"
-        assert result.RC_INCOMPLETE == "incomplete"
-        assert result.RC_OTHER == "other"
+
+    def mutant_trial_result_object(self):
+        return MutantTrialResult(
+            found=True,
+            reason_code=MutantTrialResult.RC_FOUND,
+            reason_desc="it worked",
+        )
+
+    def mutant_trial_result_dict(self):
+        return {
+            "found": True,
+            "reason_code": MutantTrialResult.RC_FOUND,
+            "reason_desc": "it worked",
+        }
+
+    def test_serialize(self):
+        result = self.mutant_trial_result_object()
+        expected = self.mutant_trial_result_dict()
+        assert result.to_dict() == expected
+        assert to_json(result) == json.dumps(expected)
+
+    def test_deserialize(self):
+        result = json.dumps(self.mutant_trial_result_dict())
+        expected = self.mutant_trial_result_object()
+        assert from_json(result, MutantTrialResult) == expected
 
 
 class TestMutantTrial:
     def test_mutant_trial(self):
         mutant = Mutant(source_folder=Path(), source_file=None, **vars(TestFileMutation.create_file_mutation()))
-        result = MutantTrialResult(passed=True, reason_code="test")
+        result = MutantTrialResult(found=True, reason_code="test")
         trial = MutantTrial(mutant=mutant, result=result, duration=1.2)
         assert trial.mutant == mutant
         assert trial.result == result
         assert trial.duration == 1.2
+
+    def mutant_trial_object(self):
+        return MutantTrial(
+            mutant=TestMutant().mutant_object(),
+            result=TestMutantTrialResult().mutant_trial_result_object(),
+            duration=1.2,
+        )
+
+    def mutant_trial_dict(self):
+        return {
+            "mutant": TestMutant().mutant_dict(),
+            "result": TestMutantTrialResult().mutant_trial_result_dict(),
+            "duration": 1.2,
+        }
+
+    def test_serialize(self):
+        trial = self.mutant_trial_object()
+        expected = self.mutant_trial_dict()
+        assert trial.to_dict() == expected
+        assert to_json(trial) == json.dumps(expected)
+
+    def test_deserialize(self):
+        trial = json.dumps(self.mutant_trial_dict())
+        expected = self.mutant_trial_object()
+        assert from_json(trial, MutantTrial) == expected
 
 
 class TestTestingSummary:
@@ -218,7 +318,6 @@ class TestTestingSummary:
             not_found=4,
             timeout=5,
             errors=6,
-            success_rate=7.8,
         )
 
         assert testing_summary.trials == 1
@@ -227,7 +326,32 @@ class TestTestingSummary:
         assert testing_summary.not_found == 4
         assert testing_summary.timeout == 5
         assert testing_summary.errors == 6
-        assert testing_summary.success_rate == 7.8
+
+    def test_testing_summary_defaults(self):
+        testing_summary = TestingSummary()
+
+        assert testing_summary.trials == 0
+        assert testing_summary.tested == 0
+        assert testing_summary.found == 0
+        assert testing_summary.not_found == 0
+        assert testing_summary.timeout == 0
+        assert testing_summary.errors == 0
+
+    def test_success_rate_trials(self):
+        summary = TestingSummary(trials=9, found=6)
+        assert summary.success_rate == 6 / 9
+
+    def test_success_rate_tested(self):
+        summary = TestingSummary(tested=9, found=6)
+        assert summary.success_rate == 6 / 9
+
+    def test_success_rate_zero(self):
+        summary = TestingSummary(found=6)
+        assert summary.success_rate == 0.0
+
+    def test_coverage_display(self):
+        summary = TestingSummary(trials=9, found=6)
+        assert summary.coverage_display == "66.6%"
 
     def test_iadd(self):
         summary = TestingSummary(trials=10)
@@ -239,7 +363,6 @@ class TestTestingSummary:
         summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
         expected.tested += 1
         expected.found += 1
-        expected.success_rate = 0.1
         assert summary == expected
 
         summary += MutantTrialResult(False, MutantTrialResult.RC_NOT_FOUND)
@@ -260,7 +383,6 @@ class TestTestingSummary:
         summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
         expected.tested += 1
         expected.found += 1
-        expected.success_rate = 0.2
         assert summary == expected
 
         summary += MutantTrialResult(False, MutantTrialResult.RC_NOT_FOUND)
@@ -278,11 +400,66 @@ class TestTestingSummary:
         expected.errors += 1
         assert summary == expected
 
+    def test_iadd_one_trial(self):
+        summary = TestingSummary()
+        summary = TestingSummary(trials=1)
+        expected = TestingSummary(tested=1, found=1, trials=1)
+
+        summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
+        assert summary == expected
+
+    def test_iadd_zero_trials(self):
+        summary = TestingSummary()
+        expected = TestingSummary(tested=1, found=1)
+
+        summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
+        assert summary == expected
+
+    def test_iadd_neg_trials(self):
+        summary = TestingSummary(trials=-1)
+        expected = TestingSummary(tested=1, found=1, trials=-1)
+
+        summary += MutantTrialResult(True, MutantTrialResult.RC_FOUND)
+        assert summary == expected
+
+    def summary_object(self):
+        return TestingSummary(
+            trials=10,
+            tested=9,
+            found=8,
+            not_found=7,
+            timeout=6,
+            errors=5,
+        )
+
+    def summary_dict(self):
+        return {
+            "trials": 10,
+            "tested": 9,
+            "found": 8,
+            "not_found": 7,
+            "timeout": 6,
+            "errors": 5,
+            "success_rate": 0.8,
+            "coverage_display": "80%",
+        }
+
+    def test_serialize(self):
+        summary = self.summary_object()
+        expected = self.summary_dict()
+        assert summary.to_dict() == expected
+        assert to_json(summary) == json.dumps(expected)
+
+    def test_deserialize(self):
+        summary = json.dumps(self.summary_dict())
+        expected = self.summary_object()
+        assert from_json(summary, TestingSummary) == expected
+
 
 class TestTestingResults:
     def test_testing_results(self):
         mutant = Mutant(source_folder=Path(), source_file=None, **vars(TestFileMutation.create_file_mutation()))
-        result = MutantTrialResult(passed=True, reason_code="test")
+        result = MutantTrialResult(found=True, reason_code="test")
         trial = MutantTrial(mutant=mutant, result=result, duration=1.2)
         testing_summary = TestingSummary(trials=4)
         results = TestingResults(
@@ -292,3 +469,42 @@ class TestTestingResults:
 
         assert results.summary == testing_summary
         assert results.mutant_trials == [trial]
+
+    def results_object(self):
+        return TestingResults(
+            mutant_trials=[TestMutantTrial().mutant_trial_object()],
+            summary=TestTestingSummary().summary_object(),
+        )
+
+    def results_dict(self):
+        return {
+            "mutant_trials": [TestMutantTrial().mutant_trial_dict()],
+            "summary": TestTestingSummary().summary_dict(),
+        }
+
+    def test_serialize(self):
+        results = self.results_object()
+        expected = self.results_dict()
+        assert results.to_dict() == expected
+        assert to_json(results) == json.dumps(expected)
+
+    def test_deserialize(self):
+        results = json.dumps(self.results_dict())
+        expected = self.results_object()
+        assert from_json(results, TestingResults) == expected
+
+    def test_serialize_no_summary(self):
+        results = self.results_object()
+        results.summary = None
+        expected = self.results_dict()
+        expected["summary"] = None
+        assert results.to_dict() == expected
+        assert to_json(results) == json.dumps(expected)
+
+    def test_deserialize_no_summary(self):
+        results_dict = self.results_dict()
+        results_dict["summary"] = None
+        results = json.dumps(results_dict)
+        expected = self.results_object()
+        expected.summary = None
+        assert from_json(results, TestingResults) == expected

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "poodle"
 description = "Mutation Testing Tool"
-version = "1.1.0"
+version = "1.3.2"
 license = { file = "LICENSE" }
 keywords = [
     "test",
@@ -28,7 +28,13 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-dependencies = ["click>=8", "wcmatch>=8.5", "tomli>=2; python_version<'3.11'"]
+dependencies = [
+    "click>=8",
+    "wcmatch>=8.5",
+    "tomli>=2; python_version<'3.11'",
+    "jinja2>=3.0.3",
+    "mergedeep>=1.0",
+]
 
 [project.urls]
 "Documentation" = "https://poodle.readthedocs.io/"
@@ -40,10 +46,16 @@ poodle = "poodle.cli:main"
 
 [tool.setuptools]
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"poodle.templates" = ["*.*"]
+
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-addopts = "-vv --cov-reset --cov-report=html:cov-html --cov-report=term --cov-report=json:code-coverage.json"
+addopts = "-vv --cov-reset --cov-report=html:cov-html --cov-report=term"
 sort_mode = "random"
 sort_bucket = "session"
 filterwarnings = [
@@ -52,9 +64,13 @@ filterwarnings = [
 ]
 
 [tool.poodle]
-file_filters = ["test_*.py", "*_test.py", 'cli.py', 'run.py', '__init__.py']
+file_filters = ["test_*.py", "*_test.py", '__init__.py']
+reporters = ["summary", "html"]
 
 [tool.poodle.runner_opts]
+command_line = "pytest -x --assert=plain -o pythonpath='{PYTHONPATH}' --sort-mode=mutcov"
+
+[tool.poodle.reporter_opts]
 
 [tool.coverage.run]
 branch = true
@@ -114,7 +130,7 @@ exclude = [
     "dist",
     "venv",
 ]
-task-tags = ["nomut","TODO", "FIXME", "XXX"]
+task-tags = ["nomut", "TODO", "FIXME", "XXX"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["poodle"]

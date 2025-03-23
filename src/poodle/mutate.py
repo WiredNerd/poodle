@@ -49,9 +49,10 @@ builtin_mutators = {
 
 def initialize_mutators(work: PoodleWork) -> list[Callable | Mutator]:
     """Initialize all mutators from standard list and from config options."""
-    mutators: list[Any] = [
-        mutator for name, mutator in builtin_mutators.items() if name not in work.config.skip_mutators
-    ]
+    skip_mutators = [name.lower() for name in work.config.skip_mutators]
+    mutators: list[Any] = []
+    if "all" not in skip_mutators:
+        mutators.extend([mutator for name, mutator in builtin_mutators.items() if name.lower() not in skip_mutators])
     mutators.extend(work.config.add_mutators)
 
     return [initialize_mutator(work, mut_def) for mut_def in mutators]
@@ -63,6 +64,9 @@ def initialize_mutator(work: PoodleWork, mutator_def: Any) -> Callable | Mutator
     mutator_def may be string of object to import, Callable, Mutator subclass or Mutator subclass instance.
     """
     logger.debug(mutator_def)
+
+    if mutator_def in builtin_mutators:
+        mutator_def = builtin_mutators[mutator_def]
 
     if isinstance(mutator_def, str):
         try:
@@ -214,16 +218,3 @@ def is_filtered(line_filters: dict[int, set[str]], file_mutant: FileMutation) ->
         ):
             return True
     return False
-
-
-def mutate_lines(mutant: Mutant, file_lines: list[str]) -> list[str]:
-    """Apply mutation to list of lines from file."""
-    mut_lines = deepcopy(file_lines)
-    prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
-    suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
-
-    mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
-    for _ in range(mutant.lineno, mutant.end_lineno):
-        mut_lines.pop(mutant.lineno)
-
-    return mut_lines

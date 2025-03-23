@@ -3,15 +3,13 @@ name: Python Platform Tests
 on: 
   push:
     paths:
-      - requirements.txt
-      - src/**
-      - tests/**
       - .github/workflows/python-test-matrix.yml
-  pull_request:
-    paths:
       - requirements.txt
       - src/**
       - tests/**
+  pull_request:
+    branches-ignore:
+      - docs
   workflow_dispatch:
 
 jobs:
@@ -32,9 +30,14 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           pip install -r requirements.txt --upgrade
+          pip install --editable .
       - run: pytest
       - name: Poodle example project
         run : |
-          pip install --editable .
           cd example
-          poodle
+          poodle --report summary --report not_found --json results.json --html html_report
+      - name: Poodle example flat project
+        run : |
+          cd example2
+          poodle --report summary --report not_found --json results.json --html html_report
+            

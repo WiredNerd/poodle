@@ -1,0 +1,48 @@
+{% set title = "Module Source: {}".format(source_file) %}
+{% extends "html-report.html.jinja" %}
+
+{% block header %}
+{{ super() }}
+&nbsp;&nbsp;<a href="index.html" class="subtitle">&lt;Index</a>
+<div class="subtitle">
+<span class="label">Mutants:</span> {{ module.summary.trials }},
+<span class="label">Found:</span> {{ module.summary.found }},
+<span class="label">Not Found:</span> {{ module.summary.not_found }},
+<span class="label">Timeout:</span> {{ module.summary.timeout }},
+<span class="label">Error:</span> {{ module.summary.errors }}
+</div>
+<div class="subtitle">
+<span class="label">Module Score:</span> {{ module.summary.coverage_display }}
+</div>
+{% endblock %}
+
+
+{% block main %}
+<table class="source">
+    {% for line in module.lines %}
+    <tr class="source_row {% if line.trials %} show_hide_row {% endif %} {{ line.row_class }}">
+        <td class="line_toggle">{% if line.trials %} &#x25B8; {% endif %}</td>
+        <td class="line_number">{{ line.lineno }}</td>
+        <td class="line_text">
+            <pre>{{ line.text }}</pre>
+        </td>
+    </tr>
+    {% if line.trials %}
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            {% for trial in line.trials %}
+            {{ trial_details(trial) }}
+            {% endfor %}
+        </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+</table>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>addShowHideEventListeners();</script>
+{% endblock %}

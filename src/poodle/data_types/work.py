@@ -30,7 +30,7 @@ class PoodleWork:
         self.reporters: list[Callable] = []
 
         self._echo_wrapper = EchoWrapper(config.echo_enabled, config.echo_no_color)
-        self.echo = self._echo_wrapper.echo
+        self.echo: Callable = self._echo_wrapper.echo
 
         def number_generator() -> Generator[int, Any, None]:
             i = 1

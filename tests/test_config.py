@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import importlib
 import logging
 from io import BytesIO
@@ -7,7 +9,7 @@ from unittest import mock
 import pytest
 from wcmatch import glob
 
-from poodle import PoodleInputError, config
+from poodle import PoodleInputError, config, tomllib
 
 
 @pytest.fixture(autouse=True)
@@ -19,9 +21,9 @@ def _test_wrapper():
 
 
 @pytest.fixture()
-def logging_mock():
-    with mock.patch("poodle.config.logging") as logging_mock:
-        yield logging_mock
+def mock_logging():
+    with mock.patch("poodle.config.logging") as mock_logging:
+        yield mock_logging
 
 
 @pytest.fixture()
@@ -39,21 +41,17 @@ def test_defaults():
     assert config.default_log_level == logging.WARN
 
     assert config.default_file_flags == glob.GLOBSTAR | glob.NODIR
-    assert config.default_file_filters == ["test_*.py", "*_test.py"]
+    assert config.default_file_filters == ["test_*.py", "*_test.py", "poodle_config.py", "setup.py"]
 
     assert config.default_file_copy_flags == glob.GLOBSTAR | glob.NODIR
-    assert config.default_file_copy_filters == ["test_*.py", "*_test.py", "__pycache__/**"]
+    assert config.default_file_copy_filters == ["__pycache__/**"]
     assert config.default_work_folder == Path(".poodle-temp")
-
-    assert config.default_mutator_opts == {}
 
     assert config.default_min_timeout == 10
     assert config.default_timeout_multiplier == 10
     assert config.default_runner == "command_line"
-    assert config.default_runner_opts == {"command_line": "pytest -x --assert=plain -o pythonpath="}
 
     assert config.default_reporters == ["summary", "not_found"]
-    assert config.default_reporter_opts == {}
 
 
 class TestMaxWorkers:
@@ -88,132 +86,272 @@ class TestMaxWorkers:
 
 
 class TestBuildConfig:
-    @mock.patch("poodle.config.os")
-    @mock.patch("poodle.config.get_config_file_path")
-    @mock.patch("poodle.config.get_config_file_data")
-    @mock.patch("poodle.config.get_cmd_line_log_level")
-    @mock.patch("poodle.config.get_source_folders")
-    @mock.patch("poodle.config.get_str_from_config")
-    @mock.patch("poodle.config.get_str_list_from_config")
-    @mock.patch("poodle.config.get_path_from_config")
-    @mock.patch("poodle.config.get_dict_from_config")
-    @mock.patch("poodle.config.get_bool_from_config")
-    @mock.patch("poodle.config.get_int_from_config")
-    @mock.patch("poodle.config.get_any_from_config")
-    @mock.patch("poodle.config.get_any_list_from_config")
-    @mock.patch("poodle.config.get_cmd_line_echo_enabled")
-    def test_build_config(
+    @pytest.fixture()
+    def mock_os(self):
+        with mock.patch("poodle.config.os") as mock_os:
+            yield mock_os
+
+    @pytest.fixture()
+    def get_reporters(self):
+        with mock.patch("poodle.config.get_reporters") as get_reporters:
+            yield get_reporters
+
+    @pytest.fixture()
+    def get_config_file_path(self):
+        with mock.patch("poodle.config.get_config_file_path") as get_config_file_path:
+            yield get_config_file_path
+
+    @pytest.fixture()
+    def get_config_file_data(self):
+        with mock.patch("poodle.config.get_config_file_data") as get_config_file_data:
+            yield get_config_file_data
+
+    @pytest.fixture()
+    def get_project_info(self):
+        with mock.patch("poodle.config.get_project_info") as get_project_info:
+            get_project_info.return_value = ("example", "1,2,3")
+            yield get_project_info
+
+    @pytest.fixture()
+    def get_cmd_line_log_level(self):
+        with mock.patch("poodle.config.get_cmd_line_log_level") as get_cmd_line_log_level:
+            yield get_cmd_line_log_level
+
+    @pytest.fixture()
+    def get_source_folders(self):
+        with mock.patch("poodle.config.get_source_folders") as get_source_folders:
+            yield get_source_folders
+
+    @pytest.fixture()
+    def get_str_from_config(self):
+        with mock.patch("poodle.config.get_str_from_config") as get_str_from_config:
+            yield get_str_from_config
+
+    @pytest.fixture()
+    def get_str_list_from_config(self):
+        with mock.patch("poodle.config.get_str_list_from_config") as get_str_list_from_config:
+            yield get_str_list_from_config
+
+    @pytest.fixture()
+    def get_path_from_config(self):
+        with mock.patch("poodle.config.get_path_from_config") as get_path_from_config:
+            yield get_path_from_config
+
+    @pytest.fixture()
+    def get_dict_from_config(self):
+        with mock.patch("poodle.config.get_dict_from_config") as get_dict_from_config:
+            yield get_dict_from_config
+
+    @pytest.fixture()
+    def get_bool_from_config(self):
+        with mock.patch("poodle.config.get_bool_from_config") as get_bool_from_config:
+            yield get_bool_from_config
+
+    @pytest.fixture()
+    def get_int_from_config(self):
+        with mock.patch("poodle.config.get_int_from_config") as get_int_from_config:
+            yield get_int_from_config
+
+    @pytest.fixture()
+    def get_float_from_config(self):
+        with mock.patch("poodle.config.get_float_from_config") as get_float_from_config:
+            yield get_float_from_config
+
+    @pytest.fixture()
+    def get_any_from_config(self):
+        with mock.patch("poodle.config.get_any_from_config") as get_any_from_config:
+            yield get_any_from_config
+
+    @pytest.fixture()
+    def get_any_list_from_config(self):
+        with mock.patch("poodle.config.get_any_list_from_config") as get_any_list_from_config:
+            yield get_any_list_from_config
+
+    @pytest.fixture()
+    def get_cmd_line_echo_enabled(self):
+        with mock.patch("poodle.config.get_cmd_line_echo_enabled") as get_cmd_line_echo_enabled:
+            yield get_cmd_line_echo_enabled
+
+    @pytest.fixture()
+    def default_max_workers(self):
+        with mock.patch("poodle.config.default_max_workers") as default_max_workers:
+            yield default_max_workers
+
+    @pytest.fixture()
+    def _setup_build_config_mocks(
         self,
-        get_cmd_line_echo_enabled,
-        get_any_list_from_config,
-        get_any_from_config,
-        get_int_from_config,
-        get_bool_from_config,
-        get_dict_from_config,
-        get_path_from_config,
-        get_str_list_from_config,
-        get_str_from_config,
-        get_source_folders,
-        get_cmd_line_log_level,
-        get_config_file_data,
-        get_config_file_path,
-        mock_os,
-        logging_mock,
+        get_cmd_line_echo_enabled: mock.MagicMock,
+        get_any_list_from_config: mock.MagicMock,
+        get_any_from_config: mock.MagicMock,
+        get_int_from_config: mock.MagicMock,
+        get_bool_from_config: mock.MagicMock,
+        get_dict_from_config: mock.MagicMock,
+        get_path_from_config: mock.MagicMock,
+        get_str_list_from_config: mock.MagicMock,
+        get_str_from_config: mock.MagicMock,
+        get_source_folders: mock.MagicMock,
+        get_cmd_line_log_level: mock.MagicMock,
+        get_project_info: mock.MagicMock,
+        get_config_file_data: mock.MagicMock,
+        get_config_file_path: mock.MagicMock,
+        get_reporters: mock.MagicMock,
+        mock_os: mock.MagicMock,
+        mock_logging: mock.MagicMock,
     ):
-        get_dict_from_config.side_effect = [
-            {"mutator": "value"},
-            {"runner": "value"},
-            {"reporter": "value"},
-        ]
+        get_cmd_line_echo_enabled.reset_mock()
+        get_any_list_from_config.reset_mock()
+        get_any_from_config.reset_mock()
+        get_int_from_config.reset_mock()
+        get_bool_from_config.reset_mock()
+        get_dict_from_config.reset_mock()
+        get_path_from_config.reset_mock()
+        get_str_list_from_config.reset_mock()
+        get_str_from_config.reset_mock()
+        get_source_folders.reset_mock()
+        get_cmd_line_log_level.reset_mock()
+        get_project_info.reset_mock()
+        get_config_file_data.reset_mock()
+        get_config_file_path.reset_mock()
+        get_reporters.reset_mock()
+        mock_os.reset_mock()
+        mock_logging.reset_mock()
 
-        cmd_sources = (Path("src"),)
-        cmd_config_file = Path("config.toml")
-
-        config_file_path = get_config_file_path.return_value
-        config_file_data = get_config_file_data.return_value
-
-        mock_os.sched_getaffinity.return_value = [1, 2, 3, 4, 5, 6]
-
-        assert config.build_config(
+    def build_config_with(
+        self,
+        cmd_sources: tuple[Path] = (Path("src"),),
+        cmd_config_file: Path | None = None,
+        cmd_quiet: int = 0,
+        cmd_verbose: int = 0,
+        cmd_max_workers: int | None = None,
+        cmd_excludes: tuple[str] = (),  # type: ignore[assignment]
+        cmd_only_files: tuple[str] = (),  # type: ignore[assignment]
+        cmd_report: tuple[str] = (),  # type: ignore[assignment]
+        cmd_html: Path | None = None,
+        cmd_json: Path | None = None,
+        cmd_fail_under: float | None = None,
+    ):
+        return config.build_config(
             cmd_sources,
             cmd_config_file,
-            cmd_quiet=1,
-            cmd_verbose=2,
-            cmd_max_workers=3,
-            cmd_excludes=("notcov.py",),
-            cmd_only_files=("example.py",),
-        ) == config.PoodleConfig(
-            config_file=config_file_path,
-            source_folders=get_source_folders.return_value,
-            only_files=get_str_list_from_config.return_value,
-            file_flags=get_int_from_config.return_value,
-            file_filters=get_str_list_from_config.return_value.__iadd__.return_value,
-            file_copy_flags=get_int_from_config.return_value,
-            file_copy_filters=get_str_list_from_config.return_value,
-            work_folder=get_path_from_config.return_value,
-            max_workers=get_int_from_config.return_value,
-            log_format=get_str_from_config.return_value,
-            log_level=get_any_from_config.return_value,
-            echo_enabled=get_bool_from_config.return_value,
-            echo_no_color=get_bool_from_config.return_value,
-            mutator_opts={"mutator": "value"},
-            skip_mutators=get_str_list_from_config.return_value,
-            add_mutators=get_any_list_from_config.return_value,
-            min_timeout=get_int_from_config.return_value,
-            timeout_multiplier=get_int_from_config.return_value,
-            runner=get_str_from_config.return_value,
-            runner_opts={"runner": "value"},
-            reporters=get_str_list_from_config.return_value,
-            reporter_opts={"reporter": "value"},
+            cmd_quiet,
+            cmd_verbose,
+            cmd_max_workers,
+            cmd_excludes,
+            cmd_only_files,
+            cmd_report,
+            cmd_html,
+            cmd_json,
+            cmd_fail_under,
         )
 
-        # return PoodleConfig
-        # source_folders
-        get_source_folders.assert_called_once_with(cmd_sources, config_file_data)
+    def test_build_config_project_info(self, get_project_info: mock.MagicMock):
+        get_project_info.return_value = ("example", "1.2.3")
+        config_data = self.build_config_with()
+        assert config_data.project_name == "example"
+        assert config_data.project_version == "1.2.3"
 
-        # only_files
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_config_file(self, get_config_file_path, get_config_file_data):
+        config_data = self.build_config_with(cmd_config_file=Path("config.toml"))
+        assert config_data.config_file == get_config_file_path.return_value
+        get_config_file_path.assert_called_with(Path("config.toml"))
+        get_config_file_data.assert_called_with(get_config_file_path.return_value)
+
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_source_folders(self, get_source_folders, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with(cmd_sources=(Path("source"),))
+        assert config_data.source_folders == get_source_folders.return_value
+        get_source_folders.assert_called_with((Path("source"),), config_file_data)
+
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_only_files(self, get_str_list_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with(cmd_only_files=("example.py",))
+        assert config_data.only_files == get_str_list_from_config.return_value
         get_str_list_from_config.assert_any_call(
             "only_files",
             config_file_data,
             default=[],
             command_line=("example.py",),
         )
-        # file_flags
-        get_int_from_config.assert_any_call("file_flags", config_file_data, default=config.default_file_flags)
-        # file_filters
-        get_str_list_from_config.assert_any_call("file_filters", config_file_data, default=config.default_file_filters)
-        get_str_list_from_config.return_value.__iadd__.assert_any_call(("notcov.py",))
 
-        # file_copy_flags
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_file_flags(self, get_int_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.file_flags == get_int_from_config.return_value
+        get_int_from_config.assert_any_call("file_flags", config_file_data, default=config.default_file_flags)
+
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_file_filters(self, get_str_list_from_config):
+        get_str_list_from_config.return_value = ["test_*.py", "*_test.py", "poodle_config.py", "setup.py"]
+        config_data = self.build_config_with(cmd_excludes=("notcov.py",))
+        assert config_data.file_filters == ["test_*.py", "*_test.py", "poodle_config.py", "setup.py", "notcov.py"]
+
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_file_copy_flags(self, get_int_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.file_copy_flags == get_int_from_config.return_value
         get_int_from_config.assert_any_call("file_copy_flags", config_file_data, default=config.default_file_copy_flags)
-        # file_copy_filters
+
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_file_copy_filters(self, get_str_list_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.file_copy_filters == get_str_list_from_config.return_value
         get_str_list_from_config.assert_any_call(
             "file_copy_filters",
             config_file_data,
             default=config.default_file_copy_filters,
         )
-        # work_folder
+
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_work_folder(self, get_path_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.work_folder == get_path_from_config.return_value
         get_path_from_config.assert_any_call("work_folder", config_file_data, default=config.default_work_folder)
 
-        # max_workers
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_max_workers(self, get_int_from_config, default_max_workers, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        default_max_workers.return_value = 5
+        config_data = self.build_config_with(cmd_max_workers=3)
+        assert config_data.max_workers == get_int_from_config.return_value
         get_int_from_config.assert_any_call("max_workers", config_file_data, default=5, command_line=3)
 
-        # log_format
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_logging(
+        self,
+        get_str_from_config,
+        get_any_from_config,
+        mock_logging,
+        get_config_file_data,
+        get_cmd_line_log_level,
+    ):
+        config_file_data = get_config_file_data.return_value
+        get_str_from_config.return_value = "example log format"
+        get_any_from_config.return_value = logging.CRITICAL
+
+        config_data = self.build_config_with(cmd_quiet=1, cmd_verbose=2)
+        assert config_data.log_format == "example log format"
+        assert config_data.log_level == logging.CRITICAL
         get_str_from_config.assert_any_call("log_format", config_file_data, default=config.default_log_format)
-        # log_level
         get_any_from_config.assert_any_call(
             "log_level",
             config_file_data,
             default=config.default_log_level,
             command_line=get_cmd_line_log_level.return_value,
         )
-        get_cmd_line_log_level.assert_called_with(1, 2)
-        logging_mock.basicConfig.assert_called_once_with(
-            format=get_str_from_config.return_value,
-            level=get_any_from_config.return_value,
-        )
+        mock_logging.basicConfig.assert_called_once_with(format="example log format", level=logging.CRITICAL)
 
-        # echo_enabled
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_echo_enabled(self, get_bool_from_config, get_cmd_line_echo_enabled, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with(cmd_quiet=1)
+        assert config_data.echo_enabled == get_bool_from_config.return_value
         get_bool_from_config.assert_any_call(
             "echo_enabled",
             config_file_data,
@@ -222,39 +360,118 @@ class TestBuildConfig:
         )
         get_cmd_line_echo_enabled.assert_called_once_with(1)
 
-        # echo_no_color
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_echo_no_color(self, get_bool_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.echo_no_color == get_bool_from_config.return_value
         get_bool_from_config.assert_any_call("echo_no_color", config_file_data)
 
-        # mutator_opts
-        get_dict_from_config.assert_any_call("mutator_opts", config_file_data, default=config.default_mutator_opts)
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_mutator_opts(self, get_dict_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.mutator_opts == get_dict_from_config.return_value
+        get_dict_from_config.assert_any_call("mutator_opts", config_file_data)
 
-        # skip_mutators
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_skip_mutators(self, get_str_list_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.skip_mutators == get_str_list_from_config.return_value
         get_str_list_from_config.assert_any_call("skip_mutators", config_file_data, default=[])
 
-        # add_mutators
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_add_mutators(self, get_any_list_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.add_mutators == get_any_list_from_config.return_value
         get_any_list_from_config.assert_any_call("add_mutators", config_file_data)
 
-        # min_timeout
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_min_timeout(self, get_int_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.min_timeout == get_int_from_config.return_value
         get_int_from_config.assert_any_call("min_timeout", config_file_data)
 
-        # timeout_multiplier
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_min_timeout_default(self, get_int_from_config):
+        get_int_from_config.return_value = None
+        config_data = self.build_config_with()
+        assert config_data.min_timeout == config.default_min_timeout
+
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_timeout_multiplier(self, get_int_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.timeout_multiplier == get_int_from_config.return_value
         get_int_from_config.assert_any_call("timeout_multiplier", config_file_data)
 
-        # runner
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_timeout_multiplier_default(self, get_int_from_config):
+        get_int_from_config.return_value = None
+        config_data = self.build_config_with()
+        assert config_data.timeout_multiplier == config.default_timeout_multiplier
+
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_runner(self, get_str_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.runner == get_str_from_config.return_value
         get_str_from_config.assert_any_call("runner", config_file_data, default=config.default_runner)
 
-        # runner_opts
-        get_dict_from_config.assert_any_call("runner_opts", config_file_data, default=config.default_runner_opts)
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_runner_opts(self, get_dict_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.runner_opts == get_dict_from_config.return_value
+        get_dict_from_config.assert_any_call("runner_opts", config_file_data)
 
-        # reporters
-        get_str_list_from_config.assert_any_call("reporters", config_file_data, default=config.default_reporters)
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_reporters(self, get_reporters, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with(
+            cmd_report=("myreporter",),
+            cmd_html=Path("html"),
+            cmd_json=Path("json"),
+        )
+        assert config_data.reporters == get_reporters.return_value
+        get_reporters.assert_called_once_with(config_file_data, ("myreporter",), Path("html"), Path("json"))
 
-        # reporter_opts
-        get_dict_from_config.assert_any_call("reporter_opts", config_file_data, default=config.default_reporter_opts)
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_reporter_opts(self, get_dict_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with(
+            cmd_html=Path("html"),
+            cmd_json=Path("json"),
+        )
+        assert config_data.reporter_opts == get_dict_from_config.return_value
+        get_dict_from_config.assert_any_call(
+            "reporter_opts",
+            config_file_data,
+            command_line={"json_report_file": Path("json"), "html": {"report_folder": Path("html")}},
+        )
+
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_fail_under(self, get_float_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with(cmd_fail_under=50)
+        assert config_data.fail_under == get_float_from_config.return_value
+        get_float_from_config.assert_any_call("fail_under", config_file_data, command_line=50)
+
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_skip_delete_folder(self, get_bool_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.skip_delete_folder == get_bool_from_config.return_value
+        get_bool_from_config.assert_any_call("skip_delete_folder", config_file_data, default=False)
 
     @mock.patch("poodle.config.get_config_file_data")
-    def test_build_config_defaults(self, get_config_file_data):
+    @mock.patch("poodle.config.get_project_info")
+    def test_build_config_defaults(self, get_project_info, get_config_file_data):
         get_config_file_data.return_value = {}
+        get_project_info.return_value = (None, None)
 
         assert config.build_config(
             cmd_sources=(),
@@ -264,7 +481,13 @@ class TestBuildConfig:
             cmd_max_workers=None,
             cmd_excludes=(),
             cmd_only_files=(),
+            cmd_report=(),
+            cmd_html=None,
+            cmd_json=None,
+            cmd_fail_under=None,
         ) == config.PoodleConfig(
+            project_name=None,
+            project_version=None,
             config_file=Path("pyproject.toml"),
             source_folders=[Path("src")],
             only_files=[],
@@ -284,10 +507,55 @@ class TestBuildConfig:
             min_timeout=10,
             timeout_multiplier=10,
             runner="command_line",
-            runner_opts={"command_line": "pytest -x --assert=plain -o pythonpath="},
+            runner_opts={},
             reporters=["summary", "not_found"],
             reporter_opts={},
+            fail_under=None,
+            skip_delete_folder=False,
         )
+
+
+class TestGetReporters:
+    @pytest.fixture()
+    def get_str_list_from_config(self):
+        with mock.patch("poodle.config.get_str_list_from_config") as get_str_list_from_config:
+            yield get_str_list_from_config
+
+    def test_get_reporters(self, get_str_list_from_config):
+        config_file_data = mock.MagicMock()
+        get_str_list_from_config.return_value = ["example1", "example2"]
+        assert config.get_reporters(config_file_data, ("example3",), None, None) == ["example1", "example2", "example3"]
+
+    def test_get_reporters_html(self, get_str_list_from_config):
+        config_file_data = mock.MagicMock()
+        get_str_list_from_config.return_value = ["example1", "example2"]
+        assert config.get_reporters(config_file_data, ("example3",), Path("output"), None) == [
+            "example1",
+            "example2",
+            "example3",
+            "html",
+        ]
+
+    def test_get_reporters_json(self, get_str_list_from_config):
+        config_file_data = mock.MagicMock()
+        get_str_list_from_config.return_value = ["example1", "example2"]
+        assert config.get_reporters(config_file_data, ("example3",), None, Path("output")) == [
+            "example1",
+            "example2",
+            "example3",
+            "json",
+        ]
+
+    def test_get_reporters_all(self, get_str_list_from_config):
+        config_file_data = mock.MagicMock()
+        get_str_list_from_config.return_value = ["example1", "example2"]
+        assert config.get_reporters(config_file_data, ("example3",), Path("output"), Path("output")) == [
+            "example1",
+            "example2",
+            "example3",
+            "html",
+            "json",
+        ]
 
 
 class TestGetCommandLineLoggingOptions:
@@ -407,7 +675,25 @@ class TestGetConfigFileData:
             config.get_config_file_data(Path("config.txt"))
 
 
+class TestGetProjectInfo:
+    def test_get_project_info_no_file(self):
+        assert config.get_project_info(None) == ("", "")
+
+    @mock.patch("poodle.config.get_project_info_toml")
+    def test_get_project_info_data(self, get_project_info_toml):
+        get_project_info_toml.return_value = ("example", "1.2.3")
+        assert config.get_project_info(Path("config.toml")) == ("example", "1.2.3")
+        get_project_info_toml.assert_called_with(Path("config.toml"))
+
+    def test_get_project_info_invalid(self):
+        with pytest.raises(PoodleInputError, match="^Config file type not supported: --config_file='config.txt'$"):
+            config.get_project_info(Path("config.txt"))
+
+
 config_toml_poodle = """
+[project]
+name = "example"
+version = "1.2.3"
 [poodle]
 test = "value1"
 """
@@ -441,6 +727,38 @@ class TestGetConfigFileDataToml:
         file_path.open.return_value = BytesIO(bytes(config_toml_no_data, encoding="utf-8"))
         assert config.get_config_file_data_toml(file_path) == {}
         file_path.open.assert_called_with(mode="rb")
+
+    @mock.patch("poodle.config.tomllib.load")
+    def test_get_config_file_data_toml_decode_error(self, tomllib_load):
+        tomllib_load.side_effect = tomllib.TOMLDecodeError("Could not Decode", "Bad data")
+        config_file = mock.MagicMock()
+        with pytest.raises(PoodleInputError) as err:
+            config.get_config_file_data_toml(config_file)
+        assert err.value.args == (
+            f"Error decoding toml file: {config_file}",
+            "Could not Decode",
+            "Bad data",
+        )
+
+
+class TestGetProjectInfoToml:
+    def test_get_project_info_toml_poodle(self):
+        file_path = mock.MagicMock()
+        file_path.open.return_value = BytesIO(bytes(config_toml_poodle, encoding="utf-8"))
+        assert config.get_project_info_toml(file_path) == ("example", "1.2.3")
+        file_path.open.assert_called_with(mode="rb")
+
+    def test_get_project_info_toml_no_data(self):
+        file_path = mock.MagicMock()
+        file_path.open.return_value = BytesIO(bytes(config_toml_no_data, encoding="utf-8"))
+        assert config.get_project_info_toml(file_path) == ("", "")
+        file_path.open.assert_called_with(mode="rb")
+
+    @mock.patch("poodle.config.tomllib.load")
+    def test_get_project_info_data_decode_error(self, tomllib_load):
+        tomllib_load.side_effect = tomllib.TOMLDecodeError("Could not Decode", "Bad data")
+        config_file = mock.MagicMock()
+        assert config.get_project_info_toml(config_file) == ("", "")
 
 
 class TestGetSourceFolders:
@@ -667,6 +985,15 @@ class TestGetPathListFromConfig:
             default=[Path("default_value")],
         ) == [Path("return_value")]
 
+    def test_string_empty(self, get_option_from_config):
+        get_option_from_config.return_value = ("", "Source Name")
+        assert config.get_path_list_from_config(
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=[Path("default_value")],
+        ) == [Path()]
+
     def test_path_list(self, get_option_from_config):
         get_option_from_config.return_value = ((Path("return_value"), Path("other_value")), "Source Name")
         assert config.get_path_list_from_config(
@@ -684,6 +1011,18 @@ class TestGetPathListFromConfig:
             command_line=[],
             default=[Path("default_value")],
         ) == [Path("return_value"), Path("other_value")]
+
+    def test_empty_list(self, get_option_from_config):
+        get_option_from_config.return_value = ([], "Source Name")
+        assert (
+            config.get_path_list_from_config(
+                option_name="test_option",
+                config_data={},
+                command_line=[],
+                default=[Path("default_value")],
+            )
+            == []
+        )
 
     def test_not_iterable(self, get_option_from_config):
         get_option_from_config.return_value = (123, "Source Name")
@@ -894,6 +1233,68 @@ class TestGetIntFromConfig:
             )
 
 
+class TestGetFloatFromConfig:
+    def test_default(self, get_option_from_config):
+        get_option_from_config.return_value = (None, None)
+
+        assert (
+            config.get_float_from_config(
+                option_name="test_option",
+                config_data={"test_option": 3},
+                command_line=4,
+                default=5,
+            )
+            == 5.0
+        )
+
+        get_option_from_config.assert_called_with(
+            option_name="test_option",
+            config_data={"test_option": 3},
+            command_line=4,
+        )
+
+    def test_default_inputs(self, get_option_from_config):
+        get_option_from_config.return_value = (None, None)
+
+        assert (
+            config.get_float_from_config(
+                option_name="test_option",
+                config_data={"test_option": 3},
+            )
+            is None
+        )
+
+        get_option_from_config.assert_called_with(
+            option_name="test_option",
+            config_data={"test_option": 3},
+            command_line=None,
+        )
+
+    def test_str_to_float(self, get_option_from_config):
+        get_option_from_config.return_value = ("5", "Source Name")
+
+        assert (
+            config.get_float_from_config(
+                option_name="test_option",
+                config_data={"test_option": "3"},
+                command_line="4",
+                default="5",
+            )
+            == 5
+        )
+
+    def test_convert_error(self, get_option_from_config):
+        get_option_from_config.return_value = ("a", "Source Name")
+
+        with pytest.raises(ValueError, match="^test_option from Source Name must be a valid float$"):
+            config.get_float_from_config(
+                option_name="test_option",
+                config_data={"test_option": "3"},
+                command_line="4",
+                default="5",
+            )
+
+
 class TestGetStrFromConfig:
     def test_default(self, get_option_from_config):
         get_option_from_config.return_value = (None, None)
@@ -1012,6 +1413,15 @@ class TestGetStrListFromConfig:
             default=["default_value"],
         ) == ["return_value"]
 
+    def test_string_empty(self, get_option_from_config):
+        get_option_from_config.return_value = ("", "Source Name")
+        assert config.get_str_list_from_config(
+            option_name="test_option",
+            config_data={},
+            command_line=[],
+            default=["default_value"],
+        ) == [""]
+
     def test_string_list(self, get_option_from_config):
         get_option_from_config.return_value = (("return_value", "other_value"), "Source Name")
         assert config.get_str_list_from_config(
@@ -1029,6 +1439,18 @@ class TestGetStrListFromConfig:
             command_line=[],
             default=["default_value"],
         ) == ["output.txt"]
+
+    def test_string_list_empty(self, get_option_from_config):
+        get_option_from_config.return_value = ([], "Source Name")
+        assert (
+            config.get_str_list_from_config(
+                option_name="test_option",
+                config_data={},
+                command_line=[],
+                default=["default_value"],
+            )
+            == []
+        )
 
     def test_type_error(self, get_option_from_config):
         get_option_from_config.return_value = (123, "Source Name")
@@ -1090,11 +1512,15 @@ class TestGetDictFromConfig:
     def test_config_data(self):
         assert config.get_dict_from_config(
             option_name="mutator_opts",
-            default={"bin_op_level": "std"},
+            default={
+                "bin_op_level": "max",
+                "custom": {"output": "XYZ"},
+            },
             config_data={
                 "mutator_opts": {
                     "bin_op_level": "min",
                     "config_file_option": "ABCD",
+                    "custom": {"custom_option": "EFGH"},
                 },
                 "runner_opts": {
                     "mutator_file_option": "QWERTY",
@@ -1103,6 +1529,7 @@ class TestGetDictFromConfig:
         ) == {
             "bin_op_level": "min",
             "config_file_option": "ABCD",
+            "custom": {"custom_option": "EFGH", "output": "XYZ"},
         }
 
     def test_config_data_invalid(self):
@@ -1118,6 +1545,7 @@ class TestGetDictFromConfig:
             mutator_opts={
                 "bin_op_level": "max",
                 "poodle_config_option": "EFGH",
+                "custom": {"output": "XYZ"},
             },
         )
         assert config.get_dict_from_config(
@@ -1127,14 +1555,16 @@ class TestGetDictFromConfig:
                 "mutator_opts": {
                     "bin_op_level": "min",
                     "config_file_option": "ABCD",
+                    "custom": {"custom_option": "EFGH"},
                 },
             },
-            command_line={"cmd_option": "cmd_value"},
+            command_line={"cmd_option": "cmd_value", "custom": {"custom_option": "UIO"}},
         ) == {
             "bin_op_level": "max",
             "config_file_option": "ABCD",
             "poodle_config_option": "EFGH",
             "cmd_option": "cmd_value",
+            "custom": {"custom_option": "UIO", "output": "XYZ"},
         }
 
     def test_poodle_config_invalid(self):
