@@ -8,7 +8,7 @@ from contextlib import suppress
 from pathlib import Path
 from typing import Any
 
-__version__ = "1.3.2"
+__version__ = "1.3.3"
 
 
 class PoodleTestingFailedError(Exception):
