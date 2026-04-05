@@ -36,7 +36,7 @@ CONTEXT_SETTINGS = {
 @click.option("--json", help="File to create with JSON report.", type=click.Path(path_type=Path))
 @click.option("--fail_under", help="Fail if mutation score is under this value.", type=float)
 @click.version_option(version=__version__)
-def main(  # noqa: C901, PLR0912
+def main(  # noqa: C901 -- too complex
     sources: tuple[Path],
     config_file: Path | None,
     quiet: int,

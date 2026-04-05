@@ -38,7 +38,7 @@ def test_defaults():
     assert config.default_source_folders == [Path("src"), Path("lib")]
 
     assert config.default_log_format == "%(levelname)s [%(process)d] %(name)s.%(funcName)s:%(lineno)d - %(message)s"
-    assert config.default_log_level == logging.WARN
+    assert config.default_log_level == logging.WARNING
 
     assert config.default_file_flags == glob.GLOBSTAR | glob.NODIR
     assert config.default_file_filters == ["test_*.py", "*_test.py", "poodle_config.py", "setup.py"]
@@ -498,7 +498,7 @@ class TestBuildConfig:
             work_folder=Path(".poodle-temp"),
             max_workers=config.default_max_workers(),
             log_format=config.default_log_format,
-            log_level=logging.WARN,
+            log_level=logging.WARNING,
             echo_enabled=True,
             echo_no_color=None,
             mutator_opts={},
@@ -563,11 +563,11 @@ class TestGetCommandLineLoggingOptions:
         ("cmd_quiet", "cmd_verbose", "expected"),
         [
             (0, 0, None),
-            (1, 0, logging.WARN),
+            (1, 0, logging.WARNING),
             (2, 0, logging.ERROR),
             (3, 0, logging.CRITICAL),
             (4, 0, logging.CRITICAL),
-            (1, 1, logging.WARN),
+            (1, 1, logging.WARNING),
             (0, 1, logging.INFO),
             (0, 2, logging.DEBUG),
             (0, 3, logging.NOTSET),

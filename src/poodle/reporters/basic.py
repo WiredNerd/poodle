@@ -3,10 +3,18 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Callable
+from typing import TYPE_CHECKING
 
 from poodle.data_types import PoodleConfig, TestingResults
 from poodle.util import to_json
+
+if TYPE_CHECKING:
+    import sys
+
+    if sys.version_info < (3, 14):  # nomut
+        from typing import Callable  # noqa: UP035  # pragma: no cover
+    else:
+        from collections.abc import Callable
 
 
 def get_include_statuses(config: PoodleConfig, prefix: str) -> set[bool]:

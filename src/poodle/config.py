@@ -17,7 +17,7 @@ from .data_types import PoodleConfig
 default_source_folders = [Path("src"), Path("lib")]
 
 default_log_format = "%(levelname)s [%(process)d] %(name)s.%(funcName)s:%(lineno)d - %(message)s"
-default_log_level = logging.WARN
+default_log_level = logging.WARNING
 
 default_file_flags = glob.GLOBSTAR | glob.NODIR
 default_file_filters = ["test_*.py", "*_test.py", "poodle_config.py", "setup.py"]
@@ -147,7 +147,7 @@ def get_cmd_line_log_level(cmd_quiet: int, cmd_verbose: int) -> int | None:
     if cmd_quiet == 2:
         return logging.ERROR
     if cmd_quiet == 1:
-        return logging.WARN
+        return logging.WARNING
 
     if cmd_verbose >= 3:
         return logging.NOTSET

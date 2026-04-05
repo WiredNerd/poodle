@@ -4,12 +4,18 @@ from __future__ import annotations
 
 import ast
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from .data import FileMutation, Mutant, MutantTrialResult, PoodleConfig, TestingResults
 
 if TYPE_CHECKING:
+    import sys
     from pathlib import Path
+
+    if sys.version_info < (3, 14):  # nomut
+        from typing import Callable  # noqa: UP035  # pragma: no cover
+    else:
+        from collections.abc import Callable
 
 
 def create_mutations(  # type: ignore [empty-body]

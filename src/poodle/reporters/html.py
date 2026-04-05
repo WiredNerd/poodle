@@ -7,7 +7,7 @@ import re
 import shutil
 from collections import OrderedDict
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 from jinja2 import Environment, PackageLoader
 
@@ -15,7 +15,13 @@ from poodle import __version__ as poodle_version
 from poodle.data_types import MutantTrial, PoodleConfig, TestingResults, TestingSummary
 
 if TYPE_CHECKING:
+    import sys
     from collections.abc import Generator
+
+    if sys.version_info < (3, 14):  # nomut
+        from typing import Callable  # noqa: UP035  # pragma: no cover
+    else:
+        from collections.abc import Callable
 
 
 def template_path() -> Path:

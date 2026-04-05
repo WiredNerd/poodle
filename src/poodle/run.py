@@ -5,7 +5,7 @@ from __future__ import annotations
 import concurrent.futures
 import logging
 import time
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 from zipfile import ZipFile
 
 from click import style
@@ -16,7 +16,13 @@ from .runners import command_line
 from .util import delete_folder, dynamic_import, mutate_lines
 
 if TYPE_CHECKING:
+    import sys
     from pathlib import Path
+
+    if sys.version_info < (3, 14):  # nomut
+        from typing import Callable  # noqa: UP035  # pragma: no cover
+    else:
+        from collections.abc import Callable
 
 logger = logging.getLogger(__name__)
 
