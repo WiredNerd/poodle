@@ -1,5 +1,5 @@
 [![Homepage](https://img.shields.io/badge/Homepage-github-white?logo=github)](https://github.com/WiredNerd/poodle)
-[![python 3.9 - 3.12](https://img.shields.io/badge/python-3.9%20to%203.12-orange?logo=python&logoColor=green)](https://pypi.org/project/poodle)
+[![python 3.10 - 3.14](https://img.shields.io/badge/python-3.10%20to%203.14-orange?logo=python&logoColor=green)](https://pypi.org/project/poodle)
 [![PyPI - Version](https://img.shields.io/pypi/v/poodle?logo=pypi&logoColor=white)](https://pypi.org/project/poodle)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/poodle)](https://pypistats.org/packages/poodle)
 [![PyPI - License](https://img.shields.io/pypi/l/poodle)](https://github.com/WiredNerd/poodle/blob/main/LICENSE)

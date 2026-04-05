@@ -4,18 +4,24 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import IO, TYPE_CHECKING, Any, AnyStr, Callable
+from typing import IO, TYPE_CHECKING, Any, AnyStr
 
 import click
 
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
+    import sys
     from collections.abc import Generator
     from pathlib import Path
 
     from .data import PoodleConfig
     from .interfaces import Mutator
+
+    if sys.version_info < (3, 14):  # nomut
+        from typing import Callable  # noqa: UP035  # pragma: no cover
+    else:
+        from collections.abc import Callable
 
 
 class PoodleWork:
@@ -52,7 +58,7 @@ class EchoWrapper:
     echo_enabled: bool | None
     echo_no_color: bool | None
 
-    def echo(  # noqa: PLR0913
+    def echo(
         self,
         message: Any | None = None,  # noqa: ANN401
         file: IO[AnyStr] | None = None,

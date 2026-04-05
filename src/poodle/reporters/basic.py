@@ -3,10 +3,18 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Callable
+from typing import TYPE_CHECKING
 
 from poodle.data_types import PoodleConfig, TestingResults
 from poodle.util import to_json
+
+if TYPE_CHECKING:
+    import sys
+
+    if sys.version_info < (3, 14):  # nomut
+        from typing import Callable  # noqa: UP035  # pragma: no cover
+    else:
+        from collections.abc import Callable
 
 
 def get_include_statuses(config: PoodleConfig, prefix: str) -> set[bool]:
@@ -87,9 +95,11 @@ def report_json(config: PoodleConfig, echo: Callable, testing_results: TestingRe
     mutant_trials = [trial for trial in testing_results.mutant_trials if trial.result.found in include_statuses]
 
     out_results = TestingResults(
-        summary=testing_results.summary  # type: ignore [arg-type]
-        if config.reporter_opts.get("json_include_summary", True)
-        else None,
+        summary=(
+            testing_results.summary  # type: ignore [arg-type]
+            if config.reporter_opts.get("json_include_summary", True)
+            else None
+        ),
         mutant_trials=mutant_trials,
     )
 

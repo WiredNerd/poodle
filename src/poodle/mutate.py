@@ -6,7 +6,7 @@ import ast
 import logging
 import re
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 from . import PoodleInputError
 from .data_types import FileMutation, Mutant, Mutator, PoodleWork
@@ -27,7 +27,13 @@ from .mutators import (
 from .util import dynamic_import, files_list_for_folder
 
 if TYPE_CHECKING:
+    import sys
     from pathlib import Path
+
+    if sys.version_info < (3, 14):  # nomut
+        from typing import Callable  # noqa: UP035  # pragma: no cover
+    else:
+        from collections.abc import Callable
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +77,7 @@ def initialize_mutator(work: PoodleWork, mutator_def: Any) -> Callable | Mutator
     if isinstance(mutator_def, str):
         try:
             mutator_def = dynamic_import(mutator_def)
-        except Exception as ex:  # noqa: BLE001
+        except Exception as ex:
             msg = f"Import failed for mutator '{mutator_def}'"
             raise PoodleInputError(msg) from ex
 
