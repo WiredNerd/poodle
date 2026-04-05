@@ -87,9 +87,11 @@ def report_json(config: PoodleConfig, echo: Callable, testing_results: TestingRe
     mutant_trials = [trial for trial in testing_results.mutant_trials if trial.result.found in include_statuses]
 
     out_results = TestingResults(
-        summary=testing_results.summary  # type: ignore [arg-type]
-        if config.reporter_opts.get("json_include_summary", True)
-        else None,
+        summary=(
+            testing_results.summary  # type: ignore [arg-type]
+            if config.reporter_opts.get("json_include_summary", True)
+            else None
+        ),
         mutant_trials=mutant_trials,
     )
 

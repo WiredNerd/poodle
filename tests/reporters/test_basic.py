@@ -206,13 +206,13 @@ class TestReportNotFound:
         source_file.resolve.return_value = "src/example.py"
         source_file.__str__.return_value = "example.py"  # type: ignore [attr-defined]
 
-        diff_str = (
-            "--- src/example.py\n"
-            "+++ [Mutant] src/example.py:1\n"
-            "@@ -1 +1 @@\n"
-            "-lambda x: x + 1\n"
-            "+lambda x: None\n"
-        )
+        diff_str = """
+            --- src/example.py
+            +++ [Mutant] src/example.py:1
+            @@ -1 +1 @@
+            -lambda x: x + 1
+            +lambda x: None
+        """
 
         results = TestingResults(
             mutant_trials=[
