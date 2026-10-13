@@ -1,5 +1,8 @@
+import os
+import stat
 from pathlib import Path
 from unittest import mock
+from zipfile import ZipFile, ZipInfo
 
 import pytest
 
@@ -361,3 +364,52 @@ class TestDeleteFolder:
 
         mock_logger.info.assert_not_called()
         shutil.rmtree.assert_not_called()
+
+
+@pytest.mark.skipif(os.name != "posix", reason="file modes are POSIX semantics")
+class TestExtractTrialFolder:
+    @pytest.fixture()
+    def umask_077(self):
+        old = os.umask(0o077)
+        yield
+        os.umask(old)
+
+    def zip_with_modes(self, folder_zip: Path, entries: dict[str, int]) -> None:
+        with ZipFile(folder_zip, "w") as zip_file:
+            for name, mode in entries.items():
+                info = ZipInfo(name)
+                info.external_attr = mode << 16
+                zip_file.writestr(info, "x\n")
+
+    @pytest.mark.usefixtures("umask_077")
+    def test_extract_trial_folder_restores_modes(self, tmp_path):
+        folder_zip = tmp_path / "src.zip"
+        self.zip_with_modes(
+            folder_zip,
+            {"src/run.sh": stat.S_IFREG | 0o755, "src/ro.py": stat.S_IFREG | 0o444, "src/none.txt": 0},
+        )
+        run_folder = tmp_path / "run"
+        run_folder.mkdir()
+
+        with ZipFile(folder_zip) as zip_file:
+            util.extract_trial_folder(zip_file, run_folder)
+
+        assert stat.S_IMODE((run_folder / "src/run.sh").stat().st_mode) == 0o755
+        assert stat.S_IMODE((run_folder / "src/ro.py").stat().st_mode) == 0o444
+        assert stat.S_IMODE((run_folder / "src/none.txt").stat().st_mode) == 0o600  # no mode recorded: umask
+
+    @pytest.mark.usefixtures("umask_077")
+    def test_extract_trial_folder_modes_land_where_extractall_puts_entries(self, tmp_path):
+        folder_zip = tmp_path / "src.zip"
+        self.zip_with_modes(folder_zip, {"../up.sh": stat.S_IFREG | 0o755})
+        run_folder = tmp_path / "run"
+        run_folder.mkdir()
+        outside = tmp_path / "up.sh"
+        outside.write_text("x\n")
+        outside.chmod(0o600)
+
+        with ZipFile(folder_zip) as zip_file:
+            util.extract_trial_folder(zip_file, run_folder)
+
+        assert stat.S_IMODE((run_folder / "up.sh").stat().st_mode) == 0o755
+        assert stat.S_IMODE(outside.stat().st_mode) == 0o600
