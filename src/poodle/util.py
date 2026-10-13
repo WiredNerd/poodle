@@ -12,8 +12,9 @@ from copy import deepcopy
 from io import StringIO
 from pprint import pprint
 from typing import TYPE_CHECKING, Any
-from zipfile import ZipFile
+from zipfile import ZipFile, ZipInfo
 
+from wcmatch import glob
 from wcmatch.pathlib import Path, PurePath
 
 if TYPE_CHECKING:
@@ -44,35 +45,119 @@ def files_list_for_folder(
 
 
 def files_list_for_source_folders(work: PoodleWork) -> dict[pathlib.Path, list[pathlib.Path]]:
-    """Build map of Folder to all files in folder to include in zips."""
-    return {
-        folder: files_list_for_folder(
+    """Build map of Folder to all files in folder to include in zips.
+
+    On POSIX every symlink is listed as itself, for `trial_links` to decide how it is copied:
+    directories are listed and then dropped, rather than excluded with NODIR, because NODIR also
+    drops a link to a directory, and FOLLOW is ignored, so nothing is listed through a link.
+    """
+    if os.name != "posix":
+        return {
+            folder: files_list_for_folder(
+                folder=folder,
+                match_glob="*",
+                flags=work.config.file_copy_flags,
+                filter_globs=work.config.file_copy_filters,
+            )
+            for folder in work.config.source_folders
+        }
+    flags = work.config.file_copy_flags
+    if flags is not None:
+        flags &= ~(glob.NODIR | glob.FOLLOW)
+    lists = {}
+    for folder in work.config.source_folders:
+        listed = files_list_for_folder(
             folder=folder,
             match_glob="*",
-            flags=work.config.file_copy_flags,
+            flags=flags,
             filter_globs=work.config.file_copy_filters,
         )
-        for folder in work.config.source_folders
-    }
+        listed += _unlisted_links(folder, listed, flags, work.config.file_copy_filters)
+        lists[folder] = [path for path in listed if path.is_symlink() or not path.is_dir()]
+    return lists
+
+
+def _unlisted_links(
+    folder: pathlib.Path,
+    listed: list[pathlib.Path],
+    flags: int | None,
+    filter_globs: list[str],
+) -> list[pathlib.Path]:
+    """Symlinks that rglob drops because they cannot be resolved (a link loop).
+
+    Every directory under the folder is searched, without following links, and each link found
+    passes the same flags and filters as a listed path would.
+    """
+    known = set(listed)
+    found: list[pathlib.Path] = []
+    for directory, _, names in os.walk(folder):
+        for name in names:
+            path = Path(directory) / name
+            if not path.is_symlink() or path in known:
+                continue
+            relative = PurePath(str(path.relative_to(folder)))
+            if relative.match("*", flags=flags or 0, exclude=filter_globs):
+                found.append(path)
+    return found
+
+
+def trial_links(folder: pathlib.Path, files: list[pathlib.Path]) -> dict[pathlib.Path, str | None]:
+    """Decide how each symlink among a source folder's files appears in a trial folder.
+
+    A link whose target is inside the folder (or the folder itself) stays a link: its value is the
+    target text to use in the trial, the relative path from the link's directory to where the
+    target really is, so that it points into the trial, never into the source. A link to a
+    directory outside the folder, or a dangling link outside it, is omitted: its value is None. A
+    link to a file outside the folder is not in the result: its content is copied, as for any file.
+
+    An existing target is placed where it really is, every link on its way followed. A dangling
+    link (a loop included) has nothing to follow: it is placed by its target text alone.
+    """
+    links: dict[pathlib.Path, str | None] = {}
+    for link in (file for file in files if file.is_symlink()):
+        if link.exists():
+            root, base, target = (os.path.realpath(path) for path in (folder, link.parent, link))
+        else:
+            text = os.readlink(link)  # noqa: PTH115 - a dangling target exists only as text
+            root, base = (os.path.normpath(os.path.abspath(path)) for path in (folder, link.parent))  # noqa: PTH100
+            target = os.path.normpath(os.path.join(base, text))  # noqa: PTH118 - the text, not a path to follow
+        if target == root or target.startswith(root + os.sep):
+            links[link] = os.path.relpath(target, base)
+        elif link.is_dir() or not link.exists():
+            links[link] = None
+    return links
 
 
 def create_temp_zips(work: PoodleWork) -> None:
     """Create a temporary zip file for each folder in source_folders."""
     work.config.work_folder.mkdir(parents=True, exist_ok=True)
     for folder, files in files_list_for_source_folders(work).items():
+        links = trial_links(folder, files) if os.name == "posix" else {}
         zip_file = work.config.work_folder / ("src-" + work.next_num() + ".zip")
         logger.info("Creating zip file: %s", zip_file)
         work.folder_zips[folder] = zip_file
         with ZipFile(zip_file, "w") as target_zip:
             for file in files:
+                target = links.get(file, "")
+                if target is None:
+                    logger.info("Omitting link: %s", file)
+                    continue
                 logger.info("Adding file: %s", file)
-                target_zip.write(file)
+                if target:
+                    # stored as the link itself, its target text as content
+                    link = ZipInfo(str(file))
+                    link.external_attr = (stat.S_IFLNK | 0o777) << 16
+                    target_zip.writestr(link, os.fsencode(target))
+                else:
+                    target_zip.write(file)
 
 
 def extract_trial_folder(zip_file: ZipFile, run_folder: pathlib.Path) -> None:
-    """Extract a source folder's zip into a trial folder, file modes included.
+    """Extract a source folder's zip into a trial folder, file modes and symlinks included.
 
-    `extractall` does not restore them: every file gets the umask's mode.
+    `extractall` restores neither: every file gets the umask's mode, and a link entry becomes a
+    regular file holding its target text. Links are recreated only after everything is extracted,
+    so no file is ever written through one.
 
     Off POSIX the extraction is left as it always was: a read-only mode there would also make the
     trial folder undeletable.
@@ -89,7 +174,12 @@ def extract_trial_folder(zip_file: ZipFile, run_folder: pathlib.Path) -> None:
         # name would reach outside it - into the source itself for an absolute folder
         parts = PurePath(os.path.splitdrive(info.filename)[1]).parts
         path = run_folder.joinpath(*(part for part in parts if part not in (os.sep, "/", os.curdir, os.pardir)))
-        path.chmod(stat.S_IMODE(mode))
+        if stat.S_ISLNK(mode):
+            target = os.fsdecode(zip_file.read(info))
+            path.unlink()
+            path.symlink_to(target)
+        else:
+            path.chmod(stat.S_IMODE(mode))
 
 
 def dynamic_import(object_to_import: str) -> Any:  # noqa: ANN401
