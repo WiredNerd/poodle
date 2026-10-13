@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import concurrent.futures
 import logging
+import os
+import stat
 import time
 from typing import TYPE_CHECKING
 from zipfile import ZipFile
@@ -13,7 +15,7 @@ from click import style
 from . import PoodleTrialRunError
 from .data_types import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork, TestingResults, TestingSummary
 from .runners import command_line
-from .util import delete_folder, dynamic_import, mutate_lines
+from .util import delete_folder, dynamic_import, extract_trial_folder, mutate_lines
 
 if TYPE_CHECKING:
     import sys
@@ -163,13 +165,21 @@ def run_mutant_trial(  # noqa: PLR0913
     run_folder.mkdir()
 
     with ZipFile(folder_zip, "r") as zip_file:
-        zip_file.extractall(run_folder)
+        extract_trial_folder(zip_file, run_folder)
 
     if mutant.source_file:
         target_file = run_folder / mutant.source_file
         file_lines = target_file.read_text("utf-8").splitlines(keepends=True)
         file_lines = mutate_lines(mutant, file_lines)
+        # The mutant REPLACES the trial's file rather than writing into it: a copy keeping a
+        # read-only source mode cannot be written. Its mode is put back afterwards.
+        mode = None
+        if os.name == "posix":
+            mode = stat.S_IMODE(target_file.stat().st_mode)
+            target_file.unlink()
         target_file.write_text(data="".join(file_lines), encoding="utf-8")
+        if mode is not None:
+            target_file.chmod(mode)
 
     logger.debug("START: run_id=%s run_folder=%s", run_id, run_folder)
 
