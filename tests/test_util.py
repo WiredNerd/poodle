@@ -14,6 +14,10 @@ def mock_logger():
         yield logger
 
 
+def file_copy_lister_stub(config, folder):
+    return [folder / config.project_name]
+
+
 def test_logger():
     assert util.logger.name == "poodle.util"
 
@@ -52,6 +56,22 @@ class TestFilesList:
             in_folder,
             files,
         )
+
+    @mock.patch("poodle.util.files_list_for_folder")
+    def test_files_list_for_source_folders_file_copy_lister(self, files_list_for_folder):
+        work = PoodleWork(
+            config=PoodleConfigStub(
+                project_name="listed.txt",
+                source_folders=[Path("src"), Path("lib")],
+                file_copy_lister="tests.test_util.file_copy_lister_stub",
+            )
+        )
+
+        assert util.files_list_for_source_folders(work) == {
+            Path("src"): [Path("src/listed.txt")],
+            Path("lib"): [Path("lib/listed.txt")],
+        }
+        files_list_for_folder.assert_not_called()
 
     @mock.patch("poodle.util.Path")
     def test_files_list_for_source_folders(self, mock_path):

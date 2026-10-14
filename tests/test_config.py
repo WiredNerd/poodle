@@ -308,6 +308,13 @@ class TestBuildConfig:
         )
 
     @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_file_copy_lister(self, get_str_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.file_copy_lister == get_str_from_config.return_value
+        get_str_from_config.assert_any_call("file_copy_lister", config_file_data)
+
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_work_folder(self, get_path_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with()
@@ -495,6 +502,7 @@ class TestBuildConfig:
             file_filters=config.default_file_filters,
             file_copy_flags=config.default_file_copy_flags,
             file_copy_filters=config.default_file_copy_filters,
+            file_copy_lister=None,
             work_folder=Path(".poodle-temp"),
             max_workers=config.default_max_workers(),
             log_format=config.default_log_format,

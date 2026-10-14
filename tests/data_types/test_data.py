@@ -31,6 +31,7 @@ class PoodleConfigStub(PoodleConfig):
 
     file_copy_flags: int = None  # type: ignore [assignment]
     file_copy_filters: list[str] = None  # type: ignore [assignment]
+    file_copy_lister: str | None = None
     work_folder: Path = None  # type: ignore [assignment]
 
     max_workers: int | None = None
@@ -70,6 +71,7 @@ class TestPoodleConfig:
             file_filters=["test_"],
             file_copy_flags=5,
             file_copy_filters=["skip"],
+            file_copy_lister="tests.lister",
             work_folder=Path(".poodle"),
             max_workers=3,
             log_format="$(message)s",
@@ -104,6 +106,7 @@ class TestPoodleConfig:
 
         assert config.file_copy_flags == 5
         assert config.file_copy_filters == ["skip"]
+        assert config.file_copy_lister == "tests.lister"
         assert config.work_folder == Path(".poodle")
 
         assert config.max_workers == 3

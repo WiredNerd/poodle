@@ -43,6 +43,9 @@ def files_list_for_folder(
 
 def files_list_for_source_folders(work: PoodleWork) -> dict[pathlib.Path, list[pathlib.Path]]:
     """Build map of Folder to all files in folder to include in zips."""
+    if work.config.file_copy_lister:
+        lister = dynamic_import(work.config.file_copy_lister)
+        return {folder: lister(work.config, folder) for folder in work.config.source_folders}
     return {
         folder: files_list_for_folder(
             folder=folder,
