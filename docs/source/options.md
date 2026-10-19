@@ -130,7 +130,7 @@ Running each Trial consists of 3 steps:
 
 On POSIX systems the copy keeps each file's mode (an executable script stays executable, a read-only file is still mutated and stays read-only). On other platforms files are copied as before.
 
-On POSIX systems a symlink whose target is inside the source folder is copied as a symlink to the same file or directory in the copy, its target written as a relative path, so it never points into the source folder. A symlink to a file outside the source folder is copied as that file's content, and a symlink to a directory outside it, or a dangling one pointing outside it, is left out. A mutated symlink becomes a regular file in its own trial.
+On POSIX systems every symlink is copied as a symlink, and its target is never opened. A symlink whose target is inside the source folder points to the same file or directory in the copy, its target written as a relative path, so it never points into the source folder. Any other symlink, to a file, a directory or a missing target, keeps its target as an absolute path, so the copy reads what the source folder reads; a test writing through such a link writes the real target, outside the copy and outside its cleanup, and a link into another source folder reads that folder itself, not its copy. A mutated symlink becomes a regular file in its own trial.
 
 The list of source folders is a root folder that should be copied to a temporary location.
 

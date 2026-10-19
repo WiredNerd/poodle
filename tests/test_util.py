@@ -1,5 +1,7 @@
+import contextlib
 import os
 import stat
+import threading
 from pathlib import Path
 from unittest import mock
 from zipfile import ZipFile, ZipInfo
@@ -466,9 +468,12 @@ class TestTrialLinks:
             "src/loop_a": "loop_b",
             "src/loop_b": "loop_a",
             "src/gen.txt": "missing.txt",
-            "src/outdir": None,
-            "src/gone": None,
-        }  # the links to outside files (conf.py, abs_conf.py, through.txt) are absent: copied
+            "src/conf.py": str(link_tree / "shared" / "conf.py"),
+            "src/abs_conf.py": str(link_tree / "shared" / "conf.py"),
+            "src/outdir": str(link_tree / "shared" / "d"),
+            "src/through.txt": str(link_tree / "shared" / "d" / "y.txt"),
+            "src/gone": str(link_tree / "nowhere"),
+        }
 
     def test_trial_links_resolve_where_the_trial_can_follow(self, tmp_path, monkeypatch):
         project = tmp_path / "proj"
@@ -490,6 +495,8 @@ class TestTrialLinks:
 
         assert {str(path): target for path, target in links.items()} == {
             "proj/src/x.py": "mod.py",
+            "proj/src/through.txt": str(project / "shared" / "d" / "y.txt"),
+            "proj/src/updot.txt": str(project / "conf.txt"),
             "proj/src/pkg/up": "..",
         }
 
@@ -547,11 +554,86 @@ class TestTrialLinks:
         assert entries["src/pkg/alias.py"] == (True, "mod.py")
         assert entries["src/abs_alias.py"] == (True, "pkg/mod.py")
         assert entries["src/dir_link"] == (True, "real")
-        assert entries["src/conf.py"] == (False, "conf\n")
-        assert entries["src/through.txt"] == (False, "y\n")
-        assert "src/outdir" not in entries
-        assert "src/gone" not in entries
+        assert entries["src/conf.py"] == (True, str(link_tree / "shared" / "conf.py"))
+        assert entries["src/through.txt"] == (True, str(link_tree / "shared" / "d" / "y.txt"))
+        assert entries["src/outdir"] == (True, str(link_tree / "shared" / "d"))
+        assert entries["src/gone"] == (True, str(link_tree / "nowhere"))
         assert not [name for name in entries if name.startswith(("src/dir_link/", "src/outdir/"))]
+
+    def test_create_temp_zips_link_to_outside_fifo(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        (tmp_path / "src").mkdir()
+        (tmp_path / "out").mkdir()
+        fifo = tmp_path / "out" / "pipe"
+        os.mkfifo(fifo)
+        (tmp_path / "src" / "pipe_link").symlink_to(fifo)
+        work = PoodleWork(
+            config=PoodleConfigStub(
+                source_folders=[Path("src")],
+                file_copy_flags=glob.GLOBSTAR | glob.NODIR,
+                file_copy_filters=[],
+                work_folder=tmp_path / "work",
+            )
+        )
+
+        # a copy that opens the FIFO blocks until a writer opens it: run it bounded, and release it
+        copy = threading.Thread(target=util.create_temp_zips, args=(work,), daemon=True)
+        copy.start()
+        copy.join(5)
+        hung = copy.is_alive()
+        if hung:
+            with contextlib.suppress(OSError):  # ENXIO: no reader is blocked on it after all
+                os.close(os.open(fifo, os.O_WRONLY | os.O_NONBLOCK))  # a writer end, closed at once: EOF
+            copy.join(5)
+        assert not hung
+
+        with ZipFile(work.folder_zips[Path("src")]) as zip_file:
+            entries = {
+                info.filename: (stat.S_ISLNK(info.external_attr >> 16), zip_file.read(info).decode())
+                for info in zip_file.infolist()
+            }
+        assert entries == {"src/pipe_link": (True, str(fifo))}
+
+    def test_trial_folder_keeps_links_outside_the_folder(self, link_tree):
+        (link_tree / "src" / "pkg" / "mod.py").chmod(0o750)
+        work = PoodleWork(
+            config=PoodleConfigStub(
+                source_folders=[Path("src")],
+                file_copy_flags=glob.GLOBSTAR | glob.NODIR,
+                file_copy_filters=[],
+                work_folder=link_tree / "work",
+            )
+        )
+        util.create_temp_zips(work)
+        run_folder = link_tree / "run"
+        run_folder.mkdir()
+
+        with ZipFile(work.folder_zips[Path("src")]) as zip_file:
+            util.extract_trial_folder(zip_file, run_folder)
+
+        trial = run_folder / "src"
+        outside_names = ("outdir", "conf.py", "gone")
+        assert all((trial / name).is_symlink() for name in outside_names)
+        outside = {name: os.readlink(trial / name) for name in outside_names}  # noqa: PTH115
+        assert outside == {
+            "outdir": str(link_tree / "shared" / "d"),
+            "conf.py": str(link_tree / "shared" / "conf.py"),
+            "gone": str(link_tree / "nowhere"),
+        }
+        assert (trial / "outdir" / "y.txt").read_text() == "y\n"
+        assert (trial / "conf.py").read_text() == "conf\n"
+        assert not (trial / "gone").exists()
+        inside_names = ("pkg/alias.py", "abs_alias.py", "dir_link", "pkg/up", "gen.txt")
+        inside = {name: os.readlink(trial / name) for name in inside_names}  # noqa: PTH115
+        assert inside == {
+            "pkg/alias.py": "mod.py",
+            "abs_alias.py": "pkg/mod.py",
+            "dir_link": "real",
+            "pkg/up": "..",
+            "gen.txt": "missing.txt",
+        }
+        assert (trial / "abs_alias.py").read_text() == "X = 1\n"
+        assert stat.S_IMODE((trial / "pkg" / "mod.py").stat().st_mode) == 0o750
 
     def test_create_temp_zips_link_to_filtered_file(self, tmp_path, monkeypatch):
         monkeypatch.chdir(tmp_path)

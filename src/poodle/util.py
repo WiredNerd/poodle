@@ -101,19 +101,21 @@ def _unlisted_links(
     return found
 
 
-def trial_links(folder: pathlib.Path, files: list[pathlib.Path]) -> dict[pathlib.Path, str | None]:
-    """Decide how each symlink among a source folder's files appears in a trial folder.
+def trial_links(folder: pathlib.Path, files: list[pathlib.Path]) -> dict[pathlib.Path, str]:
+    """Give the target text each symlink among a source folder's files gets in a trial folder.
 
-    A link whose target is inside the folder (or the folder itself) stays a link: its value is the
-    target text to use in the trial, the relative path from the link's directory to where the
-    target really is, so that it points into the trial, never into the source. A link to a
-    directory outside the folder, or a dangling link outside it, is omitted: its value is None. A
-    link to a file outside the folder is not in the result: its content is copied, as for any file.
+    Every link stays a link, and no target is ever opened. A link whose target is inside the folder
+    (or the folder itself) gets the relative path from the link's directory to where the target
+    really is, so that it points into the trial, never into the source. Any other link, to a file,
+    a directory or a missing target, gets its target as an absolute path: the trial then reads what
+    the source reads, and a trial writing through such a link writes the real target, outside the
+    trial and outside its cleanup. When that target is in another source folder, the link reads the
+    source, not that folder's copy in the trial.
 
     An existing target is placed where it really is, every link on its way followed. A dangling
     link (a loop included) has nothing to follow: it is placed by its target text alone.
     """
-    links: dict[pathlib.Path, str | None] = {}
+    links: dict[pathlib.Path, str] = {}
     for link in (file for file in files if file.is_symlink()):
         if link.exists():
             root, base, target = (os.path.realpath(path) for path in (folder, link.parent, link))
@@ -123,8 +125,8 @@ def trial_links(folder: pathlib.Path, files: list[pathlib.Path]) -> dict[pathlib
             target = os.path.normpath(os.path.join(base, text))  # noqa: PTH118 - the text, not a path to follow
         if target == root or target.startswith(root + os.sep):
             links[link] = os.path.relpath(target, base)
-        elif link.is_dir() or not link.exists():
-            links[link] = None
+        else:
+            links[link] = target
     return links
 
 
@@ -138,10 +140,7 @@ def create_temp_zips(work: PoodleWork) -> None:
         work.folder_zips[folder] = zip_file
         with ZipFile(zip_file, "w") as target_zip:
             for file in files:
-                target = links.get(file, "")
-                if target is None:
-                    logger.info("Omitting link: %s", file)
-                    continue
+                target = links.get(file)
                 logger.info("Adding file: %s", file)
                 if target:
                     # stored as the link itself, its target text as content
