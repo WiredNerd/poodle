@@ -90,6 +90,15 @@ def calc_timeout(config: PoodleConfig, clean_run_results: dict[pathlib.Path, Mut
     return max(float(max_clean_run) * config.timeout_multiplier, config.min_timeout)
 
 
+def read_source_lines(file: pathlib.Path) -> list[str]:
+    """Read the lines of a Python source file as ast numbers them, line ends kept.
+
+    A UTF-8 BOM is dropped, and lines end at newlines only: str.splitlines also
+    splits at form feeds and other separators that ast does not count.
+    """
+    return StringIO(file.read_text("utf-8-sig")).readlines()
+
+
 def mutate_lines(mutant: Mutant, file_lines: list[str]) -> list[str]:
     """Apply mutation to list of lines from file.
 
@@ -109,9 +118,9 @@ def mutate_lines(mutant: Mutant, file_lines: list[str]) -> list[str]:
 def create_unified_diff(mutant: Mutant) -> str | None:
     """Add unified diff to mutant."""
     if mutant.source_file:
-        file_lines = mutant.source_file.read_text("utf-8").splitlines(keepends=True)
+        file_lines = read_source_lines(mutant.source_file)
         file_name = str(mutant.source_file)
-        mutant_lines = "".join(mutate_lines(mutant, file_lines)).splitlines(keepends=True)
+        mutant_lines = StringIO("".join(mutate_lines(mutant, file_lines))).readlines()
         return "".join(
             difflib.unified_diff(
                 a=file_lines,

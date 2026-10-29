@@ -321,7 +321,7 @@ class TestRunMutantTrial:
 
         run_folder = config.work_folder.__truediv__.return_value
         target_file = run_folder.__truediv__.return_value
-        file_lines_orig = target_file.read_text.return_value.splitlines.return_value
+        target_file.read_text.return_value = "line0\n"
         mutate_lines.return_value = ["line1\n", "line2\n"]
 
         result = runner.return_value
@@ -346,9 +346,8 @@ class TestRunMutantTrial:
         zip_file = zip_file_cls.return_value.__enter__.return_value
         zip_file.extractall.assert_called_with(run_folder)
 
-        target_file.read_text.assert_called_with("utf-8")
-        target_file.read_text.return_value.splitlines.assert_called_with(keepends=True)
-        mutate_lines.assert_called_with(mutant, file_lines_orig)
+        target_file.read_text.assert_called_with("utf-8-sig")
+        mutate_lines.assert_called_with(mutant, ["line0\n"])
         target_file.write_text.assert_called_with(data="line1\nline2\n", encoding="utf-8")
 
         mock_logger.debug.assert_any_call("START: run_id=%s run_folder=%s", "1", run_folder)

@@ -24,7 +24,7 @@ from .mutators import (
     StringMutator,
     UnaryOperationMutator,
 )
-from .util import dynamic_import, files_list_for_folder
+from .util import dynamic_import, files_list_for_folder, read_source_lines
 
 if TYPE_CHECKING:
     import sys
@@ -151,7 +151,7 @@ def create_mutants_for_file(work: PoodleWork, folder: Path, file: Path) -> list[
     logger.debug("Create Mutants for file %s", file)
 
     parsed_ast = ast.parse(file.read_bytes(), file)
-    file_lines = file.read_text("utf-8").splitlines()
+    file_lines = [line.removesuffix("\n") for line in read_source_lines(file)]
 
     def call_mutator(mutator: Callable | Mutator) -> list[FileMutation]:
         if isinstance(mutator, Mutator):

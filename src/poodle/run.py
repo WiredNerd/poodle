@@ -13,7 +13,7 @@ from click import style
 from . import PoodleTrialRunError
 from .data_types import Mutant, MutantTrial, MutantTrialResult, PoodleConfig, PoodleWork, TestingResults, TestingSummary
 from .runners import command_line
-from .util import delete_folder, dynamic_import, mutate_lines
+from .util import delete_folder, dynamic_import, mutate_lines, read_source_lines
 
 if TYPE_CHECKING:
     import sys
@@ -167,7 +167,7 @@ def run_mutant_trial(  # noqa: PLR0913
 
     if mutant.source_file:
         target_file = run_folder / mutant.source_file
-        file_lines = target_file.read_text("utf-8").splitlines(keepends=True)
+        file_lines = read_source_lines(target_file)
         file_lines = mutate_lines(mutant, file_lines)
         target_file.write_text(data="".join(file_lines), encoding="utf-8")
 

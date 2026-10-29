@@ -287,7 +287,7 @@ class TestUnifiedDiff:
             "2 Hello World!\n",
             "3 Poodles are the best\n",
         ]
-        mutant.source_file.read_text.return_value.splitlines.return_value = file_lines
+        mutant.source_file.read_text.return_value = "".join(file_lines)
         mutant.source_file.__str__.return_value = "src/example.py"
         diff_str = (
             "--- src/example.py\n"
@@ -316,7 +316,7 @@ class TestUnifiedDiff:
             "2 Hello World!\n",
             "3 Poodles are the best!\n",
         ]
-        mutant.source_file.read_text.return_value.splitlines.return_value = file_lines
+        mutant.source_file.read_text.return_value = "".join(file_lines)
         mutant.source_file.__str__.return_value = "src/example.py"
         diff_str = (
             "--- src/example.py\n"
@@ -342,6 +342,45 @@ class TestUnifiedDiff:
             source_file=None,
         )
         assert util.create_unified_diff(mutant) is None
+
+    @pytest.mark.parametrize(
+        ("index", "removed", "added"),
+        [
+            (1, " a = 1 + 2  # \x0c\n-b = 2 + 3\n", "+b = 2 - 3\n"),
+            (0, "-a = 1 + 2  # \x0c\n", "+a = 1 - 2  # \x0c\n b = 2 + 3\n"),
+        ],
+    )
+    def test_create_unified_diff_lines_are_numbered_as_ast(self, tmp_path, index, removed, added):
+        file = tmp_path / "example.py"
+        file.write_bytes(b"\xef\xbb\xbfa = 1 + 2  # \x0c\nb = 2 + 3\n")
+        node = ast.parse(file.read_bytes()).body[index].value  # type: ignore [attr-defined]
+        lineno, col_offset, end_lineno, end_col_offset = Mutator.get_location(node)
+        mutant = Mutant(
+            mutator_name="Example",
+            lineno=lineno,
+            col_offset=col_offset,
+            end_lineno=end_lineno,
+            end_col_offset=end_col_offset,
+            text=ast.unparse(ast.BinOp(left=node.left, op=ast.Sub(), right=node.right)),  # type: ignore [attr-defined]
+            source_folder=tmp_path,
+            source_file=file,
+        )
+        assert util.create_unified_diff(mutant) == (
+            f"--- {file}\n+++ [Mutant] {file}:{lineno}\n@@ -1,2 +1,2 @@\n" + removed + added
+        )
+
+
+class TestReadSourceLines:
+    def test_lines_are_numbered_as_ast(self, tmp_path):
+        file = tmp_path / "example.py"
+        file.write_bytes('a = 1  # \x0c page\nb = "\u2028"\nc = 2\n'.encode())
+        assert ast.parse(file.read_bytes()).body[2].lineno == 3
+        assert util.read_source_lines(file) == ["a = 1  # \x0c page\n", 'b = "\u2028"\n', "c = 2\n"]
+
+    def test_utf8_bom_is_dropped(self, tmp_path):
+        file = tmp_path / "example.py"
+        file.write_bytes(b"\xef\xbb\xbfa = 1\n")
+        assert util.read_source_lines(file) == ["a = 1\n"]
 
 
 class TestDisplayPercent:

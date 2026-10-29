@@ -1,3 +1,4 @@
+import ast
 import importlib
 from unittest import mock
 
@@ -249,7 +250,7 @@ class TestCreateMutants:
             "2",
         ]
 
-        file.read_text.return_value.splitlines.return_value = file_lines
+        file.read_text.return_value = "\n".join(file_lines)
 
         def deepcopy_mock(obj):
             if obj == parsed_ast:
@@ -274,7 +275,7 @@ class TestCreateMutants:
 
         logger_mock.debug.assert_called_with("Create Mutants for file %s", file)
         file.read_bytes.assert_called_once_with()
-        file.read_text.assert_called_once_with("utf-8")
+        file.read_text.assert_called_once_with("utf-8-sig")
         ast.parse.assert_called_with(file.read_bytes.return_value, file)
         mutator_1.assert_called_with(config=config, parsed_ast=deepcopy.parsed_ast, file_lines=deepcopy.file_lines)
         mutator_2.create_mutations.assert_called_with(parsed_ast=deepcopy.parsed_ast, file_lines=deepcopy.file_lines)
@@ -301,6 +302,25 @@ class TestCreateMutants:
                 source_file=file,
             ),
         ]
+
+    def test_create_mutants_for_file_lines_are_numbered_as_ast(self, tmp_path):
+        file = tmp_path / "example.py"
+        file.write_bytes(b"\xef\xbb\xbfa = 1  # \x0c\nb = 2 + 3  # nomut\nc = 4 + 5\n")
+        work = PoodleWork(PoodleConfigStub())
+        file_lines_seen = []
+
+        def mutator(parsed_ast, file_lines, **_):
+            file_lines_seen.append(file_lines)
+            return [
+                Mutator.create_file_mutation(node, "-") for node in ast.walk(parsed_ast) if isinstance(node, ast.BinOp)
+            ]
+
+        work.mutators = [mutator]
+
+        out_mutants = mutate.create_mutants_for_file(work, tmp_path, file)
+
+        assert file_lines_seen == [["a = 1  # \x0c", "b = 2 + 3  # nomut", "c = 4 + 5"]]
+        assert [mutant.lineno for mutant in out_mutants] == [3]
 
 
 class TestFilter:
