@@ -1,10 +1,11 @@
+import ast
 from pathlib import Path
 from unittest import mock
 
 import pytest
 
 from poodle import util
-from poodle.data_types import Mutant, MutantTrial, PoodleWork
+from poodle.data_types import Mutant, MutantTrial, Mutator, PoodleWork
 from tests.data_types.test_data import PoodleConfigStub
 
 
@@ -235,6 +236,38 @@ class TestMutateLines:
             "1 The quick brown fox jumps over the lazy dog",
             "2 Goodbye, Two are better than one",
         ]
+
+    def test_mutate_lines_offsets_are_utf8_bytes(self):
+        file_lines = ['x = "€€" + "a"; y = 1\n']
+        node = ast.parse("".join(file_lines)).body[0].value  # type: ignore [attr-defined]
+        assert Mutator.get_location(node) == (1, 4, 1, 18)
+        mutant = Mutant(
+            mutator_name="Example",
+            lineno=1,
+            col_offset=4,
+            end_lineno=1,
+            end_col_offset=18,
+            text="'€€' - 'a'",
+            source_folder=mock.MagicMock(),
+            source_file=mock.MagicMock(),
+        )
+        assert util.mutate_lines(mutant, file_lines) == ["x = '€€' - 'a'; y = 1\n"]
+
+    def test_mutate_lines_multi_offsets_are_utf8_bytes(self):
+        file_lines = ["é = [\n", '    "é", 2]; b = 3\n']
+        node = ast.parse("".join(file_lines)).body[0].value  # type: ignore [attr-defined]
+        assert Mutator.get_location(node) == (1, 5, 2, 12)
+        mutant = Mutant(
+            mutator_name="Example",
+            lineno=1,
+            col_offset=5,
+            end_lineno=2,
+            end_col_offset=12,
+            text="[]",
+            source_folder=mock.MagicMock(),
+            source_file=mock.MagicMock(),
+        )
+        assert util.mutate_lines(mutant, file_lines) == ["é = []; b = 3\n"]
 
 
 class TestUnifiedDiff:

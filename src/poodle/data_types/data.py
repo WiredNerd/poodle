@@ -69,7 +69,10 @@ class PoodleConfig:
 
 @dataclass
 class FileMutation:
-    """Mutation instructions for the current file."""
+    """Mutation instructions for the current file.
+
+    Locations are those of ast: lines from 1, columns as UTF-8 byte offsets.
+    """
 
     mutator_name: str
     lineno: int

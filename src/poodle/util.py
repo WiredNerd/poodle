@@ -91,10 +91,13 @@ def calc_timeout(config: PoodleConfig, clean_run_results: dict[pathlib.Path, Mut
 
 
 def mutate_lines(mutant: Mutant, file_lines: list[str]) -> list[str]:
-    """Apply mutation to list of lines from file."""
+    """Apply mutation to list of lines from file.
+
+    Column offsets are UTF-8 byte offsets, as in ast.
+    """
     mut_lines = deepcopy(file_lines)
-    prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
-    suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+    prefix = mut_lines[mutant.lineno - 1].encode("utf-8")[: mutant.col_offset].decode("utf-8")
+    suffix = mut_lines[mutant.end_lineno - 1].encode("utf-8")[mutant.end_col_offset :].decode("utf-8")
 
     mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
     for _ in range(mutant.lineno, mutant.end_lineno):
