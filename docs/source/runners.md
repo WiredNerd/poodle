@@ -16,6 +16,36 @@
 
 The command line runner runs the test suite by running the provided command in `subprocess.run`.
 
+### Retaining command output
+
+Set `output_dir` in `runner_opts` to stream each invocation’s stdout and stderr
+to files, including the clean baseline, found mutants, survivors, and timeouts.
+For example, when running from the project root:
+
+```toml
+[tool.poodle.runner_opts]
+output_dir = "../poodle-output"
+```
+
+The path is relative to the working directory where Poodle runs. It must be
+outside every configured source folder and the work folder, so copying and
+cleanup cannot consume or remove retained output. Existing symlink ancestors
+are resolved when checking these locations. Configuration is checked before
+native cleanup and copying, and again when calling the runner directly.
+
+Each invocation gets a unique `trial-*` subdirectory containing `stdout.txt`,
+`stderr.txt`, and `trial.json`. Output files preserve raw bytes and partial output
+on timeout. The receipt records mutation identity, process status, and the actual
+return code, or null when the process did not complete. Result descriptions link
+to all three files. To include found-trial links in JSON, enable the existing
+`json_report_found` reporter option.
+
+Retention is disabled by default. When enabled, all invocation output is kept;
+Poodle does not enforce a storage limit or remove these files. Choose private
+storage and manage its retention. No environment-variable dump is recorded.
+Output retention does not change exit-code classification or establish why a
+command failed, and it does not guarantee that descendant processes are stopped.
+
 ### Environment Variables:
 
 The command line runner starts by copying the current environment variables, then making the following changes:
