@@ -295,6 +295,11 @@ This mutator modifies numbers that are hard coded in the code.  This can include
 
 **Name:** String
 
+F-string literal fragments are skipped because they cannot be replaced with
+ordinary quoted strings. Actual string literals inside replacement expressions
+are still mutated, including expressions in nested format fields.
+
+
 The string mutator adds "XX" to the beginning and end of strings.  It automatically skips docstrings.
 
 ## Function Call Mutator
