@@ -9,6 +9,7 @@ from .data_types import PoodleConfig, PoodleWork
 from .mutate import create_mutants_for_all_mutators, initialize_mutators
 from .report import generate_reporters
 from .run import clean_run_each_source_folder, get_runner, run_mutant_trails
+from .runners import command_line
 from .util import calc_timeout, create_temp_zips, create_unified_diff, delete_folder, display_percent, pprint_str
 
 logger = logging.getLogger(__name__)
@@ -20,11 +21,14 @@ def main_process(config: PoodleConfig) -> None:
     print_header(work)
     logger.info("\n%s", pprint_str(config))
 
+    work.runner = get_runner(config)
+    if work.runner is command_line.runner:
+        command_line.validate_output_dir(config)
+
     delete_folder(config.work_folder, config)
     create_temp_zips(work)
 
     work.mutators = initialize_mutators(work)
-    work.runner = get_runner(config)
     work.reporters = list(generate_reporters(config))
 
     mutants = create_mutants_for_all_mutators(work)
