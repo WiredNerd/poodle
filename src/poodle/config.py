@@ -86,6 +86,7 @@ def build_config(  # noqa: PLR0913
         config_file=config_file_path,
         source_folders=get_source_folders(cmd_sources, config_file_data),
         only_files=get_str_list_from_config("only_files", config_file_data, default=[], command_line=cmd_only_files),
+        exact_files=get_str_list_from_config("exact_files", config_file_data, default=[]),
         file_flags=get_int_from_config("file_flags", config_file_data, default=default_file_flags),
         file_filters=file_filters,
         file_copy_flags=get_int_from_config("file_copy_flags", config_file_data, default=default_file_copy_flags),
