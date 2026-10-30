@@ -347,7 +347,7 @@ class TestCommandLineRunner:
                 timeout=1,
             )
 
-            assert out.found is True
+            assert out.found is False
             assert out.reason_code == out.RC_OTHER
             assert out.reason_desc == "output\nerror"
 

@@ -77,7 +77,7 @@ def runner(
             reason_code=MutantTrialResult.RC_NOT_FOUND,
         )
     return MutantTrialResult(
-        found=True,
+        found=False,
         reason_code=MutantTrialResult.RC_OTHER,
         reason_desc=result.stdout.decode("utf-8", errors="replace")  # nomut: String
         + "\n"
