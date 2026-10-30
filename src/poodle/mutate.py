@@ -6,6 +6,7 @@ import ast
 import logging
 import re
 from copy import deepcopy
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from . import PoodleInputError
@@ -28,7 +29,6 @@ from .util import dynamic_import, files_list_for_folder
 
 if TYPE_CHECKING:
     import sys
-    from pathlib import Path
 
     if sys.version_info < (3, 14):  # nomut
         from typing import Callable  # noqa: UP035  # pragma: no cover
@@ -117,6 +117,9 @@ def get_target_files(work: PoodleWork) -> dict[Path, list[Path]]:
         work.config.source_folders,
     )
 
+    if work.config.exact_files:
+        return get_exact_target_files(work)
+
     if work.config.only_files:
         out: dict[Path, list[Path]] = {}
         for folder in work.config.source_folders:
@@ -138,6 +141,49 @@ def get_target_files(work: PoodleWork) -> dict[Path, list[Path]]:
         )
         for folder in work.config.source_folders
     }
+
+
+def get_exact_target_files(work: PoodleWork) -> dict[Path, list[Path]]:
+    """Select literal working-directory-relative files without recursive globbing."""
+    if work.config.only_files:
+        raise PoodleInputError("exact_files cannot be combined with only_files or --only")
+
+    cwd = Path.cwd().resolve()
+    roots = work.config.source_folders
+    for root in roots:
+        if root.is_absolute() or ".." in root.parts or not root.resolve().is_relative_to(cwd):
+            raise PoodleInputError("exact_files requires relative source_folders within the working directory")
+
+    out: dict[Path, list[Path]] = {root: [] for root in roots}
+    seen: set[Path] = set()
+    for name in work.config.exact_files:
+        file = validate_exact_file(name)
+        if file in seen:
+            continue
+        for root in roots:
+            if file.is_relative_to(root):
+                out[root].append(file)
+                seen.add(file)
+                break
+        else:
+            msg = f"exact_files target is outside source_folders: {name!r}"
+            raise PoodleInputError(msg)
+    return out
+
+
+def validate_exact_file(name: str) -> Path:
+    """Validate a literal file path before assigning it to a source folder."""
+    file = Path(name)
+    if not name or file.is_absolute() or ".." in file.parts:
+        msg = f"exact_files requires a relative file without parent traversal: {name!r}"
+        raise PoodleInputError(msg)
+    if any(part.is_symlink() for part in (file, *file.parents)):
+        msg = f"exact_files does not support symlinks: {name!r}"
+        raise PoodleInputError(msg)
+    if not file.is_file():
+        msg = f"exact_files target is not an existing file: {name!r}"
+        raise PoodleInputError(msg)
+    return file
 
 
 def create_mutants_for_file(work: PoodleWork, folder: Path, file: Path) -> list[Mutant]:

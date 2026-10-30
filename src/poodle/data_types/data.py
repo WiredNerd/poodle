@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -65,6 +65,7 @@ class PoodleConfig:
     fail_under: float | None
 
     skip_delete_folder: bool | None
+    exact_files: list[str] = field(default_factory=list)
 
 
 @dataclass

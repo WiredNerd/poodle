@@ -210,6 +210,30 @@ only_files = ["cli.py", "model_*.py"]
 
 ::::
 
+### exact_files
+
+Select literal files relative to the working directory where Poodle runs. Unlike
+[only_files](#only_files), this option does not search recursively or interpret
+glob characters. It excludes archived or nested copies with the same name.
+
+**Default:** `[]` (use existing glob selection).
+
+Set this option in `poodle_config.py`, `poodle.toml`, or `pyproject.toml`; there is
+no separate command-line option. For example, in `pyproject.toml`:
+
+```toml
+[tool.poodle]
+source_folders = ["."]
+exact_files = ["pkg/item.py"]
+```
+
+A nonempty list bypasses mutation `file_filters` and cannot be combined with
+`only_files` or `--only`. Paths must identify existing files within configured
+source folders. Both source folders and selected files must be relative to the
+working directory, without parent traversal. File and directory symlinks are not
+supported. Duplicate paths are selected once, under the first containing source
+folder. Extensionless Python files are allowed. Trial copying is unchanged.
+
 ### file_filters
 
 Files that match these filters will NOT be mutated.
