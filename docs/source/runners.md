@@ -16,6 +16,15 @@
 
 The command line runner runs the test suite by running the provided command in `subprocess.run`.
 
+The command must return 0 when tests pass and 1 when tests detect a failure.
+Other exit codes, including signal termination, are reported as errors rather than
+found mutants. Timeouts are reported separately. Errors remain in the total trial
+count but do not increase the number found.
+
+This convention matches pytest's exit codes, but exit code 1 alone does not prove
+that an assertion caught the mutation. A custom command must follow the same
+contract; review collection and infrastructure failures separately.
+
 ### Environment Variables:
 
 The command line runner starts by copying the current environment variables, then making the following changes:

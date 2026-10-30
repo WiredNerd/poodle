@@ -174,7 +174,9 @@ class TestingSummary(PoodleSerialize):
         """Update Testing Summary with data from MutantTrialResult."""
         if isinstance(result, MutantTrialResult):
             self.tested += 1
-            if result.found:
+            if result.reason_code == MutantTrialResult.RC_OTHER:
+                self.errors += 1
+            elif result.found:
                 self.found += 1
             elif result.reason_code == MutantTrialResult.RC_NOT_FOUND:
                 self.not_found += 1
