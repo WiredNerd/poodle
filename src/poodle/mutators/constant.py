@@ -55,6 +55,12 @@ class StringMutator(ast.NodeVisitor, Mutator):
         self.visit(parsed_ast)
         return self.mutants
 
+    def visit_JoinedStr(self, node: ast.JoinedStr) -> None:
+        """Visit replacement expressions without treating literal fragments as strings."""
+        for value in node.values:
+            if isinstance(value, ast.FormattedValue):
+                self.visit(value)
+
     def visit_Constant(self, node: ast.Constant) -> None:
         """Mutate String values."""
         if isinstance(node.parent, ast.Expr):  # type: ignore [attr-defined]
