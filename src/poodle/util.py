@@ -53,6 +53,9 @@ def files_list_for_source_folders(work: PoodleWork) -> dict[pathlib.Path, list[p
     directories are listed and then dropped, rather than excluded with NODIR, because NODIR also
     drops a link to a directory, and FOLLOW is ignored, so nothing is listed through a link.
     """
+    if work.config.file_copy_lister:
+        lister = dynamic_import(work.config.file_copy_lister)
+        return {folder: lister(work.config, folder) for folder in work.config.source_folders}
     if os.name != "posix":
         return {
             folder: files_list_for_folder(

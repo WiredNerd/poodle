@@ -366,6 +366,45 @@ Recommend setting this value in poodle_config.py only.  It must resolve to an `i
 Setting this in toml has to be resolved int value of combining the flags.
 :::
 
+### file_copy_lister
+
+Fully qualified name of a function that lists the files of a source folder to copy to the temporary location, instead of searching with [file_copy_filters](#file_copy_filters) and [file_copy_flags](#file_copy_flags), which are then not used.
+
+The function is called once for each source folder, before any trial runs.  It receives the config and the source folder, and returns a list of file paths (no directories), each one starting with the source folder.
+
+This only changes which files are copied.  Files to mutate are still selected with [file_filters](#file_filters) and [file_flags](#file_flags), and a file to mutate must also be copied.
+
+**Default:** None
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+file_copy_lister = "mypackage.listing.git_files"
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+file_copy_lister = "mypackage.listing.git_files"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+file_copy_lister = "mypackage.listing.git_files"
+```
+:::
+
+::::
+
+```python3
+def git_files(config, folder, *_, **__):
+    ...
+```
+
 ### work_folder
 
 Folder where temporary files will be stored.  Folder is deleted before and after execution.
