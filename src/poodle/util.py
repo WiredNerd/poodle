@@ -7,14 +7,16 @@ from __future__ import annotations
 import difflib
 import json
 import logging
+import os
 import shutil
+import stat
 from copy import deepcopy
 from io import StringIO
 from pprint import pprint
 from typing import TYPE_CHECKING, Any
 from zipfile import ZipFile
 
-from wcmatch.pathlib import Path
+from wcmatch.pathlib import Path, PurePath
 
 if TYPE_CHECKING:
     import pathlib
@@ -67,6 +69,29 @@ def create_temp_zips(work: PoodleWork) -> None:
             for file in files:
                 logger.info("Adding file: %s", file)
                 target_zip.write(file)
+
+
+def extract_trial_folder(zip_file: ZipFile, run_folder: pathlib.Path) -> None:
+    """Extract a source folder's zip into a trial folder, file modes included.
+
+    `extractall` does not restore them: every file gets the umask's mode.
+
+    Off POSIX the extraction is left as it always was: a read-only mode there would also make the
+    trial folder undeletable.
+    """
+    zip_file.extractall(run_folder)
+    if os.name != "posix":
+        return
+    for info in zip_file.infolist():
+        mode = info.external_attr >> 16
+        if not mode or info.is_dir():
+            continue
+        # where `extractall` put it: it drops a drive, a leading "/" and "." / ".." parts, so the
+        # entry for an absolute or "../" source folder lands inside run_folder, and joining the raw
+        # name would reach outside it - into the source itself for an absolute folder
+        parts = PurePath(os.path.splitdrive(info.filename)[1]).parts
+        path = run_folder.joinpath(*(part for part in parts if part not in (os.sep, "/", os.curdir, os.pardir)))
+        path.chmod(stat.S_IMODE(mode))
 
 
 def dynamic_import(object_to_import: str) -> Any:  # noqa: ANN401

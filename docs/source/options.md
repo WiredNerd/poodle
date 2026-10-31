@@ -128,6 +128,8 @@ Running each Trial consists of 3 steps:
 2. Apply a single mutation to the copy of the source file.
 3. Run test suite with the temporary folder added to the python path.
 
+On POSIX systems the copy keeps each file's mode (an executable script stays executable, a read-only file is still mutated and stays read-only). On other platforms files are copied as before.
+
 The list of source folders is a root folder that should be copied to a temporary location.
 
 Typically, this is a folder like 'src' or 'lib'.  But could be almost anything depending on your project structure.  
