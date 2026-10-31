@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 import ast
 from unittest import mock
 
@@ -96,10 +98,7 @@ class TestBinaryOperationMutator:
     def test_visit_BinOp_level_min(self, op_type, text_out, mock_echo):
         mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"operator_level": "min"}), mock_echo)
 
-        node = ast.BinOp()
-        node.left = ast.Constant(1)
-        node.op = op_type()
-        node.right = ast.Constant(2)
+        node = ast.BinOp(left=ast.Constant(1), op=op_type(), right=ast.Constant(2))
 
         node.lineno = 1
         node.col_offset = 1
@@ -131,10 +130,7 @@ class TestBinaryOperationMutator:
     def test_visit_BinOp_level_std(self, op_type, text_out, mock_echo):
         mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"operator_level": "std"}), mock_echo)
 
-        node = ast.BinOp()
-        node.left = ast.Constant(1)
-        node.op = op_type()
-        node.right = ast.Constant(2)
+        node = ast.BinOp(left=ast.Constant(1), op=op_type(), right=ast.Constant(2))
 
         node.lineno = 1
         node.col_offset = 1
@@ -166,10 +162,7 @@ class TestBinaryOperationMutator:
     def test_visit_BinOp_level_max(self, op_type, text_out, mock_echo):
         mutator = BinaryOperationMutator(mock.MagicMock(mutator_opts={"operator_level": "max"}), mock_echo)
 
-        node = ast.BinOp()
-        node.left = ast.Constant(1)
-        node.op = op_type()
-        node.right = ast.Constant(2)
+        node = ast.BinOp(left=ast.Constant(1), op=op_type(), right=ast.Constant(2))
 
         node.lineno = 1
         node.col_offset = 1
@@ -219,10 +212,7 @@ class TestAugAssignMutator:
     def test_visit_AugAssign_level_min(self, op_type, text_out, mock_echo):
         mutator = AugAssignMutator(mock.MagicMock(mutator_opts={"operator_level": "min"}), mock_echo)
 
-        node = ast.AugAssign()
-        node.target = ast.Name("x")
-        node.op = op_type()
-        node.value = ast.Constant(2)
+        node = ast.AugAssign(target=ast.Name("x"), op=op_type(), value=ast.Constant(2))
 
         node.lineno = 1
         node.col_offset = 1
@@ -254,10 +244,7 @@ class TestAugAssignMutator:
     def test_visit_AugAssign_level_std(self, op_type, text_out, mock_echo):
         mutator = AugAssignMutator(mock.MagicMock(mutator_opts={"operator_level": "std"}), mock_echo)
 
-        node = ast.AugAssign()
-        node.target = ast.Name("x")
-        node.op = op_type()
-        node.value = ast.Constant(2)
+        node = ast.AugAssign(target=ast.Name("x"), op=op_type(), value=ast.Constant(2))
 
         node.lineno = 1
         node.col_offset = 1
@@ -289,10 +276,7 @@ class TestAugAssignMutator:
     def test_visit_AugAssign_level_max(self, op_type, text_out, mock_echo):
         mutator = AugAssignMutator(mock.MagicMock(mutator_opts={"operator_level": "max"}), mock_echo)
 
-        node = ast.AugAssign()
-        node.target = ast.Name("x")
-        node.op = op_type()
-        node.value = ast.Constant(2)
+        node = ast.AugAssign(target=ast.Name("x"), op=op_type(), value=ast.Constant(2))
 
         node.lineno = 1
         node.col_offset = 1

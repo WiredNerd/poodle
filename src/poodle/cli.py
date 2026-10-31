@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 """Command Line Interface."""
 
 from __future__ import annotations
@@ -36,7 +38,8 @@ CONTEXT_SETTINGS = {
 @click.option("--json", help="File to create with JSON report.", type=click.Path(path_type=Path))
 @click.option("--fail_under", help="Fail if mutation score is under this value.", type=float)
 @click.version_option(version=__version__)
-def main(  # noqa: C901 -- too complex
+# ruff: ignore[complex-structure, too-many-positional-arguments]
+def main(
     sources: tuple[Path],
     config_file: Path | None,
     quiet: int,

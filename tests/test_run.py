@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 from concurrent.futures import Future
 from pathlib import Path
 from unittest import mock

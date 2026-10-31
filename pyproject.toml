@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "poodle"
 description = "Mutation Testing Tool"
-version = "1.3.4"
+version = "1.3.5"
 license = { file = "LICENSE" }
 keywords = [
     "test",
@@ -134,11 +134,16 @@ ignore = [
     "ISC001",  # single-line-implicit-string-concatenation
     "PLR2004", # Magic value used in comparison
     "PLR0911", # Too many return statements
+    "RUF105",  # noqa-comments
 ]
 task-tags = ["nomut", "TODO", "FIXME", "XXX"]
+preview = true
 
 [tool.ruff.lint.flake8-pytest-style]
 fixture-parentheses = true
+
+[tool.ruff.lint.flake8-copyright]
+min-file-size = 1
 
 [tool.ruff.lint.isort]
 known-first-party = ["poodle"]
