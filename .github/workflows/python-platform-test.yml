@@ -1,15 +1,6 @@
 name: Python Platform Tests
 
 on: 
-  push:
-    paths:
-      - .github/workflows/python-test-matrix.yml
-      - requirements.txt
-      - src/**
-      - tests/**
-  pull_request:
-    branches-ignore:
-      - docs
   workflow_dispatch:
 
 jobs:
