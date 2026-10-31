@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 """Mutation Test Result HTML Reporter."""
 
 from __future__ import annotations

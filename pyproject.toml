@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "poodle"
 description = "Mutation Testing Tool"
-version = "1.3.4"
+version = "1.3.5"
 license = { file = "LICENSE" }
 keywords = [
     "test",
@@ -22,7 +22,7 @@ keywords = [
 authors = [{ name = "WiredNerd", email = "pbuschmail-poodle@yahoo.com" }]
 maintainers = [{ name = "WiredNerd", email = "pbuschmail-poodle@yahoo.com" }]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -31,7 +31,6 @@ classifiers = [
 dependencies = [
     "click>=8",
     "wcmatch>=8.5",
-    "tomli>=2; python_version<'3.11'",
     "jinja2>=3.0.3",
     "mergedeep>=1.0",
 ]
@@ -81,7 +80,7 @@ exclude_also = ["import .*", "from .* import .*", "if TYPE_CHECKING:"]
 
 [tool.black]
 line-length = 120
-target-version = ['py310', 'py311', 'py312', 'py313', 'py314']
+target-version = ['py311', 'py312', 'py313', 'py314', 'py315']
 color = true
 
 [tool.isort]
@@ -99,7 +98,7 @@ module = "poodle.data_types.interfaces"
 disable_error_code = ["attr-defined"]
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py311"
 output-format = "full"
 line-length = 120
 exclude = [
@@ -134,11 +133,16 @@ ignore = [
     "ISC001",  # single-line-implicit-string-concatenation
     "PLR2004", # Magic value used in comparison
     "PLR0911", # Too many return statements
+    "RUF105",  # noqa-comments
 ]
 task-tags = ["nomut", "TODO", "FIXME", "XXX"]
+preview = true
 
 [tool.ruff.lint.flake8-pytest-style]
 fixture-parentheses = true
+
+[tool.ruff.lint.flake8-copyright]
+min-file-size = 1
 
 [tool.ruff.lint.isort]
 known-first-party = ["poodle"]

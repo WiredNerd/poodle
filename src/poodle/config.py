@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 """Resolve configuration options and build PoodleConfig object."""
 
 from __future__ import annotations

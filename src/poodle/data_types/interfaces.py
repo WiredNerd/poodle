@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 """Abstract Classes and Model functions for Mutators, Runners, and Reporters."""
 
 from __future__ import annotations

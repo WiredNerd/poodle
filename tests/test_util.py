@@ -1,7 +1,15 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
+import contextlib
+import os
+import stat
+import threading
 from pathlib import Path
 from unittest import mock
+from zipfile import ZipFile, ZipInfo
 
 import pytest
+from wcmatch import glob
 
 from poodle import util
 from poodle.data_types import Mutant, MutantTrial, PoodleWork
@@ -73,6 +81,7 @@ class TestFilesList:
         }
         files_list_for_folder.assert_not_called()
 
+    @mock.patch("poodle.util._unlisted_links", mock.MagicMock(return_value=[]))
     @mock.patch("poodle.util.Path")
     def test_files_list_for_source_folders(self, mock_path):
         files_1 = [
@@ -381,3 +390,307 @@ class TestDeleteFolder:
 
         mock_logger.info.assert_not_called()
         shutil.rmtree.assert_not_called()
+
+
+@pytest.mark.skipif(os.name != "posix", reason="file modes are POSIX semantics")
+class TestExtractTrialFolder:
+    @pytest.fixture()
+    def umask_077(self):
+        old = os.umask(0o077)
+        yield
+        os.umask(old)
+
+    def zip_with_modes(self, folder_zip: Path, entries: dict[str, int]) -> None:
+        with ZipFile(folder_zip, "w") as zip_file:
+            for name, mode in entries.items():
+                info = ZipInfo(name)
+                info.external_attr = mode << 16
+                zip_file.writestr(info, "x\n")
+
+    @pytest.mark.usefixtures("umask_077")
+    def test_extract_trial_folder_restores_modes(self, tmp_path):
+        folder_zip = tmp_path / "src.zip"
+        self.zip_with_modes(
+            folder_zip,
+            {"src/run.sh": stat.S_IFREG | 0o755, "src/ro.py": stat.S_IFREG | 0o444, "src/none.txt": 0},
+        )
+        run_folder = tmp_path / "run"
+        run_folder.mkdir()
+
+        with ZipFile(folder_zip) as zip_file:
+            util.extract_trial_folder(zip_file, run_folder)
+
+        assert stat.S_IMODE((run_folder / "src/run.sh").stat().st_mode) == 0o755
+        assert stat.S_IMODE((run_folder / "src/ro.py").stat().st_mode) == 0o444
+        assert stat.S_IMODE((run_folder / "src/none.txt").stat().st_mode) == 0o600  # no mode recorded: umask
+
+    @pytest.mark.usefixtures("umask_077")
+    def test_extract_trial_folder_modes_land_where_extractall_puts_entries(self, tmp_path):
+        folder_zip = tmp_path / "src.zip"
+        self.zip_with_modes(folder_zip, {"../up.sh": stat.S_IFREG | 0o755})
+        run_folder = tmp_path / "run"
+        run_folder.mkdir()
+        outside = tmp_path / "up.sh"
+        outside.write_text("x\n")
+        outside.chmod(0o600)
+
+        with ZipFile(folder_zip) as zip_file:
+            util.extract_trial_folder(zip_file, run_folder)
+
+        assert stat.S_IMODE((run_folder / "up.sh").stat().st_mode) == 0o755
+        assert stat.S_IMODE(outside.stat().st_mode) == 0o600
+
+
+@pytest.fixture()
+def link_tree(tmp_path, monkeypatch):
+    """Source folder 'src' (cwd-relative, as poodle resolves it) holding one link per rule."""
+    monkeypatch.chdir(tmp_path)
+    src = tmp_path / "src"
+    (src / "pkg").mkdir(parents=True)
+    (src / "pkg" / "mod.py").write_text("X = 1\n")
+    (src / "real").mkdir()
+    (src / "real" / "f.txt").write_text("f\n")
+    (tmp_path / "shared" / "d").mkdir(parents=True)
+    (tmp_path / "shared" / "conf.py").write_text("conf\n")
+    (tmp_path / "shared" / "d" / "y.txt").write_text("y\n")
+    links = {
+        "src/pkg/alias.py": "mod.py",  # relative, inside
+        "src/abs_alias.py": str(src / "pkg" / "mod.py"),  # absolute, inside
+        "src/pkg/abs_up.txt": str(src / "real" / "f.txt"),  # absolute, inside, one level up
+        "src/dir_link": "real",  # directory, inside
+        "src/pkg/up": "..",  # the folder itself
+        "src/loop_a": "loop_b",  # loop, inside
+        "src/loop_b": "loop_a",
+        "src/gen.txt": str(src / "missing.txt"),  # dangling, absolute, inside
+        "src/conf.py": "../shared/conf.py",  # file, outside
+        "src/abs_conf.py": str(tmp_path / "shared" / "conf.py"),  # file, outside, absolute
+        "src/outdir": "../shared/d",  # directory, outside
+        "src/through.txt": "outdir/y.txt",  # inside lexically, but through an omitted link
+        "src/gone": "../nowhere",  # dangling, outside
+    }
+    for name, target in links.items():
+        (tmp_path / name).symlink_to(target)
+    return tmp_path
+
+
+@pytest.mark.skipif(os.name != "posix", reason="symlinks are reproduced on POSIX only")
+class TestTrialLinks:
+    def test_trial_links(self, link_tree):
+        files = [Path(name) for name in ("src/pkg/mod.py", "src/real/f.txt")]
+        files += [path.relative_to(link_tree) for path in (link_tree / "src").rglob("*") if path.is_symlink()]
+
+        links = util.trial_links(Path("src"), files)
+
+        assert {str(path): target for path, target in links.items()} == {
+            "src/pkg/alias.py": "mod.py",
+            "src/abs_alias.py": "pkg/mod.py",
+            "src/pkg/abs_up.txt": "../real/f.txt",
+            "src/dir_link": "real",
+            "src/pkg/up": "..",
+            "src/loop_a": "loop_b",
+            "src/loop_b": "loop_a",
+            "src/gen.txt": "missing.txt",
+            "src/conf.py": str(link_tree / "shared" / "conf.py"),
+            "src/abs_conf.py": str(link_tree / "shared" / "conf.py"),
+            "src/outdir": str(link_tree / "shared" / "d"),
+            "src/through.txt": str(link_tree / "shared" / "d" / "y.txt"),
+            "src/gone": str(link_tree / "nowhere"),
+        }
+
+    def test_trial_links_resolve_where_the_trial_can_follow(self, tmp_path, monkeypatch):
+        project = tmp_path / "proj"
+        monkeypatch.chdir(project.parent)
+        (project / "src" / "pkg").mkdir(parents=True)
+        (project / "src" / "mod.py").write_text("X = 1\n")
+        (project / "shared" / "d").mkdir(parents=True)
+        (project / "shared" / "d" / "y.txt").write_text("y\n")
+        (project / "conf.txt").write_text("c\n")
+        (project / "src" / "pkg" / "up").symlink_to("..")
+        (project / "src" / "outdir").symlink_to("../shared/d")
+        (project / "src" / "x.py").symlink_to("../../proj/src/mod.py")  # inside, through the project name
+        (project / "src" / "through.txt").symlink_to("outdir/y.txt")  # outside, through a link
+        (project / "src" / "updot.txt").symlink_to("pkg/up/../conf.txt")  # "up/.." is not "": outside
+        files = [Path("proj/src/mod.py"), Path("proj/src/x.py"), Path("proj/src/through.txt")]
+        files += [Path("proj/src/updot.txt"), Path("proj/src/pkg/up")]  # outdir left out by a filter
+
+        links = util.trial_links(Path("proj/src"), files)
+
+        assert {str(path): target for path, target in links.items()} == {
+            "proj/src/x.py": "mod.py",
+            "proj/src/through.txt": str(project / "shared" / "d" / "y.txt"),
+            "proj/src/updot.txt": str(project / "conf.txt"),
+            "proj/src/pkg/up": "..",
+        }
+
+    def test_files_list_for_source_folders_lists_loops_under_excluded_directories(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        (tmp_path / "src" / "pkg" / "sub").mkdir(parents=True)
+        (tmp_path / "src" / "pkg" / "sub" / "m.py").write_text("m\n")
+        (tmp_path / "src" / "pkg" / "sub" / "la").symlink_to("lb")
+        (tmp_path / "src" / "pkg" / "sub" / "lb").symlink_to("la")
+        (tmp_path / "src" / ".hidden").mkdir()
+        (tmp_path / "src" / ".hidden" / "lh").symlink_to("lh")
+        work = PoodleWork(
+            config=PoodleConfigStub(
+                source_folders=[Path("src")],
+                file_copy_flags=glob.GLOBSTAR | glob.NODIR,
+                file_copy_filters=["pkg/*", "lb"],
+            )
+        )
+
+        listed = {str(path) for path in util.files_list_for_source_folders(work)[Path("src")]}
+
+        assert listed == {"src/pkg/sub/m.py", "src/pkg/sub/la"}  # a filter applies to a loop link at any depth
+
+    def test_files_list_for_source_folders_lists_links(self, link_tree):
+        work = PoodleWork(
+            config=PoodleConfigStub(
+                source_folders=[Path("src")],
+                file_copy_flags=glob.GLOBSTAR | glob.NODIR | glob.FOLLOW,
+                file_copy_filters=[],
+            )
+        )
+
+        listed = {str(path) for path in util.files_list_for_source_folders(work)[Path("src")]}
+
+        links = {str(path.relative_to(link_tree)) for path in (link_tree / "src").rglob("*") if path.is_symlink()}
+        assert listed == {"src/pkg/mod.py", "src/real/f.txt"} | links  # no directory, nothing under a link
+
+    def test_create_temp_zips_links(self, link_tree):
+        work = PoodleWork(
+            config=PoodleConfigStub(
+                source_folders=[Path("src")],
+                file_copy_flags=glob.GLOBSTAR | glob.NODIR,
+                file_copy_filters=[],
+                work_folder=link_tree / "work",
+            )
+        )
+
+        util.create_temp_zips(work)
+
+        with ZipFile(work.folder_zips[Path("src")]) as zip_file:
+            entries = {
+                info.filename: (stat.S_ISLNK(info.external_attr >> 16), zip_file.read(info).decode())
+                for info in zip_file.infolist()
+            }
+        assert entries["src/pkg/alias.py"] == (True, "mod.py")
+        assert entries["src/abs_alias.py"] == (True, "pkg/mod.py")
+        assert entries["src/dir_link"] == (True, "real")
+        assert entries["src/conf.py"] == (True, str(link_tree / "shared" / "conf.py"))
+        assert entries["src/through.txt"] == (True, str(link_tree / "shared" / "d" / "y.txt"))
+        assert entries["src/outdir"] == (True, str(link_tree / "shared" / "d"))
+        assert entries["src/gone"] == (True, str(link_tree / "nowhere"))
+        assert not [name for name in entries if name.startswith(("src/dir_link/", "src/outdir/"))]
+
+    def test_create_temp_zips_link_to_outside_fifo(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        (tmp_path / "src").mkdir()
+        (tmp_path / "out").mkdir()
+        fifo = tmp_path / "out" / "pipe"
+        os.mkfifo(fifo)
+        (tmp_path / "src" / "pipe_link").symlink_to(fifo)
+        work = PoodleWork(
+            config=PoodleConfigStub(
+                source_folders=[Path("src")],
+                file_copy_flags=glob.GLOBSTAR | glob.NODIR,
+                file_copy_filters=[],
+                work_folder=tmp_path / "work",
+            )
+        )
+
+        # a copy that opens the FIFO blocks until a writer opens it: run it bounded, and release it
+        copy = threading.Thread(target=util.create_temp_zips, args=(work,), daemon=True)
+        copy.start()
+        copy.join(5)
+        hung = copy.is_alive()
+        if hung:
+            with contextlib.suppress(OSError):  # ENXIO: no reader is blocked on it after all
+                os.close(os.open(fifo, os.O_WRONLY | os.O_NONBLOCK))  # a writer end, closed at once: EOF
+            copy.join(5)
+        assert not hung
+
+        with ZipFile(work.folder_zips[Path("src")]) as zip_file:
+            entries = {
+                info.filename: (stat.S_ISLNK(info.external_attr >> 16), zip_file.read(info).decode())
+                for info in zip_file.infolist()
+            }
+        assert entries == {"src/pipe_link": (True, str(fifo))}
+
+    def test_trial_folder_keeps_links_outside_the_folder(self, link_tree):
+        (link_tree / "src" / "pkg" / "mod.py").chmod(0o750)
+        work = PoodleWork(
+            config=PoodleConfigStub(
+                source_folders=[Path("src")],
+                file_copy_flags=glob.GLOBSTAR | glob.NODIR,
+                file_copy_filters=[],
+                work_folder=link_tree / "work",
+            )
+        )
+        util.create_temp_zips(work)
+        run_folder = link_tree / "run"
+        run_folder.mkdir()
+
+        with ZipFile(work.folder_zips[Path("src")]) as zip_file:
+            util.extract_trial_folder(zip_file, run_folder)
+
+        trial = run_folder / "src"
+        outside_names = ("outdir", "conf.py", "gone")
+        assert all((trial / name).is_symlink() for name in outside_names)
+        outside = {name: os.readlink(trial / name) for name in outside_names}  # noqa: PTH115
+        assert outside == {
+            "outdir": str(link_tree / "shared" / "d"),
+            "conf.py": str(link_tree / "shared" / "conf.py"),
+            "gone": str(link_tree / "nowhere"),
+        }
+        assert (trial / "outdir" / "y.txt").read_text() == "y\n"
+        assert (trial / "conf.py").read_text() == "conf\n"
+        assert not (trial / "gone").exists()
+        inside_names = ("pkg/alias.py", "abs_alias.py", "dir_link", "pkg/up", "gen.txt")
+        inside = {name: os.readlink(trial / name) for name in inside_names}  # noqa: PTH115
+        assert inside == {
+            "pkg/alias.py": "mod.py",
+            "abs_alias.py": "pkg/mod.py",
+            "dir_link": "real",
+            "pkg/up": "..",
+            "gen.txt": "missing.txt",
+        }
+        assert (trial / "abs_alias.py").read_text() == "X = 1\n"
+        assert stat.S_IMODE((trial / "pkg" / "mod.py").stat().st_mode) == 0o750
+
+    def test_create_temp_zips_link_to_filtered_file(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        (tmp_path / "src").mkdir()
+        (tmp_path / "src" / "notes.log").write_text("log\n")
+        (tmp_path / "src" / "log_link.txt").symlink_to("notes.log")
+        work = PoodleWork(
+            config=PoodleConfigStub(
+                source_folders=[Path("src")],
+                file_copy_flags=glob.GLOBSTAR | glob.NODIR,
+                file_copy_filters=["*.log"],
+                work_folder=tmp_path / "work",
+            )
+        )
+
+        util.create_temp_zips(work)
+
+        with ZipFile(work.folder_zips[Path("src")]) as zip_file:
+            entries = {info.filename: zip_file.read(info).decode() for info in zip_file.infolist()}
+        assert entries == {"src/log_link.txt": "notes.log"}  # the link, not the filtered file's content
+
+    def test_extract_trial_folder_recreates_links(self, tmp_path):
+        folder_zip = tmp_path / "src.zip"
+        with ZipFile(folder_zip, "w") as zip_file:
+            zip_file.writestr("src/pkg/mod.py", "X = 1\n")
+            link = ZipInfo("src/pkg/alias.py")
+            link.external_attr = (stat.S_IFLNK | 0o777) << 16
+            zip_file.writestr(link, "mod.py")
+        run_folder = tmp_path / "run"
+        run_folder.mkdir()
+
+        with ZipFile(folder_zip) as zip_file:
+            util.extract_trial_folder(zip_file, run_folder)
+
+        alias = run_folder / "src" / "pkg" / "alias.py"
+        assert alias.is_symlink()
+        assert os.readlink(alias) == "mod.py"  # noqa: PTH115 - the target text is what is under test
+        assert alias.read_text() == "X = 1\n"
