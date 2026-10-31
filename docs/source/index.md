@@ -27,7 +27,7 @@ The goal of Poodle is to be highly efficient, configurable, and extendable.
 * Highly Configurable
 * Plug in custom code
 * Output reports in Text, HTML, and JSON
-* Python 3.9 - 3.12
+* Python 3.11 - 3.15
 
 ## Quick Start
 
