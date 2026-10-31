@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 """Report Testing Results."""
 
 from __future__ import annotations

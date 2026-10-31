@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 """Mutate Unary Operations."""
 
 from __future__ import annotations

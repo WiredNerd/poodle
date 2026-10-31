@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 """Poodle Mutation Test Tool."""
 
 from __future__ import annotations
@@ -8,7 +10,7 @@ from contextlib import suppress
 from pathlib import Path
 from typing import Any
 
-__version__ = "1.3.4"
+__version__ = "1.3.5"
 
 
 class PoodleTestingFailedError(Exception):
