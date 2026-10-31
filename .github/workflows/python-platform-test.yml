@@ -1,6 +1,15 @@
 name: Python Platform Tests
 
 on: 
+  push:
+    paths:
+      - .github/workflows/python-platform-test.yml
+      - requirements.txt
+      - src/**
+      - tests/**
+  pull_request:
+    branches-ignore:
+      - docs
   workflow_dispatch:
 
 jobs:
