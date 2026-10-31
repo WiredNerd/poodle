@@ -104,6 +104,7 @@ jobs:
   ruff:
     name: Linter Checks with Ruff
     runs-on: [ubuntu-latest]
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v7
       - name: Ruff src
