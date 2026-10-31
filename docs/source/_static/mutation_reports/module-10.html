@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Module Source: src\poodle\mutators\operators.py</title>
+    <link rel="stylesheet" type="text/css" href="html-report.css" />
+    <link rel="icon" href="poodle.ico" type="image/x-icon" />
+    
+</head>
+
+<body>
+    <header>
+        
+
+        <h1>Module Source: src\poodle\mutators\operators.py</h1>
+        
+        <span class="subtitle"><span class="label">Project:</span> poodle
+             version 1.2.0 </span>
+        
+        
+&nbsp;&nbsp;<a href="index.html" class="subtitle">&lt;Index</a>
+<div class="subtitle">
+<span class="label">Mutants:</span> 36,
+<span class="label">Found:</span> 36,
+<span class="label">Not Found:</span> 0,
+<span class="label">Timeout:</span> 0,
+<span class="label">Error:</span> 0
+</div>
+<div class="subtitle">
+<span class="label">Module Score:</span> 100.00%
+</div>
+
+    </header>
+    <main>
+        
+<table class="source">
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">1</td>
+        <td class="line_text">
+            <pre>&#34;&#34;&#34;Mutate Operators.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">2</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">3</td>
+        <td class="line_text">
+            <pre>from __future__ import annotations</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">4</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">5</td>
+        <td class="line_text">
+            <pre>import ast</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">6</td>
+        <td class="line_text">
+            <pre>from typing import Callable, ClassVar</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">7</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">8</td>
+        <td class="line_text">
+            <pre>from poodle.data_types import FileMutation, Mutator, PoodleConfig</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">9</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">10</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">11</td>
+        <td class="line_text">
+            <pre>class OperationMutator(ast.NodeVisitor, Mutator):</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">12</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Base class for mutating operations.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">13</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">14</td>
+        <td class="line_text">
+            <pre>    # Binary Operators as of Python 3.12:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">15</td>
+        <td class="line_text">
+            <pre>    # https://docs.python.org/3/library/ast.html#ast.BinOp</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">16</td>
+        <td class="line_text">
+            <pre>    # https://www.w3schools.com/python/python_operators.asp</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">17</td>
+        <td class="line_text">
+            <pre>    # ast.Add       +</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">18</td>
+        <td class="line_text">
+            <pre>    # ast.Sub       -</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">19</td>
+        <td class="line_text">
+            <pre>    # ast.Mult      *</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">20</td>
+        <td class="line_text">
+            <pre>    # ast.Div       /</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">21</td>
+        <td class="line_text">
+            <pre>    # ast.FloorDiv  //</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">22</td>
+        <td class="line_text">
+            <pre>    # ast.Mod       %</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">23</td>
+        <td class="line_text">
+            <pre>    # ast.Pow       **</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">24</td>
+        <td class="line_text">
+            <pre>    # ast.LShift    &lt;&lt;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">25</td>
+        <td class="line_text">
+            <pre>    # ast.RShift    &gt;&gt;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">26</td>
+        <td class="line_text">
+            <pre>    # ast.BitOr     |</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">27</td>
+        <td class="line_text">
+            <pre>    # ast.BitXor    ^</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">28</td>
+        <td class="line_text">
+            <pre>    # ast.BitAnd    &amp;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">29</td>
+        <td class="line_text">
+            <pre>    # ast.MatMult   @</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">30</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">31</td>
+        <td class="line_text">
+            <pre>    type_map_levels: ClassVar[dict[str, dict[type, list[type]]]] = {</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">32</td>
+        <td class="line_text">
+            <pre>        &#34;min&#34;: {</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:32
+@@ -29,7 +29,7 @@
+     # ast.MatMult   @
+ 
+     type_map_levels: ClassVar[dict[str, dict[type, list[type]]]] = {
+-        &#34;min&#34;: {
++        &#39;XXminXX&#39;: {
+             ast.Add: [ast.Mult],
+             ast.Sub: [ast.Div],
+             ast.Mult: [ast.Add],
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">33</td>
+        <td class="line_text">
+            <pre>            ast.Add: [ast.Mult],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">34</td>
+        <td class="line_text">
+            <pre>            ast.Sub: [ast.Div],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">35</td>
+        <td class="line_text">
+            <pre>            ast.Mult: [ast.Add],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">36</td>
+        <td class="line_text">
+            <pre>            ast.Div: [ast.Sub],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">37</td>
+        <td class="line_text">
+            <pre>            ast.FloorDiv: [ast.Div],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">38</td>
+        <td class="line_text">
+            <pre>            ast.Mod: [ast.Sub],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">39</td>
+        <td class="line_text">
+            <pre>            ast.Pow: [ast.Mult],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">40</td>
+        <td class="line_text">
+            <pre>            ast.LShift: [ast.RShift],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">41</td>
+        <td class="line_text">
+            <pre>            ast.RShift: [ast.LShift],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">42</td>
+        <td class="line_text">
+            <pre>            ast.BitOr: [ast.BitAnd],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">43</td>
+        <td class="line_text">
+            <pre>            ast.BitXor: [ast.BitOr],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">44</td>
+        <td class="line_text">
+            <pre>            ast.BitAnd: [ast.BitXor],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">45</td>
+        <td class="line_text">
+            <pre>        },</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">46</td>
+        <td class="line_text">
+            <pre>        &#34;std&#34;: {</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:46
+@@ -43,7 +43,7 @@
+             ast.BitXor: [ast.BitOr],
+             ast.BitAnd: [ast.BitXor],
+         },
+-        &#34;std&#34;: {
++        &#39;XXstdXX&#39;: {
+             ast.Add: [ast.Sub, ast.Mult],
+             ast.Sub: [ast.Add, ast.Div],
+             ast.Mult: [ast.Div, ast.Add],
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">47</td>
+        <td class="line_text">
+            <pre>            ast.Add: [ast.Sub, ast.Mult],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">48</td>
+        <td class="line_text">
+            <pre>            ast.Sub: [ast.Add, ast.Div],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">49</td>
+        <td class="line_text">
+            <pre>            ast.Mult: [ast.Div, ast.Add],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">50</td>
+        <td class="line_text">
+            <pre>            ast.Div: [ast.Mult, ast.Sub],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">51</td>
+        <td class="line_text">
+            <pre>            ast.FloorDiv: [ast.Mult, ast.Div],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">52</td>
+        <td class="line_text">
+            <pre>            ast.Mod: [ast.FloorDiv, ast.Sub],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">53</td>
+        <td class="line_text">
+            <pre>            ast.Pow: [ast.Mult, ast.Div],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">54</td>
+        <td class="line_text">
+            <pre>            ast.LShift: [ast.RShift],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">55</td>
+        <td class="line_text">
+            <pre>            ast.RShift: [ast.LShift],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">56</td>
+        <td class="line_text">
+            <pre>            ast.BitOr: [ast.BitAnd],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">57</td>
+        <td class="line_text">
+            <pre>            ast.BitXor: [ast.BitOr, ast.BitAnd],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">58</td>
+        <td class="line_text">
+            <pre>            ast.BitAnd: [ast.BitOr],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">59</td>
+        <td class="line_text">
+            <pre>        },</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">60</td>
+        <td class="line_text">
+            <pre>        &#34;max&#34;: {</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:60
+@@ -57,7 +57,7 @@
+             ast.BitXor: [ast.BitOr, ast.BitAnd],
+             ast.BitAnd: [ast.BitOr],
+         },
+-        &#34;max&#34;: {
++        &#39;XXmaxXX&#39;: {
+             ast.Add: [ast.Sub, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow],
+             ast.Sub: [ast.Add, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow],
+             ast.Mult: [ast.Add, ast.Sub, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow],
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">61</td>
+        <td class="line_text">
+            <pre>            ast.Add: [ast.Sub, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">62</td>
+        <td class="line_text">
+            <pre>            ast.Sub: [ast.Add, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">63</td>
+        <td class="line_text">
+            <pre>            ast.Mult: [ast.Add, ast.Sub, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">64</td>
+        <td class="line_text">
+            <pre>            ast.Div: [ast.Add, ast.Sub, ast.Mult, ast.FloorDiv, ast.Mod, ast.Pow],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">65</td>
+        <td class="line_text">
+            <pre>            ast.FloorDiv: [ast.Add, ast.Sub, ast.Mult, ast.Div, ast.Mod, ast.Pow],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">66</td>
+        <td class="line_text">
+            <pre>            ast.Mod: [ast.Add, ast.Sub, ast.Mult, ast.Div, ast.FloorDiv, ast.Pow],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">67</td>
+        <td class="line_text">
+            <pre>            ast.Pow: [ast.Add, ast.Sub, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">68</td>
+        <td class="line_text">
+            <pre>            ast.LShift: [ast.RShift, ast.BitOr, ast.BitXor, ast.BitAnd],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">69</td>
+        <td class="line_text">
+            <pre>            ast.RShift: [ast.LShift, ast.BitOr, ast.BitXor, ast.BitAnd],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">70</td>
+        <td class="line_text">
+            <pre>            ast.BitOr: [ast.LShift, ast.RShift, ast.BitXor, ast.BitAnd],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">71</td>
+        <td class="line_text">
+            <pre>            ast.BitXor: [ast.LShift, ast.RShift, ast.BitOr, ast.BitAnd],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">72</td>
+        <td class="line_text">
+            <pre>            ast.BitAnd: [ast.LShift, ast.RShift, ast.BitOr, ast.BitXor],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">73</td>
+        <td class="line_text">
+            <pre>        },</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">74</td>
+        <td class="line_text">
+            <pre>    }</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">75</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">76</td>
+        <td class="line_text">
+            <pre>    def __init__(self, config: PoodleConfig, echo: Callable, *args, **kwargs) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">77</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Initialize and read settings.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">78</td>
+        <td class="line_text">
+            <pre>        super().__init__(config, echo, *args, **kwargs)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:78
+@@ -75,7 +75,7 @@
+ 
+     def __init__(self, config: PoodleConfig, echo: Callable, *args, **kwargs) -&gt; None:
+         &#34;&#34;&#34;Initialize and read settings.&#34;&#34;&#34;
+-        super().__init__(config, echo, *args, **kwargs)
++        None
+         self.mutants: list[FileMutation] = []
+ 
+         level = self.config.mutator_opts.get(&#34;operator_level&#34;, &#34;std&#34;)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">79</td>
+        <td class="line_text">
+            <pre>        self.mutants: list[FileMutation] = []</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">80</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">81</td>
+        <td class="line_text">
+            <pre>        level = self.config.mutator_opts.get(&#34;operator_level&#34;, &#34;std&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:81
+@@ -78,7 +78,7 @@
+         super().__init__(config, echo, *args, **kwargs)
+         self.mutants: list[FileMutation] = []
+ 
+-        level = self.config.mutator_opts.get(&#34;operator_level&#34;, &#34;std&#34;)
++        level = self.config.mutator_opts.get(&#39;XXoperator_levelXX&#39;, &#34;std&#34;)
+         if level not in self.type_map_levels:
+             echo(f&#34;WARN: Invalid value operator_opts.operator_level={level}.  Using Default value &#39;std&#39;&#34;)
+             level = &#34;std&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:81
+@@ -78,7 +78,7 @@
+         super().__init__(config, echo, *args, **kwargs)
+         self.mutants: list[FileMutation] = []
+ 
+-        level = self.config.mutator_opts.get(&#34;operator_level&#34;, &#34;std&#34;)
++        level = self.config.mutator_opts.get(&#34;operator_level&#34;, &#39;XXstdXX&#39;)
+         if level not in self.type_map_levels:
+             echo(f&#34;WARN: Invalid value operator_opts.operator_level={level}.  Using Default value &#39;std&#39;&#34;)
+             level = &#34;std&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:81
+@@ -78,7 +78,7 @@
+         super().__init__(config, echo, *args, **kwargs)
+         self.mutants: list[FileMutation] = []
+ 
+-        level = self.config.mutator_opts.get(&#34;operator_level&#34;, &#34;std&#34;)
++        level = None
+         if level not in self.type_map_levels:
+             echo(f&#34;WARN: Invalid value operator_opts.operator_level={level}.  Using Default value &#39;std&#39;&#34;)
+             level = &#34;std&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">82</td>
+        <td class="line_text">
+            <pre>        if level not in self.type_map_levels:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:82
+@@ -79,7 +79,7 @@
+         self.mutants: list[FileMutation] = []
+ 
+         level = self.config.mutator_opts.get(&#34;operator_level&#34;, &#34;std&#34;)
+-        if level not in self.type_map_levels:
++        if level in self.type_map_levels:
+             echo(f&#34;WARN: Invalid value operator_opts.operator_level={level}.  Using Default value &#39;std&#39;&#34;)
+             level = &#34;std&#34;
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">83</td>
+        <td class="line_text">
+            <pre>            echo(f&#34;WARN: Invalid value operator_opts.operator_level={level}.  Using Default value &#39;std&#39;&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:83
+@@ -80,7 +80,7 @@
+ 
+         level = self.config.mutator_opts.get(&#34;operator_level&#34;, &#34;std&#34;)
+         if level not in self.type_map_levels:
+-            echo(f&#34;WARN: Invalid value operator_opts.operator_level={level}.  Using Default value &#39;std&#39;&#34;)
++            echo(f&#34;&#39;XXWARN: Invalid value operator_opts.operator_level=XX&#39;{level}.  Using Default value &#39;std&#39;&#34;)
+             level = &#34;std&#34;
+ 
+         self.type_map: dict[type, list[type]] = self.type_map_levels[level]
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:83
+@@ -80,7 +80,7 @@
+ 
+         level = self.config.mutator_opts.get(&#34;operator_level&#34;, &#34;std&#34;)
+         if level not in self.type_map_levels:
+-            echo(f&#34;WARN: Invalid value operator_opts.operator_level={level}.  Using Default value &#39;std&#39;&#34;)
++            echo(f&#34;WARN: Invalid value operator_opts.operator_level={level}&#34;XX.  Using Default value &#39;std&#39;XX&#34;&#34;)
+             level = &#34;std&#34;
+ 
+         self.type_map: dict[type, list[type]] = self.type_map_levels[level]
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:83
+@@ -80,7 +80,7 @@
+ 
+         level = self.config.mutator_opts.get(&#34;operator_level&#34;, &#34;std&#34;)
+         if level not in self.type_map_levels:
+-            echo(f&#34;WARN: Invalid value operator_opts.operator_level={level}.  Using Default value &#39;std&#39;&#34;)
++            None
+             level = &#34;std&#34;
+ 
+         self.type_map: dict[type, list[type]] = self.type_map_levels[level]
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">84</td>
+        <td class="line_text">
+            <pre>            level = &#34;std&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:84
+@@ -81,7 +81,7 @@
+         level = self.config.mutator_opts.get(&#34;operator_level&#34;, &#34;std&#34;)
+         if level not in self.type_map_levels:
+             echo(f&#34;WARN: Invalid value operator_opts.operator_level={level}.  Using Default value &#39;std&#39;&#34;)
+-            level = &#34;std&#34;
++            level = &#39;XXstdXX&#39;
+ 
+         self.type_map: dict[type, list[type]] = self.type_map_levels[level]
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">85</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">86</td>
+        <td class="line_text">
+            <pre>        self.type_map: dict[type, list[type]] = self.type_map_levels[level]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:86
+@@ -83,7 +83,7 @@
+             echo(f&#34;WARN: Invalid value operator_opts.operator_level={level}.  Using Default value &#39;std&#39;&#34;)
+             level = &#34;std&#34;
+ 
+-        self.type_map: dict[type, list[type]] = self.type_map_levels[level]
++        self.type_map: dict[type, list[type]] = None
+ 
+     def create_mutations(self, parsed_ast: ast.Module, *_, **__) -&gt; list[FileMutation]:
+         &#34;&#34;&#34;Visit ast nodes and return created mutants.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">87</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">88</td>
+        <td class="line_text">
+            <pre>    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -&gt; list[FileMutation]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">89</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Visit ast nodes and return created mutants.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">90</td>
+        <td class="line_text">
+            <pre>        self.mutants = []</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">91</td>
+        <td class="line_text">
+            <pre>        self.add_parent_attr(parsed_ast)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:91
+@@ -88,7 +88,7 @@
+     def create_mutations(self, parsed_ast: ast.Module, *_, **__) -&gt; list[FileMutation]:
+         &#34;&#34;&#34;Visit ast nodes and return created mutants.&#34;&#34;&#34;
+         self.mutants = []
+-        self.add_parent_attr(parsed_ast)
++        None
+         self.visit(parsed_ast)
+         return self.mutants
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">92</td>
+        <td class="line_text">
+            <pre>        self.visit(parsed_ast)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:92
+@@ -89,7 +89,7 @@
+         &#34;&#34;&#34;Visit ast nodes and return created mutants.&#34;&#34;&#34;
+         self.mutants = []
+         self.add_parent_attr(parsed_ast)
+-        self.visit(parsed_ast)
++        None
+         return self.mutants
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">93</td>
+        <td class="line_text">
+            <pre>        return self.mutants</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:93
+@@ -90,7 +90,7 @@
+         self.mutants = []
+         self.add_parent_attr(parsed_ast)
+         self.visit(parsed_ast)
+-        return self.mutants
++        return None
+ 
+ 
+ class BinaryOperationMutator(OperationMutator):
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">94</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">95</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">96</td>
+        <td class="line_text">
+            <pre>class BinaryOperationMutator(OperationMutator):</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">97</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Mutate Binary Operations.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">98</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">99</td>
+        <td class="line_text">
+            <pre>    mutator_name = &#34;BinOp&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:99
+@@ -96,7 +96,7 @@
+ class BinaryOperationMutator(OperationMutator):
+     &#34;&#34;&#34;Mutate Binary Operations.&#34;&#34;&#34;
+ 
+-    mutator_name = &#34;BinOp&#34;
++    mutator_name = &#39;XXBinOpXX&#39;
+ 
+     def visit_BinOp(self, node: ast.BinOp) -&gt; None:
+         &#34;&#34;&#34;Identify replacement Operations and create Mutants.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">100</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">101</td>
+        <td class="line_text">
+            <pre>    def visit_BinOp(self, node: ast.BinOp) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">102</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Identify replacement Operations and create Mutants.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">103</td>
+        <td class="line_text">
+            <pre>        if self.is_annotation(node):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:103
+@@ -100,7 +100,7 @@
+ 
+     def visit_BinOp(self, node: ast.BinOp) -&gt; None:
+         &#34;&#34;&#34;Identify replacement Operations and create Mutants.&#34;&#34;&#34;
+-        if self.is_annotation(node):
++        if None:
+             return
+ 
+         if type(node.op) in self.type_map:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">104</td>
+        <td class="line_text">
+            <pre>            return</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">105</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">106</td>
+        <td class="line_text">
+            <pre>        if type(node.op) in self.type_map:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:106
+@@ -103,7 +103,7 @@
+         if self.is_annotation(node):
+             return
+ 
+-        if type(node.op) in self.type_map:
++        if type(node.op) not in self.type_map:
+             mut_types = self.type_map[type(node.op)]
+             self.mutants.extend([self.create_bin_op_mutant(node, new_type) for new_type in mut_types])
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:106
+@@ -103,7 +103,7 @@
+         if self.is_annotation(node):
+             return
+ 
+-        if type(node.op) in self.type_map:
++        if None in self.type_map:
+             mut_types = self.type_map[type(node.op)]
+             self.mutants.extend([self.create_bin_op_mutant(node, new_type) for new_type in mut_types])
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">107</td>
+        <td class="line_text">
+            <pre>            mut_types = self.type_map[type(node.op)]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:107
+@@ -104,7 +104,7 @@
+             return
+ 
+         if type(node.op) in self.type_map:
+-            mut_types = self.type_map[type(node.op)]
++            mut_types = self.type_map[None]
+             self.mutants.extend([self.create_bin_op_mutant(node, new_type) for new_type in mut_types])
+ 
+     def create_bin_op_mutant(self, node: ast.BinOp, new_type: type) -&gt; FileMutation:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:107
+@@ -104,7 +104,7 @@
+             return
+ 
+         if type(node.op) in self.type_map:
+-            mut_types = self.type_map[type(node.op)]
++            mut_types = None
+             self.mutants.extend([self.create_bin_op_mutant(node, new_type) for new_type in mut_types])
+ 
+     def create_bin_op_mutant(self, node: ast.BinOp, new_type: type) -&gt; FileMutation:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">108</td>
+        <td class="line_text">
+            <pre>            self.mutants.extend([self.create_bin_op_mutant(node, new_type) for new_type in mut_types])</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:108
+@@ -105,7 +105,7 @@
+ 
+         if type(node.op) in self.type_map:
+             mut_types = self.type_map[type(node.op)]
+-            self.mutants.extend([self.create_bin_op_mutant(node, new_type) for new_type in mut_types])
++            None
+ 
+     def create_bin_op_mutant(self, node: ast.BinOp, new_type: type) -&gt; FileMutation:
+         &#34;&#34;&#34;Create BinOp with replacement operation.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">109</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">110</td>
+        <td class="line_text">
+            <pre>    def create_bin_op_mutant(self, node: ast.BinOp, new_type: type) -&gt; FileMutation:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">111</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Create BinOp with replacement operation.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">112</td>
+        <td class="line_text">
+            <pre>        return self.create_file_mutation(node, ast.unparse(ast.BinOp(left=node.left, op=new_type(), right=node.right)))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:112
+@@ -109,7 +109,7 @@
+ 
+     def create_bin_op_mutant(self, node: ast.BinOp, new_type: type) -&gt; FileMutation:
+         &#34;&#34;&#34;Create BinOp with replacement operation.&#34;&#34;&#34;
+-        return self.create_file_mutation(node, ast.unparse(ast.BinOp(left=node.left, op=new_type(), right=node.right)))
++        return None
+ 
+ 
+ class AugAssignMutator(OperationMutator):
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:112
+@@ -109,7 +109,7 @@
+ 
+     def create_bin_op_mutant(self, node: ast.BinOp, new_type: type) -&gt; FileMutation:
+         &#34;&#34;&#34;Create BinOp with replacement operation.&#34;&#34;&#34;
+-        return self.create_file_mutation(node, ast.unparse(ast.BinOp(left=node.left, op=new_type(), right=node.right)))
++        return None
+ 
+ 
+ class AugAssignMutator(OperationMutator):
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">113</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">114</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">115</td>
+        <td class="line_text">
+            <pre>class AugAssignMutator(OperationMutator):</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">116</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Mutate Augmented Assignments.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">117</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">118</td>
+        <td class="line_text">
+            <pre>    mutator_name = &#34;AugAssign&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:118
+@@ -115,7 +115,7 @@
+ class AugAssignMutator(OperationMutator):
+     &#34;&#34;&#34;Mutate Augmented Assignments.&#34;&#34;&#34;
+ 
+-    mutator_name = &#34;AugAssign&#34;
++    mutator_name = &#39;XXAugAssignXX&#39;
+ 
+     def visit_AugAssign(self, node: ast.AugAssign) -&gt; None:
+         &#34;&#34;&#34;Identify replacement Operations and create Mutants.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">119</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">120</td>
+        <td class="line_text">
+            <pre>    def visit_AugAssign(self, node: ast.AugAssign) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">121</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Identify replacement Operations and create Mutants.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">122</td>
+        <td class="line_text">
+            <pre>        self.mutants.append(self.create_assign_mutant(node))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:122
+@@ -119,7 +119,7 @@
+ 
+     def visit_AugAssign(self, node: ast.AugAssign) -&gt; None:
+         &#34;&#34;&#34;Identify replacement Operations and create Mutants.&#34;&#34;&#34;
+-        self.mutants.append(self.create_assign_mutant(node))
++        None
+ 
+         if type(node.op) in self.type_map:
+             mut_types = self.type_map[type(node.op)]
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">123</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">124</td>
+        <td class="line_text">
+            <pre>        if type(node.op) in self.type_map:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:124
+@@ -121,7 +121,7 @@
+         &#34;&#34;&#34;Identify replacement Operations and create Mutants.&#34;&#34;&#34;
+         self.mutants.append(self.create_assign_mutant(node))
+ 
+-        if type(node.op) in self.type_map:
++        if type(node.op) not in self.type_map:
+             mut_types = self.type_map[type(node.op)]
+             self.mutants.extend([self.create_aug_assign_mutant(node, new_type) for new_type in mut_types])
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:124
+@@ -121,7 +121,7 @@
+         &#34;&#34;&#34;Identify replacement Operations and create Mutants.&#34;&#34;&#34;
+         self.mutants.append(self.create_assign_mutant(node))
+ 
+-        if type(node.op) in self.type_map:
++        if None in self.type_map:
+             mut_types = self.type_map[type(node.op)]
+             self.mutants.extend([self.create_aug_assign_mutant(node, new_type) for new_type in mut_types])
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">125</td>
+        <td class="line_text">
+            <pre>            mut_types = self.type_map[type(node.op)]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:125
+@@ -122,7 +122,7 @@
+         self.mutants.append(self.create_assign_mutant(node))
+ 
+         if type(node.op) in self.type_map:
+-            mut_types = self.type_map[type(node.op)]
++            mut_types = self.type_map[None]
+             self.mutants.extend([self.create_aug_assign_mutant(node, new_type) for new_type in mut_types])
+ 
+     def create_assign_mutant(self, node: ast.AugAssign) -&gt; FileMutation:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:125
+@@ -122,7 +122,7 @@
+         self.mutants.append(self.create_assign_mutant(node))
+ 
+         if type(node.op) in self.type_map:
+-            mut_types = self.type_map[type(node.op)]
++            mut_types = None
+             self.mutants.extend([self.create_aug_assign_mutant(node, new_type) for new_type in mut_types])
+ 
+     def create_assign_mutant(self, node: ast.AugAssign) -&gt; FileMutation:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">126</td>
+        <td class="line_text">
+            <pre>            self.mutants.extend([self.create_aug_assign_mutant(node, new_type) for new_type in mut_types])</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:126
+@@ -123,7 +123,7 @@
+ 
+         if type(node.op) in self.type_map:
+             mut_types = self.type_map[type(node.op)]
+-            self.mutants.extend([self.create_aug_assign_mutant(node, new_type) for new_type in mut_types])
++            None
+ 
+     def create_assign_mutant(self, node: ast.AugAssign) -&gt; FileMutation:
+         &#34;&#34;&#34;Create Assign to replace AugAssign.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">127</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">128</td>
+        <td class="line_text">
+            <pre>    def create_assign_mutant(self, node: ast.AugAssign) -&gt; FileMutation:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">129</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Create Assign to replace AugAssign.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">130</td>
+        <td class="line_text">
+            <pre>        return self.create_file_mutation(</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:130
+@@ -127,10 +127,7 @@
+ 
+     def create_assign_mutant(self, node: ast.AugAssign) -&gt; FileMutation:
+         &#34;&#34;&#34;Create Assign to replace AugAssign.&#34;&#34;&#34;
+-        return self.create_file_mutation(
+-            node,
+-            ast.unparse(ast.Assign(lineno=node.lineno, targets=[node.target], value=node.value)),
+-        )
++        return None
+ 
+     def create_aug_assign_mutant(self, node: ast.AugAssign, new_type: type) -&gt; FileMutation:
+         &#34;&#34;&#34;Create replacement AugAssign with alternate operation.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:130
+@@ -127,10 +127,7 @@
+ 
+     def create_assign_mutant(self, node: ast.AugAssign) -&gt; FileMutation:
+         &#34;&#34;&#34;Create Assign to replace AugAssign.&#34;&#34;&#34;
+-        return self.create_file_mutation(
+-            node,
+-            ast.unparse(ast.Assign(lineno=node.lineno, targets=[node.target], value=node.value)),
+-        )
++        return None
+ 
+     def create_aug_assign_mutant(self, node: ast.AugAssign, new_type: type) -&gt; FileMutation:
+         &#34;&#34;&#34;Create replacement AugAssign with alternate operation.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">131</td>
+        <td class="line_text">
+            <pre>            node,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">132</td>
+        <td class="line_text">
+            <pre>            ast.unparse(ast.Assign(lineno=node.lineno, targets=[node.target], value=node.value)),</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">133</td>
+        <td class="line_text">
+            <pre>        )</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">134</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">135</td>
+        <td class="line_text">
+            <pre>    def create_aug_assign_mutant(self, node: ast.AugAssign, new_type: type) -&gt; FileMutation:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">136</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Create replacement AugAssign with alternate operation.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">137</td>
+        <td class="line_text">
+            <pre>        return self.create_file_mutation(</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:137
+@@ -134,7 +134,4 @@
+ 
+     def create_aug_assign_mutant(self, node: ast.AugAssign, new_type: type) -&gt; FileMutation:
+         &#34;&#34;&#34;Create replacement AugAssign with alternate operation.&#34;&#34;&#34;
+-        return self.create_file_mutation(
+-            node,
+-            ast.unparse(ast.AugAssign(target=node.target, op=new_type(), value=node.value)),
+-        )
++        return None
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\operators.py
++++ [Mutant] src\poodle\mutators\operators.py:137
+@@ -134,7 +134,4 @@
+ 
+     def create_aug_assign_mutant(self, node: ast.AugAssign, new_type: type) -&gt; FileMutation:
+         &#34;&#34;&#34;Create replacement AugAssign with alternate operation.&#34;&#34;&#34;
+-        return self.create_file_mutation(
+-            node,
+-            ast.unparse(ast.AugAssign(target=node.target, op=new_type(), value=node.value)),
+-        )
++        return None
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">138</td>
+        <td class="line_text">
+            <pre>            node,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">139</td>
+        <td class="line_text">
+            <pre>            ast.unparse(ast.AugAssign(target=node.target, op=new_type(), value=node.value)),</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">140</td>
+        <td class="line_text">
+            <pre>        )</pre>
+        </td>
+    </tr>
+    
+    
+</table>
+
+    </main>
+    <footer>
+        
+        <p>Generated by <a href="http://poodle.rtfd.io" class="nav">Poodle</a> version 1.2.0 at 2023-12-29 20:42:38-0600</p>
+        
+    </footer>
+    
+
+    <script type="text/javascript" src="html-report.js"></script>
+    
+<script>addShowHideEventListeners();</script>
+
+</body>
+
+</html>

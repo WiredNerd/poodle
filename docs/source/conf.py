@@ -7,14 +7,18 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "Poodle"
-copyright = "2023, WiredNerd"
-author = "WiredNerd"
+copyright = "2023, Peter Busch (WiredNerd)"
+author = "Peter Busch (WiredNerd)"
 release = ""
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["myst_parser", "sphinx_design"]
+extensions = [
+    "myst_parser",
+    "sphinx_design",
+    "sphinx_copybutton",
+]
 
 source_suffix = {
     ".rst": "restructuredtext",
@@ -44,6 +48,12 @@ myst_enable_extensions = [
 myst_linkify_fuzzy_links = False
 myst_heading_anchors = 6
 
+myst_url_schemes = {
+    "http": None,
+    "https": None,
+    "relative": "{{path}}",
+}
+
 # templates_path = ['_templates']
 exclude_patterns = []
 
@@ -53,5 +63,9 @@ exclude_patterns = []
 
 html_theme = "furo"
 html_static_path = ["_static"]
-html_logo = "_static/poodle-logo.gif"
+html_logo = "_static/poodle.gif"
 html_favicon = "_static/poodle.ico"
+
+include_patterns = ["*", "_static/**"]
+
+copybutton_selector = "div:not(.no-copybutton) > div.highlight > pre"

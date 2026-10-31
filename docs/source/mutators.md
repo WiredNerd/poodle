@@ -1,6 +1,7 @@
 # Poodle's Mutators
 
-```text
+```{code-block} text
+:class: .no-copybutton
     /''\,,,,,
    |    |    \           ___
     \   /  ^ |        __/_  `.  .-"""-.
@@ -191,6 +192,9 @@ However changing some comparisons can cause problems for testing tools, the muta
 * - Equality 
   - `==`
   - `!=`
+* - Not Equal 
+  - `!=`
+  - `==`
 * - Less Than 
   - `<`
   - `>=`, `<=`

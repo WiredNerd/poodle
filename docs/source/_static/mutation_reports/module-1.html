@@ -1,0 +1,3611 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Module Source: src\poodle\util.py</title>
+    <link rel="stylesheet" type="text/css" href="html-report.css" />
+    <link rel="icon" href="poodle.ico" type="image/x-icon" />
+    
+</head>
+
+<body>
+    <header>
+        
+
+        <h1>Module Source: src\poodle\util.py</h1>
+        
+        <span class="subtitle"><span class="label">Project:</span> poodle
+             version 1.2.0 </span>
+        
+        
+&nbsp;&nbsp;<a href="index.html" class="subtitle">&lt;Index</a>
+<div class="subtitle">
+<span class="label">Mutants:</span> 93,
+<span class="label">Found:</span> 91,
+<span class="label">Not Found:</span> 2,
+<span class="label">Timeout:</span> 0,
+<span class="label">Error:</span> 0
+</div>
+<div class="subtitle">
+<span class="label">Module Score:</span> 97.85%
+</div>
+
+    </header>
+    <main>
+        
+<table class="source">
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">1</td>
+        <td class="line_text">
+            <pre>&#34;&#34;&#34;Various utility functions.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">2</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">3</td>
+        <td class="line_text">
+            <pre>from __future__ import annotations</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">4</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">5</td>
+        <td class="line_text">
+            <pre>import difflib</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">6</td>
+        <td class="line_text">
+            <pre>import json</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">7</td>
+        <td class="line_text">
+            <pre>import logging</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">8</td>
+        <td class="line_text">
+            <pre>from copy import deepcopy</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">9</td>
+        <td class="line_text">
+            <pre>from io import StringIO</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">10</td>
+        <td class="line_text">
+            <pre>from pprint import pprint</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">11</td>
+        <td class="line_text">
+            <pre>from typing import TYPE_CHECKING, Any</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">12</td>
+        <td class="line_text">
+            <pre>from zipfile import ZipFile</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">13</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">14</td>
+        <td class="line_text">
+            <pre>from wcmatch.pathlib import Path</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">15</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">16</td>
+        <td class="line_text">
+            <pre>if TYPE_CHECKING:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">17</td>
+        <td class="line_text">
+            <pre>    import pathlib</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">18</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">19</td>
+        <td class="line_text">
+            <pre>    from .data_types import Mutant, MutantTrial, PoodleConfig, PoodleSerialize, PoodleWork</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">20</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">21</td>
+        <td class="line_text">
+            <pre>logger = logging.getLogger(__name__)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:21
+@@ -18,7 +18,7 @@
+ 
+     from .data_types import Mutant, MutantTrial, PoodleConfig, PoodleSerialize, PoodleWork
+ 
+-logger = logging.getLogger(__name__)
++logger = None
+ 
+ 
+ def files_list_for_folder(
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">22</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">23</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">24</td>
+        <td class="line_text">
+            <pre>def files_list_for_folder(</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">25</td>
+        <td class="line_text">
+            <pre>    folder: pathlib.Path,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">26</td>
+        <td class="line_text">
+            <pre>    match_glob: str,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">27</td>
+        <td class="line_text">
+            <pre>    flags: int | None,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">28</td>
+        <td class="line_text">
+            <pre>    filter_globs: list[str],</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">29</td>
+        <td class="line_text">
+            <pre>) -&gt; list[pathlib.Path]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">30</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Retrieve list of files in specified folder.</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">31</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">32</td>
+        <td class="line_text">
+            <pre>    Search recursively for files matching match_glob.</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">33</td>
+        <td class="line_text">
+            <pre>    Remove files matching any of the filter_globs values.</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">34</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">35</td>
+        <td class="line_text">
+            <pre>    logger.debug(&#34;files_list_for_folder folder=%s, match_glob=%s filter_globs=%s&#34;, folder, match_glob, filter_globs)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:35
+@@ -32,7 +32,7 @@
+     Search recursively for files matching match_glob.
+     Remove files matching any of the filter_globs values.
+     &#34;&#34;&#34;
+-    logger.debug(&#34;files_list_for_folder folder=%s, match_glob=%s filter_globs=%s&#34;, folder, match_glob, filter_globs)
++    logger.debug(&#39;XXfiles_list_for_folder folder=%s, match_glob=%s filter_globs=%sXX&#39;, folder, match_glob, filter_globs)
+ 
+     files: list[pathlib.Path] = list(Path(folder).rglob(match_glob, flags=flags, exclude=filter_globs))  # type: ignore [arg-type]
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:35
+@@ -32,7 +32,7 @@
+     Search recursively for files matching match_glob.
+     Remove files matching any of the filter_globs values.
+     &#34;&#34;&#34;
+-    logger.debug(&#34;files_list_for_folder folder=%s, match_glob=%s filter_globs=%s&#34;, folder, match_glob, filter_globs)
++    None
+ 
+     files: list[pathlib.Path] = list(Path(folder).rglob(match_glob, flags=flags, exclude=filter_globs))  # type: ignore [arg-type]
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">36</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">37</td>
+        <td class="line_text">
+            <pre>    files: list[pathlib.Path] = list(Path(folder).rglob(match_glob, flags=flags, exclude=filter_globs))  # type: ignore [arg-type]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:37
+@@ -34,7 +34,7 @@
+     &#34;&#34;&#34;
+     logger.debug(&#34;files_list_for_folder folder=%s, match_glob=%s filter_globs=%s&#34;, folder, match_glob, filter_globs)
+ 
+-    files: list[pathlib.Path] = list(Path(folder).rglob(match_glob, flags=flags, exclude=filter_globs))  # type: ignore [arg-type]
++    files: list[pathlib.Path] = None  # type: ignore [arg-type]
+ 
+     logger.debug(&#34;files_list_for_folder results: folder=%s files=%s&#34;, folder, files)
+     return files
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">38</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">39</td>
+        <td class="line_text">
+            <pre>    logger.debug(&#34;files_list_for_folder results: folder=%s files=%s&#34;, folder, files)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:39
+@@ -36,7 +36,7 @@
+ 
+     files: list[pathlib.Path] = list(Path(folder).rglob(match_glob, flags=flags, exclude=filter_globs))  # type: ignore [arg-type]
+ 
+-    logger.debug(&#34;files_list_for_folder results: folder=%s files=%s&#34;, folder, files)
++    logger.debug(&#39;XXfiles_list_for_folder results: folder=%s files=%sXX&#39;, folder, files)
+     return files
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:39
+@@ -36,7 +36,7 @@
+ 
+     files: list[pathlib.Path] = list(Path(folder).rglob(match_glob, flags=flags, exclude=filter_globs))  # type: ignore [arg-type]
+ 
+-    logger.debug(&#34;files_list_for_folder results: folder=%s files=%s&#34;, folder, files)
++    None
+     return files
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">40</td>
+        <td class="line_text">
+            <pre>    return files</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:40
+@@ -37,7 +37,7 @@
+     files: list[pathlib.Path] = list(Path(folder).rglob(match_glob, flags=flags, exclude=filter_globs))  # type: ignore [arg-type]
+ 
+     logger.debug(&#34;files_list_for_folder results: folder=%s files=%s&#34;, folder, files)
+-    return files
++    return None
+ 
+ 
+ def files_list_for_source_folders(work: PoodleWork) -&gt; dict[pathlib.Path, list[pathlib.Path]]:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">41</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">42</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">43</td>
+        <td class="line_text">
+            <pre>def files_list_for_source_folders(work: PoodleWork) -&gt; dict[pathlib.Path, list[pathlib.Path]]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">44</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Build map of Folder to all files in folder to include in zips.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">45</td>
+        <td class="line_text">
+            <pre>    return {</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:45
+@@ -42,15 +42,7 @@
+ 
+ def files_list_for_source_folders(work: PoodleWork) -&gt; dict[pathlib.Path, list[pathlib.Path]]:
+     &#34;&#34;&#34;Build map of Folder to all files in folder to include in zips.&#34;&#34;&#34;
+-    return {
+-        folder: files_list_for_folder(
+-            folder=folder,
+-            match_glob=&#34;*&#34;,
+-            flags=work.config.file_copy_flags,
+-            filter_globs=work.config.file_copy_filters,
+-        )
+-        for folder in work.config.source_folders
+-    }
++    return None
+ 
+ 
+ def create_temp_zips(work: PoodleWork) -&gt; None:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">46</td>
+        <td class="line_text">
+            <pre>        folder: files_list_for_folder(</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:46
+@@ -43,12 +43,7 @@
+ def files_list_for_source_folders(work: PoodleWork) -&gt; dict[pathlib.Path, list[pathlib.Path]]:
+     &#34;&#34;&#34;Build map of Folder to all files in folder to include in zips.&#34;&#34;&#34;
+     return {
+-        folder: files_list_for_folder(
+-            folder=folder,
+-            match_glob=&#34;*&#34;,
+-            flags=work.config.file_copy_flags,
+-            filter_globs=work.config.file_copy_filters,
+-        )
++        folder: None
+         for folder in work.config.source_folders
+     }
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">47</td>
+        <td class="line_text">
+            <pre>            folder=folder,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">48</td>
+        <td class="line_text">
+            <pre>            match_glob=&#34;*&#34;,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:48
+@@ -45,7 +45,7 @@
+     return {
+         folder: files_list_for_folder(
+             folder=folder,
+-            match_glob=&#34;*&#34;,
++            match_glob=&#39;XX*XX&#39;,
+             flags=work.config.file_copy_flags,
+             filter_globs=work.config.file_copy_filters,
+         )
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">49</td>
+        <td class="line_text">
+            <pre>            flags=work.config.file_copy_flags,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">50</td>
+        <td class="line_text">
+            <pre>            filter_globs=work.config.file_copy_filters,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">51</td>
+        <td class="line_text">
+            <pre>        )</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">52</td>
+        <td class="line_text">
+            <pre>        for folder in work.config.source_folders</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">53</td>
+        <td class="line_text">
+            <pre>    }</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">54</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">55</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">56</td>
+        <td class="line_text">
+            <pre>def create_temp_zips(work: PoodleWork) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">57</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Create a temporary zip file for each folder in source_folders.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">58</td>
+        <td class="line_text">
+            <pre>    work.config.work_folder.mkdir(parents=True, exist_ok=True)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:58
+@@ -55,7 +55,7 @@
+ 
+ def create_temp_zips(work: PoodleWork) -&gt; None:
+     &#34;&#34;&#34;Create a temporary zip file for each folder in source_folders.&#34;&#34;&#34;
+-    work.config.work_folder.mkdir(parents=True, exist_ok=True)
++    work.config.work_folder.mkdir(parents=False, exist_ok=True)
+     for folder, files in files_list_for_source_folders(work).items():
+         zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)
+         logger.info(&#34;Creating zip file: %s&#34;, zip_file)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:58
+@@ -55,7 +55,7 @@
+ 
+ def create_temp_zips(work: PoodleWork) -&gt; None:
+     &#34;&#34;&#34;Create a temporary zip file for each folder in source_folders.&#34;&#34;&#34;
+-    work.config.work_folder.mkdir(parents=True, exist_ok=True)
++    work.config.work_folder.mkdir(parents=True, exist_ok=False)
+     for folder, files in files_list_for_source_folders(work).items():
+         zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)
+         logger.info(&#34;Creating zip file: %s&#34;, zip_file)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:58
+@@ -55,7 +55,7 @@
+ 
+ def create_temp_zips(work: PoodleWork) -&gt; None:
+     &#34;&#34;&#34;Create a temporary zip file for each folder in source_folders.&#34;&#34;&#34;
+-    work.config.work_folder.mkdir(parents=True, exist_ok=True)
++    None
+     for folder, files in files_list_for_source_folders(work).items():
+         zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)
+         logger.info(&#34;Creating zip file: %s&#34;, zip_file)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">59</td>
+        <td class="line_text">
+            <pre>    for folder, files in files_list_for_source_folders(work).items():</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:59
+@@ -56,7 +56,7 @@
+ def create_temp_zips(work: PoodleWork) -&gt; None:
+     &#34;&#34;&#34;Create a temporary zip file for each folder in source_folders.&#34;&#34;&#34;
+     work.config.work_folder.mkdir(parents=True, exist_ok=True)
+-    for folder, files in files_list_for_source_folders(work).items():
++    for folder, files in None:
+         zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)
+         logger.info(&#34;Creating zip file: %s&#34;, zip_file)
+         work.folder_zips[folder] = zip_file
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">60</td>
+        <td class="line_text">
+            <pre>        zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:60
+@@ -57,7 +57,7 @@
+     &#34;&#34;&#34;Create a temporary zip file for each folder in source_folders.&#34;&#34;&#34;
+     work.config.work_folder.mkdir(parents=True, exist_ok=True)
+     for folder, files in files_list_for_source_folders(work).items():
+-        zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)
++        zip_file = work.config.work_folder * (&#39;src-&#39; + work.next_num() + &#39;.zip&#39;)
+         logger.info(&#34;Creating zip file: %s&#34;, zip_file)
+         work.folder_zips[folder] = zip_file
+         with ZipFile(zip_file, &#34;w&#34;) as target_zip:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:60
+@@ -57,7 +57,7 @@
+     &#34;&#34;&#34;Create a temporary zip file for each folder in source_folders.&#34;&#34;&#34;
+     work.config.work_folder.mkdir(parents=True, exist_ok=True)
+     for folder, files in files_list_for_source_folders(work).items():
+-        zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)
++        zip_file = work.config.work_folder - (&#39;src-&#39; + work.next_num() + &#39;.zip&#39;)
+         logger.info(&#34;Creating zip file: %s&#34;, zip_file)
+         work.folder_zips[folder] = zip_file
+         with ZipFile(zip_file, &#34;w&#34;) as target_zip:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:60
+@@ -57,7 +57,7 @@
+     &#34;&#34;&#34;Create a temporary zip file for each folder in source_folders.&#34;&#34;&#34;
+     work.config.work_folder.mkdir(parents=True, exist_ok=True)
+     for folder, files in files_list_for_source_folders(work).items():
+-        zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)
++        zip_file = work.config.work_folder / (&#39;XXsrc-XX&#39; + work.next_num() + &#34;.zip&#34;)
+         logger.info(&#34;Creating zip file: %s&#34;, zip_file)
+         work.folder_zips[folder] = zip_file
+         with ZipFile(zip_file, &#34;w&#34;) as target_zip:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:60
+@@ -57,7 +57,7 @@
+     &#34;&#34;&#34;Create a temporary zip file for each folder in source_folders.&#34;&#34;&#34;
+     work.config.work_folder.mkdir(parents=True, exist_ok=True)
+     for folder, files in files_list_for_source_folders(work).items():
+-        zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)
++        zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#39;XX.zipXX&#39;)
+         logger.info(&#34;Creating zip file: %s&#34;, zip_file)
+         work.folder_zips[folder] = zip_file
+         with ZipFile(zip_file, &#34;w&#34;) as target_zip:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:60
+@@ -57,7 +57,7 @@
+     &#34;&#34;&#34;Create a temporary zip file for each folder in source_folders.&#34;&#34;&#34;
+     work.config.work_folder.mkdir(parents=True, exist_ok=True)
+     for folder, files in files_list_for_source_folders(work).items():
+-        zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)
++        zip_file = work.config.work_folder / (&#34;src-&#34; + None + &#34;.zip&#34;)
+         logger.info(&#34;Creating zip file: %s&#34;, zip_file)
+         work.folder_zips[folder] = zip_file
+         with ZipFile(zip_file, &#34;w&#34;) as target_zip:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">61</td>
+        <td class="line_text">
+            <pre>        logger.info(&#34;Creating zip file: %s&#34;, zip_file)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:61
+@@ -58,7 +58,7 @@
+     work.config.work_folder.mkdir(parents=True, exist_ok=True)
+     for folder, files in files_list_for_source_folders(work).items():
+         zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)
+-        logger.info(&#34;Creating zip file: %s&#34;, zip_file)
++        logger.info(&#39;XXCreating zip file: %sXX&#39;, zip_file)
+         work.folder_zips[folder] = zip_file
+         with ZipFile(zip_file, &#34;w&#34;) as target_zip:
+             for file in files:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:61
+@@ -58,7 +58,7 @@
+     work.config.work_folder.mkdir(parents=True, exist_ok=True)
+     for folder, files in files_list_for_source_folders(work).items():
+         zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)
+-        logger.info(&#34;Creating zip file: %s&#34;, zip_file)
++        None
+         work.folder_zips[folder] = zip_file
+         with ZipFile(zip_file, &#34;w&#34;) as target_zip:
+             for file in files:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">62</td>
+        <td class="line_text">
+            <pre>        work.folder_zips[folder] = zip_file</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:62
+@@ -59,7 +59,7 @@
+     for folder, files in files_list_for_source_folders(work).items():
+         zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)
+         logger.info(&#34;Creating zip file: %s&#34;, zip_file)
+-        work.folder_zips[folder] = zip_file
++        None = zip_file
+         with ZipFile(zip_file, &#34;w&#34;) as target_zip:
+             for file in files:
+                 logger.info(&#34;Adding file: %s&#34;, file)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">63</td>
+        <td class="line_text">
+            <pre>        with ZipFile(zip_file, &#34;w&#34;) as target_zip:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:63
+@@ -60,7 +60,7 @@
+         zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)
+         logger.info(&#34;Creating zip file: %s&#34;, zip_file)
+         work.folder_zips[folder] = zip_file
+-        with ZipFile(zip_file, &#34;w&#34;) as target_zip:
++        with ZipFile(zip_file, &#39;XXwXX&#39;) as target_zip:
+             for file in files:
+                 logger.info(&#34;Adding file: %s&#34;, file)
+                 target_zip.write(file)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:63
+@@ -60,7 +60,7 @@
+         zip_file = work.config.work_folder / (&#34;src-&#34; + work.next_num() + &#34;.zip&#34;)
+         logger.info(&#34;Creating zip file: %s&#34;, zip_file)
+         work.folder_zips[folder] = zip_file
+-        with ZipFile(zip_file, &#34;w&#34;) as target_zip:
++        with None as target_zip:
+             for file in files:
+                 logger.info(&#34;Adding file: %s&#34;, file)
+                 target_zip.write(file)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">64</td>
+        <td class="line_text">
+            <pre>            for file in files:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">65</td>
+        <td class="line_text">
+            <pre>                logger.info(&#34;Adding file: %s&#34;, file)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:65
+@@ -62,7 +62,7 @@
+         work.folder_zips[folder] = zip_file
+         with ZipFile(zip_file, &#34;w&#34;) as target_zip:
+             for file in files:
+-                logger.info(&#34;Adding file: %s&#34;, file)
++                logger.info(&#39;XXAdding file: %sXX&#39;, file)
+                 target_zip.write(file)
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:65
+@@ -62,7 +62,7 @@
+         work.folder_zips[folder] = zip_file
+         with ZipFile(zip_file, &#34;w&#34;) as target_zip:
+             for file in files:
+-                logger.info(&#34;Adding file: %s&#34;, file)
++                None
+                 target_zip.write(file)
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">66</td>
+        <td class="line_text">
+            <pre>                target_zip.write(file)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:66
+@@ -63,7 +63,7 @@
+         with ZipFile(zip_file, &#34;w&#34;) as target_zip:
+             for file in files:
+                 logger.info(&#34;Adding file: %s&#34;, file)
+-                target_zip.write(file)
++                None
+ 
+ 
+ def dynamic_import(object_to_import: str) -&gt; Any:  # noqa: ANN401
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">67</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">68</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">69</td>
+        <td class="line_text">
+            <pre>def dynamic_import(object_to_import: str) -&gt; Any:  # noqa: ANN401</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">70</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Import an Object represented by provided python name.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">71</td>
+        <td class="line_text">
+            <pre>    logger.debug(&#34;Import object: %s&#34;, object_to_import)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:71
+@@ -68,7 +68,7 @@
+ 
+ def dynamic_import(object_to_import: str) -&gt; Any:  # noqa: ANN401
+     &#34;&#34;&#34;Import an Object represented by provided python name.&#34;&#34;&#34;
+-    logger.debug(&#34;Import object: %s&#34;, object_to_import)
++    logger.debug(&#39;XXImport object: %sXX&#39;, object_to_import)
+     parts = object_to_import.split(&#34;.&#34;)
+     module_str = &#34;.&#34;.join(parts[:-1])
+     obj_def = parts[-1]
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:71
+@@ -68,7 +68,7 @@
+ 
+ def dynamic_import(object_to_import: str) -&gt; Any:  # noqa: ANN401
+     &#34;&#34;&#34;Import an Object represented by provided python name.&#34;&#34;&#34;
+-    logger.debug(&#34;Import object: %s&#34;, object_to_import)
++    None
+     parts = object_to_import.split(&#34;.&#34;)
+     module_str = &#34;.&#34;.join(parts[:-1])
+     obj_def = parts[-1]
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">72</td>
+        <td class="line_text">
+            <pre>    parts = object_to_import.split(&#34;.&#34;)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:72
+@@ -69,7 +69,7 @@
+ def dynamic_import(object_to_import: str) -&gt; Any:  # noqa: ANN401
+     &#34;&#34;&#34;Import an Object represented by provided python name.&#34;&#34;&#34;
+     logger.debug(&#34;Import object: %s&#34;, object_to_import)
+-    parts = object_to_import.split(&#34;.&#34;)
++    parts = object_to_import.split(&#39;XX.XX&#39;)
+     module_str = &#34;.&#34;.join(parts[:-1])
+     obj_def = parts[-1]
+     module = __import__(module_str, fromlist=[obj_def])
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:72
+@@ -69,7 +69,7 @@
+ def dynamic_import(object_to_import: str) -&gt; Any:  # noqa: ANN401
+     &#34;&#34;&#34;Import an Object represented by provided python name.&#34;&#34;&#34;
+     logger.debug(&#34;Import object: %s&#34;, object_to_import)
+-    parts = object_to_import.split(&#34;.&#34;)
++    parts = None
+     module_str = &#34;.&#34;.join(parts[:-1])
+     obj_def = parts[-1]
+     module = __import__(module_str, fromlist=[obj_def])
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">73</td>
+        <td class="line_text">
+            <pre>    module_str = &#34;.&#34;.join(parts[:-1])</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> UnaryOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:73
+@@ -70,7 +70,7 @@
+     &#34;&#34;&#34;Import an Object represented by provided python name.&#34;&#34;&#34;
+     logger.debug(&#34;Import object: %s&#34;, object_to_import)
+     parts = object_to_import.split(&#34;.&#34;)
+-    module_str = &#34;.&#34;.join(parts[:-1])
++    module_str = &#34;.&#34;.join(parts[:+1])
+     obj_def = parts[-1]
+     module = __import__(module_str, fromlist=[obj_def])
+     return getattr(module, obj_def)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:73
+@@ -70,7 +70,7 @@
+     &#34;&#34;&#34;Import an Object represented by provided python name.&#34;&#34;&#34;
+     logger.debug(&#34;Import object: %s&#34;, object_to_import)
+     parts = object_to_import.split(&#34;.&#34;)
+-    module_str = &#34;.&#34;.join(parts[:-1])
++    module_str = &#34;.&#34;.join(parts[:-2])
+     obj_def = parts[-1]
+     module = __import__(module_str, fromlist=[obj_def])
+     return getattr(module, obj_def)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:73
+@@ -70,7 +70,7 @@
+     &#34;&#34;&#34;Import an Object represented by provided python name.&#34;&#34;&#34;
+     logger.debug(&#34;Import object: %s&#34;, object_to_import)
+     parts = object_to_import.split(&#34;.&#34;)
+-    module_str = &#34;.&#34;.join(parts[:-1])
++    module_str = &#34;.&#34;.join(parts[:-0])
+     obj_def = parts[-1]
+     module = __import__(module_str, fromlist=[obj_def])
+     return getattr(module, obj_def)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:73
+@@ -70,7 +70,7 @@
+     &#34;&#34;&#34;Import an Object represented by provided python name.&#34;&#34;&#34;
+     logger.debug(&#34;Import object: %s&#34;, object_to_import)
+     parts = object_to_import.split(&#34;.&#34;)
+-    module_str = &#34;.&#34;.join(parts[:-1])
++    module_str = &#39;XX.XX&#39;.join(parts[:-1])
+     obj_def = parts[-1]
+     module = __import__(module_str, fromlist=[obj_def])
+     return getattr(module, obj_def)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:73
+@@ -70,7 +70,7 @@
+     &#34;&#34;&#34;Import an Object represented by provided python name.&#34;&#34;&#34;
+     logger.debug(&#34;Import object: %s&#34;, object_to_import)
+     parts = object_to_import.split(&#34;.&#34;)
+-    module_str = &#34;.&#34;.join(parts[:-1])
++    module_str = None
+     obj_def = parts[-1]
+     module = __import__(module_str, fromlist=[obj_def])
+     return getattr(module, obj_def)
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:73
+@@ -70,7 +70,7 @@
+     &#34;&#34;&#34;Import an Object represented by provided python name.&#34;&#34;&#34;
+     logger.debug(&#34;Import object: %s&#34;, object_to_import)
+     parts = object_to_import.split(&#34;.&#34;)
+-    module_str = &#34;.&#34;.join(parts[:-1])
++    module_str = &#34;.&#34;.join(None)
+     obj_def = parts[-1]
+     module = __import__(module_str, fromlist=[obj_def])
+     return getattr(module, obj_def)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">74</td>
+        <td class="line_text">
+            <pre>    obj_def = parts[-1]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> UnaryOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:74
+@@ -71,7 +71,7 @@
+     logger.debug(&#34;Import object: %s&#34;, object_to_import)
+     parts = object_to_import.split(&#34;.&#34;)
+     module_str = &#34;.&#34;.join(parts[:-1])
+-    obj_def = parts[-1]
++    obj_def = parts[+1]
+     module = __import__(module_str, fromlist=[obj_def])
+     return getattr(module, obj_def)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:74
+@@ -71,7 +71,7 @@
+     logger.debug(&#34;Import object: %s&#34;, object_to_import)
+     parts = object_to_import.split(&#34;.&#34;)
+     module_str = &#34;.&#34;.join(parts[:-1])
+-    obj_def = parts[-1]
++    obj_def = parts[-2]
+     module = __import__(module_str, fromlist=[obj_def])
+     return getattr(module, obj_def)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:74
+@@ -71,7 +71,7 @@
+     logger.debug(&#34;Import object: %s&#34;, object_to_import)
+     parts = object_to_import.split(&#34;.&#34;)
+     module_str = &#34;.&#34;.join(parts[:-1])
+-    obj_def = parts[-1]
++    obj_def = parts[-0]
+     module = __import__(module_str, fromlist=[obj_def])
+     return getattr(module, obj_def)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:74
+@@ -71,7 +71,7 @@
+     logger.debug(&#34;Import object: %s&#34;, object_to_import)
+     parts = object_to_import.split(&#34;.&#34;)
+     module_str = &#34;.&#34;.join(parts[:-1])
+-    obj_def = parts[-1]
++    obj_def = None
+     module = __import__(module_str, fromlist=[obj_def])
+     return getattr(module, obj_def)
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">75</td>
+        <td class="line_text">
+            <pre>    module = __import__(module_str, fromlist=[obj_def])</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:75
+@@ -72,7 +72,7 @@
+     parts = object_to_import.split(&#34;.&#34;)
+     module_str = &#34;.&#34;.join(parts[:-1])
+     obj_def = parts[-1]
+-    module = __import__(module_str, fromlist=[obj_def])
++    module = None
+     return getattr(module, obj_def)
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">76</td>
+        <td class="line_text">
+            <pre>    return getattr(module, obj_def)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:76
+@@ -73,7 +73,7 @@
+     module_str = &#34;.&#34;.join(parts[:-1])
+     obj_def = parts[-1]
+     module = __import__(module_str, fromlist=[obj_def])
+-    return getattr(module, obj_def)
++    return None
+ 
+ 
+ def pprint_str(obj: Any) -&gt; str:  # noqa: ANN401
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:76
+@@ -73,7 +73,7 @@
+     module_str = &#34;.&#34;.join(parts[:-1])
+     obj_def = parts[-1]
+     module = __import__(module_str, fromlist=[obj_def])
+-    return getattr(module, obj_def)
++    return None
+ 
+ 
+ def pprint_str(obj: Any) -&gt; str:  # noqa: ANN401
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">77</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">78</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">79</td>
+        <td class="line_text">
+            <pre>def pprint_str(obj: Any) -&gt; str:  # noqa: ANN401</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">80</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Pretty Print an object to a string.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">81</td>
+        <td class="line_text">
+            <pre>    out = StringIO()</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:81
+@@ -78,7 +78,7 @@
+ 
+ def pprint_str(obj: Any) -&gt; str:  # noqa: ANN401
+     &#34;&#34;&#34;Pretty Print an object to a string.&#34;&#34;&#34;
+-    out = StringIO()
++    out = None
+     pprint(obj, stream=out, width=150)  # noqa: T203
+     return out.getvalue()
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">82</td>
+        <td class="line_text">
+            <pre>    pprint(obj, stream=out, width=150)  # noqa: T203</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:82
+@@ -79,7 +79,7 @@
+ def pprint_str(obj: Any) -&gt; str:  # noqa: ANN401
+     &#34;&#34;&#34;Pretty Print an object to a string.&#34;&#34;&#34;
+     out = StringIO()
+-    pprint(obj, stream=out, width=150)  # noqa: T203
++    pprint(obj, stream=out, width=151)  # noqa: T203
+     return out.getvalue()
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:82
+@@ -79,7 +79,7 @@
+ def pprint_str(obj: Any) -&gt; str:  # noqa: ANN401
+     &#34;&#34;&#34;Pretty Print an object to a string.&#34;&#34;&#34;
+     out = StringIO()
+-    pprint(obj, stream=out, width=150)  # noqa: T203
++    pprint(obj, stream=out, width=149)  # noqa: T203
+     return out.getvalue()
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:82
+@@ -79,7 +79,7 @@
+ def pprint_str(obj: Any) -&gt; str:  # noqa: ANN401
+     &#34;&#34;&#34;Pretty Print an object to a string.&#34;&#34;&#34;
+     out = StringIO()
+-    pprint(obj, stream=out, width=150)  # noqa: T203
++    None  # noqa: T203
+     return out.getvalue()
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">83</td>
+        <td class="line_text">
+            <pre>    return out.getvalue()</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:83
+@@ -80,7 +80,7 @@
+     &#34;&#34;&#34;Pretty Print an object to a string.&#34;&#34;&#34;
+     out = StringIO()
+     pprint(obj, stream=out, width=150)  # noqa: T203
+-    return out.getvalue()
++    return None
+ 
+ 
+ def calc_timeout(config: PoodleConfig, clean_run_results: dict[pathlib.Path, MutantTrial]) -&gt; float:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:83
+@@ -80,7 +80,7 @@
+     &#34;&#34;&#34;Pretty Print an object to a string.&#34;&#34;&#34;
+     out = StringIO()
+     pprint(obj, stream=out, width=150)  # noqa: T203
+-    return out.getvalue()
++    return None
+ 
+ 
+ def calc_timeout(config: PoodleConfig, clean_run_results: dict[pathlib.Path, MutantTrial]) -&gt; float:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">84</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">85</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">86</td>
+        <td class="line_text">
+            <pre>def calc_timeout(config: PoodleConfig, clean_run_results: dict[pathlib.Path, MutantTrial]) -&gt; float:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">87</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Determine timeout value to use in runner.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">88</td>
+        <td class="line_text">
+            <pre>    max_clean_run = max([trial.duration for trial in clean_run_results.values()])</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:88
+@@ -85,7 +85,7 @@
+ 
+ def calc_timeout(config: PoodleConfig, clean_run_results: dict[pathlib.Path, MutantTrial]) -&gt; float:
+     &#34;&#34;&#34;Determine timeout value to use in runner.&#34;&#34;&#34;
+-    max_clean_run = max([trial.duration for trial in clean_run_results.values()])
++    max_clean_run = None
+     return max(float(max_clean_run) * config.timeout_multiplier, config.min_timeout)
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">89</td>
+        <td class="line_text">
+            <pre>    return max(float(max_clean_run) * config.timeout_multiplier, config.min_timeout)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:89
+@@ -86,7 +86,7 @@
+ def calc_timeout(config: PoodleConfig, clean_run_results: dict[pathlib.Path, MutantTrial]) -&gt; float:
+     &#34;&#34;&#34;Determine timeout value to use in runner.&#34;&#34;&#34;
+     max_clean_run = max([trial.duration for trial in clean_run_results.values()])
+-    return max(float(max_clean_run) * config.timeout_multiplier, config.min_timeout)
++    return max(float(max_clean_run) / config.timeout_multiplier, config.min_timeout)
+ 
+ 
+ def mutate_lines(mutant: Mutant, file_lines: list[str]) -&gt; list[str]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:89
+@@ -86,7 +86,7 @@
+ def calc_timeout(config: PoodleConfig, clean_run_results: dict[pathlib.Path, MutantTrial]) -&gt; float:
+     &#34;&#34;&#34;Determine timeout value to use in runner.&#34;&#34;&#34;
+     max_clean_run = max([trial.duration for trial in clean_run_results.values()])
+-    return max(float(max_clean_run) * config.timeout_multiplier, config.min_timeout)
++    return max(float(max_clean_run) + config.timeout_multiplier, config.min_timeout)
+ 
+ 
+ def mutate_lines(mutant: Mutant, file_lines: list[str]) -&gt; list[str]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:89
+@@ -86,7 +86,7 @@
+ def calc_timeout(config: PoodleConfig, clean_run_results: dict[pathlib.Path, MutantTrial]) -&gt; float:
+     &#34;&#34;&#34;Determine timeout value to use in runner.&#34;&#34;&#34;
+     max_clean_run = max([trial.duration for trial in clean_run_results.values()])
+-    return max(float(max_clean_run) * config.timeout_multiplier, config.min_timeout)
++    return None
+ 
+ 
+ def mutate_lines(mutant: Mutant, file_lines: list[str]) -&gt; list[str]:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:89
+@@ -86,7 +86,7 @@
+ def calc_timeout(config: PoodleConfig, clean_run_results: dict[pathlib.Path, MutantTrial]) -&gt; float:
+     &#34;&#34;&#34;Determine timeout value to use in runner.&#34;&#34;&#34;
+     max_clean_run = max([trial.duration for trial in clean_run_results.values()])
+-    return max(float(max_clean_run) * config.timeout_multiplier, config.min_timeout)
++    return None
+ 
+ 
+ def mutate_lines(mutant: Mutant, file_lines: list[str]) -&gt; list[str]:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">90</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">91</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">92</td>
+        <td class="line_text">
+            <pre>def mutate_lines(mutant: Mutant, file_lines: list[str]) -&gt; list[str]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">93</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Apply mutation to list of lines from file.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">94</td>
+        <td class="line_text">
+            <pre>    mut_lines = deepcopy(file_lines)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:94
+@@ -91,7 +91,7 @@
+ 
+ def mutate_lines(mutant: Mutant, file_lines: list[str]) -&gt; list[str]:
+     &#34;&#34;&#34;Apply mutation to list of lines from file.&#34;&#34;&#34;
+-    mut_lines = deepcopy(file_lines)
++    mut_lines = None
+     prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
+     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">95</td>
+        <td class="line_text">
+            <pre>    prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:95
+@@ -92,7 +92,7 @@
+ def mutate_lines(mutant: Mutant, file_lines: list[str]) -&gt; list[str]:
+     &#34;&#34;&#34;Apply mutation to list of lines from file.&#34;&#34;&#34;
+     mut_lines = deepcopy(file_lines)
+-    prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
++    prefix = mut_lines[mutant.lineno + 1][: mutant.col_offset]
+     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+ 
+     mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:95
+@@ -92,7 +92,7 @@
+ def mutate_lines(mutant: Mutant, file_lines: list[str]) -&gt; list[str]:
+     &#34;&#34;&#34;Apply mutation to list of lines from file.&#34;&#34;&#34;
+     mut_lines = deepcopy(file_lines)
+-    prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
++    prefix = mut_lines[mutant.lineno / 1][: mutant.col_offset]
+     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+ 
+     mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:95
+@@ -92,7 +92,7 @@
+ def mutate_lines(mutant: Mutant, file_lines: list[str]) -&gt; list[str]:
+     &#34;&#34;&#34;Apply mutation to list of lines from file.&#34;&#34;&#34;
+     mut_lines = deepcopy(file_lines)
+-    prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
++    prefix = mut_lines[mutant.lineno - 2][: mutant.col_offset]
+     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+ 
+     mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:95
+@@ -92,7 +92,7 @@
+ def mutate_lines(mutant: Mutant, file_lines: list[str]) -&gt; list[str]:
+     &#34;&#34;&#34;Apply mutation to list of lines from file.&#34;&#34;&#34;
+     mut_lines = deepcopy(file_lines)
+-    prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
++    prefix = mut_lines[mutant.lineno - 0][: mutant.col_offset]
+     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+ 
+     mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:95
+@@ -92,7 +92,7 @@
+ def mutate_lines(mutant: Mutant, file_lines: list[str]) -&gt; list[str]:
+     &#34;&#34;&#34;Apply mutation to list of lines from file.&#34;&#34;&#34;
+     mut_lines = deepcopy(file_lines)
+-    prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
++    prefix = None
+     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+ 
+     mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">96</td>
+        <td class="line_text">
+            <pre>    suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:96
+@@ -93,7 +93,7 @@
+     &#34;&#34;&#34;Apply mutation to list of lines from file.&#34;&#34;&#34;
+     mut_lines = deepcopy(file_lines)
+     prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
+-    suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
++    suffix = mut_lines[mutant.end_lineno + 1][mutant.end_col_offset :]
+ 
+     mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
+     for _ in range(mutant.lineno, mutant.end_lineno):
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:96
+@@ -93,7 +93,7 @@
+     &#34;&#34;&#34;Apply mutation to list of lines from file.&#34;&#34;&#34;
+     mut_lines = deepcopy(file_lines)
+     prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
+-    suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
++    suffix = mut_lines[mutant.end_lineno / 1][mutant.end_col_offset :]
+ 
+     mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
+     for _ in range(mutant.lineno, mutant.end_lineno):
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:96
+@@ -93,7 +93,7 @@
+     &#34;&#34;&#34;Apply mutation to list of lines from file.&#34;&#34;&#34;
+     mut_lines = deepcopy(file_lines)
+     prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
+-    suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
++    suffix = mut_lines[mutant.end_lineno - 2][mutant.end_col_offset :]
+ 
+     mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
+     for _ in range(mutant.lineno, mutant.end_lineno):
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:96
+@@ -93,7 +93,7 @@
+     &#34;&#34;&#34;Apply mutation to list of lines from file.&#34;&#34;&#34;
+     mut_lines = deepcopy(file_lines)
+     prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
+-    suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
++    suffix = mut_lines[mutant.end_lineno - 0][mutant.end_col_offset :]
+ 
+     mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
+     for _ in range(mutant.lineno, mutant.end_lineno):
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:96
+@@ -93,7 +93,7 @@
+     &#34;&#34;&#34;Apply mutation to list of lines from file.&#34;&#34;&#34;
+     mut_lines = deepcopy(file_lines)
+     prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
+-    suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
++    suffix = None
+ 
+     mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
+     for _ in range(mutant.lineno, mutant.end_lineno):
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">97</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">98</td>
+        <td class="line_text">
+            <pre>    mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:98
+@@ -95,7 +95,7 @@
+     prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
+     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+ 
+-    mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
++    mut_lines[mutant.lineno + 1] = prefix + mutant.text + suffix
+     for _ in range(mutant.lineno, mutant.end_lineno):
+         mut_lines.pop(mutant.lineno)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:98
+@@ -95,7 +95,7 @@
+     prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
+     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+ 
+-    mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
++    mut_lines[mutant.lineno / 1] = prefix + mutant.text + suffix
+     for _ in range(mutant.lineno, mutant.end_lineno):
+         mut_lines.pop(mutant.lineno)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:98
+@@ -95,7 +95,7 @@
+     prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
+     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+ 
+-    mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
++    mut_lines[mutant.lineno - 1] = prefix + mutant.text - suffix
+     for _ in range(mutant.lineno, mutant.end_lineno):
+         mut_lines.pop(mutant.lineno)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:98
+@@ -95,7 +95,7 @@
+     prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
+     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+ 
+-    mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
++    mut_lines[mutant.lineno - 1] = (prefix + mutant.text) * suffix
+     for _ in range(mutant.lineno, mutant.end_lineno):
+         mut_lines.pop(mutant.lineno)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:98
+@@ -95,7 +95,7 @@
+     prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
+     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+ 
+-    mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
++    mut_lines[mutant.lineno - 2] = prefix + mutant.text + suffix
+     for _ in range(mutant.lineno, mutant.end_lineno):
+         mut_lines.pop(mutant.lineno)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:98
+@@ -95,7 +95,7 @@
+     prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
+     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+ 
+-    mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
++    mut_lines[mutant.lineno - 0] = prefix + mutant.text + suffix
+     for _ in range(mutant.lineno, mutant.end_lineno):
+         mut_lines.pop(mutant.lineno)
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:98
+@@ -95,7 +95,7 @@
+     prefix = mut_lines[mutant.lineno - 1][: mutant.col_offset]
+     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+ 
+-    mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
++    None = prefix + mutant.text + suffix
+     for _ in range(mutant.lineno, mutant.end_lineno):
+         mut_lines.pop(mutant.lineno)
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">99</td>
+        <td class="line_text">
+            <pre>    for _ in range(mutant.lineno, mutant.end_lineno):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:99
+@@ -96,7 +96,7 @@
+     suffix = mut_lines[mutant.end_lineno - 1][mutant.end_col_offset :]
+ 
+     mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
+-    for _ in range(mutant.lineno, mutant.end_lineno):
++    for _ in None:
+         mut_lines.pop(mutant.lineno)
+ 
+     return mut_lines
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">100</td>
+        <td class="line_text">
+            <pre>        mut_lines.pop(mutant.lineno)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:100
+@@ -97,7 +97,7 @@
+ 
+     mut_lines[mutant.lineno - 1] = prefix + mutant.text + suffix
+     for _ in range(mutant.lineno, mutant.end_lineno):
+-        mut_lines.pop(mutant.lineno)
++        None
+ 
+     return mut_lines
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">101</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">102</td>
+        <td class="line_text">
+            <pre>    return mut_lines</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:102
+@@ -99,7 +99,7 @@
+     for _ in range(mutant.lineno, mutant.end_lineno):
+         mut_lines.pop(mutant.lineno)
+ 
+-    return mut_lines
++    return None
+ 
+ 
+ def create_unified_diff(mutant: Mutant) -&gt; str | None:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">103</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">104</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">105</td>
+        <td class="line_text">
+            <pre>def create_unified_diff(mutant: Mutant) -&gt; str | None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">106</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Add unified diff to mutant.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">107</td>
+        <td class="line_text">
+            <pre>    if mutant.source_file:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  partial_found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">108</td>
+        <td class="line_text">
+            <pre>        file_lines = mutant.source_file.read_text(&#34;utf-8&#34;).splitlines(keepends=True)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  not_found ">
+    <p><span class="label">Status:</span> Mutant Not Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:108
+@@ -105,7 +105,7 @@
+ def create_unified_diff(mutant: Mutant) -&gt; str | None:
+     &#34;&#34;&#34;Add unified diff to mutant.&#34;&#34;&#34;
+     if mutant.source_file:
+-        file_lines = mutant.source_file.read_text(&#34;utf-8&#34;).splitlines(keepends=True)
++        file_lines = mutant.source_file.read_text(&#34;utf-8&#34;).splitlines(keepends=False)
+         file_name = str(mutant.source_file)
+         return &#34;&#34;.join(
+             difflib.unified_diff(
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  not_found ">
+    <p><span class="label">Status:</span> Mutant Not Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:108
+@@ -105,7 +105,7 @@
+ def create_unified_diff(mutant: Mutant) -&gt; str | None:
+     &#34;&#34;&#34;Add unified diff to mutant.&#34;&#34;&#34;
+     if mutant.source_file:
+-        file_lines = mutant.source_file.read_text(&#34;utf-8&#34;).splitlines(keepends=True)
++        file_lines = mutant.source_file.read_text(&#39;XXutf-8XX&#39;).splitlines(keepends=True)
+         file_name = str(mutant.source_file)
+         return &#34;&#34;.join(
+             difflib.unified_diff(
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:108
+@@ -105,7 +105,7 @@
+ def create_unified_diff(mutant: Mutant) -&gt; str | None:
+     &#34;&#34;&#34;Add unified diff to mutant.&#34;&#34;&#34;
+     if mutant.source_file:
+-        file_lines = mutant.source_file.read_text(&#34;utf-8&#34;).splitlines(keepends=True)
++        file_lines = None
+         file_name = str(mutant.source_file)
+         return &#34;&#34;.join(
+             difflib.unified_diff(
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">109</td>
+        <td class="line_text">
+            <pre>        file_name = str(mutant.source_file)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:109
+@@ -106,7 +106,7 @@
+     &#34;&#34;&#34;Add unified diff to mutant.&#34;&#34;&#34;
+     if mutant.source_file:
+         file_lines = mutant.source_file.read_text(&#34;utf-8&#34;).splitlines(keepends=True)
+-        file_name = str(mutant.source_file)
++        file_name = None
+         return &#34;&#34;.join(
+             difflib.unified_diff(
+                 a=file_lines,
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">110</td>
+        <td class="line_text">
+            <pre>        return &#34;&#34;.join(</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:110
+@@ -107,7 +107,7 @@
+     if mutant.source_file:
+         file_lines = mutant.source_file.read_text(&#34;utf-8&#34;).splitlines(keepends=True)
+         file_name = str(mutant.source_file)
+-        return &#34;&#34;.join(
++        return &#39;XXXX&#39;.join(
+             difflib.unified_diff(
+                 a=file_lines,
+                 b=mutate_lines(mutant, file_lines),
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:110
+@@ -107,14 +107,7 @@
+     if mutant.source_file:
+         file_lines = mutant.source_file.read_text(&#34;utf-8&#34;).splitlines(keepends=True)
+         file_name = str(mutant.source_file)
+-        return &#34;&#34;.join(
+-            difflib.unified_diff(
+-                a=file_lines,
+-                b=mutate_lines(mutant, file_lines),
+-                fromfile=file_name,
+-                tofile=f&#34;[Mutant] {file_name}:{mutant.lineno}&#34;,
+-            )
+-        )
++        return None
+     return None
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:110
+@@ -107,14 +107,7 @@
+     if mutant.source_file:
+         file_lines = mutant.source_file.read_text(&#34;utf-8&#34;).splitlines(keepends=True)
+         file_name = str(mutant.source_file)
+-        return &#34;&#34;.join(
+-            difflib.unified_diff(
+-                a=file_lines,
+-                b=mutate_lines(mutant, file_lines),
+-                fromfile=file_name,
+-                tofile=f&#34;[Mutant] {file_name}:{mutant.lineno}&#34;,
+-            )
+-        )
++        return None
+     return None
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">111</td>
+        <td class="line_text">
+            <pre>            difflib.unified_diff(</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">112</td>
+        <td class="line_text">
+            <pre>                a=file_lines,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">113</td>
+        <td class="line_text">
+            <pre>                b=mutate_lines(mutant, file_lines),</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">114</td>
+        <td class="line_text">
+            <pre>                fromfile=file_name,</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">115</td>
+        <td class="line_text">
+            <pre>                tofile=f&#34;[Mutant] {file_name}:{mutant.lineno}&#34;,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:115
+@@ -112,7 +112,7 @@
+                 a=file_lines,
+                 b=mutate_lines(mutant, file_lines),
+                 fromfile=file_name,
+-                tofile=f&#34;[Mutant] {file_name}:{mutant.lineno}&#34;,
++                tofile=f&#34;&#39;XX[Mutant] XX&#39;{file_name}:{mutant.lineno}&#34;,
+             )
+         )
+     return None
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:115
+@@ -112,7 +112,7 @@
+                 a=file_lines,
+                 b=mutate_lines(mutant, file_lines),
+                 fromfile=file_name,
+-                tofile=f&#34;[Mutant] {file_name}:{mutant.lineno}&#34;,
++                tofile=f&#34;[Mutant] {file_name}&#39;XX:XX&#39;{mutant.lineno}&#34;,
+             )
+         )
+     return None
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">116</td>
+        <td class="line_text">
+            <pre>            )</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">117</td>
+        <td class="line_text">
+            <pre>        )</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">118</td>
+        <td class="line_text">
+            <pre>    return None</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:118
+@@ -115,7 +115,7 @@
+                 tofile=f&#34;[Mutant] {file_name}:{mutant.lineno}&#34;,
+             )
+         )
+-    return None
++    return &#39; &#39;
+ 
+ 
+ def to_json(obj: PoodleSerialize, indent: int | str | None = None) -&gt; str:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:118
+@@ -115,7 +115,7 @@
+                 tofile=f&#34;[Mutant] {file_name}:{mutant.lineno}&#34;,
+             )
+         )
+-    return None
++    return &#39;&#39;
+ 
+ 
+ def to_json(obj: PoodleSerialize, indent: int | str | None = None) -&gt; str:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">119</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">120</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">121</td>
+        <td class="line_text">
+            <pre>def to_json(obj: PoodleSerialize, indent: int | str | None = None) -&gt; str:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:121
+@@ -118,7 +118,7 @@
+     return None
+ 
+ 
+-def to_json(obj: PoodleSerialize, indent: int | str | None = None) -&gt; str:
++def to_json(obj: PoodleSerialize, indent: int | str | None = &#39; &#39;) -&gt; str:
+     &#34;&#34;&#34;Convert dataclass to json string.&#34;&#34;&#34;
+     return json.dumps(obj, indent=indent, default=lambda x: x.to_dict())
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">122</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Convert dataclass to json string.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">123</td>
+        <td class="line_text">
+            <pre>    return json.dumps(obj, indent=indent, default=lambda x: x.to_dict())</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:123
+@@ -120,7 +120,7 @@
+ 
+ def to_json(obj: PoodleSerialize, indent: int | str | None = None) -&gt; str:
+     &#34;&#34;&#34;Convert dataclass to json string.&#34;&#34;&#34;
+-    return json.dumps(obj, indent=indent, default=lambda x: x.to_dict())
++    return None
+ 
+ 
+ def from_json(data: str, datatype: type[PoodleSerialize]) -&gt; PoodleSerialize:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Lambda</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:123
+@@ -120,7 +120,7 @@
+ 
+ def to_json(obj: PoodleSerialize, indent: int | str | None = None) -&gt; str:
+     &#34;&#34;&#34;Convert dataclass to json string.&#34;&#34;&#34;
+-    return json.dumps(obj, indent=indent, default=lambda x: x.to_dict())
++    return json.dumps(obj, indent=indent, default=lambda x: None)
+ 
+ 
+ def from_json(data: str, datatype: type[PoodleSerialize]) -&gt; PoodleSerialize:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:123
+@@ -120,7 +120,7 @@
+ 
+ def to_json(obj: PoodleSerialize, indent: int | str | None = None) -&gt; str:
+     &#34;&#34;&#34;Convert dataclass to json string.&#34;&#34;&#34;
+-    return json.dumps(obj, indent=indent, default=lambda x: x.to_dict())
++    return None
+ 
+ 
+ def from_json(data: str, datatype: type[PoodleSerialize]) -&gt; PoodleSerialize:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">124</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">125</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">126</td>
+        <td class="line_text">
+            <pre>def from_json(data: str, datatype: type[PoodleSerialize]) -&gt; PoodleSerialize:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">127</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Convert json string to dataclass.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">128</td>
+        <td class="line_text">
+            <pre>    return datatype(**json.loads(data, object_hook=datatype.from_dict))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:128
+@@ -125,4 +125,4 @@
+ 
+ def from_json(data: str, datatype: type[PoodleSerialize]) -&gt; PoodleSerialize:
+     &#34;&#34;&#34;Convert json string to dataclass.&#34;&#34;&#34;
+-    return datatype(**json.loads(data, object_hook=datatype.from_dict))
++    return None
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\util.py
++++ [Mutant] src\poodle\util.py:128
+@@ -125,4 +125,4 @@
+ 
+ def from_json(data: str, datatype: type[PoodleSerialize]) -&gt; PoodleSerialize:
+     &#34;&#34;&#34;Convert json string to dataclass.&#34;&#34;&#34;
+-    return datatype(**json.loads(data, object_hook=datatype.from_dict))
++    return None
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+</table>
+
+    </main>
+    <footer>
+        
+        <p>Generated by <a href="http://poodle.rtfd.io" class="nav">Poodle</a> version 1.2.0 at 2023-12-29 20:42:38-0600</p>
+        
+    </footer>
+    
+
+    <script type="text/javascript" src="html-report.js"></script>
+    
+<script>addShowHideEventListeners();</script>
+
+</body>
+
+</html>

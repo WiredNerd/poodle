@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Module Source: src\poodle\report.py</title>
+    <link rel="stylesheet" type="text/css" href="html-report.css" />
+    <link rel="icon" href="poodle.ico" type="image/x-icon" />
+    
+</head>
+
+<body>
+    <header>
+        
+
+        <h1>Module Source: src\poodle\report.py</h1>
+        
+        <span class="subtitle"><span class="label">Project:</span> poodle
+             version 1.2.0 </span>
+        
+        
+&nbsp;&nbsp;<a href="index.html" class="subtitle">&lt;Index</a>
+<div class="subtitle">
+<span class="label">Mutants:</span> 10,
+<span class="label">Found:</span> 10,
+<span class="label">Not Found:</span> 0,
+<span class="label">Timeout:</span> 0,
+<span class="label">Error:</span> 0
+</div>
+<div class="subtitle">
+<span class="label">Module Score:</span> 100.00%
+</div>
+
+    </header>
+    <main>
+        
+<table class="source">
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">1</td>
+        <td class="line_text">
+            <pre>&#34;&#34;&#34;Report Testing Results.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">2</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">3</td>
+        <td class="line_text">
+            <pre>from __future__ import annotations</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">4</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">5</td>
+        <td class="line_text">
+            <pre>import logging</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">6</td>
+        <td class="line_text">
+            <pre>from typing import TYPE_CHECKING, Any, Callable</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">7</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">8</td>
+        <td class="line_text">
+            <pre>from .reporters import report_html, report_json, report_not_found, report_summary</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">9</td>
+        <td class="line_text">
+            <pre>from .util import dynamic_import</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">10</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">11</td>
+        <td class="line_text">
+            <pre>if TYPE_CHECKING:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">12</td>
+        <td class="line_text">
+            <pre>    from collections.abc import Generator</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">13</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">14</td>
+        <td class="line_text">
+            <pre>    from .data_types import PoodleConfig</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">15</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">16</td>
+        <td class="line_text">
+            <pre>logger = logging.getLogger(__name__)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\report.py
++++ [Mutant] src\poodle\report.py:16
+@@ -13,7 +13,7 @@
+ 
+     from .data_types import PoodleConfig
+ 
+-logger = logging.getLogger(__name__)
++logger = None
+ 
+ builtin_reporters: dict[str, Callable] = {
+     &#34;summary&#34;: report_summary,
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">17</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">18</td>
+        <td class="line_text">
+            <pre>builtin_reporters: dict[str, Callable] = {</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">19</td>
+        <td class="line_text">
+            <pre>    &#34;summary&#34;: report_summary,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\report.py
++++ [Mutant] src\poodle\report.py:19
+@@ -16,7 +16,7 @@
+ logger = logging.getLogger(__name__)
+ 
+ builtin_reporters: dict[str, Callable] = {
+-    &#34;summary&#34;: report_summary,
++    &#39;XXsummaryXX&#39;: report_summary,
+     &#34;not_found&#34;: report_not_found,
+     &#34;json&#34;: report_json,
+     &#34;html&#34;: report_html,
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">20</td>
+        <td class="line_text">
+            <pre>    &#34;not_found&#34;: report_not_found,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\report.py
++++ [Mutant] src\poodle\report.py:20
+@@ -17,7 +17,7 @@
+ 
+ builtin_reporters: dict[str, Callable] = {
+     &#34;summary&#34;: report_summary,
+-    &#34;not_found&#34;: report_not_found,
++    &#39;XXnot_foundXX&#39;: report_not_found,
+     &#34;json&#34;: report_json,
+     &#34;html&#34;: report_html,
+ }
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">21</td>
+        <td class="line_text">
+            <pre>    &#34;json&#34;: report_json,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\report.py
++++ [Mutant] src\poodle\report.py:21
+@@ -18,7 +18,7 @@
+ builtin_reporters: dict[str, Callable] = {
+     &#34;summary&#34;: report_summary,
+     &#34;not_found&#34;: report_not_found,
+-    &#34;json&#34;: report_json,
++    &#39;XXjsonXX&#39;: report_json,
+     &#34;html&#34;: report_html,
+ }
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">22</td>
+        <td class="line_text">
+            <pre>    &#34;html&#34;: report_html,</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\report.py
++++ [Mutant] src\poodle\report.py:22
+@@ -19,7 +19,7 @@
+     &#34;summary&#34;: report_summary,
+     &#34;not_found&#34;: report_not_found,
+     &#34;json&#34;: report_json,
+-    &#34;html&#34;: report_html,
++    &#39;XXhtmlXX&#39;: report_html,
+ }
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">23</td>
+        <td class="line_text">
+            <pre>}</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">24</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">25</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">26</td>
+        <td class="line_text">
+            <pre>def generate_reporters(config: PoodleConfig) -&gt; Generator[Callable, Any, None]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">27</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Build list of reporter functions.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">28</td>
+        <td class="line_text">
+            <pre>    logger.debug(&#34;Reporters: %s&#34;, config.reporters)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\report.py
++++ [Mutant] src\poodle\report.py:28
+@@ -25,7 +25,7 @@
+ 
+ def generate_reporters(config: PoodleConfig) -&gt; Generator[Callable, Any, None]:
+     &#34;&#34;&#34;Build list of reporter functions.&#34;&#34;&#34;
+-    logger.debug(&#34;Reporters: %s&#34;, config.reporters)
++    logger.debug(&#39;XXReporters: %sXX&#39;, config.reporters)
+ 
+     if config.reporters:
+         for reporter_name in config.reporters:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\report.py
++++ [Mutant] src\poodle\report.py:28
+@@ -25,7 +25,7 @@
+ 
+ def generate_reporters(config: PoodleConfig) -&gt; Generator[Callable, Any, None]:
+     &#34;&#34;&#34;Build list of reporter functions.&#34;&#34;&#34;
+-    logger.debug(&#34;Reporters: %s&#34;, config.reporters)
++    None
+ 
+     if config.reporters:
+         for reporter_name in config.reporters:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">29</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">30</td>
+        <td class="line_text">
+            <pre>    if config.reporters:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">31</td>
+        <td class="line_text">
+            <pre>        for reporter_name in config.reporters:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">32</td>
+        <td class="line_text">
+            <pre>            if reporter_name in builtin_reporters:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\report.py
++++ [Mutant] src\poodle\report.py:32
+@@ -29,7 +29,7 @@
+ 
+     if config.reporters:
+         for reporter_name in config.reporters:
+-            if reporter_name in builtin_reporters:
++            if reporter_name not in builtin_reporters:
+                 yield builtin_reporters[reporter_name]
+             else:
+                 yield dynamic_import(reporter_name)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">33</td>
+        <td class="line_text">
+            <pre>                yield builtin_reporters[reporter_name]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> DictArray</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\report.py
++++ [Mutant] src\poodle\report.py:33
+@@ -30,6 +30,6 @@
+     if config.reporters:
+         for reporter_name in config.reporters:
+             if reporter_name in builtin_reporters:
+-                yield builtin_reporters[reporter_name]
++                yield None
+             else:
+                 yield dynamic_import(reporter_name)
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">34</td>
+        <td class="line_text">
+            <pre>            else:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">35</td>
+        <td class="line_text">
+            <pre>                yield dynamic_import(reporter_name)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\report.py
++++ [Mutant] src\poodle\report.py:35
+@@ -32,4 +32,4 @@
+             if reporter_name in builtin_reporters:
+                 yield builtin_reporters[reporter_name]
+             else:
+-                yield dynamic_import(reporter_name)
++                yield None
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+</table>
+
+    </main>
+    <footer>
+        
+        <p>Generated by <a href="http://poodle.rtfd.io" class="nav">Poodle</a> version 1.2.0 at 2023-12-29 20:42:38-0600</p>
+        
+    </footer>
+    
+
+    <script type="text/javascript" src="html-report.js"></script>
+    
+<script>addShowHideEventListeners();</script>
+
+</body>
+
+</html>

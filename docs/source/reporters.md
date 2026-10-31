@@ -1,6 +1,7 @@
 # Poodle's Reporters
 
-```text
+```{code-block} text
+:class: .no-copybutton
            ^\               ARF!    |\|\
  /        //o__o     ARF!          ..    \       .
 /\       /  __/           ARF!   o--     \\    / @)
@@ -10,10 +11,28 @@
    \_\_   \_\_   ARF!     ARF!       <_|      <_|
 ```
 
+```{toctree}
+:hidden:
+
+reporter_json_example.md
+```
+
 ## Builtin Reporter Names
 
-* "summary": [Summary Reporter](#summary-reporter)
-* "not_found": [Not Found Reporter](#not-found-reporter)
+:::{list-table}
+:header-rows: 0
+:align: left
+
+* - summary
+  - [Summary Reporter](#summary-reporter)
+* - not_found
+  - [Not Found Reporter](#not-found-reporter)
+* - json
+  - [JSON Reporter](#json-reporter)
+* - html
+  - [HTML Reporter](#html-reporter)
+
+:::
 
 ## Summary Reporter
 
@@ -64,7 +83,7 @@ If specified, not found report is printed to specified file instead of sysout.
 
 :::{tab-item} poodle_config.py
 ```python3
-runner_opts = {
+reporter_opts = {
   "not_found_file":"mutation-testing-report.txt",
 }
 ```
@@ -72,15 +91,300 @@ runner_opts = {
 
 :::{tab-item} poodle.toml
 ```toml
-[poodle.runner_opts]
+[poodle.reporter_opts]
 not_found_file = "mutation-testing-report.txt"
 ```
 :::
 
 :::{tab-item} pyproject.toml
 ```toml
-[tool.poodle.runner_opts]
+[tool.poodle.reporter_opts]
 not_found_file = "mutation-testing-report.txt"
+```
+:::
+
+::::
+
+## JSON Reporter
+
+This reporter will create a file with a JSON dump of the Test Summary data, along with information about selected Mutants.  This is most helpful when passing testing results to other processes, or if you'd like to query the results with tools like jq.  The json data can also be used to create a mutation coverage badge.
+
+[Example Report](reporter_json_example.md)
+
+JSON Structure:
+```json
+{
+  "mutant_trials": [
+    {
+      "mutant": {
+        "mutator_name": "",
+        "lineno": 0,
+        "col_offset": 0,
+        "end_lineno": 0,
+        "end_col_offset": 0,
+        "text": "",
+        "source_folder": "",
+        "source_file": "",
+        "unified_diff": ""
+      },
+      "result": {
+        "found": true,
+        "reason_code": "",
+        "reason_desc": ""
+      },
+      "duration": 0.0
+    }
+  ],
+  "summary": {
+    "trials": 0,
+    "tested": 0,
+    "found": 0,
+    "not_found": 0,
+    "timeout": 0,
+    "errors": 0,
+    "success_rate": 0.0,
+    "coverage_display": "0.00%"
+  }
+}  
+```
+
+### Options:
+
+#### json_include_summary
+
+If False, the "summary" section of the json is excluded.
+
+**Default:** True
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+reporter_opts = {
+  "json_include_summary":False,
+}
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle.reporter_opts]
+json_include_summary = false
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle.reporter_opts]
+json_include_summary = false
+```
+:::
+
+::::
+
+#### json_report_file
+
+Specifies which file to use for storing the testing report json.  
+
+If value is the string "sysout", json will be printed to sysout.
+
+**Default:** mutation-testing-report.json
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+reporter_opts = {
+  "json_report_file":"report.json",
+}
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle.reporter_opts]
+json_report_file = "report.json"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle.reporter_opts]
+json_report_file = "report.json"
+```
+:::
+
+::::
+
+#### json_report_found
+
+If False, the "mutant_trials" list will NOT include trials where "found" is true
+
+**Default:** False
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+reporter_opts = {
+  "json_report_found":True,
+}
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle.reporter_opts]
+json_report_found = true
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle.reporter_opts]
+json_report_found = true
+```
+:::
+
+::::
+
+### json_report_not_found
+
+If False, the "mutant_trials" list will NOT include trials where "found" is false
+
+**Default:** True
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+reporter_opts = {
+  "json_report_not_found":False,
+}
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle.reporter_opts]
+json_report_not_found = false
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle.reporter_opts]
+json_report_not_found = false
+```
+:::
+
+::::
+
+## HTML Reporter
+
+This reporter creates a set of HTML and related files in a folder.  These provide a summary of the mutation testing results, and statistics for each module tested.  It also lists all the mutants that were not found.  Finally, it creates pages for each module with the full source text and mutations applied to each line.
+
+[Example Report](relative:_static/mutation_reports/index.html) from Poodle version 1.2.0
+
+### Options:
+
+#### report_folder
+
+Folder where HTML report will be stored.
+
+**Default:** "mutation_reports"
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+reporter_opts = {
+  "html": {
+    "report_folder": "mutation_reports",
+  }
+}
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle.reporter_opts.html]
+report_folder = "mutation_reports"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle.reporter_opts.html]
+report_folder = "mutation_reports"
+```
+:::
+
+::::
+
+#### include_found_trials_on_index
+
+The main (index) page of the Mutation Coverage Report, includes a list of mutations that were not found in each module.  If this option is True, all found mutations will be included as well.
+
+**Default:** False
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+reporter_opts = {
+  "html": {
+    "include_found_trials_on_index": True,
+  }
+}
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle.reporter_opts.html]
+include_found_trials_on_index = true
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle.reporter_opts.html]
+include_found_trials_on_index = true
+```
+:::
+
+::::
+
+#### include_found_trials_with_source
+
+The HTML reporter generates a page for each module with source code, and all mutations.  If this option is set to false, mutations that were found are excluded.
+
+**Default:** True
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+reporter_opts = {
+  "html": {
+    "include_found_trials_with_source": False,
+  }
+}
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle.reporter_opts.html]
+include_found_trials_with_source = false
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle.reporter_opts.html]
+include_found_trials_with_source = false
 ```
 :::
 

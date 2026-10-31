@@ -1,6 +1,8 @@
 # Configuration Options
 
-```text
+```{code-block} text
+:class: .no-copybutton
+
               /\___/\              ,'.-.'.           .-"-.
               `)9 9('              '\~ o/`          /|6 6|\
               {_:Y:.}_              { @ }          {/(_0_)\}
@@ -21,31 +23,58 @@ Poodle will search for available configuration files, and use the first availabl
 
 ## Command Line
 
-```
+```{code-block} text
+:class: .no-copybutton
+
 Usage: poodle [OPTIONS] [SOURCES]...
 
   Poodle Mutation Test Tool.
 
 Options:
-  -c PATH         Configuration File.
-  -q              Quiet mode: q, qq, or qqq
-  -v              Verbose mode: v, vv, or vvv
-  -w INTEGER      Maximum number of parallel workers.
-  --exclude TEXT  Add a regex exclude file filter. Multiple allowed.
-  --only TEXT     Glob pattern for files to mutate. Multiple allowed.
-  --help          Show this message and exit.
+  -c PATH             Configuration File.
+  -q                  Quiet mode: q, qq, or qqq
+  -v                  Verbose mode: v, vv, or vvv
+  -w INTEGER          Maximum number of parallel workers.
+  --exclude TEXT      Add a glob exclude file filter. Multiple allowed.
+  --only TEXT         Glob pattern for files to mutate. Multiple allowed.
+  --report TEXT       Enable reporter by name. Multiple allowed.
+  --html PATH         Folder name to store HTML report in.
+  --json PATH         File to create with JSON report.
+  --fail_under FLOAT  Fail if mutation score is under this value.
+  --version           Show the version and exit.
+  --help              Show this message and exit.
 ```
 
 ### Command Line Options
 
-* SOURCES [source_folders](#source_folders)
-* -c [config_file](#config_file)
-* -q [Quiet](#quiet-or-verbose)
-* -v [Verbose](#quiet-or-verbose)
-* -w [max_workers](#max_workers)
-* --exclude [file_filters](#file_filters)
-* --only [only_files](#only_files)
+:::{list-table}
+:header-rows: 0
+:align: left
 
+* - SOURCES 
+  - [source_folders](#source_folders)
+* - -c 
+  - [config_file](#config_file)
+* - -q 
+  - [Quiet](#quiet-or-verbose)
+* - -v 
+  - [Verbose](#quiet-or-verbose)
+* - -w 
+  - [max_workers](#max_workers)
+* - --exclude 
+  - [file_filters](#file_filters)
+* - --only 
+  - [only_files](#only_files)
+* - --report 
+  - [report](#report)
+* - --html 
+  - [html](#html)
+* - --json 
+  - [json](#json)
+* - --fail_under 
+  - [fail_under](#fail_under)
+
+:::
 
 ### Quiet or Verbose
 
@@ -81,12 +110,133 @@ The -q and -v flags control how quiet or verbose poodle will be.  These flags in
   - `logging.NOTSET`
 :::
 
+### Report
+
+Add specified Reporter to the list of reporters to use.  This can be:
+* Name of a [Builtin Reporter](reporters.md)
+* String fully qualified name of the Mutator Class
+* String fully qualified name of the Mutator Function
+
+This option can be specified multiple times to add multiple reporters.  The reporters are added to the [reporters](#reporters) list
+
+::::{tab-set}
+
+:::{tab-item} Command Line
+```bash
+poodle --report=html --report=mypackage.myreporter
+```
+:::
+
+::::
+
+### HTML
+
+Enable the HTML reporter and save the report to the specified folder.
+
+::::{tab-set}
+
+:::{tab-item} Command Line
+```bash
+poodle --html mutation-report/html
+```
+:::
+
+::::
+
+### JSON
+
+Enable the JSON reporter and save the report to the specified file.
+
+::::{tab-set}
+
+:::{tab-item} Command Line
+```bash
+poodle --json mutation-report.json
+```
+:::
+
+::::
+
 ## OPTIONS
 
 Unless otherwise stated, options are chosen in this priority order:
 1. Command Line options
 2. Module poodle_config.py
 3. Chosen Configuration File
+
+### project_name
+
+Name of project being tested.  Used by reporters to include the project name in the report.
+
+If not specified, poodle will attempt to retrieve from project.name in pyproject.toml.
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+project_name = "myapp"
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+project_name = "myapp"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+project_name = "myapp"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[project]
+name = "myapp"
+```
+:::
+
+::::
+
+### project_version
+
+Version of project being tested.  Used by reporters to include the project version in the report.
+
+If not specified, poodle will attempt to retrieve from project.version in pyproject.toml.
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+project_version = "myapp"
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+project_version = "myapp"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+project_version = "myapp"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[project]
+version = "myapp"
+```
+:::
+
+::::
 
 ### config_file
 
@@ -688,8 +838,11 @@ operator_level = "min"
 
 #### Builtin mutator_opts
 
-* compare_filters: [ComparisonMutator](mutators.md#comparison-mutator)
-* operator_level: [OperationMutator](mutators.md#operator_level)
+Comparison Mutator:
+* [compare_filters](mutators.md#comparison-mutator)
+
+Operation Mutator:
+* [operator_level](mutators.md#operator_level)
 
 ### runner
 
@@ -737,7 +890,7 @@ runner = "poodle-ext.runners.cool_runner"
 
 This dict contains options that are used by various runners.  Options for builtin runners are listed below, and detailed on the Runner page.
 
-**Default:** `{"command_line": "pytest -x --assert=plain -o pythonpath="}`
+**Default:** `{}`
 
 ::::{tab-set}
 
@@ -774,8 +927,9 @@ RUN_MODE = "MUTATION"
 
 #### Builtin runner_opts
 
-* command_line: [Command Line Runner](runners.md#command_line)
-* command_line_env: [Command Line Runner](runners.md#command_line_env)
+Command Line Runner:
+* [command_line](runners.md#command_line)
+* [command_line_env](runners.md#command_line_env)
 
 ### min_timeout
 
@@ -871,7 +1025,7 @@ reporters = [
 :::{tab-item} poodle.toml
 ```toml
 [poodle]
-add_mutators = [
+reporters = [
     "summary",
     "poodle-ext.reporters.UploadToResultsServer",
     "poodle-ext.reporters.text_errors_file",
@@ -882,7 +1036,7 @@ add_mutators = [
 :::{tab-item} pyproject.toml
 ```toml
 [tool.poodle]
-add_mutators = [
+reporters = [
     "summary",
     "poodle-ext.reporters.UploadToResultsServer",
     "poodle-ext.reporters.text_errors_file",
@@ -924,4 +1078,58 @@ not_found_file = "mutants-not-found.txt"
 
 #### Builtin reporter_opts
 
-* not_found_file: [Not Found Reporter](reporters.md#not_found_file)
+Common:
+* [project_name](#project_name)
+* [project_version](#project_version)
+
+Not Found Reporter:
+* [not_found_file](reporters.md#not_found_file)
+
+JSON Reporter:
+* [json_include_summary](reporters.md#json_include_summary)
+* [json_report_file](reporters.md#json_report_file)
+* [json_report_found](reporters.md#json_report_found)
+* [json_report_not_found](reporters.md#json_report_not_found)
+
+HTML Reporter:
+* [report_folder](reporters.md#report_folder)
+* [include_found_trials_on_index](reporters.md#include_found_trials_on_index)
+* [include_found_trials_with_source](reporters.md#include_found_trials_with_source)
+
+### fail_under
+
+This option specifies a Mutation Score Goal for the project.  If the Mutation Score for this run of testing is under the fail_under value, poodle will output a message and end with a Return Code of 1.
+
+The fail_under value is expressed as a Percentage of Mutants found.  A value of `85.2` means that the goal is to find 85.2% of Mutants.
+
+**Default:** `None`
+
+::::{tab-set}
+
+:::{tab-item} Command Line
+```bash
+poodle --fail_under 85.2
+```
+:::
+
+:::{tab-item} poodle_config.py
+```python3
+fail_under = 85.2
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+fail_under = 85.2
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+fail_under = 85.2
+```
+:::
+
+::::
