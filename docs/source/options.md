@@ -130,6 +130,8 @@ Running each Trial consists of 3 steps:
 
 On POSIX systems the copy keeps each file's mode (an executable script stays executable, a read-only file is still mutated and stays read-only). On other platforms files are copied as before.
 
+On POSIX systems every symlink is copied as a symlink, and its target is never opened. A symlink whose target is inside the source folder points to the same file or directory in the copy, its target written as a relative path, so it never points into the source folder. Any other symlink, to a file, a directory or a missing target, keeps its target as an absolute path, so the copy reads what the source folder reads; a test writing through such a link writes the real target, outside the copy and outside its cleanup, and a link into another source folder reads that folder itself, not its copy. A mutated symlink becomes a regular file in its own trial.
+
 The list of source folders is a root folder that should be copied to a temporary location.
 
 Typically, this is a folder like 'src' or 'lib'.  But could be almost anything depending on your project structure.  
@@ -329,6 +331,8 @@ This option is to set the flags used when searching source folders for files cop
 Poodle uses glob matching from the [wcmatch](https://facelessuser.github.io/wcmatch/glob/) package for matching and filtering files.
 
 **Default:** `wcmatch.glob.GLOBSTAR | wcmatch.glob.NODIR`
+
+On POSIX systems `NODIR` and `FOLLOW` do not change how symlinks are copied: each symlink is listed as itself and never followed (see [source_folders](#source_folders)).
 
 ::::{tab-set}
 

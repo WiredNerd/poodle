@@ -5,7 +5,7 @@ import stat
 from concurrent.futures import Future
 from pathlib import Path
 from unittest import mock
-from zipfile import ZipFile
+from zipfile import ZipFile, ZipInfo
 
 import click
 import pytest
@@ -405,6 +405,31 @@ class TestRunMutantTrial:
 
         assert seen == {"text": "X = 2\n", "mode": 0o444}
         assert source_file.read_text("utf-8") == "X = 1\n"
+
+    @pytest.mark.skipif(os.name != "posix", reason="symlinks are reproduced on POSIX only")
+    @pytest.mark.usefixtures("mock_logger")
+    @mock.patch("poodle.run.logging", mock.MagicMock())
+    @mock.patch("poodle.run.mutate_lines")
+    def test_run_mutant_trial_link_file(self, mutate_lines, tmp_path, mock_echo):
+        folder_zip = tmp_path / "src.zip"
+        with ZipFile(folder_zip, "w") as zip_file:
+            zip_file.writestr("src/mod.py", "X = 1\n")
+            link = ZipInfo("src/alias.py")
+            link.external_attr = (stat.S_IFLNK | 0o777) << 16
+            zip_file.writestr(link, "mod.py")
+        mutate_lines.return_value = ["X = 2\n"]
+        config = PoodleConfigStub(work_folder=tmp_path, log_format="log_format", log_level="DEBUG")
+        seen = {}
+
+        def runner(run_folder, **_):
+            alias = run_folder / "src" / "alias.py"
+            seen["alias"] = (alias.is_symlink(), alias.read_text("utf-8"))
+            seen["mod"] = (run_folder / "src" / "mod.py").read_text("utf-8")
+
+        mutant = self.create_mutant(Path("src"), Path("src/alias.py"))
+        run.run_mutant_trial(config, mock_echo, folder_zip, mutant, "1", runner, 10)
+
+        assert seen == {"alias": (False, "X = 2\n"), "mod": "X = 1\n"}
 
     @mock.patch("poodle.run.logging")
     @mock.patch("poodle.run.ZipFile")
