@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 from unittest import mock
 
 from poodle.data_types.work import EchoWrapper, PoodleWork, logger

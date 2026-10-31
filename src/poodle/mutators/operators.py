@@ -1,11 +1,21 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 """Mutate Operators."""
 
 from __future__ import annotations
 
 import ast
-from typing import Callable, ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from poodle.data_types import FileMutation, Mutator, PoodleConfig
+
+if TYPE_CHECKING:
+    import sys
+
+    if sys.version_info < (3, 14):  # nomut
+        from typing import Callable  # noqa: UP035  # pragma: no cover
+    else:
+        from collections.abc import Callable
 
 
 class OperationMutator(ast.NodeVisitor, Mutator):

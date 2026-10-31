@@ -278,6 +278,10 @@ Running each Trial consists of 3 steps:
 2. Apply a single mutation to the copy of the source file.
 3. Run test suite with the temporary folder added to the python path.
 
+On POSIX systems the copy keeps each file's mode (an executable script stays executable, a read-only file is still mutated and stays read-only). On other platforms files are copied as before.
+
+On POSIX systems every symlink is copied as a symlink, and its target is never opened. A symlink whose target is inside the source folder points to the same file or directory in the copy, its target written as a relative path, so it never points into the source folder. Any other symlink, to a file, a directory or a missing target, keeps its target as an absolute path, so the copy reads what the source folder reads; a test writing through such a link writes the real target, outside the copy and outside its cleanup, and a link into another source folder reads that folder itself, not its copy. A mutated symlink becomes a regular file in its own trial.
+
 The list of source folders is a root folder that should be copied to a temporary location.
 
 Typically, this is a folder like 'src' or 'lib'.  But could be almost anything depending on your project structure.  
@@ -478,6 +482,8 @@ Poodle uses glob matching from the [wcmatch](https://facelessuser.github.io/wcma
 
 **Default:** `wcmatch.glob.GLOBSTAR | wcmatch.glob.NODIR`
 
+On POSIX systems `NODIR` and `FOLLOW` do not change how symlinks are copied: each symlink is listed as itself and never followed (see [source_folders](#source_folders)).
+
 ::::{tab-set}
 
 :::{tab-item} poodle_config.py
@@ -509,6 +515,45 @@ Recommend setting this value in poodle_config.py only.  It must resolve to an `i
 
 Setting this in toml has to be resolved int value of combining the flags.
 :::
+
+### file_copy_lister
+
+Fully qualified name of a function that lists the files of a source folder to copy to the temporary location, instead of searching with [file_copy_filters](#file_copy_filters) and [file_copy_flags](#file_copy_flags), which are then not used.
+
+The function is called once for each source folder, before any trial runs.  It receives the config and the source folder, and returns a list of file paths (no directories), each one starting with the source folder.
+
+This only changes which files are copied.  Files to mutate are still selected with [file_filters](#file_filters) and [file_flags](#file_flags), and a file to mutate must also be copied.
+
+**Default:** None
+
+::::{tab-set}
+
+:::{tab-item} poodle_config.py
+```python3
+file_copy_lister = "mypackage.listing.git_files"
+```
+:::
+
+:::{tab-item} poodle.toml
+```toml
+[poodle]
+file_copy_lister = "mypackage.listing.git_files"
+```
+:::
+
+:::{tab-item} pyproject.toml
+```toml
+[tool.poodle]
+file_copy_lister = "mypackage.listing.git_files"
+```
+:::
+
+::::
+
+```python3
+def git_files(config, folder, *_, **__):
+    ...
+```
 
 ### work_folder
 

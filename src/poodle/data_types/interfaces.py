@@ -1,15 +1,23 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 """Abstract Classes and Model functions for Mutators, Runners, and Reporters."""
 
 from __future__ import annotations
 
 import ast
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from .data import FileMutation, Mutant, MutantTrialResult, PoodleConfig, TestingResults
 
 if TYPE_CHECKING:
+    import sys
     from pathlib import Path
+
+    if sys.version_info < (3, 14):  # nomut
+        from typing import Callable  # noqa: UP035  # pragma: no cover
+    else:
+        from collections.abc import Callable
 
 
 def create_mutations(  # type: ignore [empty-body]
@@ -134,6 +142,19 @@ def runner(  # type: ignore [empty-body]
     """Run trial of mutant in specified folder.
 
     Files from the source folder have been copied to the run folder, and mutation has been applied.
+    """
+
+
+# file copy lister method signature:
+def file_copy_lister(  # type: ignore [empty-body]
+    config: PoodleConfig,
+    folder: Path,
+    *_,
+    **__,
+) -> list[Path]:
+    """List the files of a source folder to copy to each trial folder.
+
+    Each path starts with the folder, as the default glob listing returns them. Files only, no directories.
     """
 
 

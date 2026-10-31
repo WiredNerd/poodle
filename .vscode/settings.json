@@ -4,6 +4,11 @@
     "black-formatter.args": [
         "--line-length=120"
     ],
+    "black-formatter.path": [
+        "black"
+    ],
+    "black-formatter.importStrategy": "fromEnvironment",
+    "isort.importStrategy": "fromEnvironment",
     "isort.args": [
         "--profile=black",
         "--line-length=120"

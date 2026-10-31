@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import importlib
@@ -38,7 +40,7 @@ def test_defaults():
     assert config.default_source_folders == [Path("src"), Path("lib")]
 
     assert config.default_log_format == "%(levelname)s [%(process)d] %(name)s.%(funcName)s:%(lineno)d - %(message)s"
-    assert config.default_log_level == logging.WARN
+    assert config.default_log_level == logging.WARNING
 
     assert config.default_file_flags == glob.GLOBSTAR | glob.NODIR
     assert config.default_file_filters == ["test_*.py", "*_test.py", "poodle_config.py", "setup.py"]
@@ -308,6 +310,13 @@ class TestBuildConfig:
         )
 
     @pytest.mark.usefixtures("_setup_build_config_mocks")
+    def test_build_config_file_copy_lister(self, get_str_from_config, get_config_file_data):
+        config_file_data = get_config_file_data.return_value
+        config_data = self.build_config_with()
+        assert config_data.file_copy_lister == get_str_from_config.return_value
+        get_str_from_config.assert_any_call("file_copy_lister", config_file_data)
+
+    @pytest.mark.usefixtures("_setup_build_config_mocks")
     def test_build_config_work_folder(self, get_path_from_config, get_config_file_data):
         config_file_data = get_config_file_data.return_value
         config_data = self.build_config_with()
@@ -495,10 +504,11 @@ class TestBuildConfig:
             file_filters=config.default_file_filters,
             file_copy_flags=config.default_file_copy_flags,
             file_copy_filters=config.default_file_copy_filters,
+            file_copy_lister=None,
             work_folder=Path(".poodle-temp"),
             max_workers=config.default_max_workers(),
             log_format=config.default_log_format,
-            log_level=logging.WARN,
+            log_level=logging.WARNING,
             echo_enabled=True,
             echo_no_color=None,
             mutator_opts={},
@@ -563,11 +573,11 @@ class TestGetCommandLineLoggingOptions:
         ("cmd_quiet", "cmd_verbose", "expected"),
         [
             (0, 0, None),
-            (1, 0, logging.WARN),
+            (1, 0, logging.WARNING),
             (2, 0, logging.ERROR),
             (3, 0, logging.CRITICAL),
             (4, 0, logging.CRITICAL),
-            (1, 1, logging.WARN),
+            (1, 1, logging.WARNING),
             (0, 1, logging.INFO),
             (0, 2, logging.DEBUG),
             (0, 3, logging.NOTSET),

@@ -1,17 +1,26 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 """Report Testing Results."""
 
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 from .reporters import report_html, report_json, report_not_found, report_summary
 from .util import dynamic_import
 
 if TYPE_CHECKING:
+    import sys
     from collections.abc import Generator
 
     from .data_types import PoodleConfig
+
+    if sys.version_info < (3, 14):  # nomut
+        from typing import Callable  # noqa: UP035  # pragma: no cover
+    else:
+        from collections.abc import Callable
+
 
 logger = logging.getLogger(__name__)
 
