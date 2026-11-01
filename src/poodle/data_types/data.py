@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 """Shared Data Classes used by Poodle."""
 
 from __future__ import annotations
@@ -42,6 +44,7 @@ class PoodleConfig:
 
     file_copy_flags: int | None
     file_copy_filters: list[str]
+    file_copy_lister: str | None
     work_folder: Path
     max_workers: int | None
 

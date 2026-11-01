@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 """Resolve configuration options and build PoodleConfig object."""
 
 from __future__ import annotations
@@ -94,6 +96,7 @@ def build_config(  # noqa: PLR0913
             config_file_data,
             default=default_file_copy_filters,
         ),
+        file_copy_lister=get_str_from_config("file_copy_lister", config_file_data) or None,
         work_folder=get_path_from_config("work_folder", config_file_data, default=default_work_folder),
         max_workers=get_int_from_config(
             "max_workers",

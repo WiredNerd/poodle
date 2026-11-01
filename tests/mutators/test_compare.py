@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 import ast
 from unittest import mock
 
@@ -98,8 +100,7 @@ class TestComparisonMutator:
     def test_unrecognized_op(self, mock_echo):
         mutator = ComparisonMutator(config=mock.MagicMock(mutator_opts={}), echo=mock_echo)
 
-        bool_op = ast.BoolOp()
-        bool_op.op = ast.Constant()
+        bool_op = ast.BoolOp(ast.Constant(""), [ast.Constant(""), ast.Constant("")])
 
         file_mutants = mutator.create_mutations(bool_op)
 

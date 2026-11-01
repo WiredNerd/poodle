@@ -1,3 +1,5 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
 """Containers for Work-in-progress data."""
 
 from __future__ import annotations

@@ -1,6 +1,11 @@
+# Copyright (c) 2023 WiredNerd
+# SPDX-License-Identifier: MIT
+import os
+import stat
 from concurrent.futures import Future
 from pathlib import Path
 from unittest import mock
+from zipfile import ZipFile, ZipInfo
 
 import click
 import pytest
@@ -323,6 +328,7 @@ class TestRunMutantTrial:
         target_file = run_folder.__truediv__.return_value
         target_file.read_text.return_value = "line0\n"
         mutate_lines.return_value = ["line1\n", "line2\n"]
+        target_file.stat.return_value.st_mode = stat.S_IFREG | 0o644
 
         result = runner.return_value
 
@@ -349,6 +355,12 @@ class TestRunMutantTrial:
         target_file.read_text.assert_called_with("utf-8-sig")
         mutate_lines.assert_called_with(mutant, ["line0\n"])
         target_file.write_text.assert_called_with(data="line1\nline2\n", encoding="utf-8")
+        if os.name == "posix":
+            target_file.unlink.assert_called_with()
+            target_file.chmod.assert_called_with(0o644)
+        else:
+            target_file.unlink.assert_not_called()
+            target_file.chmod.assert_not_called()
 
         mock_logger.debug.assert_any_call("START: run_id=%s run_folder=%s", "1", run_folder)
 
@@ -365,6 +377,58 @@ class TestRunMutantTrial:
         mock_logger.debug.assert_any_call("END: run_id=%s - Elapsed Time %.2f s", "1", 2)
 
         assert returned_trial == MutantTrial(mutant, result, 2)
+
+    @pytest.mark.skipif(os.name != "posix", reason="file modes are POSIX semantics")
+    @pytest.mark.usefixtures("mock_logger")
+    @mock.patch("poodle.run.logging", mock.MagicMock())
+    @mock.patch("poodle.run.mutate_lines")
+    def test_run_mutant_trial_read_only_file(self, mutate_lines, tmp_path, mock_echo):
+        source_file = tmp_path / "src" / "main.py"
+        source_file.parent.mkdir()
+        source_file.write_text("X = 1\n", encoding="utf-8")
+        source_file.chmod(0o444)
+        folder_zip = tmp_path / "src.zip"
+        with ZipFile(folder_zip, "w") as zip_file:
+            zip_file.write(source_file, "src/main.py")
+        mutate_lines.return_value = ["X = 2\n"]
+        config = PoodleConfigStub(work_folder=tmp_path, log_format="log_format", log_level="DEBUG")
+        seen = {}
+
+        def runner(run_folder, **_):
+            trial_file = run_folder / "src" / "main.py"
+            seen["text"] = trial_file.read_text("utf-8")
+            seen["mode"] = stat.S_IMODE(trial_file.stat().st_mode)
+
+        mutant = self.create_mutant(Path("src"), Path("src/main.py"))
+        run.run_mutant_trial(config, mock_echo, folder_zip, mutant, "1", runner, 10)
+
+        assert seen == {"text": "X = 2\n", "mode": 0o444}
+        assert source_file.read_text("utf-8") == "X = 1\n"
+
+    @pytest.mark.skipif(os.name != "posix", reason="symlinks are reproduced on POSIX only")
+    @pytest.mark.usefixtures("mock_logger")
+    @mock.patch("poodle.run.logging", mock.MagicMock())
+    @mock.patch("poodle.run.mutate_lines")
+    def test_run_mutant_trial_link_file(self, mutate_lines, tmp_path, mock_echo):
+        folder_zip = tmp_path / "src.zip"
+        with ZipFile(folder_zip, "w") as zip_file:
+            zip_file.writestr("src/mod.py", "X = 1\n")
+            link = ZipInfo("src/alias.py")
+            link.external_attr = (stat.S_IFLNK | 0o777) << 16
+            zip_file.writestr(link, "mod.py")
+        mutate_lines.return_value = ["X = 2\n"]
+        config = PoodleConfigStub(work_folder=tmp_path, log_format="log_format", log_level="DEBUG")
+        seen = {}
+
+        def runner(run_folder, **_):
+            alias = run_folder / "src" / "alias.py"
+            seen["alias"] = (alias.is_symlink(), alias.read_text("utf-8"))
+            seen["mod"] = (run_folder / "src" / "mod.py").read_text("utf-8")
+
+        mutant = self.create_mutant(Path("src"), Path("src/alias.py"))
+        run.run_mutant_trial(config, mock_echo, folder_zip, mutant, "1", runner, 10)
+
+        assert seen == {"alias": (False, "X = 2\n"), "mod": "X = 1\n"}
 
     @mock.patch("poodle.run.logging")
     @mock.patch("poodle.run.ZipFile")

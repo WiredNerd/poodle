@@ -1,0 +1,2856 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Module Source: src\poodle\mutators\constant.py</title>
+    <link rel="stylesheet" type="text/css" href="html-report.css" />
+    <link rel="icon" href="poodle.ico" type="image/x-icon" />
+    
+</head>
+
+<body>
+    <header>
+        
+
+        <h1>Module Source: src\poodle\mutators\constant.py</h1>
+        
+        <span class="subtitle"><span class="label">Project:</span> poodle
+             version 1.2.0 </span>
+        
+        
+&nbsp;&nbsp;<a href="index.html" class="subtitle">&lt;Index</a>
+<div class="subtitle">
+<span class="label">Mutants:</span> 73,
+<span class="label">Found:</span> 73,
+<span class="label">Not Found:</span> 0,
+<span class="label">Timeout:</span> 0,
+<span class="label">Error:</span> 0
+</div>
+<div class="subtitle">
+<span class="label">Module Score:</span> 100.00%
+</div>
+
+    </header>
+    <main>
+        
+<table class="source">
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">1</td>
+        <td class="line_text">
+            <pre>&#34;&#34;&#34;Mutate Constant Values.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">2</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">3</td>
+        <td class="line_text">
+            <pre>from __future__ import annotations</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">4</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">5</td>
+        <td class="line_text">
+            <pre>import ast</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">6</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">7</td>
+        <td class="line_text">
+            <pre>from poodle.data_types import FileMutation, Mutator</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">8</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">9</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">10</td>
+        <td class="line_text">
+            <pre>class NumberMutator(ast.NodeVisitor, Mutator):</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">11</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Mutate Numbers.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">12</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">13</td>
+        <td class="line_text">
+            <pre>    # Various Keywords:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">14</td>
+        <td class="line_text">
+            <pre>    # complex   3j</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">15</td>
+        <td class="line_text">
+            <pre>    # int       3, 0o3 0x3, 0b11</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">16</td>
+        <td class="line_text">
+            <pre>    # float     3.0</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">17</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">18</td>
+        <td class="line_text">
+            <pre>    mutator_name = &#34;Number&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:18
+@@ -15,7 +15,7 @@
+     # int       3, 0o3 0x3, 0b11
+     # float     3.0
+ 
+-    mutator_name = &#34;Number&#34;
++    mutator_name = &#39;XXNumberXX&#39;
+     mutants: list[FileMutation]
+ 
+     def create_mutations(self, parsed_ast: ast.Module, *_, **__) -&gt; list[FileMutation]:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">19</td>
+        <td class="line_text">
+            <pre>    mutants: list[FileMutation]</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">20</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">21</td>
+        <td class="line_text">
+            <pre>    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -&gt; list[FileMutation]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">22</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Visit all nodes and return created mutants.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">23</td>
+        <td class="line_text">
+            <pre>        self.mutants = []</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">24</td>
+        <td class="line_text">
+            <pre>        self.visit(parsed_ast)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:24
+@@ -21,7 +21,7 @@
+     def create_mutations(self, parsed_ast: ast.Module, *_, **__) -&gt; list[FileMutation]:
+         &#34;&#34;&#34;Visit all nodes and return created mutants.&#34;&#34;&#34;
+         self.mutants = []
+-        self.visit(parsed_ast)
++        None
+         return self.mutants
+ 
+     def visit_Constant(self, node: ast.Constant) -&gt; None:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">25</td>
+        <td class="line_text">
+            <pre>        return self.mutants</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:25
+@@ -22,7 +22,7 @@
+         &#34;&#34;&#34;Visit all nodes and return created mutants.&#34;&#34;&#34;
+         self.mutants = []
+         self.visit(parsed_ast)
+-        return self.mutants
++        return None
+ 
+     def visit_Constant(self, node: ast.Constant) -&gt; None:
+         &#34;&#34;&#34;Increase and Decrease values.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">26</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">27</td>
+        <td class="line_text">
+            <pre>    def visit_Constant(self, node: ast.Constant) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">28</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Increase and Decrease values.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">29</td>
+        <td class="line_text">
+            <pre>        if isinstance(node.value, bool):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:29
+@@ -26,7 +26,7 @@
+ 
+     def visit_Constant(self, node: ast.Constant) -&gt; None:
+         &#34;&#34;&#34;Increase and Decrease values.&#34;&#34;&#34;
+-        if isinstance(node.value, bool):
++        if None:
+             return
+         if isinstance(node.value, int):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">30</td>
+        <td class="line_text">
+            <pre>            return</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">31</td>
+        <td class="line_text">
+            <pre>        if isinstance(node.value, int):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:31
+@@ -28,7 +28,7 @@
+         &#34;&#34;&#34;Increase and Decrease values.&#34;&#34;&#34;
+         if isinstance(node.value, bool):
+             return
+-        if isinstance(node.value, int):
++        if None:
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">32</td>
+        <td class="line_text">
+            <pre>            self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:32
+@@ -29,7 +29,7 @@
+         if isinstance(node.value, bool):
+             return
+         if isinstance(node.value, int):
+-            self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:32
+@@ -29,7 +29,7 @@
+         if isinstance(node.value, bool):
+             return
+         if isinstance(node.value, int):
+-            self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value * 1)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:32
+@@ -29,7 +29,7 @@
+         if isinstance(node.value, bool):
+             return
+         if isinstance(node.value, int):
+-            self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value + 2)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:32
+@@ -29,7 +29,7 @@
+         if isinstance(node.value, bool):
+             return
+         if isinstance(node.value, int):
+-            self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value + 0)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:32
+@@ -29,7 +29,7 @@
+         if isinstance(node.value, bool):
+             return
+         if isinstance(node.value, int):
+-            self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
++            None
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">33</td>
+        <td class="line_text">
+            <pre>            self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:33
+@@ -30,7 +30,7 @@
+             return
+         if isinstance(node.value, int):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
+-            self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:33
+@@ -30,7 +30,7 @@
+             return
+         if isinstance(node.value, int):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
+-            self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value / 1)))
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:33
+@@ -30,7 +30,7 @@
+             return
+         if isinstance(node.value, int):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
+-            self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value - 2)))
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:33
+@@ -30,7 +30,7 @@
+             return
+         if isinstance(node.value, int):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
+-            self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value - 0)))
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:33
+@@ -30,7 +30,7 @@
+             return
+         if isinstance(node.value, int):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
+-            self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
++            None
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">34</td>
+        <td class="line_text">
+            <pre>        if isinstance(node.value, complex):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:34
+@@ -31,7 +31,7 @@
+         if isinstance(node.value, int):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+-        if isinstance(node.value, complex):
++        if None:
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+         if isinstance(node.value, float):
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">35</td>
+        <td class="line_text">
+            <pre>            self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:35
+@@ -32,7 +32,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+-            self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+         if isinstance(node.value, float):
+             if node.value == 0:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:35
+@@ -32,7 +32,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+-            self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value * 1j)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+         if isinstance(node.value, float):
+             if node.value == 0:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:35
+@@ -32,7 +32,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+-            self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value + 2j)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+         if isinstance(node.value, float):
+             if node.value == 0:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:35
+@@ -32,7 +32,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+-            self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value + 0j)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+         if isinstance(node.value, float):
+             if node.value == 0:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:35
+@@ -32,7 +32,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+-            self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
++            None
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+         if isinstance(node.value, float):
+             if node.value == 0:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">36</td>
+        <td class="line_text">
+            <pre>            self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:36
+@@ -33,7 +33,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+-            self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+         if isinstance(node.value, float):
+             if node.value == 0:
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:36
+@@ -33,7 +33,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+-            self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value / 1j)))
+         if isinstance(node.value, float):
+             if node.value == 0:
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:36
+@@ -33,7 +33,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+-            self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value - 2j)))
+         if isinstance(node.value, float):
+             if node.value == 0:
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:36
+@@ -33,7 +33,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+-            self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
++            self.mutants.append(self.create_file_mutation(node, str(node.value - 0j)))
+         if isinstance(node.value, float):
+             if node.value == 0:
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:36
+@@ -33,7 +33,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1)))
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+-            self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
++            None
+         if isinstance(node.value, float):
+             if node.value == 0:
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">37</td>
+        <td class="line_text">
+            <pre>        if isinstance(node.value, float):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:37
+@@ -34,7 +34,7 @@
+         if isinstance(node.value, complex):
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+-        if isinstance(node.value, float):
++        if None:
+             if node.value == 0:
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+             else:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">38</td>
+        <td class="line_text">
+            <pre>            if node.value == 0:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:38
+@@ -35,7 +35,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+         if isinstance(node.value, float):
+-            if node.value == 0:
++            if node.value != 0:
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+             else:
+                 self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:38
+@@ -35,7 +35,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+         if isinstance(node.value, float):
+-            if node.value == 0:
++            if node.value == 1:
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+             else:
+                 self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:38
+@@ -35,7 +35,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value + 1j)))
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+         if isinstance(node.value, float):
+-            if node.value == 0:
++            if node.value == -1:
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+             else:
+                 self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">39</td>
+        <td class="line_text">
+            <pre>                self.mutants.append(self.create_file_mutation(node, str(1.0)))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:39
+@@ -36,7 +36,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+         if isinstance(node.value, float):
+             if node.value == 0:
+-                self.mutants.append(self.create_file_mutation(node, str(1.0)))
++                self.mutants.append(self.create_file_mutation(node, str(2.0)))
+             else:
+                 self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
+                 self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:39
+@@ -36,7 +36,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+         if isinstance(node.value, float):
+             if node.value == 0:
+-                self.mutants.append(self.create_file_mutation(node, str(1.0)))
++                self.mutants.append(self.create_file_mutation(node, str(0.5)))
+             else:
+                 self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
+                 self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:39
+@@ -36,7 +36,7 @@
+             self.mutants.append(self.create_file_mutation(node, str(node.value - 1j)))
+         if isinstance(node.value, float):
+             if node.value == 0:
+-                self.mutants.append(self.create_file_mutation(node, str(1.0)))
++                None
+             else:
+                 self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
+                 self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">40</td>
+        <td class="line_text">
+            <pre>            else:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">41</td>
+        <td class="line_text">
+            <pre>                self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:41
+@@ -38,7 +38,7 @@
+             if node.value == 0:
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+             else:
+-                self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
++                self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))
+                 self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:41
+@@ -38,7 +38,7 @@
+             if node.value == 0:
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+             else:
+-                self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
++                self.mutants.append(self.create_file_mutation(node, str(node.value + 2)))
+                 self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:41
+@@ -38,7 +38,7 @@
+             if node.value == 0:
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+             else:
+-                self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
++                self.mutants.append(self.create_file_mutation(node, str(node.value * 3)))
+                 self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:41
+@@ -38,7 +38,7 @@
+             if node.value == 0:
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+             else:
+-                self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
++                self.mutants.append(self.create_file_mutation(node, str(node.value * 1)))
+                 self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:41
+@@ -38,7 +38,7 @@
+             if node.value == 0:
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+             else:
+-                self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
++                None
+                 self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">42</td>
+        <td class="line_text">
+            <pre>                self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:42
+@@ -39,7 +39,7 @@
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+             else:
+                 self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
+-                self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))
++                self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
+ 
+ 
+ class StringMutator(ast.NodeVisitor, Mutator):
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> BinOp</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:42
+@@ -39,7 +39,7 @@
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+             else:
+                 self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
+-                self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))
++                self.mutants.append(self.create_file_mutation(node, str(node.value - 2)))
+ 
+ 
+ class StringMutator(ast.NodeVisitor, Mutator):
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:42
+@@ -39,7 +39,7 @@
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+             else:
+                 self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
+-                self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))
++                self.mutants.append(self.create_file_mutation(node, str(node.value / 3)))
+ 
+ 
+ class StringMutator(ast.NodeVisitor, Mutator):
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Number</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:42
+@@ -39,7 +39,7 @@
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+             else:
+                 self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
+-                self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))
++                self.mutants.append(self.create_file_mutation(node, str(node.value / 1)))
+ 
+ 
+ class StringMutator(ast.NodeVisitor, Mutator):
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:42
+@@ -39,7 +39,7 @@
+                 self.mutants.append(self.create_file_mutation(node, str(1.0)))
+             else:
+                 self.mutants.append(self.create_file_mutation(node, str(node.value * 2)))
+-                self.mutants.append(self.create_file_mutation(node, str(node.value / 2)))
++                None
+ 
+ 
+ class StringMutator(ast.NodeVisitor, Mutator):
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">43</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">44</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">45</td>
+        <td class="line_text">
+            <pre>class StringMutator(ast.NodeVisitor, Mutator):</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">46</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Mutate String.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">47</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">48</td>
+        <td class="line_text">
+            <pre>    mutator_name = &#34;String&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:48
+@@ -45,7 +45,7 @@
+ class StringMutator(ast.NodeVisitor, Mutator):
+     &#34;&#34;&#34;Mutate String.&#34;&#34;&#34;
+ 
+-    mutator_name = &#34;String&#34;
++    mutator_name = &#39;XXStringXX&#39;
+     mutants: list[FileMutation]
+ 
+     def create_mutations(self, parsed_ast: ast.Module, *_, **__) -&gt; list[FileMutation]:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">49</td>
+        <td class="line_text">
+            <pre>    mutants: list[FileMutation]</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">50</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">51</td>
+        <td class="line_text">
+            <pre>    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -&gt; list[FileMutation]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">52</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Visit all nodes and return created mutants.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">53</td>
+        <td class="line_text">
+            <pre>        self.mutants = []</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">54</td>
+        <td class="line_text">
+            <pre>        self.add_parent_attr(parsed_ast)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:54
+@@ -51,7 +51,7 @@
+     def create_mutations(self, parsed_ast: ast.Module, *_, **__) -&gt; list[FileMutation]:
+         &#34;&#34;&#34;Visit all nodes and return created mutants.&#34;&#34;&#34;
+         self.mutants = []
+-        self.add_parent_attr(parsed_ast)
++        None
+         self.visit(parsed_ast)
+         return self.mutants
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">55</td>
+        <td class="line_text">
+            <pre>        self.visit(parsed_ast)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:55
+@@ -52,7 +52,7 @@
+         &#34;&#34;&#34;Visit all nodes and return created mutants.&#34;&#34;&#34;
+         self.mutants = []
+         self.add_parent_attr(parsed_ast)
+-        self.visit(parsed_ast)
++        None
+         return self.mutants
+ 
+     def visit_Constant(self, node: ast.Constant) -&gt; None:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">56</td>
+        <td class="line_text">
+            <pre>        return self.mutants</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:56
+@@ -53,7 +53,7 @@
+         self.mutants = []
+         self.add_parent_attr(parsed_ast)
+         self.visit(parsed_ast)
+-        return self.mutants
++        return None
+ 
+     def visit_Constant(self, node: ast.Constant) -&gt; None:
+         &#34;&#34;&#34;Mutate String values.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">57</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">58</td>
+        <td class="line_text">
+            <pre>    def visit_Constant(self, node: ast.Constant) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">59</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Mutate String values.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">60</td>
+        <td class="line_text">
+            <pre>        if isinstance(node.parent, ast.Expr):  # type: ignore [attr-defined]</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:60
+@@ -57,7 +57,7 @@
+ 
+     def visit_Constant(self, node: ast.Constant) -&gt; None:
+         &#34;&#34;&#34;Mutate String values.&#34;&#34;&#34;
+-        if isinstance(node.parent, ast.Expr):  # type: ignore [attr-defined]
++        if None:  # type: ignore [attr-defined]
+             return
+ 
+         if isinstance(node.value, str):
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">61</td>
+        <td class="line_text">
+            <pre>            return</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">62</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">63</td>
+        <td class="line_text">
+            <pre>        if isinstance(node.value, str):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:63
+@@ -60,7 +60,7 @@
+         if isinstance(node.parent, ast.Expr):  # type: ignore [attr-defined]
+             return
+ 
+-        if isinstance(node.value, str):
++        if None:
+             node.value = f&#34;XX{node.value}XX&#34;
+             self.mutants.append(self.create_file_mutation(node, ast.unparse(node)))
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">64</td>
+        <td class="line_text">
+            <pre>            node.value = f&#34;XX{node.value}XX&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:64
+@@ -61,7 +61,7 @@
+             return
+ 
+         if isinstance(node.value, str):
+-            node.value = f&#34;XX{node.value}XX&#34;
++            node.value = f&#34;&#39;XXXXXX&#39;{node.value}XX&#34;
+             self.mutants.append(self.create_file_mutation(node, ast.unparse(node)))
+ 
+ 
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:64
+@@ -61,7 +61,7 @@
+             return
+ 
+         if isinstance(node.value, str):
+-            node.value = f&#34;XX{node.value}XX&#34;
++            node.value = f&#34;XX{node.value}&#39;XXXXXX&#39;&#34;
+             self.mutants.append(self.create_file_mutation(node, ast.unparse(node)))
+ 
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">65</td>
+        <td class="line_text">
+            <pre>            self.mutants.append(self.create_file_mutation(node, ast.unparse(node)))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:65
+@@ -62,7 +62,7 @@
+ 
+         if isinstance(node.value, str):
+             node.value = f&#34;XX{node.value}XX&#34;
+-            self.mutants.append(self.create_file_mutation(node, ast.unparse(node)))
++            None
+ 
+ 
+ class KeywordMutator(ast.NodeVisitor, Mutator):
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">66</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">67</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">68</td>
+        <td class="line_text">
+            <pre>class KeywordMutator(ast.NodeVisitor, Mutator):</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">69</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;Mutate Keywords.</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">70</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">71</td>
+        <td class="line_text">
+            <pre>    continue, break, False, True, None</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">72</td>
+        <td class="line_text">
+            <pre>    &#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">73</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">74</td>
+        <td class="line_text">
+            <pre>    mutator_name = &#34;Keyword&#34;</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:74
+@@ -71,7 +71,7 @@
+     continue, break, False, True, None
+     &#34;&#34;&#34;
+ 
+-    mutator_name = &#34;Keyword&#34;
++    mutator_name = &#39;XXKeywordXX&#39;
+     mutants: list[FileMutation]
+ 
+     def create_mutations(self, parsed_ast: ast.Module, *_, **__) -&gt; list[FileMutation]:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">75</td>
+        <td class="line_text">
+            <pre>    mutants: list[FileMutation]</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">76</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">77</td>
+        <td class="line_text">
+            <pre>    def create_mutations(self, parsed_ast: ast.Module, *_, **__) -&gt; list[FileMutation]:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">78</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Visit all nodes and return created mutants.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">79</td>
+        <td class="line_text">
+            <pre>        self.mutants = []</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">80</td>
+        <td class="line_text">
+            <pre>        self.add_parent_attr(parsed_ast)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:80
+@@ -77,7 +77,7 @@
+     def create_mutations(self, parsed_ast: ast.Module, *_, **__) -&gt; list[FileMutation]:
+         &#34;&#34;&#34;Visit all nodes and return created mutants.&#34;&#34;&#34;
+         self.mutants = []
+-        self.add_parent_attr(parsed_ast)
++        None
+         self.visit(parsed_ast)
+         return self.mutants
+ 
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">81</td>
+        <td class="line_text">
+            <pre>        self.visit(parsed_ast)</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:81
+@@ -78,7 +78,7 @@
+         &#34;&#34;&#34;Visit all nodes and return created mutants.&#34;&#34;&#34;
+         self.mutants = []
+         self.add_parent_attr(parsed_ast)
+-        self.visit(parsed_ast)
++        None
+         return self.mutants
+ 
+     def visit_Break(self, node: ast.Break) -&gt; None:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">82</td>
+        <td class="line_text">
+            <pre>        return self.mutants</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Return</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:82
+@@ -79,7 +79,7 @@
+         self.mutants = []
+         self.add_parent_attr(parsed_ast)
+         self.visit(parsed_ast)
+-        return self.mutants
++        return None
+ 
+     def visit_Break(self, node: ast.Break) -&gt; None:
+         &#34;&#34;&#34;Replace break with continue.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">83</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">84</td>
+        <td class="line_text">
+            <pre>    def visit_Break(self, node: ast.Break) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">85</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Replace break with continue.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">86</td>
+        <td class="line_text">
+            <pre>        self.mutants.append(self.create_file_mutation(node, &#34;continue&#34;))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:86
+@@ -83,7 +83,7 @@
+ 
+     def visit_Break(self, node: ast.Break) -&gt; None:
+         &#34;&#34;&#34;Replace break with continue.&#34;&#34;&#34;
+-        self.mutants.append(self.create_file_mutation(node, &#34;continue&#34;))
++        self.mutants.append(self.create_file_mutation(node, &#39;XXcontinueXX&#39;))
+ 
+     def visit_Continue(self, node: ast.Continue) -&gt; None:
+         &#34;&#34;&#34;Replace continue with break.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:86
+@@ -83,7 +83,7 @@
+ 
+     def visit_Break(self, node: ast.Break) -&gt; None:
+         &#34;&#34;&#34;Replace break with continue.&#34;&#34;&#34;
+-        self.mutants.append(self.create_file_mutation(node, &#34;continue&#34;))
++        None
+ 
+     def visit_Continue(self, node: ast.Continue) -&gt; None:
+         &#34;&#34;&#34;Replace continue with break.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">87</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">88</td>
+        <td class="line_text">
+            <pre>    def visit_Continue(self, node: ast.Continue) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">89</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Replace continue with break.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">90</td>
+        <td class="line_text">
+            <pre>        self.mutants.append(self.create_file_mutation(node, &#34;break&#34;))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:90
+@@ -87,7 +87,7 @@
+ 
+     def visit_Continue(self, node: ast.Continue) -&gt; None:
+         &#34;&#34;&#34;Replace continue with break.&#34;&#34;&#34;
+-        self.mutants.append(self.create_file_mutation(node, &#34;break&#34;))
++        self.mutants.append(self.create_file_mutation(node, &#39;XXbreakXX&#39;))
+ 
+     def visit_Constant(self, node: ast.Constant) -&gt; None:
+         &#34;&#34;&#34;Replace True, False, and None.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:90
+@@ -87,7 +87,7 @@
+ 
+     def visit_Continue(self, node: ast.Continue) -&gt; None:
+         &#34;&#34;&#34;Replace continue with break.&#34;&#34;&#34;
+-        self.mutants.append(self.create_file_mutation(node, &#34;break&#34;))
++        None
+ 
+     def visit_Constant(self, node: ast.Constant) -&gt; None:
+         &#34;&#34;&#34;Replace True, False, and None.&#34;&#34;&#34;
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">91</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">92</td>
+        <td class="line_text">
+            <pre>    def visit_Constant(self, node: ast.Constant) -&gt; None:</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">93</td>
+        <td class="line_text">
+            <pre>        &#34;&#34;&#34;Replace True, False, and None.&#34;&#34;&#34;</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">94</td>
+        <td class="line_text">
+            <pre>        if self.is_annotation(node):</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:94
+@@ -91,7 +91,7 @@
+ 
+     def visit_Constant(self, node: ast.Constant) -&gt; None:
+         &#34;&#34;&#34;Replace True, False, and None.&#34;&#34;&#34;
+-        if self.is_annotation(node):
++        if None:
+             return
+ 
+         if node.value is True:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">95</td>
+        <td class="line_text">
+            <pre>            return</pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  plain">
+        <td class="line_toggle"></td>
+        <td class="line_number">96</td>
+        <td class="line_text">
+            <pre></pre>
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">97</td>
+        <td class="line_text">
+            <pre>        if node.value is True:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:97
+@@ -94,7 +94,7 @@
+         if self.is_annotation(node):
+             return
+ 
+-        if node.value is True:
++        if node.value is not True:
+             self.mutants.append(self.create_file_mutation(node, &#34;False&#34;))
+         if node.value is False:
+             self.mutants.append(self.create_file_mutation(node, &#34;True&#34;))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:97
+@@ -94,7 +94,7 @@
+         if self.is_annotation(node):
+             return
+ 
+-        if node.value is True:
++        if node.value is False:
+             self.mutants.append(self.create_file_mutation(node, &#34;False&#34;))
+         if node.value is False:
+             self.mutants.append(self.create_file_mutation(node, &#34;True&#34;))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">98</td>
+        <td class="line_text">
+            <pre>            self.mutants.append(self.create_file_mutation(node, &#34;False&#34;))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:98
+@@ -95,7 +95,7 @@
+             return
+ 
+         if node.value is True:
+-            self.mutants.append(self.create_file_mutation(node, &#34;False&#34;))
++            self.mutants.append(self.create_file_mutation(node, &#39;XXFalseXX&#39;))
+         if node.value is False:
+             self.mutants.append(self.create_file_mutation(node, &#34;True&#34;))
+         if node.value is None:
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:98
+@@ -95,7 +95,7 @@
+             return
+ 
+         if node.value is True:
+-            self.mutants.append(self.create_file_mutation(node, &#34;False&#34;))
++            None
+         if node.value is False:
+             self.mutants.append(self.create_file_mutation(node, &#34;True&#34;))
+         if node.value is None:
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">99</td>
+        <td class="line_text">
+            <pre>        if node.value is False:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:99
+@@ -96,7 +96,7 @@
+ 
+         if node.value is True:
+             self.mutants.append(self.create_file_mutation(node, &#34;False&#34;))
+-        if node.value is False:
++        if node.value is not False:
+             self.mutants.append(self.create_file_mutation(node, &#34;True&#34;))
+         if node.value is None:
+             self.mutants.append(self.create_file_mutation(node, &#34;&#39; &#39;&#34;))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:99
+@@ -96,7 +96,7 @@
+ 
+         if node.value is True:
+             self.mutants.append(self.create_file_mutation(node, &#34;False&#34;))
+-        if node.value is False:
++        if node.value is True:
+             self.mutants.append(self.create_file_mutation(node, &#34;True&#34;))
+         if node.value is None:
+             self.mutants.append(self.create_file_mutation(node, &#34;&#39; &#39;&#34;))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">100</td>
+        <td class="line_text">
+            <pre>            self.mutants.append(self.create_file_mutation(node, &#34;True&#34;))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:100
+@@ -97,6 +97,6 @@
+         if node.value is True:
+             self.mutants.append(self.create_file_mutation(node, &#34;False&#34;))
+         if node.value is False:
+-            self.mutants.append(self.create_file_mutation(node, &#34;True&#34;))
++            self.mutants.append(self.create_file_mutation(node, &#39;XXTrueXX&#39;))
+         if node.value is None:
+             self.mutants.append(self.create_file_mutation(node, &#34;&#39; &#39;&#34;))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:100
+@@ -97,6 +97,6 @@
+         if node.value is True:
+             self.mutants.append(self.create_file_mutation(node, &#34;False&#34;))
+         if node.value is False:
+-            self.mutants.append(self.create_file_mutation(node, &#34;True&#34;))
++            None
+         if node.value is None:
+             self.mutants.append(self.create_file_mutation(node, &#34;&#39; &#39;&#34;))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">101</td>
+        <td class="line_text">
+            <pre>        if node.value is None:</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Compare</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:101
+@@ -98,5 +98,5 @@
+             self.mutants.append(self.create_file_mutation(node, &#34;False&#34;))
+         if node.value is False:
+             self.mutants.append(self.create_file_mutation(node, &#34;True&#34;))
+-        if node.value is None:
++        if node.value is not None:
+             self.mutants.append(self.create_file_mutation(node, &#34;&#39; &#39;&#34;))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> Keyword</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:101
+@@ -98,5 +98,5 @@
+             self.mutants.append(self.create_file_mutation(node, &#34;False&#34;))
+         if node.value is False:
+             self.mutants.append(self.create_file_mutation(node, &#34;True&#34;))
+-        if node.value is None:
++        if node.value is &#39; &#39;:
+             self.mutants.append(self.create_file_mutation(node, &#34;&#39; &#39;&#34;))
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+    <tr class="source_row  show_hide_row  found">
+        <td class="line_toggle"> &#x25B8; </td>
+        <td class="line_number">102</td>
+        <td class="line_text">
+            <pre>            self.mutants.append(self.create_file_mutation(node, &#34;&#39; &#39;&#34;))</pre>
+        </td>
+    </tr>
+    
+    <tr class="detail_row">
+        <td></td>
+        <td></td>
+        <td>
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> String</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:102
+@@ -99,4 +99,4 @@
+         if node.value is False:
+             self.mutants.append(self.create_file_mutation(node, &#34;True&#34;))
+         if node.value is None:
+-            self.mutants.append(self.create_file_mutation(node, &#34;&#39; &#39;&#34;))
++            self.mutants.append(self.create_file_mutation(node, &#34;XX&#39; &#39;XX&#34;))
+</pre>
+    
+</div>
+
+            
+            
+<div class="trial  found ">
+    <p><span class="label">Status:</span> Mutant Found</p>
+    
+    <p><span class="label">Mutator Name:</span> FuncCall</p>
+    <p><span class="label">Unified Diff:</span></p>
+    <pre>--- src\poodle\mutators\constant.py
++++ [Mutant] src\poodle\mutators\constant.py:102
+@@ -99,4 +99,4 @@
+         if node.value is False:
+             self.mutants.append(self.create_file_mutation(node, &#34;True&#34;))
+         if node.value is None:
+-            self.mutants.append(self.create_file_mutation(node, &#34;&#39; &#39;&#34;))
++            None
+</pre>
+    
+</div>
+
+            
+        </td>
+    </tr>
+    
+    
+</table>
+
+    </main>
+    <footer>
+        
+        <p>Generated by <a href="http://poodle.rtfd.io" class="nav">Poodle</a> version 1.2.0 at 2023-12-29 20:42:38-0600</p>
+        
+    </footer>
+    
+
+    <script type="text/javascript" src="html-report.js"></script>
+    
+<script>addShowHideEventListeners();</script>
+
+</body>
+
+</html>

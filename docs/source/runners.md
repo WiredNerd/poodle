@@ -1,6 +1,7 @@
 # Poodle's Runners
 
-```text
+```{code-block} text
+:class: .no-copybutton
              .--~~,__                __            ,    /-.
 :-....,-------`~~'._.'      \ ______/ V`-,        ((___/ __>
  `-,,,  ,_      ;'~U'        }        /~~         /      }
@@ -43,10 +44,13 @@ These values refer to the original source file, END values may not match mutated
 
 Command to execute to test a trial.
 
-**Default:** `"pytest -x --assert=plain -o pythonpath="`
+Runner will replace the string `{PYTHONPATH}` in the command with the python path that includes the temporary running location.
+
+
+**Default:** `"pytest -x --assert=plain -o pythonpath='{PYTHONPATH}'"`
 
 :::{note}
-Default includes options `-x` to stop execution at first failure, `--assert=plain` to skip extra processing when assertions fail, and `-o pythonpath=` so that pytest doesn't alter the python path before running.
+Default includes options `-x` to stop execution at first failure, `--assert=plain` to skip extra processing when assertions fail, and `-o pythonpath='{PYTHONPATH}'` so that pytest doesn't add the current directory to the python path before running.
 :::
 
 
@@ -55,7 +59,7 @@ Default includes options `-x` to stop execution at first failure, `--assert=plai
 :::{tab-item} poodle_config.py
 ```python3
 runner_opts = {
-  "command_line":"pytest -x --assert=plain -o pythonpath= --sort-mode=fastest",
+  "command_line":"pytest -x --assert=plain -o pythonpath='{PYTHONPATH}' --sort-mode=fastest",
 }
 ```
 :::
@@ -63,14 +67,14 @@ runner_opts = {
 :::{tab-item} poodle.toml
 ```toml
 [poodle.runner_opts]
-command_line = "pytest -x --assert=plain -o pythonpath= --sort-mode=fastest"
+command_line = "pytest -x --assert=plain -o pythonpath='{PYTHONPATH}' --sort-mode=fastest"
 ```
 :::
 
 :::{tab-item} pyproject.toml
 ```toml
 [tool.poodle.runner_opts]
-command_line = "pytest -x --assert=plain -o pythonpath= --sort-mode=fastest"
+command_line = "pytest -x --assert=plain -o pythonpath='{PYTHONPATH}' --sort-mode=fastest"
 ```
 :::
 
